@@ -1,0 +1,43 @@
+{
+  "serviceId": "tcg-card-grade-oracle",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://oracle.the-undesirables.com/api/v1/grade",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://oracle.the-undesirables.com/api/v1/grade?image_url=<public TCG card image URL>",
+    "inputExample": {
+      "image_url": "https://images.pokemontcg.io/base1/4_hires.png"
+    },
+    "outputShape": "N/A — endpoint returns HTTP 500 {detail} instead of a grade. Useful result is never produced via REST.",
+    "quirks": [
+      "REST route /api/v1/grade is a non-functional stub: it accepts the image_url query param (422 confirms it is required) but then returns HTTP 500 with {\"detail\":\"Tool 'grade_card' requires the full MCP server. Use the MCP protocol directly.\"}",
+      "No x402 402 challenge is ever issued on this REST route — it 422s (missing param) or 500s (stub) before any payment step, so it cannot be paid for via HTTP/x402.",
+      "Grading is only available over the MCP protocol (tool name 'grade_card'), not this HTTP endpoint."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use the REST endpoint GET https://oracle.the-undesirables.com/api/v1/grade — it is broken. It requires an image_url query param, but even with a valid public TCG card image URL it returns HTTP 500 stating the grade_card tool requires the full MCP server and to use the MCP protocol directly. No payment is ever charged. If grading is needed, connect to the service over MCP and call the grade_card tool instead of this HTTP route.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "tcg-card-grade-oracle#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

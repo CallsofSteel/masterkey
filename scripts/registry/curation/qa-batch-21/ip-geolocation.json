@@ -1,0 +1,44 @@
+{
+  "serviceId": "ip-geolocation",
+  "subcat": "ip-geolocation",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.auor.io/ip-stack/v1/lookup",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.auor.io/ip-stack/v1/lookup?ip={ipv4_or_ipv6} (IP as query param, no request body)",
+    "inputExample": {
+      "ip": "8.8.8.8"
+    },
+    "outputShape": "Top-level body: body.country_name, body.country_code, body.region_name, body.region_code, body.city, body.zip, body.latitude, body.longitude, body.continent_name, body.type; nested body.location.{geoname_id, capital, languages[], country_flag, country_flag_emoji, calling_code, is_eu}",
+    "quirks": [
+      "IP is passed as a URL query parameter (?ip=8.8.8.8), there is no request body",
+      "Method is GET — do not send POST",
+      "Response is ipstack-format with all fields at the TOP LEVEL (body.country_name, body.city, body.latitude). This differs from the 2s.io backend recorded in prior existingUsage which double-nests under body.data.items[0] — for THIS auor.io endpoint read fields off body directly"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.auor.io/ip-stack/v1/lookup?ip=8.8.8.8 (substitute any IPv4 or IPv6) via x402 on Base at $0.001 USDC per call. Pass the IP as the ?ip= query parameter; there is no request body and no auth/sign-in. The geolocation result comes back as ipstack-format JSON with fields at the top level: read body.country_name, body.region_name, body.city, body.zip, body.latitude, body.longitude directly, plus body.location for extras like calling_code and country_flag_emoji. Plain synchronous response, no polling.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ip-geolocation#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

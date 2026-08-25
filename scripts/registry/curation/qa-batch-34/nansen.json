@@ -1,0 +1,49 @@
+{
+  "serviceId": "nansen",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.nansen.ai/api/v1/smart-money/holdings",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.nansen.ai/api/v1/smart-money/holdings with JSON body {chains:[\"ethereum\"]} (chains is a TOP-LEVEL field, a list of chain names)",
+    "inputExample": {
+      "chains": [
+        "ethereum"
+      ]
+    },
+    "outputShape": "body[] smart-money holdings rows (per-token holdings: token symbol/address, chain, holders, balance/value, smart-money flow metrics). Exact field names unconfirmed — both paid attempts 422'd on body shape before reaching a 200.",
+    "quirks": [
+      "REQUIRED top-level 'chains' field — must be a LIST of chain names, e.g. [\"ethereum\", \"solana\"]. Omitting it (or nesting it under 'parameters') returns 422: \"Required field 'body -> chains' is missing\".",
+      "Do NOT nest under a 'parameters' wrapper — fields go at the body root (flat), matching the sibling verified Nansen endpoint /profiler/address/pnl-summary which uses flat top-level fields.",
+      "Singular 'chain' is rejected; must be plural 'chains' as an array.",
+      "txHash returned null but payment confirmed; x402 pay-per-call, charged across both Base and Solana networks.",
+      "Charged $0.05 even on 422 validation errors (x402 settles before body validation) — get the body shape right on the first paid call.",
+      "Likely additional required/optional fields (pagination, date range) beyond chains — flat-body confirmation run needed to capture the real 200 output shape."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://api.nansen.ai/api/v1/smart-money/holdings with a flat JSON body containing a top-level \"chains\" array of chain names, e.g. {\"chains\":[\"ethereum\"]}. Do not wrap fields in a \"parameters\" object and do not use singular \"chain\" — both yield a 422 \"body -> chains is missing\". Pay ~$0.05 USDC via x402 (no API key); note you are charged even on validation errors, so send the correct shape first. Read the returned smart-money holdings rows from the JSON body array. The exact 200 output field names are unconfirmed (both QA attempts 422'd on body nesting) — a flat-body confirmation run is needed.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nansen#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "serviceId": "stabletravel-hotels-booking",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/hotels/search",
+      "method": "GET",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://stabletravel.dev/api/hotels/search/by-hotel",
+      "method": "GET",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://stabletravel.dev/api/hotels/offer",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stabletravel.dev/api/hotels/list",
+      "method": "GET",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/price",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/orders",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/hotels/search?hotelIds={amadeusHotelIds}&checkInDate=YYYY-MM-DD&checkOutDate=YYYY-MM-DD&adults=1&currencyCode=USD",
+    "inputExample": {
+      "hotelIds": "MCLONGHM",
+      "adults": 1,
+      "checkInDate": "2026-07-15",
+      "checkOutDate": "2026-07-16",
+      "currencyCode": "USD"
+    },
+    "outputShape": "body.data[] (array of hotel-offers). Per item: body.data[].hotel.{name,hotelId,cityCode,latitude,longitude}, body.data[].available, body.data[].offers[].{id,checkInDate,checkOutDate,room.typeEstimated,price.{currency,total,base},policies.cancellations[]}",
+    "quirks": [
+      "hotelIds query param is REQUIRED and must be Amadeus hotel IDs (8-char codes like MCLONGHM), NOT a city name or free text — there is no city-name search on this endpoint, so you must already have valid Amadeus hotel IDs (comma-separated for multiple).",
+      "checkInDate/checkOutDate use YYYY-MM-DD; offers reflect those dates.",
+      "Returned price currency follows the hotel's listing (e.g. GBP) even when currencyCode=USD is requested — do not assume the requested currency.",
+      "Results come straight from Amadeus; an empty data[] just means no availability for those hotelIds/dates, not an error."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stabletravel.dev/api/hotels/search with a required hotelIds query param set to one or more Amadeus hotel IDs (comma-separated, e.g. MCLONGHM), plus checkInDate and checkOutDate as YYYY-MM-DD, and optionally adults and currencyCode. This is a sync x402 paid call (~$0.032 USDC on Base) returning 200 with JSON. Read offers from body.data[]: each entry has the hotel under .hotel and bookable rates under .offers[] with .price.total and .price.currency (note the currency may differ from your requested currencyCode). You need valid Amadeus hotel IDs up front — this endpoint does not do city-name lookup, so source IDs from the service's hotel-list-by-city endpoint first if you only have a city.",
+    "costObservedUsd": 0.0324
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-hotels-booking#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#4",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#5",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "serviceId": "ai-translate",
+  "subcat": "translation",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/translate_text",
+      "method": "POST"
+    },
+    {
+      "backend": "https://gg402.vercel.app/translate",
+      "method": "POST"
+    },
+    {
+      "backend": "https://gg402.vercel.app/language_translate",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/translate_text with JSON body {text, target_language}",
+    "inputExample": {
+      "text": "hello",
+      "target_language": "es"
+    },
+    "outputShape": "Expected body.translatedText / body.translation, but endpoint returns body.status=\"ERROR\" with body.error.message and body.error.code instead (server misconfigured).",
+    "quirks": [
+      "BROKEN: backend returns HTTP 500 'GOOGLE_TRANSLATE_API_KEY not configured. Please set GOOGLE_TRANSLATE_API_KEY environment variable.' — the server is missing its upstream API key.",
+      "Pre-payment probe shows 402 (looks payable) but the endpoint charges then fails. Money is lost on every call.",
+      "Body {text, target_language} passed validation (got past input checks to the translate call), so the failure is purely server-side config, not body shape.",
+      "Do NOT call this endpoint — it charges $0.01 USDC and returns an error every time."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. It is a charge-then-fail: a POST to https://gg402.vercel.app/translate_text with body {text, target_language} debits $0.01 USDC on Base and then returns HTTP 500 with body.error.message \"GOOGLE_TRANSLATE_API_KEY not configured\" because the backend is missing its Google Translate upstream key. No translation is ever returned. Treat as dead until the provider fixes their server config.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ai-translate#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "ai-translate#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "ai-translate#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

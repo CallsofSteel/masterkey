@@ -1,0 +1,55 @@
+{
+  "serviceId": "communication-style-analyzer",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/communication_style_analyzer",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://gg402.vercel.app/communication_analyze",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/communication_style_analyzer with JSON body {\"text_sample\":\"<the text to analyze>\"}",
+    "inputExample": {
+      "text_sample": "Hey can you please send me the report when you get a chance, thanks"
+    },
+    "outputShape": "body.style (string, e.g. \"Passive-Indirect\"), body.tips[] (array of improvement-tip strings), body.processedAt (ISO timestamp)",
+    "quirks": [
+      "Registry surface lists method as GET, but GET returns 404 'Cannot GET /communication_style_analyzer' (no charge). The endpoint is actually POST.",
+      "The input field MUST be named text_sample (not text). Sending {text:...} pays then 400s with: field text_sample 'expected string, received undefined'.",
+      "x402 payment is 0.01 USDC (10000 base units) on Base (eip155:8453); price shown as 'Varies' in registry but observed flat $0.01."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://gg402.vercel.app/communication_style_analyzer with a JSON body containing the single field text_sample set to the text whose communication style you want analyzed. Do NOT use GET (it 404s) and do NOT name the field text (it 400s). Payment is x402, ~0.01 USDC on Base. Read the result from body.style for the classified style label and body.tips[] for the array of actionable improvement suggestions.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "communication-style-analyzer#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "communication-style-analyzer#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

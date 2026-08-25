@@ -1,0 +1,59 @@
+{
+  "serviceId": "grok-imagine",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/grok/generate",
+      "method": "POST",
+      "amountUsd": 0.07
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/grok/edit",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/grok/generate with JSON body {prompt, aspect_ratio?} -> {jobId, status:\"pending\"}; then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until status:\"complete\"",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "Generate returns body.jobId + body.status (\"pending\"). Poll GET /api/jobs/{jobId}: image at body.result.imageUrl (PNG on Vercel Blob); also body.status, body.progress, body.input.aspect_ratio, body.error",
+    "quirks": [
+      "Async two-step: POST returns {jobId,status:pending}, NOT the image. Must poll GET /api/jobs/{jobId} until status:complete (grok image ~3s, usually one poll).",
+      "Job polling is SIWX-authenticated (free, no payment) AND wallet-scoped: the SIWX signer MUST be the SAME wallet that paid for the generate call - a different wallet gets 403 Unauthorized.",
+      "Paid on Base via x402 ($0.07 fixed), despite the stale prior usage note claiming Solana - generate accepted Base x402 fine.",
+      "Registry/correct host is stablestudio.dev; the old existingUsage callShape host api.xona-agent.com is stale/wrong.",
+      "result.imageUrl (Vercel Blob) expires after ~20 minutes - download the image immediately on completion.",
+      "Default aspect_ratio is 16:9 when omitted; optional aspect_ratio supports 1:1|16:9|9:16|4:3|3:4|3:2|2:3|2:1|1:2|19.5:9|9:19.5|20:9|9:20.",
+      "Do NOT resubmit while a job is pending - duplicate submissions create duplicate paid jobs."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Generate an image by POSTing to https://stablestudio.dev/api/generate/grok/generate with JSON {\"prompt\":\"<text>\"} (optional \"aspect_ratio\"); pay the $0.07 x402 charge on Base. The response is an async job: {jobId, status:\"pending\"} - it does NOT contain the image. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIGN-IN-WITH-X auth (free) with the SAME wallet that paid (a different wallet gets 403); grok image is ~3s so usually one poll. When body.status == \"complete\", read the PNG from body.result.imageUrl and download it immediately because the URL expires in ~20 minutes.",
+    "costObservedUsd": 0.07
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "grok-imagine#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.07
+    },
+    {
+      "key": "grok-imagine#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

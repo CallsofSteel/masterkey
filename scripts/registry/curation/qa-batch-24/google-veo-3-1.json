@@ -1,0 +1,72 @@
+{
+  "serviceId": "google-veo-3-1",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/veo-3.1/generate",
+      "method": "POST",
+      "amountUsd": 1.6
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/veo-3.1-fast/generate",
+      "method": "POST",
+      "amountUsd": 1
+    },
+    {
+      "backend": "https://x402.ottoai.services/video-gen",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/veo-3.1/generate with JSON body {prompt} (prompt required; optional durationSeconds/resolution/aspectRatio/negativePrompt/imageMode/image/lastFrame/referenceImages)",
+    "inputExample": {
+      "prompt": "a red circle",
+      "durationSeconds": "4",
+      "resolution": "720p"
+    },
+    "outputShape": "Generate returns body.jobId (+ body.success, body.status='pending', body.type='veo-3.1-video'). Final video fetched async via GET /api/jobs/{jobId}: result at body.status='complete', body.result.videoUrl (and body.result.thumbnailUrl).",
+    "quirks": [
+      "Async: POST returns only a jobId with status 'pending' — the video is NOT in this response.",
+      "Retrieve the result via GET https://stablestudio.dev/api/jobs/{jobId} which requires SIWX (SIGN-IN-WITH-X) auth, NOT payment. The job route is wallet-bound: SIWX must be signed by the SAME wallet that paid the generate call, or you get 403 Unauthorized.",
+      "Poll every ~15s; veo-3.1 typically completes in 1-2 min.",
+      "Result video URLs expire after ~20 min — download immediately on completion.",
+      "Do NOT resubmit while job is pending/loading — duplicate submissions create duplicate paid jobs.",
+      "Dynamic pricing: registry surface shows $10 but actual quote was $1.60 for 4s/720p (range $1.60-$3.20). 1080p / longer durations cost more.",
+      "durationSeconds, resolution, aspectRatio are STRINGS (e.g. '4', '720p', '16:9'), not numbers.",
+      "For image-to-video pass image + imageMode; needs File Upload flow (POST /api/upload $0.01) to get a blobUrl first."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Generate a video: POST https://stablestudio.dev/api/generate/veo-3.1/generate with JSON {\"prompt\":\"...\",\"durationSeconds\":\"4\",\"resolution\":\"720p\"} (only prompt required; pay ~$1.60-$3.20 USDC via x402/mpp on Base). The response is async — grab body.jobId. Then poll GET https://stablestudio.dev/api/jobs/{jobId} every ~15s using SIWX auth (SIGN-IN-WITH-X header signed by the SAME wallet that paid; this route is free, no payment). When body.status='complete', the video is at body.result.videoUrl — download it immediately since URLs expire in ~20 min. Never resubmit a pending job.",
+    "costObservedUsd": 1.6
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-veo-3-1#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.6
+    },
+    {
+      "key": "google-veo-3-1#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1
+    },
+    {
+      "key": "google-veo-3-1#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "serviceId": "orbis-embeddings",
+  "subcat": "embeddings-vector",
+  "batchId": "batch-2",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/orbis-embeddings-api/embed",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/orbis-embeddings-api",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-embedding-api-c82d1b",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-text-embed-api-55bdb8",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/orbis-embeddings-api/embed with JSON body {input, model}",
+    "inputExample": {
+      "input": "hello world",
+      "model": "text-embedding-3-small"
+    },
+    "outputShape": "N/A - endpoint dead. Expected body.data[].embedding (float vector) per OpenAI-style embeddings gateway, but never reached.",
+    "quirks": [
+      "DEAD ENDPOINT: returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'orbis-embeddings-api'.\"}. The Orbis proxy slug is not registered/active.",
+      "Pre-flight probe showed 402 payable (2026-06-01) but the live route 404s. Do not trust the 402 probe for Orbis proxy slugs.",
+      "404 came BEFORE payment so no USDC was charged (paid:false, costUsd:0)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and unusable. The Orbis proxy returns 404 API_NOT_FOUND because no active API is registered under slug 'orbis-embeddings-api'. Do not call it or attempt to pay. If you need text embeddings, use a different provider/service.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-embeddings#0: DEAD ENDPOINT: returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'orbis-embeddings-api'.\"}. The Orbis proxy slug is not registered/active. | orbis-embeddings#1: Dead Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'orbis-embeddings-api'.\"} | orbis-embeddings#2: Orbis proxy slug 'text-embedding-api-c82d1b' is DEAD — returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route does not exist. | orbis-embeddings#3: Orbis proxy slug is DEAD: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-text-embed-api-55bdb8'.\"}"
+  },
+  "droppedReason": "orbis-embeddings#0: DEAD ENDPOINT: returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'orbis-embeddings-api'.\"}. The Orbis proxy slug is not registered/active. | orbis-embeddings#1: Dead Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'orbis-embeddings-api'.\"} | orbis-embeddings#2: Orbis proxy slug 'text-embedding-api-c82d1b' is DEAD — returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route does not exist. | orbis-embeddings#3: Orbis proxy slug is DEAD: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-text-embed-api-55bdb8'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-embeddings#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-embeddings#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-embeddings#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-embeddings#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

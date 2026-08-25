@@ -1,0 +1,63 @@
+{
+  "serviceId": "spraay-cron",
+  "subcat": "cron-job-scheduling",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gateway.spraay.app/api/v1/cron/create",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://gateway.spraay.app/api/v1/cron/list",
+      "method": "GET",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gateway.spraay.app/api/v1/cron/create with JSON body {action, schedule, payload}",
+    "inputExample": {
+      "action": "webhook.trigger",
+      "schedule": "0 0 * * *",
+      "payload": {
+        "url": "https://example.com/ping",
+        "method": "GET"
+      }
+    },
+    "outputShape": "On success expect a created-job object (job id + schedule); on error body.error is the field-level validation message and body.validActions lists allowed action enums.",
+    "quirks": [
+      "inputSchema in registry is null - the real required fields are action, schedule, payload (a naive {name,url,method} body returns 400 'Missing required fields: action, schedule, payload')",
+      "action must be one of a fixed enum, NOT a free string: batch.execute, payroll.execute, swap.execute, bridge.execute, webhook.trigger, notify.email, notify.sms, xmtp.send, analytics.snapshot, invoice.remind",
+      "schedule is a standard 5-field cron expression (e.g. '0 0 * * *')",
+      "payload is an object whose shape depends on the chosen action (e.g. for webhook.trigger: {url, method})",
+      "endpoint charges $0.01 per POST even on a 400 validation error - get the body shape right BEFORE paying",
+      "x402 paid on Base USDC (also accepts Solana USDC); responses are sync, no async job polling for the create call itself"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Create a scheduled cron job by POSTing to https://gateway.spraay.app/api/v1/cron/create with JSON {action, schedule, payload}. The action MUST be one of the fixed enum values (webhook.trigger, notify.email, notify.sms, swap.execute, payroll.execute, bridge.execute, xmtp.send, analytics.snapshot, invoice.remind, batch.execute) - a free-text action returns 400 with the validActions list. schedule is a 5-field cron expression; payload is an action-specific object (e.g. {url, method} for webhook.trigger). Pay is $0.01 USDC on Base via x402 per call, charged even on validation errors, so get the body right first. This schedules a recurring outward action that will fire on its own, so treat it as irreversible and confirm intent before creating real jobs.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "spraay-cron#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "spraay-cron#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

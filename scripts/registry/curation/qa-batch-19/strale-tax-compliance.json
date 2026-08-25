@@ -1,0 +1,135 @@
+{
+  "serviceId": "strale-tax-compliance",
+  "subcat": "tax-compliance",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/vat-validate",
+      "method": "GET",
+      "amountUsd": 0.0216
+    },
+    {
+      "backend": "https://api.strale.io/x402/country-tax-rates",
+      "method": "GET",
+      "amountUsd": 0.0216
+    },
+    {
+      "backend": "https://api.strale.io/x402/financial-year-dates",
+      "method": "GET",
+      "amountUsd": 0.0216
+    },
+    {
+      "backend": "https://api.strale.io/x402/customs-duty-lookup",
+      "method": "GET",
+      "amountUsd": 0.216001
+    },
+    {
+      "backend": "https://api.strale.io/x402/tax-id-validate",
+      "method": "GET",
+      "amountUsd": 0.0216
+    },
+    {
+      "backend": "https://api.strale.io/x402/invoice-validate",
+      "method": "POST",
+      "amountUsd": 0.0216
+    },
+    {
+      "backend": "https://api.strale.io/x402/invoice-extract",
+      "method": "POST",
+      "amountUsd": 0.54
+    },
+    {
+      "backend": "https://api.strale.io/x402/employment-cost-estimate",
+      "method": "GET",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://api.strale.io/x402/gdpr-website-check",
+      "method": "GET",
+      "amountUsd": 0.108001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/customs-duty-lookup?hs_code=<HS>&origin_country=<ISO2>&destination_country=<ISO2> (query params; hs_code required, the two country params optional)",
+    "inputExample": {
+      "hs_code": "847130",
+      "origin_country": "CN",
+      "destination_country": "DE"
+    },
+    "outputShape": "body.duty_rate, body.duty_type, body.vat_rate, body.anti_dumping, body.preferential_rates[], body.additional_duties[], body.description, body.notes (human-readable status). Provenance at body._meta.provenance, settlement at body._meta.payment.settlement_id",
+    "quirks": [
+      "hs_code is a required QUERY parameter — without it the call would 422; pass it in the URL query string, not a body (this is a GET).",
+      "origin_country/destination_country are optional ISO-2 codes (e.g. CN, DE).",
+      "Endpoint scrapes ec.europa.eu/taric live. For some HS codes the upstream TARIC page returns no loaded tariff data, so duty_rate/vat_rate/duty_type/description come back null with an explanatory body.notes string. A null result is NOT an endpoint error — payment still settles and a valid 200 JSON is returned. Read body.notes to understand why fields are null and retry with a different/more specific HS code if needed.",
+      "Fixed price ~$0.216 USDC on Base per call despite registry priceDisplay 'Varies'."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.strale.io/x402/customs-duty-lookup with hs_code as a required query parameter (e.g. ?hs_code=847130), plus optional origin_country and destination_country ISO-2 codes. Payment is x402 USDC on Base, ~$0.216 per call, synchronous (200 returns the answer directly). Read duty info from body.duty_rate, body.duty_type, body.vat_rate, body.anti_dumping, and body.preferential_rates[]. If those are null, read body.notes — the upstream EU TARIC page sometimes returns no tariff data for a given HS code; that is a data-source gap, not a failure, so try a different HS code rather than retrying the same one.",
+    "costObservedUsd": 0.216001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-tax-compliance#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#5",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0216
+    },
+    {
+      "key": "strale-tax-compliance#6",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.54
+    },
+    {
+      "key": "strale-tax-compliance#7",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "strale-tax-compliance#8",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

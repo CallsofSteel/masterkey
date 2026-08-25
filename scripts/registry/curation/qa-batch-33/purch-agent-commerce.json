@@ -1,0 +1,44 @@
+{
+  "serviceId": "purch-agent-commerce",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.purch.xyz/x402/buy",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.purch.xyz/x402/buy (advertised; not reachable / no payment challenge)",
+    "inputExample": {},
+    "outputShape": "none — no usable response. Advertised backend (GET .../api/agent/shop) returns plain text \"404 Not Found\" (Content-Type text/plain, 13 bytes); POST https://api.purch.xyz/x402/buy yields no JSON and no 402 challenge.",
+    "quirks": [
+      "BROKEN: route is dead. POST https://api.purch.xyz/x402/buy and the advertised backend GET .../api/agent/shop both return plain text '404 Not Found' with NO x402/402 payment challenge.",
+      "paymentAccepts is empty ([]) — there is no 402 challenge, so the endpoint cannot be paid for. Do not attempt to pay.",
+      "authMode is apiKey+paid — endpoint requires a provider API key which we do not have (violates no-API-key policy).",
+      "No inputSchema, no instructions, no managedResource — even if reachable, a real 'buy' would need product IDs/SKUs that are not discoverable.",
+      "Confirmed broken on 2026-06-08 (today), 2026-06-02, and the batch probe — consistently 404, not transient.",
+      "Host api.purch.xyz was also unreachable (DNS timeout / fetch failed) from the QA sandbox; combined with prior broken status, treated as broken. Zero dollars spent."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint is broken and unusable. The advertised call POST https://api.purch.xyz/x402/buy returns no x402 payment challenge (paymentAccepts is empty), the underlying 'Agent Shop' backend returns a plain-text '404 Not Found', and the service requires a provider API key we do not have (authMode apiKey+paid). It was confirmed dead today (2026-06-08) and on prior independent probes. Do not call or pay it until the provider restores a payable route and the API-key requirement is removed.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "purch-agent-commerce#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

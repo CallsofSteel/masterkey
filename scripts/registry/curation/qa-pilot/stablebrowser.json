@@ -1,0 +1,65 @@
+{
+  "serviceId": "stablebrowser",
+  "subcat": "headless-browsers",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "POST https://www.stablebrowser.dev/api/sessions (x402, $0.10 on Base) → sessionId; then POST /api/sessions/navigate|screenshot|act|extract|observe|close with SIWX eip191 header signed by the same wallet",
+    "inputExample": {
+      "create": {},
+      "navigate": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726",
+        "url": "https://example.com"
+      },
+      "screenshot": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726"
+      },
+      "act": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726",
+        "action": "Click the search button"
+      },
+      "extract": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726",
+        "instruction": "Extract all product names and prices"
+      },
+      "observe": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726",
+        "instruction": "Find the login button in the top right"
+      },
+      "close": {
+        "sessionId": "a2129137-f712-4839-99ab-c112eab8c726"
+      }
+    },
+    "outputShape": "create: body.sessionId (Browserbase session ID), body.debugUrl (live devtools URL), body.viewerUrl, body.createdAt; navigate: body.url, body.title; screenshot: body.screenshot (base64 PNG), body.mimeType; act: body.success, body.message; extract: body.data; observe: body.elements[]{description, selector, method, args}",
+    "quirks": [
+      "CRITICAL wallet identity lock: the wallet address that pays the x402 session creation ($0.10) becomes the session owner. All SIWX-signed action calls MUST come from the exact same wallet — mixing payment wallet (e.g. Sponge) with a different SIWX wallet (e.g. agentcash) returns 403 'Session belongs to a different wallet'.",
+      "Action endpoints return HTTP 402 with x402Version:2 and accepts:[] — this is a SIWX-only challenge (no payment), not a standard x402 payment challenge. Standard paid_fetch tools will error 'No payment requirements found'.",
+      "The service runs on Vercel (both www.stablebrowser.dev and stablebrowser.vercel.app serve the same app). Sessions are backed by Browserbase; debugUrl is a live fullscreen devtools inspector URL.",
+      "observe instruction must be extremely specific — generic instructions like 'find buttons' produce poor results. Describe visual characteristics, location, and text content in detail.",
+      "act variables field: only use for sensitive/dynamic content (passwords, tokens). When using variables, include the variable key in the action string, e.g. {\"action\": \"Fill the password field\", \"variables\": {\"password\": \"secret\"}}.",
+      "The exact Authorization header format for the SIWX eip191 challenge is abstracted by agentcash — callers using a raw HTTP client must construct an eip191 signed message manually (format not yet documented)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Create a session with one x402-paid POST to /api/sessions ($0.10 USDC on Base); the response returns sessionId, debugUrl (live Browserbase devtools), and viewerUrl. Pass that sessionId to any action endpoint — navigate, screenshot, act, extract, observe, close — each is SIWX-only (eip191 on eip155:8453, no additional payment). CRITICAL: you must sign the SIWX challenge with the same wallet that made the x402 payment, or every action call returns 403. Use agentcash for all calls including the initial x402 session creation — it handles SIWX signing automatically with the correct wallet identity. The act endpoint accepts natural-language instructions ('Click the login button') and an optional variables map for sensitive values. Use observe first to identify elements before acting on them.",
+    "costObservedUsd": 0.1,
+    "sessionFlow": {
+      "createOp": "/api/sessions",
+      "sessionIdField": "sessionId",
+      "actionOps": [
+        "/api/sessions/navigate",
+        "/api/sessions/screenshot",
+        "/api/sessions/act",
+        "/api/sessions/extract",
+        "/api/sessions/observe"
+      ],
+      "closeOp": "/api/sessions/close",
+      "closeBody": "{ \"sessionId\": \"<sessionId>\" }"
+    }
+  },
+  "drop": false,
+  "droppedReason": null
+}

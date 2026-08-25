@@ -1,0 +1,48 @@
+{
+  "serviceId": "stabletravel-google-flights",
+  "subcat": "flight-aviation",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/google-flights/search",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/google-flights/search?departure_id&arrival_id&outbound_date&type (all params in query string)",
+    "inputExample": {
+      "departure_id": "JFK",
+      "arrival_id": "LAX",
+      "outbound_date": "2026-07-15",
+      "type": 2
+    },
+    "outputShape": "body.best_flights[] and body.other_flights[] (each with .flights[], .price, .total_duration, .departure_token, .booking_token), body.price_insights, body.search_metadata",
+    "quirks": [
+      "type=1 round-trip (requires return_date), type=2 one-way, type=3 multi-city",
+      "For round-trip you MUST also pass return_date or the call errors",
+      "Each flight result carries a departure_token; pass it to GET /api/google-flights/booking to get booking_options ($0.02 each)",
+      "Airport IDs are IATA codes (JFK, LAX); optional params: travel_class, adults, stops, currency"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "GET https://stabletravel.dev/api/google-flights/search with query params departure_id, arrival_id, outbound_date (YYYY-MM-DD), and type (1=round-trip, 2=one-way, 3=multi). For round-trip add return_date. Pay $0.02 via x402 on Base, fully synchronous — the JSON body comes straight back. Read flight options from body.best_flights[] and body.other_flights[] (price in .price, segments in .flights[]), and pricing context from body.price_insights. To get bookable links, take a result's departure_token and call GET /api/google-flights/booking?departure_token=... (another $0.02).",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-google-flights#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

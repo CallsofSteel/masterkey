@@ -1,0 +1,44 @@
+{
+  "serviceId": "explicit-image-detector",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.slinkylayer.ai/api/v1/proxy/a0755425-9710-49f2-aca7-463d72f7db2a/explicit-detect",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/a0755425-9710-49f2-aca7-463d72f7db2a/explicit-detect with JSON body {imageUrl}",
+    "inputExample": {
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
+    },
+    "outputShape": "unknown (host unreachable, no response observed)",
+    "quirks": [
+      "NEEDS-REVIEW (not dropped): failure looks transient (host down / upstream 502) as of 2026-06-08 — re-test before relying on it. MONEY-RISK if it charges-then-fails.",
+      "Host x402.slinkylayer.ai is unreachable as of 2026-06-08 (connection timeout, HTTP 000 on both endpoint and root).",
+      "qa-pay returns 'provider request failed: fetch failed' because the upstream host does not respond.",
+      "No payment is made when the host is down (paid:false) - safe, but the service is non-functional."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken: the host x402.slinkylayer.ai does not respond (connection timeout / HTTP 000 on both the endpoint and the domain root). Based on the description it would analyze an image URL for explicit/sensitive content, expected body shape {imageUrl}, but this could not be confirmed because no request reached the server. Do not rely on it until the host comes back online; re-test before use.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "explicit-image-detector#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

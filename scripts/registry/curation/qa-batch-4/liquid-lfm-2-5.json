@@ -1,0 +1,49 @@
+{
+  "serviceId": "liquid-lfm-2-5",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.slinkylayer.ai/api/v1/proxy/0c6dff19-f642-4509-bbb6-2893cdeffcb4/chat-completions-lfm-2-5-thinking",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/0c6dff19-f642-4509-bbb6-2893cdeffcb4/chat-completions-lfm-2-5-thinking with JSON body {messages:[{role,content}]} (OpenAI chat-completions shape)",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "Unknown (could not reach endpoint). Expected OpenAI-style: body.choices[0].message.content",
+    "quirks": [
+      "Host x402.slinkylayer.ai was UNREACHABLE during QA: qa-pay returned wallet-error 'provider request failed: fetch failed' twice (paid:false), and raw curl timed out resolving DNS (curl 28). No payment was made.",
+      "Could not confirm whether host is permanently down vs. a sandbox DNS/network restriction.",
+      "inputSchema/outputSchema were null in the registry; body shape {messages:[{role,content}]} inferred from the chat-completions-lfm-2-5-thinking URL slug (LFM 2.5 Thinking, OpenAI-compatible).",
+      "Re-test from an environment with working DNS before trusting; if it 402s on connect, the x402 pay flow should proceed (authMode=x402)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This is Liquid LFM 2.5 1.2B Thinking, an OpenAI-compatible chat-completions endpoint behind an x402 proxy. Call it as POST to the proxy URL with a JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}; payment is x402 USDC (price varies). Read the reply from body.choices[0].message.content (standard OpenAI shape). NOTE: during this QA run the host could not be reached at all (fetch failed / DNS timeout) so the call was never verified and no charge occurred — re-test from a network with working DNS to confirm it is live before relying on it.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "liquid-lfm-2-5#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

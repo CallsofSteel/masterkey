@@ -1,0 +1,27 @@
+{
+  "slug": "world-pulse",
+  "name": "World Pulse",
+  "description": "A no-politics briefing of science/health breakthroughs, major natural disasters, and high-impact economy news from the last day or two.",
+  "trigger": "science / health / space breakthroughs + disasters briefing, no politics",
+  "inputs": [{ "name": "focus", "prompt": "Any topic or region to prioritize? (optional)" }],
+  "steps": [
+    {
+      "label": "Sweep science, space & health",
+      "serviceId": "brave-search",
+      "instruction": "Run 2-3 searches with varied queries for science, space, and health/medicine BREAKTHROUGHS from the last 24-48 hours using brave-search (its search parameter is `q`). Capture concrete facts, figures, and the source outlet for each."
+    },
+    {
+      "label": "Sweep disasters & high-impact economy",
+      "serviceId": "brave-search",
+      "instruction": "Run 2-3 more brave-search queries (param `q`) for major NATURAL DISASTERS and high-impact economy/business news from the last 24-48 hours. (Optionally serper for breadth.) Capture facts + sources."
+    },
+    {
+      "label": "Filter & rank",
+      "instruction": "Combine all results. DROP anything political, opinion/analysis, or conflict/diplomacy. Keep only hard breakthroughs and high-impact items. De-dupe and rank by significance. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Write the briefing",
+      "instruction": "Write a clean 5-8 item briefing: a one-line headline + one sentence of context + the source outlet for each item, grouped (Science/Space, Health, Disasters, Economy). Plain markdown."
+    }
+  ]
+}

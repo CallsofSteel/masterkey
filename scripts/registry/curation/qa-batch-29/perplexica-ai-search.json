@@ -1,0 +1,40 @@
+{
+  "serviceId": "perplexica-ai-search",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://intel.asrai.me/search",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://intel.asrai.me/search with JSON body {query}",
+    "inputExample": {
+      "query": "What is the capital of France?"
+    },
+    "outputShape": "body.message (the grounded answer text with [n] citation markers), body.sources[] (array of source objects; may be empty)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with a single \"query\" field (your natural-language question) to https://intel.asrai.me/search. Payment is x402 USDC on Base, ~$0.005 per call, settled automatically. The response is a plain sync JSON object: read body.message for the grounded answer (citation markers like [1] embedded inline) and body.sources[] for the cited URLs (note sources[] can come back empty even when the answer is good).",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "perplexica-ai-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

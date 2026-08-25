@@ -1,0 +1,46 @@
+{
+  "serviceId": "opensanctions-screening",
+  "subcat": "tax-compliance",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://scan.madhousewallet.com/api/public/sanctions-check",
+      "method": "GET",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://scan.madhousewallet.com/api/public/sanctions-check?name=<full+name>&country=<iso2>",
+    "inputExample": {
+      "name": "Viktor Bout",
+      "country": "ru"
+    },
+    "outputShape": "body.sanctioned (bool), body.matchCount (number), body.matches[] with .caption, .entityType, .topics[], .matchedOn[], .datasets[], .countries[]",
+    "quirks": [
+      "All inputs are URL query params, not a JSON body (it is a GET).",
+      "Only name is required; country/address/birthDate are optional filters that cut false positives.",
+      "sanctioned:false with empty matches[] means clean — that is a valid successful result, not an error.",
+      "Common names without country/birthDate can return multiple matches; inspect matchedOn per entry for confidence (name is always present, country/birthDate indicate stronger hits)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://scan.madhousewallet.com/api/public/sanctions-check with the entity name as the required `name` query param (URL-encode spaces); optionally add country (ISO 3166-1 alpha-2), address, and birthDate to reduce false positives. Pay $0.04 USDC via x402 on Base (also accepts Polygon/Arbitrum). Read body.sanctioned for the boolean verdict and body.matches[] for matched entities — each match has caption, entityType, topics (sanction/role.pep/etc.), matchedOn, and source datasets. sanctioned:false with empty matches means the entity is clean.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "opensanctions-screening#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "serviceId": "elevenlabs-sound-effects",
+  "subcat": "sound-effects-audio",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/elevenlabs/v1/sound-generation",
+      "method": "POST",
+      "amountUsd": 0.15
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/elevenlabs/v1/sound-generation with JSON body {text} (optional: duration_seconds, loop, prompt_influence, model_id; optional query ?output_format=)",
+    "inputExample": {
+      "text": "a short gentle chime",
+      "duration_seconds": 0.5
+    },
+    "outputShape": "Response body IS the raw audio file (Content-Type: audio/mpeg). No JSON wrapper — write the bytes directly to a .mp3 file.",
+    "quirks": [
+      "Response is raw binary MP3 audio (audio/mpeg), NOT JSON — save the body bytes directly to a .mp3 file.",
+      "duration_seconds minimum is 0.5.",
+      "Only 'text' is required; other body fields (loop, duration_seconds, prompt_influence, model_id) are optional."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/elevenlabs/v1/sound-generation over x402 (pays ~$0.15 USDC on Base) with a JSON body containing at minimum {\"text\": \"<description of the sound>\"}. Optionally set duration_seconds (min 0.5), loop, prompt_influence, or model_id, and an output_format query param. The response is the raw audio file itself (Content-Type audio/mpeg) — do not parse it as JSON; write the response bytes straight to a .mp3 file. Plain synchronous call, no auth beyond the x402 payment.",
+    "costObservedUsd": 0.15
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "elevenlabs-sound-effects#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.15
+    }
+  ]
+}

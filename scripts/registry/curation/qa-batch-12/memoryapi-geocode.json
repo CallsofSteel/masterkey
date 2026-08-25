@@ -1,0 +1,44 @@
+{
+  "serviceId": "memoryapi-geocode",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://geo.memoryapi.org/x402/geo/geocode",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://geo.memoryapi.org/x402/geo/geocode?q={address}&limit={1-5} (forward) or ?lat={lat}&lon={lon} (reverse)",
+    "inputExample": {
+      "q": "Empire State Building",
+      "limit": 1
+    },
+    "outputShape": "body.results[] (array of geocode matches); body.success, body.type, body.count, body.attribution, body.source — UNVERIFIED, endpoint never returned a successful response",
+    "quirks": [
+      "Endpoint is DOWN: returns HTTP 502 Bad Gateway from nginx/1.24.0 on every request (no x402 challenge served, request never reaches payable state). Confirmed on 2 attempts 2026-06-08.",
+      "Registry probe saw 402 on 2026-06-02 but the upstream backend has since failed; do not attempt to pay.",
+      "Params are query-string (GET): q for forward geocoding, lat+lon for reverse, optional type=forward|reverse, limit 1-5."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint — it is broken. As of 2026-06-08 https://geo.memoryapi.org/x402/geo/geocode returns HTTP 502 Bad Gateway from nginx on every request; the upstream backend is down. No payment was charged because no 402 challenge was served. When/if restored, forward geocode with GET ?q={address}&limit={1-5}, reverse geocode with ?lat=&lon=, and read matches from body.results[].",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "memoryapi-geocode#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

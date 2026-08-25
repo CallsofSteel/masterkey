@@ -1,0 +1,44 @@
+{
+  "serviceId": "content-policy-validator",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/ai-validate-content-api-02a9ef",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/ai-validate-content-api-02a9ef with JSON body {text}",
+    "inputExample": {
+      "text": "hello how are you"
+    },
+    "outputShape": "N/A — endpoint dead. Returned {error:'API_NOT_FOUND', message:'No active API found with slug ...'}",
+    "quirks": [
+      "Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST.",
+      "The registry probe's 402 (payable) status is stale — endpoint actually 404s before any payment is required.",
+      "No payment was taken (paid:false, costUsd:0); the route does not exist, so no funds at risk."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be used. POSTing to https://orbisapi.com/proxy/ai-validate-content-api-02a9ef returns HTTP 404 with {error:'API_NOT_FOUND', message:'No active API found with slug ai-validate-content-api-02a9ef'}. The Orbis proxy slug has been deactivated/removed. No payment is taken (the 402 in older probes is stale). Drop this endpoint from the registry or mark it unavailable.",
+    "costObservedUsd": 0,
+    "droppedReason": "content-policy-validator#0: Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST."
+  },
+  "droppedReason": "content-policy-validator#0: Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST.",
+  "_backends": [
+    {
+      "key": "content-policy-validator#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

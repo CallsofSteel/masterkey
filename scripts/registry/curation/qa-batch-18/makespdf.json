@@ -1,0 +1,52 @@
+{
+  "serviceId": "makespdf",
+  "subcat": "pdf-generation-processing",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://makespdf.com/api/v1/render",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://makespdf.com/api/v1/render with JSON body {templateId, data}",
+    "inputExample": {
+      "templateId": "certificate-modern",
+      "data": {
+        "recipient": "Jane Doe",
+        "program": "QA Test",
+        "awardingBody": "MasterKey",
+        "date": "2026-06-08"
+      }
+    },
+    "outputShape": "Raw binary PDF (application/pdf, ~53KB). paid_fetch/qa-pay surfaces it as a 'base64:...' string body; strip the 'base64:' prefix and decode to get the PDF bytes. Response headers carry x-pages (page count) and x-render-ms.",
+    "quirks": [
+      "Response body is a raw binary PDF, not JSON — surfaced as a 'base64:...' string by paid_fetch/qa-pay; strip the 'base64:' prefix and base64-decode to obtain the PDF bytes.",
+      "Body must supply EITHER templateId (curated/saved template) OR dsl (Builder DSL script) — they are mutually exclusive — plus a data object whose keys fill the template's {{placeholders}}.",
+      "Get valid templateIds from GET /api/v1/templates?owner=library (free GET). Verified IDs include certificate-modern, certificate-formal, invoice-classic/compact/modern, letter-business/personal, quote-classic/modern.",
+      "Sibling endpoint /api/v1/markdown ($0.01) takes GitHub-Flavoured Markdown {markdown, options} for simple docs; /api/v1/render ($0.02) is for template/DSL-based branded/compliant layouts.",
+      "Output is PDF/UA-1 + PDF/A-2A compliant (tagged, accessible)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://makespdf.com/api/v1/render with a JSON body containing a templateId plus a data object filling that template's placeholders. Pick a templateId from the free GET https://makespdf.com/api/v1/templates?owner=library (e.g. certificate-modern, invoice-modern, letter-business). Payment of $0.02 USDC on Base is automatic via x402. The response is a synchronous raw binary PDF (application/pdf); paid_fetch delivers it as a 'base64:...' string, so strip the prefix and base64-decode to get the PDF bytes. For simple Markdown-to-PDF use the cheaper /api/v1/markdown endpoint with {markdown, options} instead.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "makespdf#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

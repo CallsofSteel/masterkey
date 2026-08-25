@@ -1,0 +1,73 @@
+{
+  "serviceId": "minerva-stableenrich",
+  "subcat": "company-people-data",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/minerva/resolve",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/minerva/enrich",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://stableenrich.dev/api/minerva/validate-emails",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/minerva/resolve with JSON body {records:[{record_id, first_name, last_name, email?, phone?}]}",
+    "inputExample": {
+      "records": [
+        {
+          "record_id": "u1",
+          "first_name": "John",
+          "last_name": "Smith"
+        }
+      ]
+    },
+    "outputShape": "body.results[] (each: {record_id, is_match, minerva_pid, linkedin_url, match_score, is_resolvable_record, validation_errors}); body.api_request_id; body.request_completed_at",
+    "quirks": [
+      "Input is wrapped in a records[] array, NOT a flat object; output comes back in results[] keyed by the same record_id you sent.",
+      "Name-only records return is_match:false / is_resolvable_record:false with validation_errors.contact='No valid emails or phones were provided' — supply an email and/or phone in each record to actually resolve a person.",
+      "Always returns HTTP 200 even on a non-match; check results[].is_match (not status code) to know if it found someone.",
+      "Pay-per-call x402 on Base, $0.02/call charged regardless of match outcome."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/minerva/resolve with body {records:[{record_id, first_name, last_name, email, phone}]} — pay x402 ($0.02/call on Base, no API key). For a real match include an email and/or phone; name-only records will not resolve. Read results from body.results[], matching on record_id; check is_match before using minerva_pid/linkedin_url. Sibling endpoints: /enrich (records[] by pid/linkedin_url/name → demographics/contact/financial, $0.05, use return_fields to trim) and /validate-emails (array of email strings, $0.01). Response is synchronous JSON; always HTTP 200 so gate on results[].is_match, not the status code.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "minerva-stableenrich#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "minerva-stableenrich#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "minerva-stableenrich#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

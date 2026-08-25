@@ -1,0 +1,61 @@
+{
+  "serviceId": "image-to-svg-arrow-1-1",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/arrow-1.1/vectorize",
+      "method": "POST",
+      "amountUsd": 0.15
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/arrow-1.1-max/vectorize",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/arrow-1.1/vectorize with JSON body {image:<blobUrl>, target_size:1024, auto_crop:false} (x402, $0.15) -> {jobId, status:\"pending\"}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (free) until status=\"complete\". The blobUrl must first be produced by the File Upload flow: POST /api/upload ($0.01) -> PUT bytes to returned Vercel Blob (free) -> POST /api/upload/confirm (SIWX, free).",
+    "inputExample": {
+      "image": "https://wgunica1uhl5nijm.public.blob.vercel-storage.com/uploads/0884eff6-1be1-41f1-8a36-370cd7dcaa5d/test.png",
+      "target_size": 1024,
+      "auto_crop": false
+    },
+    "outputShape": "POST -> body.jobId (+ body.status:\"pending\"). Poll GET /api/jobs/{jobId} (SIWX) -> body.status; on body.status==\"complete\" the SVG is at body.result.imageUrl (a .svg blob URL). body.progress goes 0->100.",
+    "quirks": [
+      "VECTORIZE is NOT a single call: the `image` field MUST be a Vercel Blob URL produced by the File Upload flow first. You cannot pass an arbitrary external image URL.",
+      "File Upload flow (3 steps): 1) POST /api/upload ($0.01 x402) with {filename,contentType} -> returns {uploadId, clientToken, pathname}. 2) PUT the raw image bytes to https://vercel.com/api/blob/?pathname=<urlencoded pathname> with headers authorization:Bearer <clientToken>, x-content-type:image/png, x-api-version:11 (free) -> returns {url}. 3) POST /api/upload/confirm (SIWX, free) with {uploadId, blobUrl:<that url>}. Use the blobUrl as `image`.",
+      "Two-step async: the vectorize POST only pays + returns {jobId, status:pending}; the actual SVG comes from polling GET /api/jobs/{jobId} which is SIGN-IN-WITH-X auth (free), signed by the SAME wallet that paid.",
+      "Live settle was exactly $0.15 (registry cap). arrow-1.1-max variant is $0.20.",
+      "Job completed fast (~10s, ready on first poll). Poll every ~5s.",
+      "Result imageUrl is an .svg blob URL that expires ~20 min - download immediately.",
+      "Pays USDC on Base, no API key. SIWX requires the polling/confirm calls to be signed by the paying wallet.",
+      "qa-pay confirmed:false because no txHash was surfaced in the settlement receipt, but payment_made/receipt.success was true (paid:true) - normal for this provider."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "StableStudio arrow-1.1 image-to-SVG vectorizer. Pay-per-call x402 on Base, ~$0.15. You cannot vectorize an arbitrary URL: first run the File Upload flow to get a Vercel Blob URL. (1) POST /api/upload ($0.01) with {filename,contentType:\"image/png\"} to get {uploadId, clientToken, pathname}; (2) PUT the image bytes to https://vercel.com/api/blob/?pathname=<urlencoded pathname> with authorization:Bearer <clientToken>, x-content-type and x-api-version:11 headers (free) to get {url}; (3) POST /api/upload/confirm (SIWX, free) with {uploadId, blobUrl:url}. Then POST /api/generate/arrow-1.1/vectorize with {image:blobUrl, target_size:1024, auto_crop:false} which pays $0.15 and returns {jobId}. Finally poll GET /api/jobs/{jobId} with a SIGN-IN-WITH-X signature (same wallet, free) every ~5s until body.status==\"complete\", then read the SVG at body.result.imageUrl and download it immediately (expires ~20 min).",
+    "costObservedUsd": 0.15
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-to-svg-arrow-1-1#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.15
+    },
+    {
+      "key": "image-to-svg-arrow-1-1#1",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2
+    }
+  ]
+}

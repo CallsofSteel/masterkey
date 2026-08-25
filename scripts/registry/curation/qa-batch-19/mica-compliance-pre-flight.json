@@ -1,0 +1,48 @@
+{
+  "serviceId": "mica-compliance-pre-flight",
+  "subcat": "tax-compliance",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://tooloracle.io/v2/compliance_preflight",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://tooloracle.io/v2/compliance_preflight with JSON body {token, issuer, jurisdiction}",
+    "inputExample": {
+      "token": "USDC",
+      "issuer": "Circle",
+      "jurisdiction": "EU"
+    },
+    "outputShape": "JSON-RPC envelope. Parse the JSON string at body.result.content[0].text, then read: data.decision (e.g. \"PASS\"), data.reason_codes[] (e.g. [\"ALL_CHECKS_PASSED\"]), data.evidence.mica.verdict, data.evidence.custody. Signed attestation at body.result._meta.grounding_receipt.",
+    "quirks": [
+      "Response is a JSON-RPC 2.0 envelope (jsonrpc/id/result), not a flat JSON object.",
+      "The actual compliance result is a JSON STRING nested at result.content[0].text and must be JSON.parse'd a second time.",
+      "result._meta.grounding_receipt carries a cryptographically signed attestation (ES256K + ML-DSA-65 PQC, NIST beacon anchors) over the input/output hashes.",
+      "Backend is an MCP server (server_did did:web:feedoracle.io) fronted at tooloracle.io; observed_auth_method=anonymous despite x402 payment.",
+      "x402 paid $0.01 on Base; qa-pay reported confirmed:false / txHash:null but call returned 200 with real data."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://tooloracle.io/v2/compliance_preflight with a JSON body describing the token/service to check, e.g. {\"token\":\"USDC\",\"issuer\":\"Circle\",\"jurisdiction\":\"EU\"}. Pay $0.01 USDC via x402 on Base (no API key, no sign-in). The response is a JSON-RPC envelope: parse the JSON string at result.content[0].text, then read data.decision (PASS/FAIL), data.reason_codes[], and data.evidence (mica verdict, custody risk, etc.). A signed grounding receipt sits at result._meta.grounding_receipt if you need attestation.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "mica-compliance-pre-flight#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

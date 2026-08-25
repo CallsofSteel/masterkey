@@ -1,0 +1,39 @@
+{
+  "serviceId": "content-moderation-safe-rewrite",
+  "subcat": "content-moderation",
+  "action": "drop",
+  "batchId": "batch-1",
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/content-moderation-api-4fa8a6 with JSON body {text}  (DEAD — see quirks; the /:endpoint variant only returns a service index)",
+    "inputExample": { "text": "You are such an idiot, I hate you." },
+    "outputShape": "N/A — primary POST endpoint dead (404); /:endpoint variant returns only a service-index {name,info,openapi,health}, not a moderation result",
+    "quirks": [
+      "Backend #0 (POST https://orbisapi.com/proxy/content-moderation-api-4fa8a6) is DEAD: x402 charge settles on Base (~$0.0035) but upstream returns HTTP 404 HTML 'Cannot POST /content-moderation/'. Money lost, no result.",
+      "Backend #1 (.../content-moderation-api-4fa8a6/:endpoint) charges PER PATH ($0.005) and every path is 402-paywalled — there is no free discovery. The root/empty :endpoint returns only a service-index JSON {name,info,openapi,health}, NOT a moderation result.",
+      "The proxy PREPENDS upstream base path /content-moderation/ to :endpoint, so :endpoint=openapi.json -> /content-moderation/openapi.json. Do NOT include /content-moderation/ yourself.",
+      "The actual moderation route name was NOT discoverable from registry data or 402 metadata within the test budget; the openapi.json could not be fetched cleanly. Phase A and Phase B even disagreed on the method (GET vs POST), confirming the doc is not usable as-is.",
+      "Actual price is $0.005 (registry said $0.0035).",
+      "Phase B verification FAILED: a blind agent could not produce a working moderation call from the doc, and spent $0.015 exploring."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "DO NOT CALL as documented. The primary POST endpoint is dead (charges then 404s). The /:endpoint variant charges per path and only exposes a service index, not a moderation result; the real moderation route is undiscoverable without paid trial-and-error. Net: agents lose money for no usable moderation output.",
+    "costObservedUsd": 0.025,
+    "droppedReason": "orbisapi.com content-moderation-api-4fa8a6: primary POST endpoint charges x402 then 404s; /:endpoint variant charges per path and only returns a service index. Real moderation route undiscoverable within budget; Phase B FAILED. ~$0.025 lost across batch-1 tests."
+  },
+  "phaseB": {
+    "backend": "https://orbisapi.com/proxy/content-moderation-api-4fa8a6/:endpoint",
+    "verdict": "FAIL",
+    "whatWasMissing": "Correct HTTP method (A said GET, B found POST), correct input shape, and the real moderation route name — none were conveyable from the doc. $0.015 spent during the failed verification."
+  },
+  "salvage": {
+    "status": "candidate-for-future-batch",
+    "plan": "If we want to recover this service: budget ~$0.03, GET :endpoint=info first to read the API's own route list, then call the documented moderation route with text as a query param. Only re-add to the catalog if a single, repeatable paid call returns a real moderation result. Until then keep dropped (charges-then-fails = money-loss risk)."
+  },
+  "drop": true,
+  "droppedReason": "Dead/undiscoverable orbisapi.com moderation proxy; charges then fails. ~$0.025 lost on test 2026-06-08. Salvage path documented."
+}

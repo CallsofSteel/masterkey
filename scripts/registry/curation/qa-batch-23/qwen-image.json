@@ -1,0 +1,43 @@
+{
+  "serviceId": "qwen-image",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image-model/qwen-image",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image-model/qwen-image with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "unknown (payment never settled; likely an image URL or base64 in body)",
+    "quirks": [
+      "Accepts payment ONLY on Solana (network=solana, USDC mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v) — no Base/EVM accept entry, so wallet must hold Solana USDC.",
+      "Could not pay: master wallet has $0 on Solana (need $0.05). Endpoint untested.",
+      "Body shape {prompt} is a guess (inputSchema is null); unconfirmed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Qwen Image is an x402-paid image-generation model from Xona, priced at $0.05 per call, settled in USDC on Solana only. Call it as POST https://api.xona-agent.com/image-model/qwen-image with a JSON body containing a text prompt, e.g. {\"prompt\":\"a red circle\"}. This run could not complete because the master wallet held $0 Solana USDC (need $0.05); fund Solana USDC then retry. The output shape is unconfirmed but expected to be an image URL or base64 in the response body.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "qwen-image#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

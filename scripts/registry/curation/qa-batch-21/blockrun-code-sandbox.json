@@ -1,0 +1,43 @@
+{
+  "serviceId": "blockrun-code-sandbox",
+  "subcat": "sandbox-environments",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/modal/sandbox/create",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/modal/sandbox/create with JSON body {} (optional config fields like image, timeout, cpu, memory)",
+    "inputExample": {},
+    "outputShape": "body.sandbox_id (the handle for follow-up calls), body.status (e.g. \"running\"), body.config.{image,timeout,cpu,memory,gpu}",
+    "quirks": [
+      "Empty JSON body {} is accepted — backend applies defaults: image python:3.11, timeout 300s, cpu 1, memory 512MB, gpu null",
+      "Returns synchronously with status already 'running' (no polling needed for create)",
+      "sandbox_id (e.g. sb-...) is the session handle you must pass to companion endpoints (execute/status/terminate) — create is step 1 of a multi-step sandbox lifecycle",
+      "Charges $0.010 USDC on Base (eip155:8453) per create; the sandbox has a 300s default timeout so terminate or reuse promptly"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/modal/sandbox/create with an empty JSON body {} (x402 pays $0.01 USDC on Base automatically). The response is synchronous JSON: read body.sandbox_id and keep it — it is the handle you pass to the execute/status/terminate endpoints in the same sandbox service. body.status will already be \"running\" and body.config shows the applied defaults (python:3.11, 300s, 1 cpu, 512MB). To customize, send config fields in the body; otherwise defaults apply. The sandbox auto-expires after its timeout, so run your code and terminate (or let it expire) promptly.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun-code-sandbox#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

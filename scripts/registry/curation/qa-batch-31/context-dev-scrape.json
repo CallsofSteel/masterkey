@@ -1,0 +1,54 @@
+{
+  "serviceId": "context-dev-scrape",
+  "subcat": "web-scraping",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/context-dev/web/scrape/html",
+      "method": "GET",
+      "amountUsd": 0.03
+    },
+    {
+      "backend": "https://x402.orth.sh/context-dev/web/scrape/sitemap",
+      "method": "GET",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/context-dev/web/scrape/html?url=<full-url-to-scrape> (x402, no body)",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.success (bool), body.html (rendered page HTML string), body.url (the scraped URL), body.type (\"html\")",
+    "quirks": [
+      "The url query param MUST include the http:// or https:// protocol",
+      "It is a GET request with the target URL passed as a ?url= query parameter, not a JSON body"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a GET to https://x402.orth.sh/context-dev/web/scrape/html with a single ?url= query param holding the full URL you want to scrape (must include http:// or https://). Pay the x402 quote (USDC on Base, ~$0.03/call). The JSON response returns the rendered page HTML at body.html, with body.success=true and body.type=\"html\". No request body, no auth beyond the wallet payment.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "context-dev-scrape#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "context-dev-scrape#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

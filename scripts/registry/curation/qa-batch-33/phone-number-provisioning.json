@@ -1,0 +1,55 @@
+{
+  "serviceId": "phone-number-provisioning",
+  "subcat": "sms-phone",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablephone.dev/api/number",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/phone/numbers/buy",
+      "method": "POST",
+      "amountUsd": 5
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/phone/numbers/buy with JSON body {country}",
+    "inputExample": {
+      "country": "US"
+    },
+    "outputShape": "body.phone_number (the provisioned E.164 number), body.expires_at (ISO lease expiry), body.chain, body.message",
+    "quirks": [
+      "Body must be ONLY {\"country\":\"US\"} — sending a \"type\" key returns 400 'Invalid request body' (unrecognized_keys) and does NOT charge; strip extra keys before paying.",
+      "Pre-payment validation: invalid bodies 400 with paid:false (no money lost), so schema can be probed safely before a valid body triggers the $5 charge.",
+      "Outward/irreversible: a real US local number is provisioned and billed $5.00 USDC on Base on success.",
+      "Number is leased for 30 days (see expires_at); intended for use as the 'from' caller ID in voice calls."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Send POST to https://blockrun.ai/api/v1/phone/numbers/buy with x402 payment and a JSON body containing only {\"country\":\"US\"}. Do not include a \"type\" or other extra key or you get a 400 (no charge). On success (200) you pay $5.00 USDC on Base and the response returns body.phone_number (the provisioned E.164 number) plus body.expires_at (30-day lease). Use body.phone_number as the 'from' caller ID for outbound voice calls. This is an irreversible paid provisioning action — confirm with the user before calling.",
+    "costObservedUsd": 5
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "phone-number-provisioning#0",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "phone-number-provisioning#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 5
+    }
+  ]
+}

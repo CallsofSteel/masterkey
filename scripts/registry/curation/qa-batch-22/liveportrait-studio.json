@@ -1,0 +1,46 @@
+{
+  "serviceId": "liveportrait-studio",
+  "subcat": "avatars-digital-humans",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-live-portrait.vercel.app/api/generate-x402",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-live-portrait.vercel.app/api/generate-x402 with JSON body {source_image_url, driving_video_url} (both HTTPS URLs, required); optional string flags flag_relative/flag_do_crop/flag_pasteback (\"true\"|\"false\")",
+    "inputExample": {
+      "source_image_url": "https://raw.githubusercontent.com/KwaiVGI/LivePortrait/main/assets/examples/source/s0.jpg",
+      "driving_video_url": "https://github.com/KwaiVGI/LivePortrait/raw/main/assets/examples/driving/d0.mp4"
+    },
+    "outputShape": "body.videoUrl (final mp4), body.thumbnailUrl (jpg), body.videoContentType, body.thumbnailContentType",
+    "quirks": [
+      "Synchronous despite being video gen: the paid POST blocks until the result is ready and returns the final videoUrl directly in the body — no job id, no polling.",
+      "Both source_image_url and driving_video_url are REQUIRED and must be publicly reachable HTTPS URLs (the service fetches them server-side).",
+      "The optional flag_* params are STRINGS \"true\"/\"false\", not booleans.",
+      "Output is hosted on Vercel blob storage (public.blob.vercel-storage.com); download/re-host promptly if you need persistence."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with source_image_url (a portrait image) and driving_video_url (the motion to transfer), both as public HTTPS URLs, to https://x402-live-portrait.vercel.app/api/generate-x402. Pay the $0.05 x402 charge on Base. The call is synchronous — when it returns 200 the body already contains the finished result. Read body.videoUrl for the animated mp4 and body.thumbnailUrl for the preview image; both are directly downloadable.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "liveportrait-studio#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

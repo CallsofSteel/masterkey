@@ -1,0 +1,578 @@
+[
+  {
+    "id": "2captcha",
+    "kind": "model",
+    "name": "2Captcha",
+    "aka": [],
+    "provider": "2Captcha",
+    "providerId": "2captcha",
+    "description": "CAPTCHA solving service — submit a CAPTCHA (reCAPTCHA, hCaptcha, image, etc.) and receive the solution. Pay-per-call x402 via the PaySponge gateway.",
+    "category": "security",
+    "subcategory": "captcha-bot-protection",
+    "tags": [
+      "captcha",
+      "captcha-solving",
+      "bot",
+      "automation"
+    ],
+    "modality": {
+      "input": [
+        "text",
+        "image"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "2captcha.x402.paysponge",
+        "providerId": "2captcha-x402-paysponge",
+        "url": "https://2captcha.x402.paysponge.com/createTask",
+        "method": "POST",
+        "async": {
+          "isAsync": true,
+          "submitStatusField": "errorId",
+          "submitPendingValues": [],
+          "jobIdPath": "taskId",
+          "pollUrlTemplate": "{origin}/getTaskResult",
+          "poll": {
+            "cost": "per-poll",
+            "method": "POST",
+            "body": {
+              "taskId": "{id}"
+            },
+            "statusField": "status",
+            "completeValues": [
+              "ready"
+            ],
+            "failedValues": [],
+            "resultPath": "solution"
+          }
+        },
+        "hosting": "custom",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:24:39.270Z"
+        },
+        "status": "active",
+        "team": "Sponge"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-23",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "POST https://2captcha.x402.paysponge.com/createTask with JSON body {\"task\":{\"type\":\"ImageToTextTask\",\"body\":\"<base64 image, >=100 bytes>\"}} (or any 2Captcha task type, e.g. RecaptchaV2TaskProxyless with websiteURL+websiteKey). No clientKey needed — the gateway injects it.",
+      "inputExample": {
+        "task": {
+          "type": "ImageToTextTask",
+          "body": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+        }
+      },
+      "outputShape": "On success: body.taskId (number) + body.errorId=0 + body.status. On error: body.errorId (non-zero), body.errorCode (string), body.errorDescription. The actual CAPTCHA solution is NOT in this response — createTask only returns a taskId; you must poll a getTaskResult endpoint with that taskId to retrieve body.solution.",
+      "quirks": [
+        "This is the standard 2Captcha createTask API, which is ASYNC: it returns only a taskId, NOT the solution. You must then poll a getTaskResult call with {taskId} (wait ~5-20s, retry until status='ready') to get the solution.",
+        "Do NOT send a clientKey — the PaySponge gateway injects the 2Captcha account key; the body is just {task:{...}}.",
+        "Image tasks require the base64 image to be >=100 bytes or you get errorCode ERROR_ZERO_CAPTCHA_FILESIZE (errorId 3). Send a real CAPTCHA image, not a tiny test PNG.",
+        "Errors come back with HTTP 200 + body.errorId!=0 (2Captcha convention), not via an HTTP error status. Always check body.errorId, not just the status code.",
+        "Each createTask call costs $0.010; the follow-up getTaskResult poll(s) may be free or separately priced — verify the result endpoint's pricing/path before integrating.",
+        "Async via POST polling: createTask returns {errorId:0, taskId(number)}; poll POST {origin}/getTaskResult with body {taskId} (x402 handshake, settles $0) until status=\"ready\", solution at body.solution. Verified 2026-06-23. (Engine added POST-poll support for this.)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://2captcha.x402.paysponge.com/createTask with a JSON body of the form {\"task\":{\"type\":\"<TaskType>\", ...params}} — no clientKey, the gateway adds it. Use ImageToTextTask with a base64 \"body\" (image >=100 bytes) for image CAPTCHAs, or RecaptchaV2TaskProxyless with websiteURL+websiteKey for reCAPTCHA. The response is HTTP 200 with {errorId, taskId} on success or {errorId, errorCode, errorDescription} on failure — always check errorId (0 = ok). createTask is async: take the returned taskId and poll the 2Captcha getTaskResult endpoint until status='ready', then read body.solution. Each createTask call costs $0.010 USDC on Base.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "2captcha",
+      "discoveredVia": [
+        "captcha",
+        "bot protection"
+      ],
+      "lastSyncedAt": "2026-06-02T00:24:39.270Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "200ok-web-unlocker",
+    "kind": "model",
+    "name": "200ok Web Unlocker",
+    "aka": [],
+    "provider": "200ok",
+    "providerId": "200ok",
+    "description": "Web unlocker — fetch pages behind anti-bot protection (Cloudflare, etc.) with automatic CAPTCHA/JS challenge handling. Pay-per-call x402.",
+    "category": "security",
+    "subcategory": "captcha-bot-protection",
+    "tags": [
+      "bot-bypass",
+      "web-unlocker",
+      "anti-bot",
+      "scraping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "web-unlocker.200ok",
+        "providerId": "web-unlocker-200ok",
+        "url": "https://web-unlocker.200ok.xyz/unlock",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "apiKey+paid",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x21C12b9c0C2DA649e72f19F250B70903784bd0b4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "url"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "title": "Target URL",
+              "description": "The URL of the website to unlock. Must be a valid HTTP/HTTPS URL. The API will navigate to this URL and retrieve the content after bypassing any protections.",
+              "example": "https://example.com",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "type": {
+              "type": "string",
+              "title": "Output Format",
+              "description": "Specifies the format of the returned content. Use 'html' for raw HTML content, 'png' for a full-page screenshot, or 'both' to receive both HTML and screenshot in the response.",
+              "enum": [
+                "html",
+                "png",
+                "both"
+              ],
+              "default": "html",
+              "example": "html"
+            },
+            "js_render": {
+              "type": "boolean",
+              "title": "JavaScript Rendering",
+              "description": "Enable JavaScript rendering to handle dynamically loaded content and Single-Page Applications (SPAs). When enabled, the API uses a headless browser to fully render the page including all JavaScript-executed DOM modifications. Recommended for modern websites that load content asynchronously.",
+              "default": true,
+              "example": true
+            },
+            "wait": {
+              "type": "integer",
+              "title": "Wait Time (milliseconds)",
+              "description": "Additional time to wait after the page loads before capturing the content. Useful for pages with delayed content loading or animations. The wait time is specified in milliseconds. Maximum value: 100000 (100 seconds). This wait occurs after the initial page load but before any wait_for selector check.",
+              "default": 0,
+              "example": 5000,
+              "minimum": 0,
+              "maximum": 100000
+            },
+            "wait_for": {
+              "type": "string",
+              "title": "Wait for CSS Selector",
+              "description": "A CSS selector to wait for before considering the page loaded. The API will wait up to 30 seconds for this element to appear in the DOM. If both 'wait' and 'wait_for' are specified, 'wait_for' takes precedence (the fixed 'wait' time is ignored). Useful for ensuring specific content has loaded.",
+              "example": ".content",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "block_resources": {
+              "type": "string",
+              "title": "Block Resources",
+              "description": "Comma-separated list of resource types to block during page load. Blocking unnecessary resources can significantly improve response time and reduce bandwidth. Common values: 'image', 'script', 'stylesheet', 'font', 'media'. Use this to optimize for speed when you only need specific content types.",
+              "example": "image,stylesheet",
+              "default": ""
+            },
+            "country": {
+              "type": "string",
+              "title": "Proxy Country",
+              "description": "Two-letter ISO country code to specify the geographic location of the proxy server. Use this to access geo-restricted content or test how websites appear in different regions. When not specified, the API uses the optimal proxy location for speed. Examples: 'us' (United States), 'de' (Germany), 'jp' (Japan).",
+              "example": "us",
+              "default": "",
+              "pattern": "^[a-z]{2}$"
+            },
+            "clean_content": {
+              "type": "string",
+              "title": "Clean Content",
+              "description": "Comma-separated list of content types to remove from the response. Use 'js' to remove JavaScript code, 'css' to remove stylesheets, or 'js,css' to remove both. This reduces response size and is useful when you only need the raw HTML structure without executable code.",
+              "example": "js,css",
+              "default": ""
+            },
+            "headers": {
+              "type": "array",
+              "title": "Custom Request Headers",
+              "description": "Custom HTTP headers to send with the request. Each header is an object with 'name' and 'value' properties. Use this to set custom User-Agent strings, authentication tokens, or other request metadata. Multiple headers should be included as separate objects in the array.",
+              "example": [
+                {
+                  "name": "User-Agent",
+                  "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                },
+                {
+                  "name": "Accept-Language",
+                  "value": "en-US,en;q=0.9"
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Header name"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "Header value"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ]
+              }
+            },
+            "cookies": {
+              "type": "array",
+              "title": "Custom Cookies",
+              "description": "Cookies to send with the request. Each cookie is an object with 'name' and 'value' properties. Use this to maintain session state, bypass login walls, or access authenticated content. Multiple cookies are sent as separate cookie headers automatically.",
+              "example": [
+                {
+                  "name": "session_id",
+                  "value": "abc123xyz"
+                },
+                {
+                  "name": "user_pref",
+                  "value": "dark_mode"
+                }
+              ],
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Cookie name"
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "Cookie value"
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ]
+              }
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean",
+              "description": "Indicates if the request was successful",
+              "example": true
+            },
+            "html": {
+              "type": "string",
+              "description": "The unlocked HTML content of the page (present when type is 'html' or 'both')"
+            },
+            "screenshot": {
+              "type": "string",
+              "description": "Base64-encoded PNG screenshot of the page (present when type is 'png' or 'both')"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The final URL after any redirects",
+              "example": "https://example.com"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO 8601 timestamp of when the content was retrieved",
+              "example": "2026-03-29T12:00:00Z"
+            },
+            "status_code": {
+              "type": "integer",
+              "description": "HTTP status code of the final response",
+              "example": 200
+            },
+            "load_time": {
+              "type": "number",
+              "description": "Time taken to load the page in milliseconds",
+              "example": 2340
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:24:39.270Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://web-unlocker.200ok.xyz/unlock with JSON body {url, type?} — x402 USDC $0.01 on Base (eip155:8453)",
+      "inputExample": {
+        "url": "https://example.com",
+        "type": "html"
+      },
+      "outputShape": "Envelope at body.success / body.url / body.timestamp / body.html. Per outputSchema, real content should be in body.html (HTML string) or body.screenshot (base64 PNG). BUT in practice body.html contained a nested upstream error JSON string instead of page content.",
+      "quirks": [
+        "authMode is apiKey+paid: the x402 micropayment settles and the endpoint returns HTTP 200 with envelope success:true, but the real content field body.html contained an upstream error string {\"code\":401,\"data\":\"User balance is insufficient!\"} — the provider requires its OWN internal account balance / API key on top of the x402 payment, which we do not have.",
+        "CHARGE-THEN-FAIL: paid $0.01 and got NO usable page content. Do not call this endpoint.",
+        "Envelope-level success:true and HTTP 200 are misleading — you MUST inspect body.html for a nested error JSON before trusting the result.",
+        "Violates MasterKey no-API-key policy (apiKey+paid) — should be pruned from the registry."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do NOT use this endpoint. Although it advertises pay-per-call x402 web unlocking ($0.01 USDC on Base) and accepts an x402 payment returning HTTP 200 with success:true, the actual content field (body.html) returned an upstream error: {\"code\":401,\"data\":\"User balance is insufficient!\"}. The service is authMode apiKey+paid — it requires the provider's own account balance/API key in addition to the x402 payment, which is not satisfied by wallet payment alone. Money is charged but no page content is returned. This is a charge-then-fail / no-API-key-policy violation and should be removed from the registry.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "200ok-web-unlocker",
+      "discoveredVia": [
+        "captcha",
+        "bot protection"
+      ],
+      "lastSyncedAt": "2026-06-02T00:24:39.270Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "shieldform-bot-protection",
+    "kind": "model",
+    "name": "ShieldForm Bot Protection",
+    "aka": [],
+    "provider": "ShieldForm",
+    "providerId": "shieldform",
+    "description": "Bot-protection scorer — score an incoming request/form submission for bot-likelihood to protect endpoints. Pay-per-call x402.",
+    "category": "security",
+    "subcategory": "captcha-bot-protection",
+    "tags": [
+      "bot-protection",
+      "bot-detection",
+      "fraud",
+      "scoring"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "shieldform.waltsoft",
+        "providerId": "shieldform-waltsoft",
+        "url": "https://shieldform.waltsoft.net/verify",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x318A4B4764eb37c3FCBcE434713128143815FD57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "GsKr5q9TmiJQcEgUpBp2X6SmvSg3dnXuw2uxYJxgPTk8",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:24:39.270Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://shieldform.waltsoft.net/verify with JSON body (form-submission signals); x402 payment via Base USDC ($0.005)",
+      "inputExample": {
+        "ip": "203.0.113.42",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "fields": {
+          "email": "test@example.com",
+          "name": "Jane Doe"
+        }
+      },
+      "outputShape": "body.score (0-100 int), body.decision (string, e.g. \"allow\"), body.requestId (string)",
+      "quirks": [
+        "BROKEN: server-side x402 payment verification is non-functional. The unpaid 402 challenge is well-formed (x402 v2, exact scheme, Base USDC 5000 units = $0.005, valid payTo 0x318A...FD57), but after submitting a payment the server responds 402 {\"error\":\"Payment verification failed\"} on every attempt.",
+        "No USDC is actually spent — costUsd 0, no txHash, no settlement on both attempts. Safe to attempt but it will never succeed.",
+        "Body shape is irrelevant to the failure — both a populated body and an empty {} body produced identical 'Payment verification failed' responses; the rejection happens at the payment-verification layer, not input validation.",
+        "Do NOT retry repeatedly: it consistently fails verification."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do not rely on this endpoint — it is broken. The x402 challenge looks valid (POST https://shieldform.waltsoft.net/verify, Base USDC $0.005), but the server's payment verification step rejects all payments with 402 {\"error\":\"Payment verification failed\"} and never settles a charge or returns a score. If the provider fixes verification, the intended call is POST with form-submission signals and the response would contain body.score (0-100), body.decision, and body.requestId. Until then it cannot be used.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "shieldform-bot-protection",
+      "discoveredVia": [
+        "captcha",
+        "bot protection"
+      ],
+      "lastSyncedAt": "2026-06-02T00:24:39.270Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "serviceId": "spraay-compute-batch",
+  "subcat": "vm-cloud-providers",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://gateway.spraay.app/api/v1/compute/batch",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gateway.spraay.app/api/v1/compute/batch with JSON body {jobs:[{type,...}]} where type is one of text-inference, image-generation, video-generation, text-to-speech, speech-to-text, embeddings",
+    "inputExample": {
+      "jobs": [
+        {
+          "type": "text-inference",
+          "messages": [
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ]
+        }
+      ]
+    },
+    "outputShape": "body.results[].status (per-job, \"failed\"|\"completed\"), body.results[].error, body.batch_id, body.jobs_completed/jobs_failed, body.total_cost_usdc",
+    "quirks": [
+      "Charge-then-fail: gateway returns HTTP 200 with valid batch accounting (batch_id, results[], cost breakdown) but the actual job FAILS at the upstream 'Chutes' inference backend, which returns a 404 HTML page instead of a result. You pay $0.05/call and get no usable output.",
+      "Empty inputSchema in registry. The job 'type' field is REQUIRED; omitting it 400s with hint listing valid types: text-inference, image-generation, video-generation, text-to-speech, speech-to-text, embeddings.",
+      "text-inference job failed even with valid {type, messages} shape; likely also needs a 'model' field, but the upstream backend route is itself dead (404), so supplying a model would not have produced a working result.",
+      "Charged twice during QA ($0.10 total): first $0.05 on the type-missing 400, second $0.05 on the 200-but-job-failed call. Payment is taken before the job outcome is known.",
+      "No txHash returned by the payment layer (confirmed:false)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not rely on this endpoint: it charges but does not produce results.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "spraay-compute-batch#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

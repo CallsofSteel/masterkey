@@ -1,0 +1,44 @@
+{
+  "serviceId": "cloudflare",
+  "subcat": "dns-domain-management",
+  "batchId": "batch-21",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/cloudflare/client/v4/zones",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/cloudflare/client/v4/zones with JSON body {name} — but REQUIRES an X-Upstream-Token header with a Cloudflare API token, which is not available under the keyless policy",
+    "inputExample": {
+      "name": "qa-test-masterkey.com"
+    },
+    "outputShape": "body.error / body.instructions (401 auth-required error; no usable result produced)",
+    "quirks": [
+      "Paid the x402 quote ($0.002 settled on Base) but got HTTP 401 in return — the HTTPay gateway charges first, then rejects without an upstream key (charge-then-fail).",
+      "The Cloudflare service on HTTPay is NOT keyless: it requires your own Cloudflare API token passed via the X-Upstream-Token header (authType: bearer). The registry description claiming 'no Cloudflare API token required' is wrong.",
+      "Error body lists accepted auth formats: bearer/token/bot/basic/apikey via X-Upstream-Token. None can be supplied under the no-API-key policy, so the endpoint is effectively dead for this registry."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use. This HTTPay gateway endpoint takes the x402 payment ($0.002) and then returns HTTP 401 because the Cloudflare backend requires an upstream Cloudflare API token via the X-Upstream-Token header. There is no keyless way to call it, so any call wastes money. The registry's 'no token required' description is incorrect and this service should be dropped/pruned per the no-API-key policy.",
+    "costObservedUsd": 0.002,
+    "droppedReason": "cloudflare#0: Paid the x402 quote ($0.002 settled on Base) but got HTTP 401 in return — the HTTPay gateway charges first, then rejects without an upstream key (charge-then-fail)."
+  },
+  "droppedReason": "cloudflare#0: Paid the x402 quote ($0.002 settled on Base) but got HTTP 401 in return — the HTTPay gateway charges first, then rejects without an upstream key (charge-then-fail).",
+  "_backends": [
+    {
+      "key": "cloudflare#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

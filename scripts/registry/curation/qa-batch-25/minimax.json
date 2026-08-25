@@ -1,0 +1,45 @@
+{
+  "serviceId": "minimax",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68ee3d375e8bc20f70eba02c",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:68ee3d375e8bc20f70eba02c with JSON body {\"input\": \"<your message to the agent>\"} (x402 USDC on Base). NOTE: registry method says GET but the 402 outputSchema mandates POST.",
+    "inputExample": {
+      "input": "Say this out loud: hello, how are you?"
+    },
+    "outputShape": "body.response (string) — per 402 outputSchema; NOT verified live (payment blocked).",
+    "quirks": [
+      "URL CONFLICT: task-header CALL URL https://x402.orth.sh/minimax/v1/t2a returns 404 'Endpoint not found' (dead route) — do NOT use or pay it.",
+      "Working endpoint is the machine-spec URL https://api.questflow.ai/x402/agent/qrn:agent:68ee3d375e8bc20f70eba02c (questflow x402 agent wrapper).",
+      "Registry method=GET is WRONG: the live 402 outputSchema declares method=POST with required string body field 'input'. Call it as POST {\"input\": \"...\"}.",
+      "This is a generic questflow agent wrapper around MiniMax multimodal (TTS/image/video), not a dedicated /t2a endpoint — you steer it via natural-language 'input'.",
+      "PAYMENT NOT MADE: auto-mode safety classifier denied the real-money send because api.questflow.ai diverges from the user-specified CALL URL. Re-running requires explicit user authorization to pay the questflow URL."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call the registry/task CALL URL x402.orth.sh/minimax/v1/t2a — it 404s. The real endpoint is POST https://api.questflow.ai/x402/agent/qrn:agent:68ee3d375e8bc20f70eba02c (pay via x402 USDC on Base, ~$0.10). Send a JSON body {\"input\": \"<natural-language instruction, e.g. say this out loud: hello>\"} even though the registry lists method GET. Read the agent's reply at body.response. This was NOT verified with a live paid call: the QA safety classifier blocked the payment because the working questflow URL differs from the user-specified CALL URL, so a human must authorize paying questflow before this can be confirmed.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "minimax#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

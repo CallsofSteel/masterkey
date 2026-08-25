@@ -1,0 +1,43 @@
+{
+  "serviceId": "kodo-ai-video",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.kodo.fun/v1/generate",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.kodo.fun/v1/generate with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.results[].url (expected); ACTUAL on x402 wallet: body.generation.errorCode == \"FORBIDDEN\", body.generation.message == \"Invalid account\"",
+    "quirks": [
+      "Field is `prompt`, NOT `positive` (sending {positive} returns 400 'Prompt is required' even though outputSchema shows params.positive).",
+      "Charge-then-reject: x402 payment settles on-chain (confirmed tx) but the service returns HTTP 200 with body {generation:{message:'Invalid account',errorCode:'FORBIDDEN'}} — no generation is produced.",
+      "Generation is gated behind a Kodo account the paying x402 wallet does not have; paying via x402 alone does NOT grant access. Do not call: money is lost with no result."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint with a pure x402 wallet — it is broken for agents. POST https://api.kodo.fun/v1/generate with {\"prompt\":\"...\"} accepts the x402 $0.02 payment and the tx confirms on Base, but the server responds HTTP 200 with {generation:{message:\"Invalid account\",errorCode:\"FORBIDDEN\"}} and produces nothing. The service gates generation behind a Kodo account/identity that the x402 payer wallet lacks, so payment is lost with no usable output. Skip until/unless an account-linking mechanism exists.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "kodo-ai-video#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    }
+  ]
+}

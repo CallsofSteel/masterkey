@@ -1,0 +1,404 @@
+[
+  {
+    "id": "fly-io-machines",
+    "kind": "api",
+    "name": "Fly.io Machines",
+    "aka": [],
+    "provider": "Fly.io",
+    "providerId": "fly-io",
+    "description": "Provision and manage Fly.io machines (VMs) via x402.",
+    "category": "infrastructure",
+    "subcategory": "vm-cloud-providers",
+    "tags": [
+      "vm",
+      "compute",
+      "provisioning"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "Varies",
+      "amount": null,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "httpay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/flyio/%7B*path%7D/*",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": null,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Varies",
+          "min": null,
+          "max": null,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "http",
+          "method": "GET",
+          "discoverable": true
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:10:55.845Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://httpay.xyz/api/gateway/flyio/{path}/* — the {path} segment must be a real Fly.io Machines API route (e.g. v1/apps/{app_name}/machines)",
+      "inputExample": {},
+      "outputShape": "unknown (untested — Fly.io Machines API JSON proxied through httpay gateway)",
+      "quirks": [
+        "URL is a wildcard-path gateway proxy: %7B*path%7D decodes to {*path}, a placeholder you MUST replace with a real Fly.io Machines API path before calling",
+        "Requires a concrete Fly.io app name and sub-route (e.g. /v1/apps/<app>/machines) — not derivable from the registry spec",
+        "httpay gateway proxy: an unpaid pre-flight returns 402 (looks payable) but that does NOT mean an arbitrary/unfilled path will work; paying an unresolved path risks a charge-then-404",
+        "inputSchema is only {type:http,method:GET,discoverable:true} — no body schema, no instructions, no paymentAccepts in the registry surface"
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "This endpoint is an httpay x402 gateway proxy to the Fly.io Machines API. The CALL URL contains a wildcard placeholder {*path} that an agent MUST replace with a concrete Fly.io Machines API route before calling — for example POST .../api/gateway/flyio/v1/apps/<your-app>/machines with a machine-config JSON body. Provisioning/managing VMs is an outward, billable, stateful action, so it requires a target app name and explicit user approval. It was NOT pay-tested here because the path placeholder is unresolvable from the spec and paying a blank/wrong path would lose money to a 404.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "fly-io-machines",
+      "discoveredVia": [
+        "virtual machine",
+        "cloud compute vm"
+      ],
+      "lastSyncedAt": "2026-06-01T23:10:55.845Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-input"
+  },
+  {
+    "id": "vpsagent",
+    "kind": "api",
+    "name": "VpsAgent",
+    "aka": [],
+    "provider": "VpsAgent",
+    "providerId": "vpsagent",
+    "description": "VpsAgent — on-demand VPS catalog and provisioning.",
+    "category": "infrastructure",
+    "subcategory": "vm-cloud-providers",
+    "tags": [
+      "vps",
+      "compute",
+      "provisioning"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "Varies",
+      "amount": null,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "vpsagent.fly",
+        "providerId": "vpsagent-fly",
+        "url": "https://vpsagent.fly.dev/catalog",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Fly.io",
+        "authMode": "x402",
+        "price": {
+          "amount": null,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Varies",
+          "min": null,
+          "max": null,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": {
+                "type": "string",
+                "enum": [
+                  "sandbox_1h",
+                  "sandbox_6h",
+                  "sandbox_24h",
+                  "server_small_1mo",
+                  "server_small_12mo",
+                  "server_medium_1mo",
+                  "server_medium_12mo",
+                  "server_large_1mo",
+                  "server_large_12mo"
+                ]
+              },
+              "track": {
+                "type": "string",
+                "enum": [
+                  "sandbox",
+                  "server"
+                ]
+              },
+              "price_usdc": {
+                "type": "number"
+              },
+              "duration_minutes": {
+                "type": "integer"
+              },
+              "spec_floor": {
+                "type": "object",
+                "properties": {
+                  "vcpu": {
+                    "type": "integer"
+                  },
+                  "memory_mb": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "available": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:10:55.845Z"
+        },
+        "status": "needs-review"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "GET https://vpsagent.fly.dev/catalog (x402-gated, no body)",
+      "inputExample": {},
+      "outputShape": "Intended (per outputSchema, never reached): array of {sku, track, price_usdc, duration_minutes, spec_floor:{vcpu,memory_mb}, available, description}",
+      "quirks": [
+        "Payment FAILS at the facilitator: endpoint's 402 paymentRequirements use network 'base' (legacy x402 v1 string) which the CDP facilitator rejects with 'payment_invalid' / invalid_request — network must be a CAIP-2 id like eip155:8453.",
+        "Pre-flight 402 looks payable (probe.payable=true) but the actual pay attempt cannot settle. No USDC was spent (paid:false, costUsd:0).",
+        "Do NOT retry — the malformed paymentRequirements are server-side; retries cannot succeed until the provider fixes the network field."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is currently uncallable. GET https://vpsagent.fly.dev/catalog returns a 402 with x402 paymentRequirements whose network is the legacy string 'base' instead of a CAIP-2 id (eip155:8453), so the CDP facilitator rejects the payment with error 'payment_invalid' and the call cannot be settled. No money is lost, but no catalog data is returned. Treat as broken until the provider fixes the network field.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "vpsagent",
+      "discoveredVia": [
+        "virtual machine",
+        "cloud compute vm"
+      ],
+      "lastSyncedAt": "2026-06-01T23:10:55.845Z",
+      "hosting": "platform"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "spraay-compute-batch",
+    "kind": "api",
+    "name": "Spraay Compute Batch",
+    "aka": [],
+    "provider": "Spraay",
+    "providerId": "spraay",
+    "description": "Spraay — batch compute jobs via x402.",
+    "category": "infrastructure",
+    "subcategory": "vm-cloud-providers",
+    "tags": [
+      "compute",
+      "batch"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "gateway.spraay",
+        "providerId": "gateway-spraay",
+        "url": "https://gateway.spraay.app/api/v1/compute/batch",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": 0.05,
+          "max": 0.05,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xAd62f03C7514bb8c51f1eA70C2b75C37404695c8",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8WhWE8YgY5QBWyLowEHuaZiWdwDM3SrgDk36xYBNvYNS",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:10:55.845Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://gateway.spraay.app/api/v1/compute/batch with JSON body {jobs:[{type,...}]} where type is one of text-inference, image-generation, video-generation, text-to-speech, speech-to-text, embeddings",
+      "inputExample": {
+        "jobs": [
+          {
+            "type": "text-inference",
+            "messages": [
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ]
+          }
+        ]
+      },
+      "outputShape": "body.results[].status (per-job, \"failed\"|\"completed\"), body.results[].error, body.batch_id, body.jobs_completed/jobs_failed, body.total_cost_usdc",
+      "quirks": [
+        "Charge-then-fail: gateway returns HTTP 200 with valid batch accounting (batch_id, results[], cost breakdown) but the actual job FAILS at the upstream 'Chutes' inference backend, which returns a 404 HTML page instead of a result. You pay $0.05/call and get no usable output.",
+        "Empty inputSchema in registry. The job 'type' field is REQUIRED; omitting it 400s with hint listing valid types: text-inference, image-generation, video-generation, text-to-speech, speech-to-text, embeddings.",
+        "text-inference job failed even with valid {type, messages} shape; likely also needs a 'model' field, but the upstream backend route is itself dead (404), so supplying a model would not have produced a working result.",
+        "Charged twice during QA ($0.10 total): first $0.05 on the type-missing 400, second $0.05 on the 200-but-job-failed call. Payment is taken before the job outcome is known.",
+        "No txHash returned by the payment layer (confirmed:false)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do not rely on this endpoint: it charges but does not produce results.",
+      "costObservedUsd": 0.05
+    },
+    "source": {
+      "serviceKey": "spraay-compute-batch",
+      "discoveredVia": [
+        "virtual machine",
+        "cloud compute vm"
+      ],
+      "lastSyncedAt": "2026-06-01T23:10:55.845Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "serviceId": "exa",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/exa/find-similar",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/exa/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/exa/find-similar with JSON body {url, numResults?, excludeSourceDomain?}",
+    "inputExample": {
+      "url": "https://arxiv.org/abs/1706.03762",
+      "numResults": 3
+    },
+    "outputShape": "body.results[].url and body.results[].title (title may be empty string for some results); body.results[].score (similarity 0-1); body.results[].author when available; body.costDollars.total for actual cost; body.requestId",
+    "quirks": [
+      "Required field is `url` (the source page to find similar pages to), not `query` — this is find-similar, not search",
+      "Some results return title:\"\" and author:null even on success; only url and score are reliably populated",
+      "excludeSourceDomain defaults to true (won't return pages from the same domain as the source url)",
+      "numResults default 10; schema allows up to 100 but x402 tier may cap lower",
+      "Provider-reported costDollars.total ($0.007) is less than the x402 quote charged ($0.010)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/exa/find-similar with a JSON body containing at minimum {\"url\": \"<source page url>\"}. Optionally pass numResults (default 10) and excludeSourceDomain (default true). Payment of $0.01 USDC is charged per call on Base via x402 — no API key needed. Results return synchronously in body.results[], each with url, score (similarity), and optionally title/author. Read body.results[].url for the similar pages, sorted by descending score.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "exa#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "exa#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

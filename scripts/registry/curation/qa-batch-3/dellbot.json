@@ -1,0 +1,69 @@
+{
+  "serviceId": "dellbot",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.dellbot.win/chat-nano",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.dellbot.win/chat",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.dellbot.win/chat-pro",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.dellbot.win/chat-nano with OpenAI-compatible JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "unknown (endpoint down; expected OpenAI chat-completion shape, likely body.choices[0].message.content)",
+    "quirks": [
+      "NEEDS-REVIEW (not dropped): transient failure (host 502 / jatevo 404) at $0 spent (402-gate caught it) — re-test before relying on it.",
+      "Endpoint returned 502 Bad Gateway (Cloudflare error page) at test time — upstream/origin is down.",
+      "No payment was made: failure occurred before settlement (paid:false, costUsd:0), so no USDC lost despite registry price of $0.001.",
+      "inputSchema is null in registry; body inferred from description (OpenAI-compatible chat router) — could not be confirmed against a live response."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken: it returns a 502 Bad Gateway (Cloudflare) before any payment is taken, so calls fail with no charge. When live, it is an OpenAI-compatible nano-tier chat router on the CDP x402 Bazaar — call POST https://x402.dellbot.win/chat-nano with a JSON body like {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]} and pay ~$0.001 USDC on Base via x402. Expected output is an OpenAI chat-completion object (read the reply from body.choices[0].message.content). Re-verify availability before relying on it; do not pay until it stops returning 502.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "dellbot#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "dellbot#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "dellbot#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

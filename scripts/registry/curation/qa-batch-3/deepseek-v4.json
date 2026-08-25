@@ -1,0 +1,51 @@
+{
+  "serviceId": "deepseek-v4",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[]}",
+    "inputExample": {
+      "model": "deepseek/deepseek-v4-pro",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (token usage in body.usage)",
+    "quirks": [
+      "Standard OpenAI-compatible chat completions schema.",
+      "Must include \"model\":\"deepseek/deepseek-v4-pro\" (Pro tier; a Flash tier also exists per description).",
+      "Pricing is variable/token-based; observed ~$0.001 for a tiny prompt. Payment via x402 USDC on Base, no API key.",
+      "Response includes reasoning_tokens in usage.completion_tokens_details (this is a reasoning model)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/chat/completions with a standard OpenAI-style chat body containing model \"deepseek/deepseek-v4-pro\" and a messages array. Payment is handled automatically via x402 (USDC on Base, no API key needed). Read the assistant reply at body.choices[0].message.content and token usage at body.usage. Cost is variable per token; a small prompt cost ~$0.001.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "deepseek-v4#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

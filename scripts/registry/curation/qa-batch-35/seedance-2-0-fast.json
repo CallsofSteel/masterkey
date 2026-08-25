@@ -1,0 +1,48 @@
+{
+  "serviceId": "seedance-2-0-fast",
+  "subcat": "video-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/seedance-fast/i2v",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/seedance-fast/i2v with JSON body {prompt, imageUrl} (x402 USDC on Base; optional duration, aspectRatio, outputResolution). Returns {jobId, status:\"pending\"}; poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX (free) until status=complete.",
+    "inputExample": {
+      "prompt": "a red circle gently pulsing",
+      "imageUrl": "https://example.com/source.png"
+    },
+    "outputShape": "Generate call: body.jobId, body.status. Poll call (GET /api/jobs/{jobId}): body.status (pending|loading|complete), body.progress, and on completion body.result.videoUrl + body.result.thumbnailUrl.",
+    "quirks": [
+      "OVER-CAP: the i2v backend quotes a flat $20 USDC regardless of body params (tested minimal {prompt,imageUrl} and full {duration,aspectRatio,outputResolution:480p} — both quoted exactly $20). This exceeds a $10 per-call ceiling, so it was NOT paid/verified.",
+      "i2v is image-to-video — requires an input image (imageUrl) in addition to the prompt; bare {prompt} alone is for the t2v sibling backend.",
+      "PRICING DIVERGES FROM t2v: the t2v sibling (seedance-2-0-fast#1) verified at ~$0.84/clip, but this i2v backend's base quote is $20 — much higher. Guard your ceiling accordingly.",
+      "ASYNC (inherited from t2v behavior): the paid POST is expected to return {jobId, status:'pending'} immediately, NOT the video. You must poll GET /api/jobs/{jobId}.",
+      "POLL AUTH IS SIWX, NOT PAYMENT: GET /api/jobs/{jobId} requires a SIGN-IN-WITH-X header (free, same wallet that paid). qa-pay --siwx handles it.",
+      "RESULT URLs EXPIRE in ~20 minutes — download videoUrl/thumbnailUrl immediately after completion (per t2v behavior).",
+      "Do NOT resubmit while status is pending/loading — duplicate submits create duplicate PAID jobs."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Image-to-video via ByteDance Seedance 2.0 Fast. POST https://stablestudio.dev/api/generate/seedance-fast/i2v with JSON {\"prompt\":\"...\",\"imageUrl\":\"<source image URL>\"} paying x402 USDC on Base. WARNING: this i2v backend quoted a flat $20 USDC in QA testing (vs ~$0.84 for the t2v sibling) and was not paid because it exceeded the $10 ceiling — budget at least $20 before attempting. The response is expected to be an async job {jobId, status:\"pending\"}, not the video; poll GET https://stablestudio.dev/api/jobs/{jobId} with a SIGN-IN-WITH-X header (free, same wallet) every ~15-20s until status==\"complete\", then read body.result.videoUrl and download immediately (URLs expire ~20 min). Never resubmit a pending job.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0-fast#2",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

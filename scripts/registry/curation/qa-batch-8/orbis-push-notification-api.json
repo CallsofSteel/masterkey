@@ -1,0 +1,57 @@
+{
+  "serviceId": "orbis-push-notification-api",
+  "subcat": "push-notifications",
+  "batchId": "batch-8",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/push-notification-api-71d44e",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/push-notification-send-api-2f7841",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/push-notification-api-71d44e with JSON body {title, body, message}",
+    "inputExample": {
+      "title": "MasterKey QA",
+      "body": "Test push notification for John Doe",
+      "message": "Test push notification for John Doe"
+    },
+    "outputShape": "body.error (=\\\"API_NOT_FOUND\\\"), body.message — dead slug, no useful result",
+    "quirks": [
+      "DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'push-notification-api-71d44e'.\"}",
+      "Orbis proxy charge-then-fail pattern: unpaid pre-flight returns 402 (looks payable) but the actual call 404s. Do NOT pay/retry.",
+      "In this run qa-pay reported paid:false / costUsd:0 — the 404 came back before settlement so no USDC was lost.",
+      "inputSchema is empty (no field hints); body shape is a guess and untestable because the slug itself is gone."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Do not use this endpoint — it is dead. The Orbis proxy slug 'push-notification-api-71d44e' has no active API behind it and returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\"} on every POST. The pre-flight 402 is misleading; calling it does nothing useful. There is no working call shape to document. Skip it / mark broken in the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-push-notification-api#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'push-notification-api-71d44e'.\"} | orbis-push-notification-api#1: Orbis proxy charge-then-404 dead route: the unpaid probe returns 402 (looks payable) but the actual POST returns HTTP 404 with body {error:'API_NOT_FOUND'} — the slug 'push-notification-send-api-2f7841' is not an active API."
+  },
+  "droppedReason": "orbis-push-notification-api#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'push-notification-api-71d44e'.\"} | orbis-push-notification-api#1: Orbis proxy charge-then-404 dead route: the unpaid probe returns 402 (looks payable) but the actual POST returns HTTP 404 with body {error:'API_NOT_FOUND'} — the slug 'push-notification-send-api-2f7841' is not an active API.",
+  "_backends": [
+    {
+      "key": "orbis-push-notification-api#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-push-notification-api#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

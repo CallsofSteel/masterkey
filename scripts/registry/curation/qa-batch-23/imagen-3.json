@@ -1,0 +1,41 @@
+{
+  "serviceId": "imagen-3",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/api/proxy/google-imagen-3-text-to-image-2",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://x402helper.xyz/api/proxy/google-imagen-3-text-to-image-2",
+    "inputExample": {},
+    "outputShape": "body.success (false), body.refunded (true), body.message, body.refundTx — no image returned",
+    "quirks": [
+      "BROKEN: returns HTTP 200 but body is {success:false, refunded:true, message:'Price mismatch, you have been refunded'} — payment is taken then refunded on-chain, no image is ever generated.",
+      "The registry-advertised price ($0.013 / 13000 atomic) does not match the server's actual expected price, triggering an automatic refund. Endpoint is effectively unusable until the price is corrected.",
+      "Do NOT retry — the refund-on-mismatch is deterministic; retrying only risks the gas/timing of additional refunds."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. Calling GET https://x402helper.xyz/api/proxy/google-imagen-3-text-to-image-2 with the registry x402 price ($0.013) returns HTTP 200 but the body is {success:false, refunded:true, message:'Price mismatch, you have been refunded'} — the proxy takes payment, then refunds it on-chain (refundTx) and never generates an image. The advertised price does not match the server's true price. Do not call this endpoint to generate images until the price metadata is fixed; use an alternate Imagen/text-to-image service instead.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "imagen-3#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    }
+  ]
+}

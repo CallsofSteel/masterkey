@@ -1,0 +1,40 @@
+{
+  "serviceId": "image-enhancer",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/image_enhancer",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/image_enhancer with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/240px-Cat03.jpg"
+    },
+    "outputShape": "body.enhanced_image_url (the upscaled/enhanced PNG URL); body.changes_applied[] (list of enhancements), body.quality_score (number), body.processedAt",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://gg402.vercel.app/image_enhancer with a JSON body containing the field image_url pointing to a public image URL. Pay the $0.010 USDC x402 charge on Base. The response is synchronous JSON; read the enhanced result from body.enhanced_image_url and inspect body.changes_applied[] and body.quality_score for what was done. No auth, no polling, no templates.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-enhancer#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "serviceId": "gemini-2-5-flash",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/gemini-flash",
+      "method": "POST",
+      "amountUsd": 0.009
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.002159
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST application/json",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (assistant text); body.model; body.usage.{prompt_tokens,completion_tokens,total_tokens,cost}",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to the URL with an OpenAI-style chat body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Pay the x402 invoice ($0.009 USDC on Base, eip155:8453). The response is a JSON object; read the assistant reply from body.content and token/cost accounting from body.usage. Plain synchronous call, no auth beyond the x402 payment.",
+    "costObservedUsd": 0.009
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-2-5-flash#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.009
+    },
+    {
+      "key": "gemini-2-5-flash#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

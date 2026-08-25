@@ -1,0 +1,72 @@
+{
+  "serviceId": "trend-predictor",
+  "subcat": "trends-sentiment",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/data_trend_analysis",
+      "method": "POST"
+    },
+    {
+      "backend": "https://gg402.vercel.app/predict_trends",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://gg402.vercel.app/tech_trend_predictor",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/predict_trends with JSON body {data: string[]}",
+    "inputExample": {
+      "data": [
+        "AI agents",
+        "crypto payments",
+        "autonomous agents",
+        "x402 protocol",
+        "stablecoins"
+      ]
+    },
+    "outputShape": "body.predicted_values (string), body.trend_summary (string), body.processedAt (ISO timestamp)",
+    "quirks": [
+      "Body MUST be {\"data\": [...]} where data is an ARRAY OF STRINGS. Sending numbers (e.g. data:[1,2,3]) returns 400 'Invalid input: expected string, received number'.",
+      "Other field names (query, text) are ignored; only 'data' is read.",
+      "STUB/MOCK WARNING: returns 200 with structured output but the values are literal placeholder strings ('predicted_values value', 'trend_summary value') -- it does NOT appear to perform real trend analysis/forecasting. The response is hardcoded boilerplate. Treat output as non-functional.",
+      "No txHash returned by payment layer (confirmed:false), though payment settled and 200 returned."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://gg402.vercel.app/predict_trends with JSON body {\"data\": [\"item1\",\"item2\",...]} where data is an array of strings (a series/list of trend topics). Pay $0.01 USDC on Base via x402; no auth/sign-in needed. Read the result synchronously from body.predicted_values and body.trend_summary. WARNING: this endpoint currently returns placeholder/stub values rather than real analysis, so the output is not usable for genuine trend forecasting despite the 200 status.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "trend-predictor#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "trend-predictor#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "trend-predictor#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

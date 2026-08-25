@@ -1,0 +1,51 @@
+{
+  "serviceId": "hyperbrowser",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.hyperbrowser.ai/x402/web/fetch",
+      "method": "POST",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://api.hyperbrowser.ai/x402/web/search",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.hyperbrowser.ai/x402/web/fetch with JSON body {url}",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.status (\"completed\"), body.data.markdown (page content as markdown), body.data.metadata.{title,url,sourceURL,viewport}",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://api.hyperbrowser.ai/x402/web/fetch with a JSON body containing the target page URL: {\"url\":\"https://example.com\"}. Pay $0.001 USDC via x402 on Base (no API key). The response is synchronous JSON: read body.status (expect \"completed\") and pull the cleaned page content from body.data.markdown, plus page metadata from body.data.metadata. To search the web instead of fetching a single page, use the sibling /x402/web/search endpoint.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hyperbrowser#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "hyperbrowser#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "serviceId": "x402-gateway-screenshot",
+  "subcat": "screenshot-rendering",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/web/screenshot",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402-gateway-production.up.railway.app/api/web/screenshot?url=<TARGET_URL> (x402 paid, $0.01 USDC on Base)",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.screenshot (signed Google Storage PNG URL); body.metadata.{title,sourceURL,statusCode,contentType}",
+    "quirks": [
+      "inputSchema is null in the registry; the target page URL is REQUIRED and must be passed as a ?url= query string parameter on the GET request",
+      "Output is NOT inline image bytes — body.screenshot is a remote signed Google Storage (Firecrawl) PNG URL with a time-limited Expires signature; download/re-host it promptly before the signature expires",
+      "Firecrawl-backed: response also includes body.metadata with page title, statusCode, contentType, cacheState (may return a cached screenshot)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402-gateway-production.up.railway.app/api/web/screenshot with the page to capture passed as a ?url= query parameter (e.g. ?url=https://example.com). Pay $0.01 USDC on Base via x402; no API key or sign-in needed. The response is JSON: read body.screenshot for a signed PNG URL hosted on Google Storage (Firecrawl backend) and download it promptly since the URL carries an expiry signature. body.metadata holds page info (title, sourceURL, statusCode, contentType). Plain synchronous call — no polling.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402-gateway-screenshot#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

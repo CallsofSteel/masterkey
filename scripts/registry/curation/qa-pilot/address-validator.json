@@ -1,0 +1,28 @@
+{
+  "serviceId": "address-validator",
+  "subcat": "address-validation",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://address.agentic-jp.com/postal-code/{zip} — embed 7-digit Japanese postal code directly in URL path (no query params, no body). For US/international addresses, use GET https://address-validator.api.klymax402.com/api/validate?address={address} at $0.003/call.",
+    "inputExample": {
+      "zip": "1000001"
+    },
+    "outputShape": "body.postal_code (hyphen-formatted string e.g. '100-0001'), body.candidates[] each with prefecture/city/town (kanji) and prefecture_kana/city_kana/town_kana (katakana)",
+    "quirks": [
+      "The cheapest backend (agentic-jp, $0.001) is Japanese postal codes only — input is a 7-digit code embedded in the URL path without hyphen (e.g. 1000001 not 100-0001)",
+      "Response text is entirely in Japanese (kanji + katakana); no English translation is provided",
+      "For non-Japanese addresses use the klymax402 backend ($0.003) which accepts an 'address' query param as a full address string",
+      "The stableenrich backend in this registry entry is actually an email verifier (misclassified) — do not use it for postal address validation"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "To look up a Japanese postal code, call GET https://address.agentic-jp.com/postal-code/{zip} replacing {zip} with a 7-digit code (strip the hyphen, e.g. 1000001 for 100-0001). Pay $0.001 USDC on Base via x402. The response contains postal_code (formatted with hyphen) and candidates[] with prefecture, city, town in both kanji and katakana. For US/international address normalization, use the klymax402 backend at GET https://address-validator.api.klymax402.com/api/validate?address={encoded_address} for $0.003 per call.",
+    "costObservedUsd": 0.001
+  },
+  "drop": false,
+  "droppedReason": null
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "spraay",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gateway.spraay.app/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gateway.spraay.app/api/v1/chat/completions with JSON body {model, messages, max_tokens?, temperature?}",
+    "inputExample": {
+      "model": "gpt-4o-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 10
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); body.usage for token/cost accounting; body.model echoes resolved model",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "OpenAI-compatible chat completions router (powered by OpenRouter, 200+ models). POST a standard chat body with required `model` and `messages` fields to https://gateway.spraay.app/api/v1/chat/completions; pay $0.04 USDC per call via x402 on Base (also accepts Solana). The response is the standard OpenAI completion object returned synchronously — read the assistant reply at body.choices[0].message.content and token usage at body.usage. Use any model ID supported by OpenRouter (e.g. gpt-4o-mini, openai/gpt-4o-mini).",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "spraay#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    }
+  ]
+}

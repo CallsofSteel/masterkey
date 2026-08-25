@@ -1,0 +1,68 @@
+{
+  "serviceId": "ipfs-pin",
+  "subcat": "decentralized-ipfs",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://402-server.pinata-marketing-enterprise.workers.dev/v1/retrieve/private/bafkreig64zjue3vnfqejtq2lmzdhgbbsin7gc7dxdebw3exy4ysjkoq62q",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/ipfs/pin",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://gateway.spraay.app/api/v1/storage/pin",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/ipfs/pin with JSON body {\"json\": {...}} (or {\"url\": \"...\"} to pin remote content, or multipart \"file\" upload)",
+    "inputExample": {
+      "json": {
+        "hello": "ipfs",
+        "test": "masterkey-qa"
+      }
+    },
+    "outputShape": "body.cid (the IPFS CID), body.ipfs_url (ipfs:// URI), body.gateway_url (https Pinata gateway URL), body.size, body.name",
+    "quirks": [
+      "Input field name is NOT 'content'/'data'/'file' as JSON text. You MUST send one of: {\"json\": {...}} to pin a JSON object, {\"url\": \"https://...\"} to pin remote content, or a multipart form 'file' upload. Sending other top-level keys returns 400 'Provide json object, url string, or upload a file via multipart form' AFTER charging $0.01.",
+      "Backed by Pinata; gateway_url points at gateway.pinata.cloud.",
+      "Charges payment even on a 400 bad-body response (got charged once for the wrong field name before the retry succeeded)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to the endpoint with a JSON body {\"json\": {your object}} to pin an arbitrary JSON object to IPFS, or {\"url\": \"https://...\"} to pin remote content, or a multipart \"file\" upload for binaries. Pay $0.01 USDC on Base via x402. Read the result CID from body.cid; use body.ipfs_url or body.gateway_url to fetch it. Do NOT use a top-level \"content\"/\"data\" field — it returns 400 and still charges you.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ipfs-pin#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "ipfs-pin#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "ipfs-pin#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

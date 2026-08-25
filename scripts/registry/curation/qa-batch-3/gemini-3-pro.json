@@ -1,0 +1,49 @@
+{
+  "serviceId": "gemini-3-pro",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.01037
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[]} (OpenAI-compatible chat completions)",
+    "inputExample": {
+      "model": "google/gemini-3.1-pro",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); usage at body.usage.{prompt_tokens,completion_tokens,total_tokens}",
+    "quirks": [
+      "Standard OpenAI-compatible chat completions shape — must include model:\"google/gemini-3.1-pro\" in the body.",
+      "Price varies by token usage; a tiny hello prompt (91 prompt + 9 completion tokens) cost ~$0.0104 USDC on Base."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://blockrun.ai/api/v1/chat/completions with an OpenAI-style JSON body containing model:\"google/gemini-3.1-pro\" and a messages array. Payment is x402 USDC on Base, charged per token, settled synchronously. Read the assistant reply from body.choices[0].message.content and token counts from body.usage. No API key or sign-in needed — the wallet pays per request.",
+    "costObservedUsd": 0.01037
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-3-pro#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

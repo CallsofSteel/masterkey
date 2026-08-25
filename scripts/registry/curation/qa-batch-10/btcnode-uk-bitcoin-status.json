@@ -1,0 +1,38 @@
+{
+  "serviceId": "btcnode-uk-bitcoin-status",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://btcnode.uk/api/info",
+      "method": "GET",
+      "amountUsd": 0.003
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://btcnode.uk/api/info (no body, no params)",
+    "inputExample": {},
+    "outputShape": "body.chain, body.blocks, body.difficulty, body.connections, body.success",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Make a plain GET to https://btcnode.uk/api/info with no body or query params; pay the x402 quote (~$0.001 USDC, exact scheme on Base/eip155:8453). The response is a flat JSON object with live full-node status: body.chain (e.g. \"main\"), body.blocks (current block height), body.difficulty (string), body.connections (peer count), and body.success (true). It is a synchronous call — read the result directly from the response body.",
+    "costObservedUsd": 0.003
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "btcnode-uk-bitcoin-status#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    }
+  ]
+}

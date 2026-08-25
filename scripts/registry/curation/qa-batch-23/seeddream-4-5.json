@@ -1,0 +1,44 @@
+{
+  "serviceId": "seeddream-4-5",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image-model/seedream-4.5",
+      "method": "POST",
+      "amountUsd": 0.08
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image-model/seedream-4.5 with JSON body {prompt} (optional: aspect_ratio, referenceImage[])",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (CDN JPG URL); body.image_description (echoed prompt); body.metadata.{model, aspectRatio, cdn_key}",
+    "quirks": [
+      "Payment is Solana-only: paymentAccepts has a single entry on network solana with USDC asset EPjFWdd5...Dt1v. You MUST have USDC on Solana; a Base/EVM-only wallet will fail with an insufficient-funds error even if it holds plenty of EVM USDC.",
+      "x402 via payment-signature header; omit on first call to get the 402 challenge. The qa-pay/x402 client handles this automatically.",
+      "Synchronous: a single POST returns the finished image_url (~9s); no job id, no polling."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with a required \"prompt\" string (optionally \"aspect_ratio\" like \"16:9\", default 1:1, and \"referenceImage\" array of image URLs) to https://api.xona-agent.com/image-model/seedream-4.5. It is an x402 paid endpoint costing $0.080 USDC on Solana — ensure your wallet holds USDC on Solana (EVM USDC will not be accepted). The call is synchronous and returns 200 with the generated image at body.image_url (a CDN JPG); read body.metadata for model/aspect details.",
+    "costObservedUsd": 0.08
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seeddream-4-5#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.08
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "serviceId": "claude-opus-4-8",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/messages",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/messages with JSON body {model, max_tokens, messages:[{role,content}]}",
+    "inputExample": {
+      "model": "anthropic/claude-opus-4.8",
+      "max_tokens": 16,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content[0].text (assistant reply); body.usage.input_tokens / body.usage.output_tokens; body.stop_reason",
+    "quirks": [
+      "model field must be the BlockRun slug \"anthropic/claude-opus-4.8\" (not bare \"claude-opus-4.8\")",
+      "standard Anthropic Messages API shape: max_tokens and messages[] are required",
+      "price varies by token usage; this tiny call cost $0.001"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://blockrun.ai/api/v1/messages with an Anthropic Messages API JSON body: set model to \"anthropic/claude-opus-4.8\", include max_tokens and a messages array of {role,content} objects. Payment is x402 USDC on Base, handled automatically by the pay tool; no API key needed. Read the assistant reply from body.content[0].text and token usage from body.usage. Cost varies with tokens (a minimal call was $0.001).",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "claude-opus-4-8#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

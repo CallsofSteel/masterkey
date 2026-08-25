@@ -1,0 +1,67 @@
+{
+  "serviceId": "stabletravel-award-seats-seats-aero",
+  "subcat": "flight-aviation",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/seats-aero/search",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stabletravel.dev/api/seats-aero/availability",
+      "method": "GET",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://stabletravel.dev/api/seats-aero/routes",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/seats-aero/routes?source=united",
+    "inputExample": {
+      "source": "united"
+    },
+    "outputShape": "JSON array at body root; each element { ID, OriginAirport, OriginRegion, DestinationAirport, DestinationRegion, Distance, Source }. ID is the route id; use OriginAirport/DestinationAirport for route coverage.",
+    "quirks": [
+      "The /routes endpoint REQUIRES a ?source= query param (e.g. source=united, source=aeroplan). The bare /routes url returns no useful filter set — always pass source.",
+      "Response is a very large JSON array (route coverage for the whole program; ~1.4MB for united). No pagination params on /routes; expect a big payload.",
+      "Each element is a route-coverage record (origin/destination/distance), NOT live award availability. For actual award seats use the sibling /search and /availability endpoints; use /trips/{availabilityId} for booking detail.",
+      "txHash not captured (confirmed:false) though payment settled and 200 returned; cost confirmed $0.01."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Seats.aero route coverage via StableTravel (award/miles data, synchronous, x402 pay-per-call, ~$0.01). Call GET https://stabletravel.dev/api/seats-aero/routes?source=<program> where program is a mileage program slug like united or aeroplan. The response is a large JSON array of route records, each with ID, OriginAirport, DestinationAirport, Distance, and Source. Read it as the set of routes that program covers; it is NOT live award availability. To find actual award seats, use the program's /search and /availability endpoints instead, then /trips/{availabilityId} for segment/booking detail.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-award-seats-seats-aero#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-award-seats-seats-aero#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-award-seats-seats-aero#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

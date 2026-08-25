@@ -1,0 +1,48 @@
+{
+  "serviceId": "jina-web-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:687df69db234010b7d331809",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:687df69db234010b7d331809 with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the capital of France?"
+        }
+      ]
+    },
+    "outputShape": "body.response (string) — expected to hold search results, but on the tested run returned the literal error string \"X402 Service is currently unavailable.\"",
+    "quirks": [
+      "Charge-then-fail: returned HTTP 201 and DEBITED $0.10 USDC but the body was {\"response\":\"X402 Service is currently unavailable.\"} — payment was taken with no actual search result.",
+      "The QuestFlow x402 agent gateway accepts payment before the underlying service responds, so a 201 status does NOT mean success — you must inspect body.response for the error string.",
+      "Do NOT retry on the unavailable message — money is lost per attempt with no result."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This QuestFlow x402 agent gateway for Jina web search is currently broken. A POST with body {\"messages\":[{\"role\":\"user\",\"content\":\"<query>\"}]} returns HTTP 201 and charges ~$0.10 USDC, but the body comes back {\"response\":\"X402 Service is currently unavailable.\"} instead of search results. The underlying X402 service is down — payment is taken with no usable output. Do not call this endpoint until it is re-verified; you will lose money for nothing.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "jina-web-search#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

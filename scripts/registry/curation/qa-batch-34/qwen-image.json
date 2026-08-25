@@ -1,0 +1,44 @@
+{
+  "serviceId": "qwen-image",
+  "subcat": "image-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image-model/qwen-image",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image-model/qwen-image with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (hosted JPG on DigitalOcean Spaces CDN); also body.image_description, body.metadata.replicate_url, body.metadata.aspectRatio, body.metadata.model",
+    "quirks": [
+      "Payment accepted ONLY on Solana (USDC mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v) — there is no Base/EVM accept entry, so the paying wallet must hold Solana USDC.",
+      "Synchronous: a single paid POST returns the finished image URL immediately (no job/polling). Result is a CDN-hosted JPG at body.image_url; an alternate replicate.delivery .webp is at body.metadata.replicate_url.",
+      "Default aspect ratio is 1:1; the only required field observed is {prompt}."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Qwen Image is a synchronous x402-paid image generator from Xona, $0.05 per call, settled in USDC on Solana only (no EVM). Call POST https://api.xona-agent.com/image-model/qwen-image with a JSON body {\"prompt\":\"...\"}. The 200 response returns the finished image immediately at body.image_url (a CDN-hosted JPG); body.metadata.replicate_url has the original .webp. No polling or sign-in needed — just ensure the wallet holds Solana USDC.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "qwen-image#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "ai-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/language_translator",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/language_translator with JSON body {text, source_lang, target_lang}",
+    "inputExample": {
+      "text": "hello",
+      "source_lang": "en",
+      "target_lang": "es"
+    },
+    "outputShape": "Expected translated text but endpoint returns body.status=\\\"ERROR\\\" with body.error.message and body.error.code (HTTP 500). No usable result field.",
+    "quirks": [
+      "BROKEN charge-then-fail: charges $0.01 USDC on Base then returns HTTP 500 'GOOGLE_TRANSLATE_API_KEY not configured. Please set GOOGLE_TRANSLATE_API_KEY environment variable.' — backend is missing its upstream Google Translate key.",
+      "Body schema is {text, source_lang, target_lang} (all strings) — NOT the sibling /translate_text shape {text, target_language}. Sending target_language returns HTTP 400 'Validation failed' naming source_lang/target_lang as required.",
+      "Pre-payment probe shows 402 (looks payable) but every call charges and then fails. Money is lost on every call.",
+      "Both validation errors AND the final 500 are returned with body.status='ERROR' and body.error.{message,code}.",
+      "Same root cause as the ai-translate /translate_text route (missing GOOGLE_TRANSLATE_API_KEY). Do NOT call until provider fixes server config."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. A POST to https://gg402.vercel.app/language_translator with body {text, source_lang, target_lang} debits $0.01 USDC on Base and then returns HTTP 500 with body.error.message 'GOOGLE_TRANSLATE_API_KEY not configured' because the backend is missing its Google Translate upstream key. The correct body shape (verified) is {text, source_lang, target_lang} — sending the sibling shape {text, target_language} returns a 400 validation error — but even with the right fields no translation is ever returned. Treat as dead until the provider fixes their server config.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ai-translate#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

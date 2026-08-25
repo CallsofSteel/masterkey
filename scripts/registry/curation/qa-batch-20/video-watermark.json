@@ -1,0 +1,45 @@
+{
+  "serviceId": "video-watermark",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-watermark-api-5ba65c",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-watermark-api-5ba65c with JSON body {video_url, text}",
+    "inputExample": {
+      "video_url": "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
+      "text": "hello"
+    },
+    "outputShape": "none (endpoint returns 404 error: body.error=API_NOT_FOUND)",
+    "quirks": [
+      "DEAD ENDPOINT: Orbis proxy slug 'video-watermark-api-5ba65c' returns 404 API_NOT_FOUND. Pre-flight probe shows 402 (looks payable) but the actual POST 404s.",
+      "Known Orbis charge-then-404 pattern; do not retry with alternate bodies or paths.",
+      "No payment was charged on the failed call (server 404'd before settlement)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'video-watermark-api-5ba65c' returns HTTP 404 {error:\"API_NOT_FOUND\"} on POST even though the x402 pre-flight probe reports 402/payable. Do not call it; the route does not exist. Use an alternate video-watermark provider instead.",
+    "costObservedUsd": 0,
+    "droppedReason": "video-watermark#0: DEAD ENDPOINT: Orbis proxy slug 'video-watermark-api-5ba65c' returns 404 API_NOT_FOUND. Pre-flight probe shows 402 (looks payable) but the actual POST 404s."
+  },
+  "droppedReason": "video-watermark#0: DEAD ENDPOINT: Orbis proxy slug 'video-watermark-api-5ba65c' returns 404 API_NOT_FOUND. Pre-flight probe shows 402 (looks payable) but the actual POST 404s.",
+  "_backends": [
+    {
+      "key": "video-watermark#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

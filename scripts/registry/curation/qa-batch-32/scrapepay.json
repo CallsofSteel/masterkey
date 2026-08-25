@@ -1,0 +1,46 @@
+{
+  "serviceId": "scrapepay",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://scrapepay.melis.ai/scrape",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://scrapepay.melis.ai/scrape with JSON body {url, format?, selector?, wait_for?, timeout_ms?}",
+    "inputExample": {
+      "url": "https://example.com",
+      "format": "text"
+    },
+    "outputShape": "body.success (bool), body.url, body.content (extracted page text/html/markdown), body.word_count — per the 402's advertised example output (NOT verified — payment never settled)",
+    "quirks": [
+      "UNPAYABLE VIA OUR STACK: both qa-pay.mjs and mcp__sponge__paid_fetch fail with 'Failed to parse payment requirements: Invalid payment required response' on this endpoint's 402.",
+      "The 402 itself is a structurally valid x402 v2 exact-scheme response (network=base, asset=USDC 0x8335...2913, payTo=0x1C68...B3bC, maxAmountRequired=10000 = $0.01 fixed). Sponge's parser rejects it anyway — likely choking on the nested per-accepts outputSchema, the top-level resource object, or extensions.bazaar.",
+      "Price is FIXED at $0.01 (not 'Varies' as the registry surface claims).",
+      "No money was spent on either attempt (paid:false both times). 0 paid attempts.",
+      "Endpoint server is healthy (HTTP/2 402, Caddy+Express, returns clean JSON challenge) — the defect is a payment-provider/parser incompatibility, not a dead route."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "ScrapePay is a $0.01-per-call x402 web scraper: POST a JSON body with {url} (optional format=text|html|markdown, selector, wait_for, timeout_ms) and you should get back {success, url, content, word_count}. HOWEVER it is currently UNPAYABLE through our wallet stack: both the qa-pay primitive and Sponge paid_fetch fail to parse its (otherwise valid x402 v2) 402 challenge with 'Failed to parse payment requirements: Invalid payment required response'. Do not route real spend here until the Sponge payment parser is fixed to accept its accepts[].outputSchema / top-level resource / extensions.bazaar fields, or a different x402 client is used. No funds were lost during testing.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "scrapepay#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

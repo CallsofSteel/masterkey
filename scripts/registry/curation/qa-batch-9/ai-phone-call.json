@@ -1,0 +1,76 @@
+{
+  "serviceId": "ai-phone-call",
+  "subcat": "video-voice-calls",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablephone.dev/api/call",
+      "method": "POST",
+      "amountUsd": 0.54
+    },
+    {
+      "backend": "http://blockrun.ai/api/v1/voice/call",
+      "method": "GET"
+    },
+    {
+      "backend": "https://sol.blockrun.ai/api/v1/voice/call",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stablephone.dev/api/call with JSON body {phone_number, task, ...optional}. Pays $0.54 USDC via x402 (Base) or mpp.",
+    "inputExample": {
+      "phone_number": "+15555550123",
+      "task": "This is a test call from the MasterKey registry QA system. Briefly greet John, say this is an automated verification call, and then say goodbye and hang up.",
+      "first_sentence": "Hi John, this is an automated test call from MasterKey registry QA.",
+      "max_duration": 2,
+      "voicemail_action": "hangup"
+    },
+    "outputShape": "body.success (true), body.call_id (string, use to track), body.message",
+    "quirks": [
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: the user (John, +15555550123) actually received the output — an inbound phone call from +15076072903 and two \"MasterKey QA test SMS\" texts — confirming end-to-end real-world delivery, not just a paid 200.",
+      "OUTWARD: places a REAL outbound AI phone call. Use only a real, consented number.",
+      "phone_number must match ^\\+1\\d{10}$ (US/Canada E.164, +1 then 10 digits). Required field along with task (1-4000 chars).",
+      "Returns 403 if the number is on the Do-Not-Call (DNC) list — do NOT retry DNC numbers.",
+      "Call is QUEUED on success (message: 'Call successfully queued.'), not completed synchronously; the call_id tracks it.",
+      "Status + transcript polling at GET /api/call/:id is SIWX-gated — only the same wallet that paid can poll. The pay call itself needs no auth.",
+      "Optional fields: from (caller ID, must own the number), first_sentence, voice, max_duration (1-30 min), wait_for_greeting, record, model (base|turbo), transfer_phone_number, voicemail_action (hangup|leave_message|ignore), voicemail_message, metadata."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "POST to https://stablephone.dev/api/call with at minimum {\"phone_number\":\"+1XXXXXXXXXX\",\"task\":\"what the AI should say/do on the call\"}. Pay $0.54 USDC (x402/Base or mpp) — no API key needed. On success you get {success:true, call_id} immediately and the call is queued, then placed to the number. To read the outcome/transcript, poll GET /api/call/:id, which is SIWX-gated (only the paying wallet can poll). This is a real outbound phone call, so confirm consent/correct number before calling and never retry numbers that return 403 (DNC).",
+    "costObservedUsd": 0.54
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ai-phone-call#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.54
+    },
+    {
+      "key": "ai-phone-call#1",
+      "classification": "needs-input",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    },
+    {
+      "key": "ai-phone-call#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ],
+  "humanConfirmed": {
+    "date": "2026-06-09",
+    "signal": "inbound call +15076072903 + 2 test SMS to +15555550123"
+  }
+}

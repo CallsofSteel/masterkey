@@ -1,0 +1,47 @@
+{
+  "serviceId": "medical-image-analyzer",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/medical_image_analyzer",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/medical_image_analyzer with JSON body {image_url, image_type}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Chest_Xray_PA_3-8-2010.png",
+      "image_type": "xray"
+    },
+    "outputShape": "body.anomalies_detected[].{anomaly,confidence,location}, body.diagnostic_insights (string), body.disclaimer, body.processedAt",
+    "quirks": [
+      "inputSchema was null in registry; the body requires BOTH image_url and image_type — omitting image_type returns a 400 'Validation failed' (and you are still charged $0.01).",
+      "image_type is a free-text string; 'xray' was accepted. Use a modality string like 'xray' or 'mri'.",
+      "Pays $0.01 USDC on Base (eip155:8453) per call even on validation failures — always include image_type to avoid a wasted charge.",
+      "Synchronous: full diagnostic result returns inline in the 200 body, no polling.",
+      "Output includes a disclaimer that this is AI preliminary screening, not a formal diagnosis."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body to https://gg402.vercel.app/medical_image_analyzer with both image_url (a publicly fetchable image URL) and image_type (a modality string such as 'xray' or 'mri'). Payment is $0.01 USDC on Base via x402. CRITICAL: image_type is required even though it is not in any published schema — omitting it returns a 400 but still charges you. Read the result from the 200 JSON body: body.anomalies_detected is an array of {anomaly, confidence, location} and body.diagnostic_insights is a prose radiology-style summary. It is synchronous; no polling needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "medical-image-analyzer#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

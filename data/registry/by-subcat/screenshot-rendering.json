@@ -1,0 +1,1117 @@
+[
+  {
+    "id": "screenshotone-take-screenshot",
+    "kind": "api",
+    "name": "ScreenshotOne Take (Screenshot)",
+    "aka": [
+      "screenshotone-take-screenshot",
+      "take"
+    ],
+    "provider": "screenshotone.x402.paysponge",
+    "providerId": "screenshotone-x402-paysponge",
+    "description": "Capture a static website screenshot of any URL. Returns a JPEG image. GET with a ?url= query param; $0.02 per call via x402 on Base.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "website-screenshot",
+      "rendering"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "screenshotone.x402.paysponge",
+        "providerId": "screenshotone-x402-paysponge",
+        "url": "https://screenshotone.x402.paysponge.com/take",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "active",
+        "team": "Sponge"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://screenshotone.x402.paysponge.com/take?url=<target-url> (no body; method GET; x402 $0.02)",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "Content-Type image/jpeg. Body is a string with a literal 'base64:' prefix followed by base64-encoded JPEG bytes (response body is NOT JSON, NOT raw binary). Strip the 'base64:' prefix, then base64-decode to obtain the .jpg image (~46KB for example.com).",
+      "quirks": [
+        "Input is a GET query param ?url= — there is NO JSON body and the OpenAPI spec exposes no parameter schema; url is required but undocumented in the spec",
+        "Response body has a literal 'base64:' prefix before the base64 data — you MUST strip 'base64:' before decoding",
+        "Output is image/jpeg (a static screenshot), NOT a video — contrast with the sibling /animate endpoint which returns MP4",
+        "A POST /take variant also exists at the same $0.02 (for screenshotting raw HTML payloads) but the GET ?url= form is the verified default",
+        "qa-pay returns confirmed:false / txHash:null even on a successful paid 200 — payment still settled ($0.02 deducted from sprint budget)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Capture a static website screenshot of any URL. Returns a JPEG image. GET with a ?url= query param; $0.02 per call via x402 on Base. GET https://screenshotone.x402.paysponge.com/take?url=<target-url> (no body; method GET; x402 $0.02) Output: Content-Type image/jpeg. Body is a string with a literal 'base64:' prefix followed by base64-encoded JPEG bytes (response body is NOT JSON, NOT raw binary). Strip the 'base64:' prefix, then base64-decode to obtain the .jpg image (~46KB for example.com).",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "screenshotone-take-screenshot",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "screenshotone-animate-video-capture",
+    "kind": "api",
+    "name": "ScreenshotOne Animate (Video Capture)",
+    "aka": [
+      "screenshotone-animate-video-capture",
+      "animate"
+    ],
+    "provider": "screenshotone.x402.paysponge",
+    "providerId": "screenshotone-x402-paysponge",
+    "description": "Capture an animated/scrolling video of any URL. Returns an MP4 video. GET with a ?url= query param; $0.02 per call via x402 on Base.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "website-screenshot",
+      "rendering"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "screenshotone.x402.paysponge",
+        "providerId": "screenshotone-x402-paysponge",
+        "url": "https://screenshotone.x402.paysponge.com/animate",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "active",
+        "team": "Sponge"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://screenshotone.x402.paysponge.com/animate?url=<target-url> (no body; method GET; x402 $0.02)",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "Content-Type video/mp4. Body is a string with a literal 'base64:' prefix followed by base64-encoded MP4 bytes. Strip the 'base64:' prefix, then base64-decode and save as .mp4 (~34KB for example.com; ftyp/isom MP4 container).",
+      "quirks": [
+        "Input is a GET query param ?url= — there is NO JSON body and no parameter schema in the OpenAPI spec; url is required but undocumented",
+        "Response body has a literal 'base64:' prefix before the base64 data — strip 'base64:' before decoding",
+        "/animate returns an MP4 video (Content-Type: video/mp4), NOT a GIF — decode/save as .mp4 despite the 'animate' name suggesting a GIF",
+        "qa-pay returns confirmed:false / txHash:null even on a successful paid 200 — payment still settled ($0.02 deducted)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Capture an animated/scrolling video of any URL. Returns an MP4 video. GET with a ?url= query param; $0.02 per call via x402 on Base. GET https://screenshotone.x402.paysponge.com/animate?url=<target-url> (no body; method GET; x402 $0.02) Output: Content-Type video/mp4. Body is a string with a literal 'base64:' prefix followed by base64-encoded MP4 bytes. Strip the 'base64:' prefix, then base64-decode and save as .mp4 (~34KB for example.com; ftyp/isom MP4 container).",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "screenshotone-animate-video-capture",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "website-screenshot",
+    "kind": "api",
+    "name": "Website Screenshot",
+    "aka": [
+      "website-screenshot"
+    ],
+    "provider": "x402-deployer.x402-deployer.workers",
+    "providerId": "x402-deployer-x402-deployer-workers",
+    "description": "Render a full screenshot (PNG) of a given web page URL. Synchronous: returns a 200 with a job_id but the screenshot is already rendered; the PNG is delivered via a temporary signed CloudConvert S3 URL in the response body, not inline.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "website-screenshot"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.040",
+      "amount": 0.04,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/website-screenshot",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      },
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/screenshot",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST {url:'https://x402-deployer.x402-deployer.workers.dev/website-screenshot'} with JSON body {url:'<full URL incl. https://>'}",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "body.job_id (string), body.image_url (temporary signed CloudConvert S3 PNG URL); fetch body.image_url separately to obtain PNG bytes",
+      "quirks": [
+        "No OpenAPI spec and no /.well-known/x402 — schema not discoverable; inferred input field is {url} (full URL incl. https://)",
+        "Both /website-screenshot and /screenshot are aliases for the same operation on the same worker; use /website-screenshot as the canonical default",
+        "CURRENTLY BROKEN: POST rendering routes hang and time out (HTTP 000) on free probes; paid x402 call returned wallet-error 'provider request failed: fetch failed' (paid:false, no money spent). Worker root returns 200 but the screenshot endpoint is non-responsive.",
+        "Response is synchronous (200) and already rendered despite returning a job_id — no polling needed (per prior verified usage)",
+        "body.image_url is a TEMPORARY signed CloudConvert S3 URL (X-Amz-Expires=86400, ~24h) — download/re-host the PNG immediately; the link expires",
+        "Image is NOT returned inline; you must fetch body.image_url separately to get the PNG bytes"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Render a full screenshot (PNG) of a given web page URL. Synchronous: returns a 200 with a job_id but the screenshot is already rendered; the PNG is delivered via a temporary signed CloudConvert S3 URL in the response body, not inline. POST {url:'https://x402-deployer.x402-deployer.workers.dev/website-screenshot'} with JSON body {url:'<full URL incl. https://>'} Output: body.job_id (string), body.image_url (temporary signed CloudConvert S3 PNG URL); fetch body.image_url separately to obtain PNG bytes",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "website-screenshot",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "platform"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "stableflare-screenshot",
+    "kind": "model",
+    "name": "Stableflare Screenshot",
+    "aka": [],
+    "provider": "Stableflare",
+    "providerId": "stableflare",
+    "description": "Stableflare browser screenshot — render a URL in a real browser and return the captured image. Pay-per-call x402.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "website-screenshot",
+      "browser-render"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableflare",
+        "providerId": "stableflare",
+        "url": "https://stableflare.dev/api/browser/screenshot",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.050",
+          "min": 0.05,
+          "max": 0.05,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402",
+            "mpp"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xb6A6ba7F58fE92E77bcE040CC0818c63ab9ac768",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "description": "URL to render",
+              "type": "string",
+              "format": "uri"
+            },
+            "html": {
+              "description": "HTML content to render instead of URL",
+              "type": "string"
+            },
+            "gotoOptions": {
+              "type": "object",
+              "properties": {
+                "waitUntil": {
+                  "type": "string",
+                  "enum": [
+                    "load",
+                    "domcontentloaded",
+                    "networkidle0",
+                    "networkidle2"
+                  ]
+                },
+                "timeout": {
+                  "type": "number"
+                }
+              }
+            },
+            "userAgent": {
+              "type": "string"
+            },
+            "waitForSelector": {
+              "description": "CSS selector to wait for",
+              "type": "string"
+            },
+            "cookies": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {}
+              }
+            },
+            "authenticate": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "username",
+                "password"
+              ]
+            },
+            "setExtraHTTPHeaders": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "viewport": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number"
+                },
+                "height": {
+                  "type": "number"
+                },
+                "deviceScaleFactor": {
+                  "type": "number"
+                }
+              }
+            },
+            "screenshotOptions": {
+              "type": "object",
+              "properties": {
+                "fullPage": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ]
+                },
+                "quality": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "omitBackground": {
+                  "type": "boolean"
+                },
+                "clip": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "width",
+                    "height"
+                  ]
+                }
+              }
+            },
+            "selector": {
+              "description": "CSS selector to screenshot a specific element",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://stableflare.dev/api/browser/screenshot with JSON body {url, screenshotOptions?:{type:\"png\"|\"jpeg\"}}",
+      "inputExample": {
+        "url": "https://example.com",
+        "screenshotOptions": {
+          "type": "png"
+        }
+      },
+      "outputShape": "body.data (base64-encoded image string), body.content_type (e.g. \"image/png\")",
+      "quirks": [
+        "Returns JSON (not a raw image): the image is base64 in body.data and the MIME type is in body.content_type. Decode body.data from base64 to get the PNG/JPEG bytes.",
+        "Either url OR html may be provided; url renders a live page, html renders supplied markup.",
+        "Rich Puppeteer-style options available: fullPage/clip via screenshotOptions, viewport, waitForSelector, gotoOptions.waitUntil, selector (element screenshot), cookies, authenticate, setExtraHTTPHeaders."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Send POST to https://stableflare.dev/api/browser/screenshot with a JSON body containing at minimum {\"url\":\"<page to capture>\"}; payment is handled via x402 (USDC on Base, ~$0.05/call). Optionally set screenshotOptions.type to \"png\" or \"jpeg\", screenshotOptions.fullPage:true for the whole page, or viewport/waitForSelector to control rendering. The response is JSON: read body.content_type for the MIME type and base64-decode body.data to obtain the image bytes. Verified by capturing https://example.com which returned a valid 22KB PNG.",
+      "costObservedUsd": 0.05
+    },
+    "source": {
+      "serviceKey": "stableflare-screenshot",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "nichospt-render-html-to-pdf",
+    "kind": "api",
+    "name": "nichospt Render HTML to PDF",
+    "aka": [
+      "nichospt-render-html-to-pdf",
+      "render"
+    ],
+    "provider": "x402.nichospt",
+    "providerId": "x402-nichospt",
+    "description": "Renders a raw HTML document string to a PDF. Returns raw application/pdf bytes (no JSON wrapper). Optional page-layout options (format, landscape, margin).",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "rendering",
+      "website-screenshot"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402.nichospt",
+        "providerId": "x402-nichospt",
+        "url": "https://x402.nichospt.net/render",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HJfYcc2XtmrLgr4kze6kdp1JNHsqrdfJiHucpKNQaoJe",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "BFK9TLC3edb13K6v4YyH3DwPb5DSUpkWvb7XnqCL9b4F"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "5000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.nichospt.net/render with JSON body {html, options?}. Response body is the raw PDF bytes (Content-Type: application/pdf) — save directly to a .pdf file, do NOT JSON.parse.",
+      "inputExample": {
+        "html": "<html><body><h1>hi</h1></body></html>"
+      },
+      "outputShape": "Raw binary PDF (application/pdf). No JSON envelope. ~8KB for a trivial document.",
+      "quirks": [
+        "Required field is {html} (a full HTML document string, maxLength 2000000). It does NOT accept a {url} — use the sibling /render-url op for live URLs.",
+        "Response is RAW binary PDF bytes (application/pdf), not JSON. qa-pay surfaces it as a base64: string but the wire body is binary; write bytes straight to .pdf.",
+        "options is optional: {format:'A4'|'Letter' (default A4), landscape:bool (default false), margin: CSS-length string or {top,bottom,left,right}}.",
+        "Renders via Headless Chrome (Skia/PDF). HTML with no <title> produces a PDF titled 'about:blank'.",
+        "Paid $0.005 USDC on Base (eip155:8453); origin payment.accepts also lists Solana and Polygon."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Renders a raw HTML document string to a PDF. Returns raw application/pdf bytes (no JSON wrapper). Optional page-layout options (format, landscape, margin). POST https://x402.nichospt.net/render with JSON body {html, options?}. Response body is the raw PDF bytes (Content-Type: application/pdf) — save directly to a .pdf file, do NOT JSON.parse. Output: Raw binary PDF (application/pdf). No JSON envelope. ~8KB for a trivial document.",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "nichospt-render-html-to-pdf",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "nichospt-render-url-to-pdf",
+    "kind": "api",
+    "name": "nichospt Render URL to PDF",
+    "aka": [
+      "nichospt-render-url-to-pdf",
+      "render-url"
+    ],
+    "provider": "x402.nichospt",
+    "providerId": "x402-nichospt",
+    "description": "Loads a live public http(s) URL in headless Chrome and renders the resulting page to a PDF. Returns raw application/pdf bytes. Supports waitUntil and viewport controls in addition to page-layout options.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "rendering",
+      "website-screenshot"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402.nichospt",
+        "providerId": "x402-nichospt",
+        "url": "https://x402.nichospt.net/render-url",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HJfYcc2XtmrLgr4kze6kdp1JNHsqrdfJiHucpKNQaoJe",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "BFK9TLC3edb13K6v4YyH3DwPb5DSUpkWvb7XnqCL9b4F"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "5000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.nichospt.net/render-url with JSON body {url, options?}. Response body is the raw PDF bytes (Content-Type: application/pdf) — save directly to a .pdf file, do NOT JSON.parse.",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "Raw binary PDF (application/pdf). No JSON envelope. ~27KB for example.com.",
+      "quirks": [
+        "Required field is {url} — a public http(s) URL. Private/loopback IPs are rejected.",
+        "Response is RAW binary PDF bytes (application/pdf), not JSON. qa-pay surfaces it as a base64: string but the wire body is binary; write bytes straight to .pdf.",
+        "options is optional and RICHER than /render: {format:'A4'|'Letter', landscape:bool, margin, waitUntil:'load'|'domcontentloaded'|'networkidle0'(default)|'networkidle2', viewport:{width 320-3840 default 1280, height 240-2160 default 800}}.",
+        "This outputs a PDF, not an image. For a URL screenshot IMAGE use the origin's separate /screenshot endpoint ($0.02), which is not part of this service.",
+        "Paid $0.005 USDC on Base (eip155:8453); origin payment.accepts also lists Solana and Polygon."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Loads a live public http(s) URL in headless Chrome and renders the resulting page to a PDF. Returns raw application/pdf bytes. Supports waitUntil and viewport controls in addition to page-layout options. POST https://x402.nichospt.net/render-url with JSON body {url, options?}. Response body is the raw PDF bytes (Content-Type: application/pdf) — save directly to a .pdf file, do NOT JSON.parse. Output: Raw binary PDF (application/pdf). No JSON envelope. ~27KB for example.com.",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "nichospt-render-url-to-pdf",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "x402-gateway-screenshot",
+    "kind": "model",
+    "name": "x402 Gateway Screenshot",
+    "aka": [],
+    "provider": "x402 Gateway",
+    "providerId": "x402-gateway",
+    "description": "Web screenshot capture API — render a URL to an image via the x402 gateway.",
+    "category": "web-automation",
+    "subcategory": "screenshot-rendering",
+    "tags": [
+      "screenshot",
+      "website-screenshot"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per screenshot"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402 Gateway",
+        "providerId": "x402-gateway",
+        "url": "https://x402-gateway-production.up.railway.app/api/web/screenshot",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per screenshot",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:4326",
+              "amount": "10000000000000000",
+              "asset": "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USDm",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "Gzehfseq1k9AcHFSoV7qHmDGQx92nLMw78XXdqVWQQWa",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:49:59.464Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Gateway"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://x402-gateway-production.up.railway.app/api/web/screenshot?url=<TARGET_URL> (x402 paid, $0.01 USDC on Base)",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "body.screenshot (signed Google Storage PNG URL); body.metadata.{title,sourceURL,statusCode,contentType}",
+      "quirks": [
+        "inputSchema is null in the registry; the target page URL is REQUIRED and must be passed as a ?url= query string parameter on the GET request",
+        "Output is NOT inline image bytes — body.screenshot is a remote signed Google Storage (Firecrawl) PNG URL with a time-limited Expires signature; download/re-host it promptly before the signature expires",
+        "Firecrawl-backed: response also includes body.metadata with page title, statusCode, contentType, cacheState (may return a cached screenshot)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://x402-gateway-production.up.railway.app/api/web/screenshot with the page to capture passed as a ?url= query parameter (e.g. ?url=https://example.com). Pay $0.01 USDC on Base via x402; no API key or sign-in needed. The response is JSON: read body.screenshot for a signed PNG URL hosted on Google Storage (Firecrawl backend) and download it promptly since the URL carries an expiry signature. body.metadata holds page info (title, sourceURL, statusCode, contentType). Plain synchronous call — no polling.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "x402-gateway-screenshot",
+      "discoveredVia": [
+        "website screenshot",
+        "render html",
+        "urlbox",
+        "apiflash",
+        "microlink"
+      ],
+      "lastSyncedAt": "2026-06-02T01:49:59.464Z",
+      "hosting": "platform"
+    },
+    "status": "active"
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "serviceId": "dns-lookup",
+  "subcat": "ip-geolocation",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://dns-lookup.api.klymax402.com/api/lookup",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402.agentutility.ai/dns-lookup",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.agentutility.ai/dns-lookup with JSON body {domain}",
+    "inputExample": {
+      "domain": "example.com",
+      "type": "A"
+    },
+    "outputShape": "body.records.<TYPE>[] (each {name,ttl,data}); convenience arrays at body.flat.{a,aaaa,mx,ns,txt,cname,caa}; body.domain, body.types_queried[], body.total_records, body.source",
+    "quirks": [
+      "Service ignores any 'type' param and always queries all record types (A, AAAA, MX, TXT, NS, CAA) at once — read the type you want from body.records or body.flat.",
+      "No txHash returned by payment layer (confirmed=false), but call settled and returned 200."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.agentutility.ai/dns-lookup with a JSON body containing {\"domain\":\"<domain>\"} and pay the $0.02 USDC x402 charge (Base, eip155:8453). The response is synchronous JSON. Read records by type at body.records (e.g. body.records.A[].data for IPv4) or use the flattened lists at body.flat (body.flat.a, body.flat.mx, body.flat.ns, etc.). It always returns all record types regardless of any 'type' field you send.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "dns-lookup#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "dns-lookup#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    }
+  ]
+}

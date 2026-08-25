@@ -1,0 +1,56 @@
+{
+  "serviceId": "blockrun-web-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/exa/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/search/web",
+      "method": "GET",
+      "amountUsd": 0.0075
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/surf/search/web?q=<search+terms>",
+    "inputExample": {
+      "q": "latest AI news"
+    },
+    "outputShape": "body.data[] (array of {title, url, description, content}); pagination/usage in body.meta {total, limit, offset, credits_used, cached}",
+    "quirks": [
+      "Registry lists method=POST but the endpoint REQUIRES GET — POST returns 405 'Use GET for /api/v1/surf/search/web' (no payment).",
+      "The query parameter is named `q` (not `query`/`text`); it is a URL query-string param, not a JSON body. Wrong/missing param returns 400 'Missing required parameters ... requires: q. Payment was NOT charged.'",
+      "On 400/405 errors no USDC is settled (txHash null, confirmed false) even if the pay tool reports a quote — only the 200 GET actually charged.",
+      "Actual charge was $0.0075, higher than the registry priceDisplay of $0.0050."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/surf/search/web with a single URL query parameter `q` set to your search terms (URL-encoded), e.g. ?q=latest%20AI%20news. Do NOT use POST and do NOT name the param `query` — both fail without charging. Payment is x402 USDC on Base, no API key. Read results from body.data[], an array of {title, url, description, content}; body.meta gives total/credits. Cost is ~$0.0075 per call.",
+    "costObservedUsd": 0.0075
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun-web-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "blockrun-web-search#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "serviceId": "gpt-image-2",
+  "subcat": "image-generation",
+  "batchId": "batch-26",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.io/api/generate/gpt-image-2/edit",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.io/api/generate/gpt-image-2/edit with JSON body {prompt, images[], size?, quality?} (x402 pay, ~$0.01 at quality:low). Returns {jobId, status:\"pending\"}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (free, same wallet that paid) until status===\"complete\".",
+    "inputExample": {
+      "prompt": "add a small red circle in the top-left corner",
+      "quality": "low",
+      "size": "1024x1024",
+      "images": [
+        "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png"
+      ]
+    },
+    "outputShape": "POST returns body.jobId (+ body.status=\"pending\", body.type=\"gpt-image-2-edit\"); no image in POST. Poll GET /api/jobs/{jobId} returns body.status, body.progress, and on completion body.result.imageUrl (the edited PNG on public.blob.vercel-storage.com).",
+    "quirks": [
+      "Registry priceDisplay/paymentAccepts say $10.00 (10000000 USDC), but pricing is DYNAMIC (0-10 USD) and the LIVE x402 quote at quality:low was only $0.01 — do NOT skip as over-cap.",
+      "EDIT endpoint REQUIRES an input image: body must include images[] (array of image URLs, minItems 1) plus prompt. Both are required.",
+      "Image URL must be a DIRECT full image URL. A Wikipedia /thumb/.../280px-...png resized-variant URL was rejected with 400 {success:false, error:'Invalid image URL(s)'} (nothing paid); the direct original .../commons/4/47/file.png worked.",
+      "ASYNC: POST only pays + enqueues, returning {success, jobId, status:'pending', type}. No image in POST response.",
+      "Poll endpoint is GET https://stablestudio.dev/api/jobs/{jobId} (note host is stablestudio.DEV not stablestudio.io, and path is /api/jobs/, NOT /api/status/). This URL is not in the registry; derive it from the jobId.",
+      "Poll requires SIWX auth as the SAME wallet that PAID for the job. A different wallet identity (e.g. agentcash fetch's own wallet) gets 403 Unauthorized {success:false,error:'Unauthorized'}. The polling is free once authenticated.",
+      "Job went pending->complete in ~35s (loading 10%->70%->100%); a few polls every ~8s suffices.",
+      "Result image is a live public PNG on *.public.blob.vercel-storage.com (verified 200 image/png ~680KB)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Edit an image: POST to https://stablestudio.io/api/generate/gpt-image-2/edit with JSON {\"prompt\": \"...\", \"images\": [\"<direct image URL>\"], \"size\": \"1024x1024\", \"quality\": \"low|medium|high\"} and pay via x402 (live cost ~$0.01 at quality:low, despite the $10 registry surface). The images[] URL must be a direct full image (not a Wikipedia /thumb/ resized variant, which 400s). The response gives body.jobId. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIWX auth with the SAME wallet that paid (free; a different wallet gets 403) every few seconds until body.status === \"complete\". Read the edited image from body.result.imageUrl, a public PNG URL.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-image-2#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

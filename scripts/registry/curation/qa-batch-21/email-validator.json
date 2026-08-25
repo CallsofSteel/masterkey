@@ -1,0 +1,76 @@
+{
+  "serviceId": "email-validator",
+  "subcat": "address-validation",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://mailcheck.hugen.tokyo/mailcheck/validate",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/email-intel/analyze",
+      "method": "GET",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/disposable-email-check",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.x402node.dev/validate/email",
+      "method": "GET",
+      "amountUsd": 0.0022
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://mailcheck.hugen.tokyo/mailcheck/validate with JSON body {\"email\":\"<address>\"} (x402 USDC on Base, ~$0.01)",
+    "inputExample": {
+      "email": "john@example.com"
+    },
+    "outputShape": "body.status, body.score, body.syntax_valid, body.domain, body.mx_found, body.mx_records[], body.is_disposable, body.is_free, body.is_role_based, body.did_you_mean, body.checks_performed[]",
+    "quirks": [
+      "POST with a JSON body {\"email\":\"...\"}; the response is synchronous JSON (no job id / polling).",
+      "Gate deliverability on body.status + body.score; body.is_disposable / body.is_role_based / body.mx_found give the detail.",
+      "body.did_you_mean is non-null when a likely typo is detected (e.g. gmial.com -> gmail.com)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Validate an email address by POSTing JSON {\"email\":\"<address>\"} to https://mailcheck.hugen.tokyo/mailcheck/validate. Pay via x402 (USDC on Base, ~$0.01 per call, no API key). The 200 JSON response is synchronous and self-contained: read body.status and body.score for the headline verdict, and the boolean flags (syntax_valid, mx_found, is_disposable, is_free, is_role_based) plus body.did_you_mean for details. No auth or polling needed. (This is the primary active backend; the netintel and x402node backends are alternates.)",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "email-validator#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "email-validator#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "email-validator#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "email-validator#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "serviceId": "seedance-2-0-fast",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/videos/generations",
+      "method": "POST",
+      "amountUsd": 1.191053
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/videos/generations with JSON body {\"model\":\"bytedance/seedance-2.0-fast\",\"prompt\":\"<text>\"} (x402 USDC on Base). Returns 202 queued job; then GET the returned poll_url (x402-paid, same wallet) until status=completed.",
+    "inputExample": {
+      "model": "bytedance/seedance-2.0-fast",
+      "prompt": "a red circle"
+    },
+    "outputShape": "Submit (202): body.id (jobId), body.status=\"queued\", body.poll_url. Completed poll (200): body.status=\"completed\", body.data[0].url (mp4, blockrun-hosted) and body.data[0].source_url (CDN, signed/expiring), body.payment.status=\"settled\", body.payment.tx_hash.",
+    "quirks": [
+      "PRICE IS DURATION-BASED, NOT the $0.15 registry surface: a 5s clip cost $1.19. Quote scales with duration_seconds (default 5s).",
+      "Async two-step: POST returns 202 with status=queued + a poll_url. You MUST poll poll_url (GET) to get the video.",
+      "poll_url is relative to https://blockrun.ai and is x402-paid: GET it with an x-payment header signed by the SAME wallet that did the POST (a fresh signature is fine; it enforces wallet binding, not byte-equality). The poll endpoint returns its own 402 challenge so x402 clients auto re-sign.",
+      "In-progress polls return HTTP 202 with note 'No charge until status=completed' and DO NOT settle a payment. Only the completed poll (HTTP 200) settles. Net result: ONE charge (~$1.19 for 5s), on completion.",
+      "Generation takes ~60-180s; poll every 5-10s.",
+      "Completed video lives at body.data[0].url; source_url is a CDN link with an expiring signature.",
+      "managed/x402 wallet identity matters: poll must come from the same wallet as the submit, or it will not return the job."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/videos/generations with JSON {\"model\":\"bytedance/seedance-2.0-fast\",\"prompt\":\"...\"} paying x402 USDC on Base. You get back HTTP 202 with a job id and a relative poll_url. GET that poll_url (prefix https://blockrun.ai) repeatedly with an x402 payment signed by the same wallet; while generating it returns 202 (no charge yet). When it returns 200 with status=completed, read the video at body.data[0].url (or expiring CDN body.data[0].source_url). Charged once on completion; price scales with clip duration (~$1.19 for default 5s).",
+    "costObservedUsd": 1.191053
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0-fast#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.488817
+    }
+  ]
+}

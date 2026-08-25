@@ -1,0 +1,44 @@
+{
+  "serviceId": "cointelegraph-news",
+  "subcat": "news-media",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://news.apitoll.cloud/v1/cointelegraph/news",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://news.apitoll.cloud/v1/cointelegraph/news?limit=3 (optional query params: lang, limit 1-50, search, full_text, views). x402 USDC on Base.",
+    "inputExample": {
+      "limit": 3
+    },
+    "outputShape": "body.articles[] — each article has .postTranslate.title, .post_url, .full_text, .postTranslate.leadText, .postTranslate.published, .views; top-level body.count, body.source, body.lang, body.query",
+    "quirks": [
+      "Article title/leadText/published live under articles[].postTranslate, not at the article top level",
+      "All query params are optional; bare GET returns latest feed (default limit 10, lang en)",
+      "full_text bodies are truncated with a [+N chars] marker"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://news.apitoll.cloud/v1/cointelegraph/news with optional query params (limit 1-50, lang one of en/tr/de/es/fr/it/jp/kr/br/cn/ar/in/tw/ru, search for full-text query, full_text/views booleans). Pay $0.005 USDC per call via x402 on Base — no API key or sign-in. Read articles from body.articles[]; the headline is articles[i].postTranslate.title, the URL is articles[i].post_url, and the body text is articles[i].full_text. Set ?search=<term> to query specific topics instead of the latest feed.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cointelegraph-news#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "serviceId": "orbis-image-similarity",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-7",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/ai-image-similarity-api-1c4f4f",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/ai-image-similarity-api-1c4f4f with JSON body {image1, image2} (untested shape — endpoint is dead)",
+    "inputExample": {
+      "image1": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/120px-PNG_transparency_demonstration_1.png",
+      "image2": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/120px-PNG_transparency_demonstration_1.png"
+    },
+    "outputShape": "unknown — endpoint returns 404 {error, message}, never produced a real result",
+    "quirks": [
+      "DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}",
+      "The x402 pre-flight probe returns 402 (looks payable) but this is a false positive — the underlying route does not exist.",
+      "No payment is incurred because the 404 occurs before settlement (paid:false, costUsd:0). Do NOT retry with alternate bodies or paths — the slug is dead.",
+      "Input schema is empty in the registry; the {image1,image2} body is a best-guess that was never validated."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered, so a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"} even though the x402 pre-flight probe reports 402 (payable). The 404 happens before payment, so no USDC is lost, but the service cannot perform image similarity comparison. Do not attempt to call or pay for this endpoint until Orbis re-activates the slug.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-image-similarity#0: DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}"
+  },
+  "droppedReason": "orbis-image-similarity#0: DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-image-similarity#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

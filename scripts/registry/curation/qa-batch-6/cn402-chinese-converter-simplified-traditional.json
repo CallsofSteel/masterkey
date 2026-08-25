@@ -1,0 +1,56 @@
+{
+  "serviceId": "cn402-chinese-converter-simplified-traditional",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.cn402.com/hanzi/s2t",
+      "method": "GET",
+      "amountUsd": 0.0022
+    },
+    {
+      "backend": "https://api.cn402.com/hanzi/t2s",
+      "method": "GET",
+      "amountUsd": 0.0022
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.cn402.com/hanzi/s2t?text=<urlencoded simplified chinese> (x402 paid, ~$0.0022 USDC on Base). NOTE: registry says POST but POST 404s; real method is GET with text as query param.",
+    "inputExample": {
+      "text": "你好世界"
+    },
+    "outputShape": "body.output (converted traditional Chinese string); body.input (echo of input); body.mode = \"simplified->traditional\"",
+    "quirks": [
+      "Registry/probe say method=POST, but POST returns 404 'Cannot POST /hanzi/s2t' with NO payment taken. The endpoint is GET-only.",
+      "Input text is passed as a URL query param ?text=<urlencoded>, NOT as a JSON body.",
+      "402 challenge advertises maxAmountRequired 2200 (=$0.0022 USDC) on Base, asset USDC 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913.",
+      "Result is in body.output. Some characters (e.g. 你好世界) are identical in Simplified and Traditional so output may equal input; body.mode confirms the conversion direction was applied."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.cn402.com/hanzi/s2t?text=<URL-encoded Simplified Chinese text> with x402 payment (~$0.0022 USDC on Base, no API key). Do NOT use POST — POST 404s. Read the converted Traditional Chinese from body.output; body.mode confirms it ran simplified->traditional. Note that ASCII-shared or script-invariant characters may come back unchanged.",
+    "costObservedUsd": 0.0022
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cn402-chinese-converter-simplified-traditional#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "cn402-chinese-converter-simplified-traditional#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

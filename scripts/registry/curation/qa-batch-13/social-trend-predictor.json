@@ -1,0 +1,45 @@
+{
+  "serviceId": "social-trend-predictor",
+  "subcat": "social-media-data",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/social_media_trend_predictor",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/social_media_trend_predictor with JSON body {topic, platform}",
+    "inputExample": {
+      "topic": "AI agents",
+      "platform": "twitter"
+    },
+    "outputShape": "body.predicted_trends[] ({trend, description}), body.content_ideas[] ({idea, type}), body.timing (string), body.processedAt (ISO)",
+    "quirks": [
+      "Requires BOTH 'topic' and 'platform' string fields; 'platform' is mandatory but not documented in any schema — omitting it returns 400 with {status:'ERROR', error:{message:'Validation failed', details:[{field:'platform'}]}}.",
+      "'platform' takes a value like 'twitter'.",
+      "Success response wraps result at top level (predicted_trends/content_ideas/timing); errors come back as {status:'ERROR', error:{...}}."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://gg402.vercel.app/social_media_trend_predictor with a JSON body containing both a 'topic' (keyword to analyze) and a 'platform' (e.g. 'twitter'). Payment is x402 USDC on Base ($0.01). The response is plain synchronous JSON: read body.predicted_trends[] for forecasted trends ({trend, description}), body.content_ideas[] for suggested posts ({idea, type}), and body.timing for the recommended posting window. If you omit 'platform' you get a 400 validation error even though it is not in the schema.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "social-trend-predictor#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

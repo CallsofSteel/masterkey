@@ -1,0 +1,44 @@
+{
+  "serviceId": "oklink-explorer",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:687df7c0b234010b7d331c25",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:687df7c0b234010b7d331c25 with JSON body {input: string}",
+    "inputExample": {
+      "input": "What is the current price of Bitcoin?"
+    },
+    "outputShape": "body.response (string). On a working call this would hold the agent's natural-language answer; currently always returns the error string \"X402 Service is currently unavailable.\"",
+    "quirks": [
+      "CHARGE-THEN-ERROR: gateway returns HTTP 201 and charges ~$0.10/call on Base, but backend returns {\"response\":\"X402 Service is currently unavailable.\"} — money is lost with no useful result.",
+      "Persistent across 2 paid attempts (2026-06-08); backend OKLink agent appears dead, not transient.",
+      "No txHash returned by gateway (confirmed:false); settlement not on-chain-verifiable from response.",
+      "Do NOT call this endpoint until provider confirms it is back up — every call burns USDC for an error string."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint as-is. It is a QuestFlow x402 agent gateway for OKLink blockchain data; in theory you POST {\"input\":\"<your question>\"} and read the answer from body.response. In practice (tested 2026-06-08) it returns HTTP 201 and charges ~$0.10 per call but the backend replies {\"response\":\"X402 Service is currently unavailable.\"} every time, so you pay and get nothing. Treat as broken and skip until the provider restores the backend.",
+    "costObservedUsd": 0.2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "oklink-explorer#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

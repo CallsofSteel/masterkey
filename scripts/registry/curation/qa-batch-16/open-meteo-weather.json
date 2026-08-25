@@ -1,0 +1,46 @@
+{
+  "serviceId": "open-meteo-weather",
+  "subcat": "weather",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/maps/weather",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/maps/weather?lat={lat}&lng={lng} (no body; x402 USDC on Base). Registry says POST but the endpoint is actually GET with query params.",
+    "inputExample": {
+      "lat": 40.7128,
+      "lng": -74.006
+    },
+    "outputShape": "body.temperature_c, body.apparent_c, body.humidity_pct, body.precipitation_mm, body.wind_kmh, body.wind_direction_deg, body.weather_code, body.weather_description, body.is_day, body.observation_time, body.timezone, body.elevation_m, body.lat, body.lng",
+    "quirks": [
+      "Registry lists method=POST but the endpoint is actually GET — pass coordinates as URL query params ?lat=&lng=, NO request body.",
+      "Param names are lat and lng (not lon/longitude).",
+      "Response includes a marketing _hint field that should be ignored.",
+      "Times are returned in GMT/UTC (timezone:'GMT')."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/maps/weather with query params lat and lng (decimal degrees), e.g. ?lat=40.7128&lng=-74.0060. Send no request body — despite the registry listing POST, this is a GET endpoint. Pay $0.01 USDC on Base via x402. The 200 JSON response gives current conditions directly: read temperature_c, humidity_pct, wind_kmh, precipitation_mm, and weather_description. Times are in GMT; ignore the _hint marketing field.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "open-meteo-weather#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

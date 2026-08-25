@@ -1,0 +1,67 @@
+{
+  "serviceId": "claude-haiku-4-5",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://anthropic.yeetful.com/api/mcp/mcp",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/messages",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://anthropic.yeetful.com/api/mcp/mcp with JSON-RPC body {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"ask_claude\",\"arguments\":{\"prompt\":\"...\"}}} and header Accept: application/json, text/event-stream",
+    "inputExample": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "tools/call",
+      "params": {
+        "name": "ask_claude",
+        "arguments": {
+          "prompt": "What is the capital of France? Answer in one word."
+        }
+      }
+    },
+    "outputShape": "SSE response; parse the `data:` line as JSON, then read result.content[0].text (text content of result.content[])",
+    "quirks": [
+      "MCP Streamable HTTP endpoint - body MUST be a JSON-RPC 2.0 tools/call request, not a plain chat payload",
+      "MUST send header Accept: application/json, text/event-stream or the server returns 406 'Not Acceptable' AFTER charging payment (first attempt was charged $0.01 then 406)",
+      "Response is SSE-framed (content-type text/event-stream): a line 'event: message' then 'data: {...json...}'; you must strip the 'data: ' prefix and JSON-parse to get the result",
+      "Two tools: ask_claude takes {prompt, system?} (single-prompt); claude_chat takes {messages:[{role,content}], system?} (multi-turn)",
+      "Output capped at 256 tokens; model and max_tokens are server-controlled and cannot be overridden",
+      "Price $0.01 USDC on Base (eip155:8453); 402 payment-required header carries a bazaar extension documenting the exact body shape",
+      "qa-pay reported confirmed:false / txHash:null but call returned 200 with valid content"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This is a Claude Haiku 4.5 LLM exposed over MCP Streamable HTTP via x402 ($0.01/call USDC on Base). POST to the URL a JSON-RPC 2.0 request: method tools/call, params.name = ask_claude (single prompt) or claude_chat (multi-turn messages), with your prompt in params.arguments. You MUST set the request header Accept: application/json, text/event-stream — otherwise the server charges you then returns 406. The 200 response is an SSE stream; take the line starting with 'data: ', JSON-parse the remainder, and read the model's answer at result.content[0].text. Output is capped at 256 tokens.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "claude-haiku-4-5#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "claude-haiku-4-5#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

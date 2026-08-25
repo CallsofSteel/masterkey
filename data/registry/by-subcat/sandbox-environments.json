@@ -1,0 +1,1106 @@
+[
+  {
+    "id": "e2b",
+    "kind": "api",
+    "name": "E2B",
+    "aka": [],
+    "provider": "E2B",
+    "providerId": "e2b",
+    "description": "E2B — secure cloud sandboxes to run AI-generated code (Python/Node), with filesystem and process control. Offered via several x402 gateways.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "code-execution",
+      "sandbox",
+      "python",
+      "agents"
+    ],
+    "modality": {
+      "input": [
+        "code"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "signalfuse",
+        "providerId": "signalfuse",
+        "url": "https://api.signalfuse.co/v1/gateway/execute/e2b",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0xf080a1Aab08650946acDa41410a7eDC14f7Be035",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "outputSchema": {
+                "input": {
+                  "type": "http",
+                  "method": "POST",
+                  "schema": {
+                    "type": "object",
+                    "required": [
+                      "code"
+                    ],
+                    "properties": {
+                      "code": {
+                        "type": "string",
+                        "description": "Python code to execute"
+                      },
+                      "language": {
+                        "type": "string",
+                        "default": "python"
+                      },
+                      "timeout": {
+                        "type": "integer",
+                        "default": 30,
+                        "description": "Max execution seconds (capped at 60)"
+                      }
+                    }
+                  }
+                },
+                "output": {
+                  "type": "json",
+                  "example": {
+                    "stdout": [
+                      "4\n"
+                    ],
+                    "stderr": [],
+                    "error": null
+                  }
+                }
+              },
+              "resource": "https://api.signalfuse.co/v1/gateway/execute/e2b",
+              "mimeType": "application/json",
+              "description": "Sandboxed Python code execution via E2B"
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": {},
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "staging.toolkit",
+        "providerId": "staging-toolkit",
+        "url": "https://staging.toolkit.dev/api/tool/e2b/run-code",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": null,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Varies",
+          "min": null,
+          "max": null,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x0cC2CDC0EB992860d6c2a216b1DC0895fD2DF82F",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "http",
+          "method": "POST",
+          "bodyType": "json",
+          "bodyFields": {
+            "code": {
+              "type": "string",
+              "required": true,
+              "description": "The Python code to execute in the sandbox"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "results": {
+              "type": "array",
+              "required": true,
+              "description": "The execution results from running the code"
+            },
+            "logs": {
+              "type": "any",
+              "required": true,
+              "description": "Execution logs"
+            }
+          },
+          "required": [
+            "results",
+            "logs"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "hidden"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://api.signalfuse.co/v1/gateway/execute/e2b with JSON body {code, language?, timeout?}",
+      "inputExample": {
+        "code": "print(2+2)"
+      },
+      "outputShape": "body.stdout[] (array of stdout lines), body.stderr[], body.results[], body.error (null on success)",
+      "quirks": [],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Execute sandboxed code in an E2B cloud sandbox. POST to https://api.signalfuse.co/v1/gateway/execute/e2b with a JSON body containing required `code` (string). Optional: `language` (default \"python\") and `timeout` (integer seconds, capped at 60, default 30). Pay $0.005 USDC via x402 on Base. Read the result from `body.stdout` (an array of output lines), `body.stderr` for errors, and `body.error` which is null on success. Plain synchronous response, no polling or auth beyond x402.",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "e2b",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "blockrun-code-sandbox",
+    "kind": "api",
+    "name": "BlockRun Code Sandbox",
+    "aka": [],
+    "provider": "BlockRun",
+    "providerId": "blockrun",
+    "description": "BlockRun Modal-backed code sandbox — create a sandbox, execute code, check status, and terminate.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "code-execution",
+      "sandbox",
+      "modal"
+    ],
+    "modality": {
+      "input": [
+        "code"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.012",
+      "amount": 0.012,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/modal/sandbox/create",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.012,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.012",
+          "min": 0.01,
+          "max": 1.5,
+          "source": "agentcash",
+          "dynamic": true
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://blockrun.ai/api/v1/modal/sandbox/create with JSON body {} (optional config fields like image, timeout, cpu, memory)",
+      "inputExample": {},
+      "outputShape": "body.sandbox_id (the handle for follow-up calls), body.status (e.g. \"running\"), body.config.{image,timeout,cpu,memory,gpu}",
+      "quirks": [
+        "Empty JSON body {} is accepted — backend applies defaults: image python:3.11, timeout 300s, cpu 1, memory 512MB, gpu null",
+        "Returns synchronously with status already 'running' (no polling needed for create)",
+        "sandbox_id (e.g. sb-...) is the session handle you must pass to companion endpoints (execute/status/terminate) — create is step 1 of a multi-step sandbox lifecycle",
+        "Charges $0.010 USDC on Base (eip155:8453) per create; the sandbox has a 300s default timeout so terminate or reuse promptly"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://blockrun.ai/api/v1/modal/sandbox/create with an empty JSON body {} (x402 pays $0.01 USDC on Base automatically). The response is synchronous JSON: read body.sandbox_id and keep it — it is the handle you pass to the execute/status/terminate endpoints in the same sandbox service. body.status will already be \"running\" and body.config shows the applied defaults (python:3.11, 300s, 1 cpu, 512MB). To customize, send config fields in the body; otherwise defaults apply. The sandbox auto-expires after its timeout, so run your code and terminate (or let it expire) promptly.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "blockrun-code-sandbox",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "code-execution-sandbox",
+    "kind": "api",
+    "name": "Code Execution Sandbox",
+    "aka": [
+      "code-execution-sandbox",
+      "compute"
+    ],
+    "provider": "x402.auteng",
+    "providerId": "x402-auteng",
+    "description": "Run Python or Node.js code in an isolated, ephemeral sandbox and get back stdout/stderr/exit code. Pay-per-call x402, no account. Supports optional file uploads (base64) and configurable size/timeout tiers.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "code-execution",
+      "sandbox",
+      "compute"
+    ],
+    "modality": {
+      "input": [
+        "code"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402.auteng",
+        "providerId": "x402-auteng",
+        "url": "https://x402.auteng.ai/api/x402/compute",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0x16F452F90AcED51F6EBD0B790ecA12D196e42085",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "x402 Gateway",
+        "providerId": "x402-gateway",
+        "url": "https://x402-gateway-production.up.railway.app/api/code/run",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:4326",
+              "amount": "5000000000000000",
+              "asset": "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USDm",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "Gzehfseq1k9AcHFSoV7qHmDGQx92nLMw78XXdqVWQQWa",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Gateway"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST JSON body {code (required), stack?: 'python'|'node' (default python), size?: 'small'|'med'|'large' (default small), timeout_seconds?: int, files?: {filename: base64string}}",
+      "inputExample": {
+        "code": "print(2 + 2)",
+        "stack": "python",
+        "size": "small"
+      },
+      "outputShape": "stdout (string), stderr (string), exit_code (int), execution_time_ms (int), files (object filename->content), stack (string), size (string), sandbox_id (string)",
+      "quirks": [
+        "DEFAULT backend = auteng ($0.002); railway gateway is same operation at $0.005.",
+        "auteng field is 'stack' (enum python|node), NOT 'language'. size enum is small|med|large (note 'med' not 'medium').",
+        "Only 'code' is required; stack/size default to python/small.",
+        "timeout_seconds beyond the tier default is billed per-second on top of base price (small base $0.002, med $0.008, large $0.03).",
+        "files are uploaded as filename -> base64 string map.",
+        "Railway gateway backend (x402-gateway-production.up.railway.app/api/code/run) advertises Python/JavaScript/Bash/R but does NOT publish its input schema in the 402 challenge; its exact field names (likely 'language' rather than 'stack') are UNVERIFIED. Origin endpoint scan only returned unrelated /solve/schedule and /solve/sensitivity solver routes — the /api/code/run URL itself is live and returns a code-sandbox 402.",
+        "Railway gateway accepts multiple networks/assets (Base USDC, eip155:4326 USDm, Solana USDC); auteng is Base USDC only."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Run Python or Node.js code in an isolated, ephemeral sandbox and get back stdout/stderr/exit code. Pay-per-call x402, no account. Supports optional file uploads (base64) and configurable size/timeout tiers. POST JSON body {code (required), stack?: 'python'|'node' (default python), size?: 'small'|'med'|'large' (default small), timeout_seconds?: int, files?: {filename: base64string}} Output: stdout (string), stderr (string), exit_code (int), execution_time_ms (int), files (object filename->content), stack (string), size (string), sandbox_id (string)",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "code-execution-sandbox",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "daytona",
+    "kind": "api",
+    "name": "Daytona",
+    "aka": [],
+    "provider": "Daytona",
+    "providerId": "daytona",
+    "description": "Daytona — on-demand dev sandbox/environment provisioning.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "sandbox",
+      "dev-environment"
+    ],
+    "modality": {
+      "input": [
+        "code"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "Varies",
+      "amount": null,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "zero-daytona.zclk",
+        "providerId": "zero-daytona-zclk",
+        "url": "https://zero-daytona.zclk.cc/v1/x402/sandboxes",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": null,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Varies",
+          "min": null,
+          "max": null,
+          "source": "search",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": null,
+          "method": "GET",
+          "payable": false,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "GET https://zero-daytona.zclk.cc/v1/x402/sandboxes (no body)",
+      "inputExample": {},
+      "outputShape": "unknown — endpoint unreachable",
+      "quirks": [
+        "Host zero-daytona.zclk.cc returns NXDOMAIN — it does not resolve in DNS. Parent domain zclk.cc resolves via Cloudflare but this subdomain is dead.",
+        "qa-pay returned wallet-error/'provider request failed: fetch failed' (network-level, not a payment); nothing was paid.",
+        "Do not retry — the host is gone, not transient."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is dead. The host zero-daytona.zclk.cc does not resolve (NXDOMAIN) — connections fail at the network layer before any payment. Do not attempt to call or pay it. The Daytona x402 sandbox service should be re-discovered at a current host or dropped from the registry.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "daytona",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "e2b-create-sandbox",
+    "kind": "api",
+    "name": "E2B Create Sandbox",
+    "aka": [
+      "e2b-sandboxes",
+      "e2b-create-sandbox"
+    ],
+    "provider": "E2B",
+    "providerId": "e2b",
+    "description": "Create an E2B cloud sandbox (isolated VM for running agent code). Body { templateID }.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "sandbox",
+      "code-execution",
+      "compute"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.040",
+      "amount": 0.04,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Sponge",
+        "providerId": "sponge",
+        "url": "https://e2b.x402.paysponge.com/sandboxes",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active",
+        "team": "Sponge"
+      }
+    ],
+    "docs": "https://e2b.dev/docs",
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-18",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://e2b.x402.paysponge.com/sandboxes with JSON body (x402)",
+      "inputExample": {
+        "templateID": "base"
+      },
+      "outputShape": "body",
+      "quirks": [
+        "Served via Sponge's x402 gateway (*.x402.paysponge.com) — a single x402 payment proxies the upstream provider. No API key. Base or Solana USDC.",
+        "templateID is required (e.g. \"base\"). Returns a sandbox id used for subsequent (non-indexed) exec calls."
+      ],
+      "guide": "Create an E2B cloud sandbox (isolated VM for running agent code). Body { templateID }. Served via Sponge's x402 gateway (*.x402.paysponge.com) — a single x402 payment proxies the upstream provider. No API key. Base or Solana USDC.",
+      "costObservedUsd": 0.04
+    },
+    "source": {
+      "serviceKey": "e2b-create-sandbox",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "execute-in-modal-sandbox",
+    "kind": "api",
+    "name": "Execute In Modal Sandbox",
+    "aka": [
+      "modal-sandbox-exec"
+    ],
+    "provider": "BlockRun",
+    "providerId": "blockrun",
+    "description": "Execute a command inside an existing managed Modal sandbox.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "sandbox",
+      "compute"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/modal/sandbox/exec",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "indexed",
+      "verifiedAt": "2026-06-24",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://blockrun.ai/api/v1/modal/sandbox/exec with sandbox_id (from /sandbox/create) + command (array, e.g. [\"python\",\"-c\",\"print(1)\"]) → runs the command inside the existing Modal sandbox and returns stdout, stderr, and exit code synchronously.",
+      "inputExample": {
+        "sandbox_id": "<id from /api/v1/modal/sandbox/create>",
+        "command": [
+          "python",
+          "-c",
+          "print(1)"
+        ],
+        "timeout": 60
+      },
+      "quirks": [
+        "command MUST be a JSON array (e.g. [\"python\",\"-c\",\"print(1)\"]); passing a string returns HTTP 400 'expected array' before any 402/charge",
+        "Requires a valid sandbox_id from /api/v1/modal/sandbox/create first - not a standalone call",
+        "OUTWARD/irreversible: arbitrary code execution inside a real sandbox; needs approval and should not be pay-tested casually",
+        "timeout is optional, in seconds, max 60 (default 60)",
+        "Sync response (no job id to poll) - returns result inline",
+        "Price is fixed $0.001; payment-required and x-payment-required headers (and www-authenticate) all carry the same base64 challenge",
+        "OUTWARD/irreversible — gated with needsApproval; not pay-tested in this batch."
+      ]
+    },
+    "source": {
+      "serviceKey": "execute-in-modal-sandbox",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "check-modal-sandbox-status",
+    "kind": "api",
+    "name": "Check Modal Sandbox Status",
+    "aka": [
+      "modal-sandbox-status"
+    ],
+    "provider": "BlockRun",
+    "providerId": "blockrun",
+    "description": "Check whether a sandbox is still running or has terminated.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "sandbox",
+      "compute"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/modal/sandbox/status",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "indexed",
+      "verifiedAt": "2026-06-24",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://blockrun.ai/api/v1/modal/sandbox/status with body {sandbox_id} -> returns whether the Modal sandbox is running or terminated (sync JSON result).",
+      "inputExample": {
+        "sandbox_id": "sb-test123"
+      },
+      "quirks": [
+        "sandbox_id must be a real ID returned by /api/v1/modal/sandbox/create; a fake/expired ID may charge then return an error or empty status (charge-then-error risk)",
+        "Fixed price $0.001 (1000 atomic USDC units, 6 decimals) on Base eip155:8453",
+        "x402 v2 challenge served in both www-authenticate and payment-required / x-payment-required base64 headers, plus JSON body paymentInfo",
+        "Read-only and idempotent: checking status does NOT create/terminate the sandbox (outward=false), unlike sandbox create/exec/terminate"
+      ]
+    },
+    "source": {
+      "serviceKey": "check-modal-sandbox-status",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "terminate-modal-sandbox",
+    "kind": "api",
+    "name": "Terminate Modal Sandbox",
+    "aka": [
+      "modal-sandbox-terminate"
+    ],
+    "provider": "BlockRun",
+    "providerId": "blockrun",
+    "description": "Terminate a running sandbox and release its resources.",
+    "category": "infrastructure",
+    "subcategory": "sandbox-environments",
+    "tags": [
+      "sandbox",
+      "compute"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/modal/sandbox/terminate",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:03:36.931Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "indexed",
+      "verifiedAt": "2026-06-24",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://blockrun.ai/api/v1/modal/sandbox/terminate with body {sandbox_id} -> terminates the running Modal sandbox and releases its resources; returns a sync {result} object.",
+      "inputExample": {
+        "sandbox_id": "<sandbox_id returned from POST /api/v1/modal/sandbox/create>"
+      },
+      "quirks": [
+        "OUTWARD/irreversible: destroys a live sandbox and its state — do NOT pay-test casually, needs approval",
+        "sandbox_id must come from a prior POST /api/v1/modal/sandbox/create — a fake/expired id likely returns an error AFTER charging (charge-then-error risk)",
+        "Pay-testing requires first creating (and paying for) a sandbox, so the true cost to exercise this is create-cost + this $0.001",
+        "x402 v2 challenge: USDC on Base (eip155:8453), amount 1000 atomic = $0.001; accepts in payment-required / x-payment-required / www-authenticate headers and JSON body",
+        "Sync response (no job id to poll)",
+        "OUTWARD/irreversible — gated with needsApproval; not pay-tested in this batch."
+      ]
+    },
+    "source": {
+      "serviceKey": "terminate-modal-sandbox",
+      "discoveredVia": [
+        "code sandbox",
+        "run code",
+        "execute code sandbox"
+      ],
+      "lastSyncedAt": "2026-06-01T23:03:36.931Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

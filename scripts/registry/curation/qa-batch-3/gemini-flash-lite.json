@@ -1,0 +1,56 @@
+{
+  "serviceId": "gemini-flash-lite",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/gemini-3.1-flash-lite",
+      "method": "POST",
+      "amountUsd": 0.003
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/gemini-3.1-flash-lite with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (string, the assistant reply); body.model; body.usage.total_tokens",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with an OpenAI-style chat body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Pay $0.003 USDC via x402 on Base (eip155:8453); Tempo USDm and Solana USDC are also accepted. The reply is plain sync JSON: read the assistant text from body.content, with token/cost accounting under body.usage. No API key, no async polling, no sign-in required.",
+    "costObservedUsd": 0.003
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-flash-lite#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    },
+    {
+      "key": "gemini-flash-lite#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

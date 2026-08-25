@@ -1,0 +1,48 @@
+{
+  "serviceId": "seedance-1-5-pro",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/videos/generations",
+      "method": "POST",
+      "amountUsd": 0.459407
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/videos/generations with JSON body {model, prompt}",
+    "inputExample": {
+      "model": "bytedance/seedance-1.5-pro",
+      "prompt": "a red circle"
+    },
+    "outputShape": "Submit response: body.id (job id), body.status (\"queued\"), body.payment_status (\"verified\"), body.poll_url (relative path with signed sig). Final video URL is returned by the completed poll response (GET poll_url) — not in the submit response.",
+    "quirks": [
+      "Async two-step: POST submits a job (202, status:queued), result is NOT in the submit response.",
+      "Poll via the returned body.poll_url (relative path, prepend https://blockrun.ai). Each poll is a SEPARATE x402-paid request — it returns its own 402 challenge and must be re-signed.",
+      "The poll request MUST be signed by the SAME wallet that submitted the POST (wallet-bound; a fresh signature is fine, byte-equality not required).",
+      "On the first poll where status becomes 'completed', the server settles and returns the video URL. Status progresses queued -> in_progress -> completed. Typical generation 60-180s.",
+      "Actual cost was $0.459, not the $0.150 registry surface — price scales with video duration (default 5s, duration_seconds:5). payment.accepts amount was 420001 (~$0.42), but settled quote was $0.459.",
+      "Polling costs money per poll (jobIdPath=jobId in registry but actual field is body.id; submit response uses body.id not jobId)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/videos/generations with JSON {model:\"bytedance/seedance-1.5-pro\", prompt:\"...\"} using an x402 client (USDC on Base). You get a 202 with a queued job: read body.id and body.poll_url. To get the video, GET https://blockrun.ai + body.poll_url with an x402 payment header signed by the same wallet — this poll is itself paid and returns a 402 challenge if unsigned. Repeat the paid poll every ~20-30s until status is \"completed\"; the completed poll response contains the final video URL. Budget for the submit cost (~$0.46 for 5s) plus per-poll costs.",
+    "costObservedUsd": 0.459407
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-1-5-pro#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.488817
+    }
+  ]
+}

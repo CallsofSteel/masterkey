@@ -1,0 +1,64 @@
+{
+  "serviceId": "agentmarket",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://market.memoryapi.org/x402/market/quote",
+      "method": "GET"
+    },
+    {
+      "backend": "https://market.memoryapi.org/x402/market/indices",
+      "method": "GET"
+    },
+    {
+      "backend": "https://market.memoryapi.org/x402/market/holdings",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://market.memoryapi.org/x402/market/quote?symbol=AAPL (x402-gated; expects a stock symbol query param)",
+    "inputExample": {
+      "symbol": "AAPL"
+    },
+    "outputShape": "unknown — service is down, no successful response observed",
+    "quirks": [
+      "Host market.memoryapi.org returns 502 Bad Gateway (nginx) on EVERY route including root / and sibling /x402/market/indices — the upstream backend is dead.",
+      "No 402 payment challenge is served while down, so a paid call cannot even be constructed.",
+      "Earlier registry probe (2026-06-02) saw 402 payable; service has since gone offline.",
+      "DO NOT pay until a fresh pre-flight returns 402 again."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. The host market.memoryapi.org returns 502 Bad Gateway on all routes (quote, indices, root), so the backend behind nginx is down. When live, it is an x402-gated GET that returns real-time stock quotes; you would call GET /x402/market/quote with a symbol query param (e.g. ?symbol=AAPL) and pay ~$0.001 USDC. Re-test with an unpaid pre-flight first: only pay if it returns HTTP 402 with a valid payment challenge — do not pay while it returns 502.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentmarket#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentmarket#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentmarket#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

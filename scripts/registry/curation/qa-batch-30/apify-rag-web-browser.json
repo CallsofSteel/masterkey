@@ -1,0 +1,66 @@
+{
+  "serviceId": "apify-rag-web-browser",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://api.apify.com/v2/acts/:actorId/run-sync",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.apify.com/v2/acts/:actorId/run-sync-get-dataset-items",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.apify.com/v2/acts/:actorId/runs",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.apify.com/v2/acts/apify~rag-web-browser/run-sync with JSON actor-input body {query, maxResults}",
+    "inputExample": {
+      "query": "hello world",
+      "maxResults": 1
+    },
+    "outputShape": "error.type, error.message (no successful result produced; HTTP 400)",
+    "quirks": [
+      "The named RAG Web Browser actor (apify/rag-web-browser, API id apify~rag-web-browser) runs in Apify Standby mode and returns HTTP 400 {error.type: actor-standby-not-supported-for-agentic-payments} when called via run-sync with x402/agentic payment. Apify charged the $1 USDC anyway.",
+      "Do NOT retry this specific actor over x402 run-sync — payment is taken but the call always fails. Money is lost on each attempt.",
+      "The :actorId path segment uses the Apify ~-encoded actor id (owner~name), e.g. apify~rag-web-browser, not a slash.",
+      "Only non-standby Apify actors are compatible with this run-sync x402 surface; this registry entry points at a standby actor and is non-functional as configured."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint as registered: the RAG Web Browser actor is an Apify Standby actor and run-sync rejects agentic/x402 payments with HTTP 400 (actor-standby-not-supported-for-agentic-payments) AFTER charging $1 USDC. The generic POST https://api.apify.com/v2/acts/:actorId/run-sync mechanism likely works for non-standby actors (fill :actorId with the owner~name form and pass that actor's input JSON), but the specific apify~rag-web-browser actor here is incompatible and only loses money. Treat as broken until repointed to a non-standby actor.",
+    "costObservedUsd": 1,
+    "droppedReason": "apify-rag-web-browser#0: The named RAG Web Browser actor (apify/rag-web-browser, API id apify~rag-web-browser) runs in Apify Standby mode and returns HTTP 400 {error.type: actor-standby-not-supported-for-agentic-payments} when called via run-sync with x402/agentic payment. Apify charged the $1 USDC anyway. | apify-rag-web-browser#1: The RAG Web Browser actor (apify~rag-web-browser) is a STANDBY actor; run-sync-get-dataset-items returns HTTP 400 actor-standby-not-supported-for-agentic-payments — Apify does NOT support x402/agentic payments for Standby Actors. Money is still charged ($1) but you get no result. | apify-rag-web-browser#2: actorId path param must use tilde form apify~rag-web-browser (not slash)"
+  },
+  "droppedReason": "apify-rag-web-browser#0: The named RAG Web Browser actor (apify/rag-web-browser, API id apify~rag-web-browser) runs in Apify Standby mode and returns HTTP 400 {error.type: actor-standby-not-supported-for-agentic-payments} when called via run-sync with x402/agentic payment. Apify charged the $1 USDC anyway. | apify-rag-web-browser#1: The RAG Web Browser actor (apify~rag-web-browser) is a STANDBY actor; run-sync-get-dataset-items returns HTTP 400 actor-standby-not-supported-for-agentic-payments — Apify does NOT support x402/agentic payments for Standby Actors. Money is still charged ($1) but you get no result. | apify-rag-web-browser#2: actorId path param must use tilde form apify~rag-web-browser (not slash)",
+  "_backends": [
+    {
+      "key": "apify-rag-web-browser#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "apify-rag-web-browser#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "apify-rag-web-browser#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

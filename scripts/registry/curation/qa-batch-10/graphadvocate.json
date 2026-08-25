@@ -1,0 +1,46 @@
+{
+  "serviceId": "graphadvocate",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://graphadvocate.com/route",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://graphadvocate.com/route with JSON body {\"request\": \"<plain-English blockchain data question>\"}",
+    "inputExample": {
+      "request": "What is the latest price of USDC on Uniswap v3 on Base?"
+    },
+    "outputShape": "body.recommendation (recommended service), body.reason, body.query_ready.args (ready-to-run GraphQL + subgraph_id), body.execution_result.data.data (LIVE executed query results — e.g. token, bundle.ethPriceUSD, tokenHourDatas[].priceUSD), body.alternatives[], body.get_started (free API key URL). The actual answer to your question is usually pre-executed inside body.execution_result.data.data.",
+    "quirks": [
+      "The request field MUST be named 'request' (not 'query', 'text', or 'prompt'). Wrong field name still returns HTTP 200 but with {error:'Missing request text', hint:'POST {request: your query} or A2A format'} — and YOU STILL PAY for that failed call. Always send {\"request\": \"...\"}.",
+      "x402 paid even on the bad-field-name response (200 + error body), so the field name is money-critical.",
+      "The response is a recommendation engine: it picks the best subgraph/API for your plain-English question AND pre-executes the GraphQL for you. Read body.execution_result.data.data for the live answer; body.query_ready/curl_example are for if you want to re-run it yourself.",
+      "Response includes a body.promoted_skills array advertising other paid GraphAdvocate endpoints (polymarket/hyperliquid scoring) — ignore unless relevant.",
+      "qa-pay reported confirmed:false / txHash:null (settlement not captured on-chain in this harness), but status 200 and live data confirm the call succeeded."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://graphadvocate.com/route with JSON body {\"request\": \"<your plain-English blockchain data question>\"} — payment is x402 USDC ($0.01) on Base, no API key needed. CRITICAL: the field must be named \"request\"; using \"query\" or any other name returns a 200 hint-error AND still charges you. Read the live answer from body.execution_result.data.data, which contains the pre-executed GraphQL result; body.recommendation/query_ready/curl_example tell you which subgraph it used and how to re-run it yourself with a free thegraph.com API key.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "graphadvocate#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

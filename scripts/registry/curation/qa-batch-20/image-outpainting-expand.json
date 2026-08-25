@@ -1,0 +1,51 @@
+{
+  "serviceId": "image-outpainting-expand",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/image-expand",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/image-expand with JSON body {image_url, canvas_width, canvas_height, original_image_width, original_image_height, x_offset, y_offset}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gull_portrait_ca_usa.jpg/320px-Gull_portrait_ca_usa.jpg",
+      "canvas_width": 640,
+      "canvas_height": 480,
+      "original_image_width": 320,
+      "original_image_height": 240,
+      "x_offset": 160,
+      "y_offset": 120
+    },
+    "outputShape": "unknown — no successful response captured. On error: body.error (string). Expected success likely body.result / image url/base64 (Bria Image Expand), but unverified.",
+    "quirks": [
+      "No inputSchema in registry; body shape discovered by probing. Uses FLAT snake_case params, NOT arrays: canvas_width, canvas_height, original_image_width, original_image_height, x_offset, y_offset.",
+      "canvas_width must be a number between 256 and 4096 (same constraint presumably for canvas_height).",
+      "Sending canvas_size/original_image_size/original_image_location as arrays returns 400 'canvas_width must be a number between 256 and 4096'.",
+      "Even with correctly-named flat params the upstream Bria call returned 502 'Image expand failed: Unprocessable Entity' (422 from upstream) — geometry/values rejected or upstream unstable. PAID but no usable output in 2 attempts ($0.30 total lost).",
+      "Endpoint charges $0.15 per call and is non-refundable on upstream error — validate geometry carefully before paying."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/image-expand (x402, $0.15 on Base, no auth). Send JSON with image_url plus FLAT snake_case geometry: canvas_width, canvas_height (each 256-4096), original_image_width, original_image_height, and x_offset/y_offset positioning the original inside the canvas. Do NOT use array forms like canvas_size. In QA the deployer accepted the flat shape but upstream Bria returned 502 'Unprocessable Entity', so no successful expansion was produced — treat output as unverified and ensure the original fully fits within the canvas (offset + original dimension <= canvas dimension) before paying, since each call costs real USDC and errors are not refunded.",
+    "costObservedUsd": 0.3
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-outpainting-expand#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.15
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "serviceId": "notte",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/notte/sessions/start",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.orth.sh/notte/scrape_from_html",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.orth.sh/notte/sessions/{session_id}/stop",
+      "method": "DELETE"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/notte/sessions/start with JSON body {headless?, browser_type?, proxies?, solve_captchas?, idle_timeout_minutes?, max_duration_minutes?, viewport_width?, viewport_height?, user_agent?} (all fields optional; minimal call is {} or {\"headless\": true})",
+    "inputExample": {
+      "headless": true
+    },
+    "outputShape": "unknown (untested) — likely body.session_id / body with a managed browser session handle to feed subsequent scrape/stop calls",
+    "quirks": [
+      "Could NOT complete a paid call: qa-pay returned reproducible Sponge SDK error 'Sponge payment failed: Body already used' on both POST attempts that sent a JSON body. paid:false both times so NO USDC was spent.",
+      "Likely a tooling bug: the Sponge x402 payment flow consumes/reuses the request body stream when a body is present, throwing before settlement. A retry with NO body (empty POST) was blocked by the <=2-paid-attempt safety boundary, so the no-body path is unconfirmed.",
+      "Body schema is entirely optional, so the correct minimal call is {} or {\"headless\": true}; an empty POST should be valid.",
+      "This is a sessionFlow endpoint (sessions/start) — a successful start returns a session handle that pairs with sessions/stop and scrape/extract calls; treat as managed-resource lifecycle.",
+      "Price is 'Varies' (registry); actual settled cost was never observed because no payment completed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402.orth.sh/notte/sessions/start with a JSON body (all fields optional) to start a managed headless browser session via Orthogonal x402; minimal body is {} or {\"headless\": true}. The response should return a session handle/id you then pass to Notte's scrape/extract and sessions/stop calls. NOTE: this endpoint is UNTESTED — the QA pay tool failed twice with a Sponge 'Body already used' error before any payment settled (no USDC spent), so it must be re-tested once the payment-body tooling issue is resolved (try a no-body empty POST first to isolate). Since sessions accrue duration cost, remember to stop the session when done.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "notte#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "notte#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "notte#2",
+      "classification": "needs-input",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    }
+  ]
+}

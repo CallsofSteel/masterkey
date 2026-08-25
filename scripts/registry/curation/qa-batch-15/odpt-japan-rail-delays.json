@@ -1,0 +1,41 @@
+{
+  "serviceId": "odpt-japan-rail-delays",
+  "subcat": "traffic-transportation",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay (no body, x402 on Base)",
+    "inputExample": {},
+    "outputShape": "unknown — host down, never returned a payable 402 or any body",
+    "quirks": [
+      "Host oracle-network-jp-data.fly.dev returns HTTP 503 at both / and the endpoint path (Fly.io app has no healthy machines).",
+      "No x402 402 challenge is even reachable — the server is down before payment, so nothing can be paid.",
+      "Confirmed down across 2 attempts ~8s apart on 2026-06-09."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently DOWN. The host oracle-network-jp-data.fly.dev returns 503 (Fly.io: no healthy machines) for both the root and the /v1/jp/transit/delay path, so the x402 payment challenge is never reached and no call succeeds. Do not attempt to pay — there is nothing to pay. Re-check whether the Fly app is back up before relying on this service; if it returns a 402 challenge again, it would be a plain GET with no body, x402 on Base USDC (~$0.001).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "odpt-japan-rail-delays#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

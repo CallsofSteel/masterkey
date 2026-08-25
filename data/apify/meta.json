@@ -1,0 +1,32 @@
+{
+ "fetchedAt": "2026-06-19",
+ "runEndpoint": "run-sync-get-dataset-items",
+ "base": "https://api.apify.com/v2/actors",
+ "accepts": [
+  {
+   "scheme": "exact",
+   "network": "eip155:8453",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "amount": "1000000",
+   "payTo": "0x4aAbE17C239eF71c3A26bA7C2b3e0AeBbfC1DF26",
+   "maxTimeoutSeconds": 60,
+   "extra": {
+    "name": "USD Coin",
+    "version": "2"
+   }
+  },
+  {
+   "scheme": "upto",
+   "network": "eip155:8453",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "amount": "1000000",
+   "payTo": "0x4aAbE17C239eF71c3A26bA7C2b3e0AeBbfC1DF26",
+   "maxTimeoutSeconds": 18000,
+   "extra": {
+    "name": "USD Coin",
+    "version": "2",
+    "facilitatorAddress": "0x67B9CE703d9ce658d7C4ac3c289cEa112fE662Af"
+   }
+  }
+ ]
+}

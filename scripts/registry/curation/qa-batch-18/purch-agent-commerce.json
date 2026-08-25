@@ -1,0 +1,42 @@
+{
+  "serviceId": "purch-agent-commerce",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-18",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://purch-backend-741433844771.us-east1.run.app/api/agent/shop",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://purch-backend-741433844771.us-east1.run.app/api/agent/shop",
+    "inputExample": {},
+    "outputShape": "none — endpoint returns plain text \"404 Not Found\"",
+    "quirks": [
+      "Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain) with no x402/402 payment challenge.",
+      "Independent probe on 2026-06-02 also returned 404 — consistently broken, not transient.",
+      "No payment is taken (no charge possible since there is no 402 challenge)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. GET https://purch-backend-741433844771.us-east1.run.app/api/agent/shop returns a plain '404 Not Found' with no x402 payment challenge, so it cannot be paid or used. Do not attempt to call it until the provider restores the route. The advertised 'Agent Shop' product-search/order functionality is not reachable at this path.",
+    "costObservedUsd": 0,
+    "droppedReason": "purch-agent-commerce#0: Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain) with no x402/402 payment challenge."
+  },
+  "droppedReason": "purch-agent-commerce#0: Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain) with no x402/402 payment challenge.",
+  "_backends": [
+    {
+      "key": "purch-agent-commerce#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

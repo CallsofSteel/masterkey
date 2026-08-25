@@ -1,0 +1,40 @@
+{
+  "serviceId": "flux-2-flex",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/image/flux-2-flex",
+      "method": "POST",
+      "amountUsd": 0.06
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/base-main/image/flux-2-flex with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (hosted JPG URL), body.image_description, body.metadata.model, body.metadata.aspect_ratio",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with a single \"prompt\" field describing the image you want to api.xona-agent.com/base-main/image/flux-2-flex. Payment is x402 USDC on Base ($0.06/call, no API key). The response is synchronous JSON: read the generated image from body.image_url (a hosted JPG you can download or display). Default aspect ratio is 1:1.",
+    "costObservedUsd": 0.06
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-flex#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.06
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "serviceId": "orbis-image-intelligence",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-7",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/ai-image-analysis-api-c72c38",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-image-analysis-api-c72c38/nsfw",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-image-classify-api-7ee35a",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-image-describe-api-3a23d8",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/multimodal-analysis-api-72d0ee",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/ai-image-analysis-api-c72c38 with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/240px-Cat03.jpg"
+    },
+    "outputShape": "unknown (endpoint dead; never returned a result body)",
+    "quirks": [
+      "Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'}",
+      "Probe/pre-flight shows HTTP 402 (looks payable) but this is misleading - the route is dead",
+      "No payment was made: 404 returned before settlement (paid:false, costUsd:0), so no USDC lost",
+      "Do NOT retry with alternate bodies or paths - the route does not exist"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-image-analysis-api-c72c38' is dead: a POST returns HTTP 404 with {error:'API_NOT_FOUND'}. The x402 probe deceptively reports 402 payable, but no working API sits behind it. No money was lost in this test because the 404 fires before payment settles. Exclude from the registry or mark as dead.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-image-intelligence#0: Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'} | orbis-image-intelligence#1: Orbis proxy slug is dead: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-analysis-api-c72c38'.\"} | orbis-image-intelligence#2: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. Pre-flight returns HTTP 402 (looks payable) but the slug 'ai-image-classify-api-7ee35a' is not active. | orbis-image-intelligence#3: Orbis proxy dead-slug pattern: the x402 probe returns 402 (looks payable) but the actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-describe-api-3a23d8'\"}. | orbis-image-intelligence#4: Endpoint is DEAD: returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'multimodal-analysis-api-72d0ee'.\"}"
+  },
+  "droppedReason": "orbis-image-intelligence#0: Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'} | orbis-image-intelligence#1: Orbis proxy slug is dead: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-analysis-api-c72c38'.\"} | orbis-image-intelligence#2: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. Pre-flight returns HTTP 402 (looks payable) but the slug 'ai-image-classify-api-7ee35a' is not active. | orbis-image-intelligence#3: Orbis proxy dead-slug pattern: the x402 probe returns 402 (looks payable) but the actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-describe-api-3a23d8'\"}. | orbis-image-intelligence#4: Endpoint is DEAD: returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'multimodal-analysis-api-72d0ee'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-image-intelligence#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-image-intelligence#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-image-intelligence#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-image-intelligence#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-image-intelligence#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

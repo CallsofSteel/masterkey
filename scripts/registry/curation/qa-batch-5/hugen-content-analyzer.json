@@ -1,0 +1,44 @@
+{
+  "serviceId": "hugen-content-analyzer",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://content.hugen.tokyo/content/analyze",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://content.hugen.tokyo/content/analyze?url=<URL-encoded URL to analyze> (optional &strip_query=true)",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.summary, body.key_points[], body.entities[].{name,type}, body.sentiment.{label,score}, body.topics[], body.content_type, body.credibility_signals.{has_author,has_date,has_sources,word_count_adequate}, body.word_count, body.language",
+    "quirks": [
+      "Input is a query parameter (url=), NOT a JSON body — it is a GET request.",
+      "The url value must be URL-encoded.",
+      "Optional strip_query=true removes query params from the target URL before processing."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a GET to https://content.hugen.tokyo/content/analyze with a single required query param `url` set to the (URL-encoded) page you want analyzed; optionally add strip_query=true to drop the target URL's own query string. Pay $0.02 USDC via x402 on Base (Solana also accepted). Response is a plain synchronous JSON object: read body.summary and body.key_points[] for the digest, body.sentiment for tone, body.topics[]/body.content_type for classification, body.entities[] for named entities, and body.credibility_signals for credibility flags.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hugen-content-analyzer#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

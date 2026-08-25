@@ -1,0 +1,48 @@
+{
+  "serviceId": "gemini-2-0-flash",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/gemini-3-flash",
+      "method": "POST",
+      "amountUsd": 0.012
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/gemini-3-flash with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (string completion); body.model; body.usage.{prompt_tokens,completion_tokens,total_tokens,cost}",
+    "quirks": [
+      "URL path says gemini-3-flash and the returned model is google/gemini-3-flash-preview-20251217, despite the registry name 'Gemini 2.0 Flash' — the live model is actually Gemini 3 Flash preview.",
+      "Response is a flat object with the answer at body.content (not OpenAI-style choices[].message.content)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to the URL with a JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Payment is x402 USDC on Base (~$0.012/call), no API key. Read the model's reply from body.content. Token/cost accounting is under body.usage.",
+    "costObservedUsd": 0.012
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-2-0-flash#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.012
+    }
+  ]
+}

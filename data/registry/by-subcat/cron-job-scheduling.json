@@ -1,0 +1,1271 @@
+[
+  {
+    "id": "agentcron-register-schedule",
+    "kind": "api",
+    "name": "AgentCron Register Schedule",
+    "aka": [
+      "agentcron-register-schedule",
+      "register"
+    ],
+    "provider": "cron.memoryapi",
+    "providerId": "cron-memoryapi",
+    "description": "Register a persistent cron schedule that fires HTTP requests to a target URL on a fixed interval. Survives agent session termination; runs server-side even when the agent is offline. Pay-per-registration in USDC on Base mainnet.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "job-scheduling",
+      "webhooks",
+      "recurring"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "cron.memoryapi",
+        "providerId": "cron-memoryapi",
+        "url": "https://cron.memoryapi.org/x402/cron/register",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x24FAcafEB49b4e3FACF0B3e69604A2F4640c9bf2",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://cron.memoryapi.org/x402/cron/register with JSON body {agent_id, url, interval_minutes, method?, headers?, body?, duration_days?}",
+      "inputExample": {
+        "agent_id": "remediate-qa-006",
+        "url": "https://example.com/webhook",
+        "interval_minutes": 15,
+        "duration_days": 1
+      },
+      "outputShape": "unverified (paid call blocked as provisioning op); OpenAPI implies a schedule object likely with schedule_id + status fields, retrievable via GET /x402/cron/status?schedule_id=",
+      "quirks": [
+        "REAL schema from OpenAPI (https://cron.memoryapi.org/openapi.json), NOT empirical 400-probing as the old registry usage claimed. Required: agent_id, url, interval_minutes. Optional: method (default GET), headers (object), body (string), duration_days (integer, max 30, default 7).",
+        "interval_minutes is an INTEGER with minimum 15 (>=15) — NOT a cron expression string. interval_minutes:60 = hourly. Values <15 will be rejected.",
+        "duration_days caps at 30; the schedule auto-expires after this many days.",
+        "PROVISIONING/RECURRING op: registering creates a persistent server-side job that repeatedly calls the target URL. Auto-mode classifier blocks the paid call as an outward/provisioning action. Point url only at an endpoint you control.",
+        "CHARGE-ON-VALIDATION-FAILURE (per prior QA): each malformed POST still costs $0.05 — build the full valid body before calling.",
+        "Management endpoints exist in OpenAPI: POST /x402/cron/cancel (reversible), GET /x402/cron/status, GET /x402/cron/history — but all GET reads currently return broken empty-402 (see alerts service)."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "Register a persistent cron schedule that fires HTTP requests to a target URL on a fixed interval. Survives agent session termination; runs server-side even when the agent is offline. Pay-per-registration in USDC on Base mainnet. POST https://cron.memoryapi.org/x402/cron/register with JSON body {agent_id, url, interval_minutes, method?, headers?, body?, duration_days?} Output: unverified (paid call blocked as provisioning op); OpenAPI implies a schedule object likely with schedule_id + status fields, retrievable via GET /x402/cron/status?schedule_id=",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "agentcron-register-schedule",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "agentcron-alerts",
+    "kind": "api",
+    "name": "AgentCron Alerts",
+    "aka": [
+      "agentcron-alerts",
+      "alerts"
+    ],
+    "provider": "cron.memoryapi",
+    "providerId": "cron-memoryapi",
+    "description": "Intended GET read endpoint at /x402/cron/alerts ($0.001). Not present in the provider OpenAPI spec and currently non-functional.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "job-scheduling",
+      "webhooks",
+      "recurring"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "cron.memoryapi",
+        "providerId": "cron-memoryapi",
+        "url": "https://cron.memoryapi.org/x402/cron/alerts",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x24FAcafEB49b4e3FACF0B3e69604A2F4640c9bf2",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://cron.memoryapi.org/x402/cron/alerts?agent_id=<id> (no body)",
+      "inputExample": {
+        "agent_id": "remediate-qa-006"
+      },
+      "outputShape": "none — endpoint returns 402 with empty {} body; never reached a 2xx",
+      "quirks": [
+        "BROKEN: /x402/cron/alerts is NOT in the provider OpenAPI spec (only /register, /status, /cancel, /history are documented).",
+        "Returns HTTP 402 with an EMPTY {} body and NO x402 'accepts' challenge — payment cannot be completed. Verified via raw curl AND via MCP agentcash fetch (both got 402 + empty body, paid:false).",
+        "Same empty-402 pattern affects the documented GET reads /status and /history too — appears to be an upstream x402 challenge bug on all GET endpoints.",
+        "REGISTRY FIX: replace /alerts with the spec'd /x402/cron/status?schedule_id=...&agent_id=... once the empty-402 challenge is fixed upstream."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Intended GET read endpoint at /x402/cron/alerts ($0.001). Not present in the provider OpenAPI spec and currently non-functional. GET https://cron.memoryapi.org/x402/cron/alerts?agent_id=<id> (no body) Output: none — endpoint returns 402 with empty {} body; never reached a 2xx",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "agentcron-alerts",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "cron-as-a-service",
+    "kind": "model",
+    "name": "Cron-as-a-Service",
+    "aka": [],
+    "provider": "Cron Service",
+    "providerId": "cron-service",
+    "description": "Schedule webhook calls on a cron expression (MCP webhook scheduler). Pay-per-call x402.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "job-scheduling",
+      "webhooks"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "cron-service.replit",
+        "providerId": "cron-service-replit",
+        "url": "https://cron-service.replit.app/api/mcp/sse",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Replit",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": 0.001,
+          "max": 0.001,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xcf8E880a8566e0ee191E847894ef314F718fFCAb",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "chainId": 8453,
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "outputSchema": {
+                "input": {
+                  "discoverable": true,
+                  "type": "http",
+                  "method": "GET",
+                  "queryParams": {}
+                },
+                "output": {
+                  "type": "json",
+                  "example": {
+                    "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "url": "https://example.com/webhook",
+                    "method": "POST",
+                    "scheduled_at": "2025-06-01T12:00:30.000Z",
+                    "status": "pending",
+                    "message": "Webhook scheduled successfully."
+                  }
+                }
+              },
+              "extensions": {
+                "outputSchema": {
+                  "input": {
+                    "discoverable": true,
+                    "type": "http",
+                    "method": "GET",
+                    "queryParams": {}
+                  },
+                  "output": {
+                    "type": "json",
+                    "example": {
+                      "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "url": "https://example.com/webhook",
+                      "method": "POST",
+                      "scheduled_at": "2025-06-01T12:00:30.000Z",
+                      "status": "pending",
+                      "message": "Webhook scheduled successfully."
+                    }
+                  }
+                },
+                "bazaar": {
+                  "info": {
+                    "input": {
+                      "type": "http",
+                      "method": "GET",
+                      "queryParams": {}
+                    },
+                    "output": {
+                      "type": "json",
+                      "example": {
+                        "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                        "url": "https://example.com/webhook",
+                        "method": "POST",
+                        "scheduled_at": "2025-06-01T12:00:30.000Z",
+                        "status": "pending",
+                        "message": "Webhook scheduled successfully."
+                      }
+                    }
+                  },
+                  "schema": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "required": [
+                      "input"
+                    ],
+                    "properties": {
+                      "input": {
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "method"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "type": {
+                            "const": "http",
+                            "type": "string"
+                          },
+                          "method": {
+                            "enum": [
+                              "GET",
+                              "HEAD"
+                            ],
+                            "type": "string"
+                          },
+                          "queryParams": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
+                          }
+                        }
+                      },
+                      "output": {
+                        "required": [
+                          "type"
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9ZqMZDg21Qzsbu3x5TemXgw2UuysZT9c7xGsgLGAuxxG",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88",
+                "name": "USD Coin"
+              },
+              "outputSchema": {
+                "input": {
+                  "discoverable": true,
+                  "type": "http",
+                  "method": "GET",
+                  "queryParams": {}
+                },
+                "output": {
+                  "type": "json",
+                  "example": {
+                    "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                    "url": "https://example.com/webhook",
+                    "method": "POST",
+                    "scheduled_at": "2025-06-01T12:00:30.000Z",
+                    "status": "pending",
+                    "message": "Webhook scheduled successfully."
+                  }
+                }
+              },
+              "extensions": {
+                "outputSchema": {
+                  "input": {
+                    "discoverable": true,
+                    "type": "http",
+                    "method": "GET",
+                    "queryParams": {}
+                  },
+                  "output": {
+                    "type": "json",
+                    "example": {
+                      "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                      "url": "https://example.com/webhook",
+                      "method": "POST",
+                      "scheduled_at": "2025-06-01T12:00:30.000Z",
+                      "status": "pending",
+                      "message": "Webhook scheduled successfully."
+                    }
+                  }
+                },
+                "bazaar": {
+                  "info": {
+                    "input": {
+                      "type": "http",
+                      "method": "GET",
+                      "queryParams": {}
+                    },
+                    "output": {
+                      "type": "json",
+                      "example": {
+                        "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+                        "url": "https://example.com/webhook",
+                        "method": "POST",
+                        "scheduled_at": "2025-06-01T12:00:30.000Z",
+                        "status": "pending",
+                        "message": "Webhook scheduled successfully."
+                      }
+                    }
+                  },
+                  "schema": {
+                    "$schema": "https://json-schema.org/draft/2020-12/schema",
+                    "type": "object",
+                    "required": [
+                      "input"
+                    ],
+                    "properties": {
+                      "input": {
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "method"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                          "type": {
+                            "const": "http",
+                            "type": "string"
+                          },
+                          "method": {
+                            "enum": [
+                              "GET",
+                              "HEAD"
+                            ],
+                            "type": "string"
+                          },
+                          "queryParams": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {}
+                          }
+                        }
+                      },
+                      "output": {
+                        "required": [
+                          "type"
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "needs-review"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "GET https://cron-service.replit.app/api/mcp/sse (x402, USDC on Base eip155:8453, 0.001 USDC) — but this is an MCP/SSE endpoint, not a working one-shot paid HTTP call",
+      "inputExample": {},
+      "outputShape": "Intended (per advertised example, NOT achieved): body.job_id, body.status, body.scheduled_at, body.message. In practice the paid GET only returns the unpaid 402 discovery body (body.error = 'X-Payment header is required').",
+      "quirks": [
+        "Paid x402 GET did NOT settle: payProvider ran the flow but the server returned the SAME unpaid 402 challenge ('X-Payment header is required') with paid:false, costUsd:0, no txHash. No money moved.",
+        "URL path is /api/mcp/sse — this is an MCP Server-Sent-Events surface, not a plain paid REST endpoint. A one-shot HTTP GET only fetches the x402 discovery 402; it does not execute a schedule.",
+        "No input surface to actually schedule a job: registry inputSchema is empty {} and the 402's accepts.outputSchema.input is {type:'http', method:'GET', queryParams:{}} with NO field for a target webhook URL or cron expression. You cannot tell it WHAT to schedule or WHEN over this call shape.",
+        "To use this service for real you would need to speak the MCP protocol (initialize + tools/call over SSE/JSON-RPC) with x402 payment on the tool call, not a single GET — out of scope for the registry's call-shape model."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do not call this as a simple paid HTTP GET — it does not work that way. The endpoint at https://cron-service.replit.app/api/mcp/sse is an MCP Server-Sent-Events surface; a one-shot GET only returns the x402 discovery 402 ('X-Payment header is required') even after the payment flow runs, and never settles a charge. There is also no input field (empty schema; queryParams only) to specify the webhook URL or cron expression you'd want to schedule, so the documented {job_id,status,scheduled_at} response is unreachable via this call shape. Treat as broken for registry use; revisit only via a full MCP client (initialize + tools/call with x402 on the tool call).",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "cron-as-a-service",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "platform"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "spraay-cron-create",
+    "kind": "api",
+    "name": "Spraay Cron Create",
+    "aka": [
+      "spraay-cron-create",
+      "cron.create"
+    ],
+    "provider": "gateway.spraay",
+    "providerId": "gateway-spraay",
+    "description": "Create a recurring scheduled job (cron) on the Spraay gateway. The job fires a chosen action on a standard 5-field cron schedule with an action-specific payload. Supported actions include webhook.trigger, batch.execute, payroll.execute, swap.execute, bridge.execute, notify.email, notify.sms, xmtp.send, analytics.snapshot, invoice.remind. Provisions a persistent resource that fires on schedule.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "job-scheduling"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "gateway.spraay",
+        "providerId": "gateway-spraay",
+        "url": "https://gateway.spraay.app/api/v1/cron/create",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xAd62f03C7514bb8c51f1eA70C2b75C37404695c8",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8WhWE8YgY5QBWyLowEHuaZiWdwDM3SrgDk36xYBNvYNS",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "POST https://gateway.spraay.app/api/v1/cron/create with JSON body {action, schedule, payload, maxRuns?}",
+      "inputExample": {
+        "action": "webhook.trigger",
+        "schedule": "0 0 * * *",
+        "payload": {
+          "url": "https://example.com/ping",
+          "method": "GET"
+        },
+        "maxRuns": 1
+      },
+      "outputShape": "id (string, e.g. cron_1780972938100_j9j49t), status (string, e.g. 'active'); confirmed via cron/list job entries: jobs[].{id,action,schedule,status,nextRun,lastRun,runCount}",
+      "quirks": [
+        "registry inputSchema was null; REAL required body fields are action, schedule, payload (a naive {name,url,method} returns 400 'Missing required fields: action, schedule, payload')",
+        "action must be one of a fixed enum, NOT a free string: batch.execute, payroll.execute, swap.execute, bridge.execute, webhook.trigger, notify.email, notify.sms, xmtp.send, analytics.snapshot, invoice.remind",
+        "schedule is a standard 5-field cron expression (e.g. '0 0 * * *')",
+        "payload is an object whose shape depends on the action (webhook.trigger: {url, method}; batch.execute: {token, recipients}; etc.)",
+        "maxRuns (number) is an OPTIONAL field to cap total executions",
+        "endpoint charges $0.01 per POST even on a 400 validation error — get the body shape right BEFORE paying",
+        "PROVISIONS a persistent scheduled job (outward/irreversible side effects on schedule) — NOT auto-verified; auto-mode classifier blocks the paid create call",
+        "x402 paid on Base USDC (amount 10000 = $0.01); also accepts Solana USDC; create response is sync (no async polling)",
+        "created jobs are scoped to the calling wallet and appear in cron/list"
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "Create a recurring scheduled job (cron) on the Spraay gateway. The job fires a chosen action on a standard 5-field cron schedule with an action-specific payload. Supported actions include webhook.trigger, batch.execute, payroll.execute, swap.execute, bridge.execute, notify.email, notify.sms, xmtp.send, analytics.snapshot, invoice.remind. Provisions a persistent resource that fires on schedule. POST https://gateway.spraay.app/api/v1/cron/create with JSON body {action, schedule, payload, maxRuns?} Output: id (string, e.g. cron_1780972938100_j9j49t), status (string, e.g. 'active'); confirmed via cron/list job entries: jobs[].{id,action,schedule,status,nextRun,lastRun,runCount}",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "spraay-cron-create",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "spraay-cron-list",
+    "kind": "api",
+    "name": "Spraay Cron List",
+    "aka": [
+      "spraay-cron-list",
+      "cron.list"
+    ],
+    "provider": "gateway.spraay",
+    "providerId": "gateway-spraay",
+    "description": "List the recurring scheduled jobs (cron jobs) belonging to the calling wallet on the Spraay gateway. Read-only.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "job-scheduling"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "gateway.spraay",
+        "providerId": "gateway-spraay",
+        "url": "https://gateway.spraay.app/api/v1/cron/list",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xAd62f03C7514bb8c51f1eA70C2b75C37404695c8",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8WhWE8YgY5QBWyLowEHuaZiWdwDM3SrgDk36xYBNvYNS",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://gateway.spraay.app/api/v1/cron/list (no body, no required query params)",
+      "inputExample": {},
+      "outputShape": "jobs[] (array of {id, action, schedule, status, nextRun, lastRun, runCount}), total (number), _gateway.{provider,version}, timestamp",
+      "quirks": [
+        "GET with NO body and no required query params; optional queryParams object only",
+        "results are scoped to the calling/paying wallet (returns only jobs that wallet created)",
+        "each job: id, action, schedule, status ('active'), nextRun (ISO), lastRun (null until first run), runCount",
+        "cheap read at $0.002 (amount 2000) on Base USDC; also accepts Solana USDC",
+        "verified live: HTTP 200, cost $0.002, tx 0x7e432844b3311d55ac252c8c05e03e4002edcbabf1b989cad37352e21ddef74f"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "List the recurring scheduled jobs (cron jobs) belonging to the calling wallet on the Spraay gateway. Read-only. GET https://gateway.spraay.app/api/v1/cron/list (no body, no required query params) Output: jobs[] (array of {id, action, schedule, status, nextRun, lastRun, runCount}), total (number), _gateway.{provider,version}, timestamp",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "spraay-cron-list",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "cron-expression-explainer",
+    "kind": "api",
+    "name": "Cron Expression Explainer",
+    "aka": [
+      "cron-expression-explainer",
+      "cron-explain"
+    ],
+    "provider": "netintel-production-440c.up.railway",
+    "providerId": "netintel-production-440c-up-railway",
+    "description": "Parse any 5/6/7-field cron expression (or @yearly/@monthly/@weekly/@daily/@hourly macro) into a human-readable explanation: validates syntax, breaks out each field, detects the common pattern name, computes the next N run times, and assigns a quality score/grade. Lets agents understand and validate cron schedules without implementing their own parser.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "parser",
+      "natural-language",
+      "utility"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel-production-440c.up.railway",
+        "providerId": "netintel-production-440c-up-railway",
+        "url": "https://netintel-production-440c.up.railway.app/cron-parser/explain",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "needs-review",
+        "team": "NetIntel"
+      },
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/cron-explain",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      },
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/cron-parse",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      },
+      {
+        "provider": "x402.agentutility",
+        "providerId": "x402-agentutility",
+        "url": "https://x402.agentutility.ai/cron-explain",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "DEFAULT (netintel): GET with query-string params only, NO body — expression (required, URL-encode spaces as %20 and asterisks as %2A), timezone (IANA, default UTC), count (default 5, max 20). ALTERNATE gateways (deployer cron-explain, deployer cron-parse, agentutility cron-explain) take a POST JSON body {expression (required), timezone}; these share one x402-deployer app and are the same operation under different slugs.",
+      "inputExample": {
+        "expression": "0 9 * * 1-5",
+        "timezone": "UTC",
+        "count": 3
+      },
+      "outputShape": "netintel GET: { expression, is_valid (bool), fields:{minute,hour,day_of_month,month,day_of_week}, explanation (string), pattern_name (string), next_runs (ISO8601 string[]), warnings (string[]), score (number 0-100), grade (string A-F), findings (array) }. deployer/agentutility POST (leaner, unpaid/from spec): { explanation (string), frequency (string bucket e.g. 'daily'), plus validation flag and runs-per-day estimate }.",
+      "quirks": [
+        "Default backend (netintel) is a GET endpoint: pass expression/timezone/count as URL query-string params, NOT a JSON body, despite registry inputSchema being object-shaped.",
+        "expression must be URL-encoded on the GET backend (space -> %20, asterisk -> %2A).",
+        "GET x402 flow on netintel could not be completed by qa-pay (empty 402 body); verified instead via MCP agentcash fetch which paid $0.001 and returned the body.",
+        "x402.agentutility.ai and x402-deployer.x402-deployer.workers.dev are the SAME deployed app ('x402-deployer' v1, payTo 0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621, network eip155:8453); not independent providers.",
+        "On the x402-deployer app, /cron-parse and /cron-explain are explicitly the same backend under two slugs (per its own endpoint catalog).",
+        "POST backends hang on a payment-less request (no immediate 402 body); their schema was read from the deployer root catalog (GET / returns full endpoint list with input_schema/input_example).",
+        "Supports 5-, 6-, and 7-field cron plus @macro shorthands.",
+        "Output field names differ by gateway: netintel returns fields/next_runs/score/grade; deployer returns frequency. Normalize on 'explanation' which both provide."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Parse any 5/6/7-field cron expression (or @yearly/@monthly/@weekly/@daily/@hourly macro) into a human-readable explanation: validates syntax, breaks out each field, detects the common pattern name, computes the next N run times, and assigns a quality score/grade. Lets agents understand and validate cron schedules without implementing their own parser. DEFAULT (netintel): GET with query-string params only, NO body — expression (required, URL-encode spaces as %20 and asterisks as %2A), timezone (IANA, default UTC), count (default 5, max 20). ALTERNATE gateways (deployer cron-explain, deployer cron-parse, agentutility cron-explain) take a POST JSON body {expression (required), timezone}; these share one x402-deployer app and are the same operation under different slugs. Output: netintel GET: { expression, is_valid (bool), fields:{minute,hour,day_of_month,month,day_of_week}, explanation (string), pattern_name (string), next_runs (ISO8601 string[]), warnings (string[]), score (number 0-100), grade (string A-F), findings (array) }. deployer/agentutility POST (leaner, unpaid/from spec): { explanation (string), frequency (string bucket e.g. 'daily'), plus validation flag and runs-per-day estimate }.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "cron-expression-explainer",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "natural-language-to-cron",
+    "kind": "api",
+    "name": "Natural Language to Cron",
+    "aka": [
+      "natural-language-to-cron",
+      "text-to-cron"
+    ],
+    "provider": "x402.nichospt",
+    "providerId": "x402-nichospt",
+    "description": "Convert a natural-language schedule (e.g. 'every weekday at 9:30am') into a standard 5-field cron expression. Returns the cron string, a human-readable summary, and the next 5 fire times computed in the requested IANA timezone.",
+    "category": "scheduling-calendars",
+    "subcategory": "cron-job-scheduling",
+    "tags": [
+      "cron",
+      "parser",
+      "natural-language",
+      "utility"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402.nichospt",
+        "providerId": "x402-nichospt",
+        "url": "https://x402.nichospt.net/text-to-cron",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HJfYcc2XtmrLgr4kze6kdp1JNHsqrdfJiHucpKNQaoJe",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "BFK9TLC3edb13K6v4YyH3DwPb5DSUpkWvb7XnqCL9b4F"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "1000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:14:08.317Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST JSON body { text (required, natural-language schedule, maxLength 500), timezone (IANA string, default UTC) }.",
+      "inputExample": {
+        "text": "every weekday at 9:30am",
+        "timezone": "America/New_York"
+      },
+      "outputShape": "{ cron (string, 5-field cron expression), human_readable (string), timezone (string), next_fires (ISO8601 string[], next 5 fire times in the given timezone, rendered as UTC instants) }",
+      "quirks": [
+        "This is the INVERSE of the explainer (text -> cron, not cron -> text); it was entirely missing from the original bundled usage doc.",
+        "POST JSON body with key 'text' (NOT 'expression') — different field name from the explainer op; passing 'expression' will fail.",
+        "next_fires are ISO8601 instants in UTC (e.g. 13:30:00.000Z for a 9:30am America/New_York schedule), even though scheduling is computed in the requested timezone.",
+        "Always returns a 5-field cron expression.",
+        "Provider origin x402.nichospt.net publishes a full OpenAPI spec at /openapi.json; x402 network is Solana per its spec, but qa-pay settled the call on Base ($0.01)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Convert a natural-language schedule (e.g. 'every weekday at 9:30am') into a standard 5-field cron expression. Returns the cron string, a human-readable summary, and the next 5 fire times computed in the requested IANA timezone. POST JSON body { text (required, natural-language schedule, maxLength 500), timezone (IANA string, default UTC) }. Output: { cron (string, 5-field cron expression), human_readable (string), timezone (string), next_fires (ISO8601 string[], next 5 fire times in the given timezone, rendered as UTC instants) }",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "natural-language-to-cron",
+      "discoveredVia": [
+        "cron jobs",
+        "scheduled jobs"
+      ],
+      "lastSyncedAt": "2026-06-02T00:14:08.317Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

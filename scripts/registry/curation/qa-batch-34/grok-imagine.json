@@ -1,0 +1,43 @@
+{
+  "serviceId": "grok-imagine",
+  "subcat": "image-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image/grok-imagine",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image/grok-imagine with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (persistent CDN-hosted JPG on DigitalOcean Spaces); also body.image_description, body.metadata.model, body.metadata.grok_url (temporary xAI source URL), body.metadata.cdn_key",
+    "quirks": [
+      "payment.accepts is Solana (USDC on Solana), not Base, despite the registry priceDisplay being chain-agnostic",
+      "body.metadata.grok_url is a temporary xAI URL that expires; use body.image_url for anything durable"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://api.xona-agent.com/image/grok-imagine with JSON body {\"prompt\": \"<your text>\"} and pay the x402 charge (~$0.04 USDC, settled on Solana). The response is synchronous JSON: read the generated image from body.image_url, which is a persistent CDN-hosted JPG. Avoid body.metadata.grok_url for anything you need to keep — it is a temporary xAI source URL.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "grok-imagine#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    }
+  ]
+}

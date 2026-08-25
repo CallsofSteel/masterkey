@@ -1,0 +1,43 @@
+{
+  "serviceId": "browser-use-cloud",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68cbd3ea1eac16d8cffc6041",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:68cbd3ea1eac16d8cffc6041 with JSON body {input}",
+    "inputExample": {
+      "input": "What is the title of example.com?"
+    },
+    "outputShape": "body.response (string) — expected to hold the agent's answer, but currently returns the error string \"X402 Service is currently unavailable.\"",
+    "quirks": [
+      "CHARGE-THEN-FAIL: gateway returns HTTP 201 and DEBITS USDC ($0.10 observed) but body.response is the literal string 'X402 Service is currently unavailable.' — payment is taken with no usable result.",
+      "The HTTP 201 + 402-payable preflight make it look healthy; it is not. Do NOT trust status code — inspect body.response for the unavailable message.",
+      "Do NOT retry: each attempt loses ~$0.10 with no result."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently BROKEN. The QuestFlow x402 gateway accepts the payment (HTTP 201, ~$0.10 USDC on Base) but the underlying Browser-Use agent returns body.response = \"X402 Service is currently unavailable.\" — i.e. it charges then fails. Intended call shape is POST with JSON {\"input\":\"<your instruction>\"} and the answer would land in body.response. Do not call it until the upstream agent is restored; calling it now just loses money.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "browser-use-cloud#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

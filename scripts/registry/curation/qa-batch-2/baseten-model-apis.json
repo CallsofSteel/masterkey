@@ -1,0 +1,51 @@
+{
+  "serviceId": "baseten-model-apis",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/baseten/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/baseten/v1/chat/completions with OpenAI-compatible JSON body {model, messages[], optional max_tokens/temperature/etc.}",
+    "inputExample": {
+      "model": "openai/gpt-oss-120b",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 256
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); reasoning models also fill body.choices[0].message.reasoning_content; token counts at body.usage",
+    "quirks": [
+      "Both `model` and `messages` are REQUIRED. Valid model slugs include: openai/gpt-oss-120b, deepseek-ai/DeepSeek-V3-0324, deepseek-ai/DeepSeek-V3.1, zai-org/GLM-4.6, zai-org/GLM-4.7, moonshotai/Kimi-K2-Instruct-0905, moonshotai/Kimi-K2-Thinking, moonshotai/Kimi-K2.5.",
+      "Reasoning-capable models (gpt-oss, DeepSeek, GLM, Kimi-Thinking) emit a separate `message.reasoning_content` field that consumes the token budget. With a tiny max_tokens (e.g. 16) the model spends all tokens on reasoning, leaving `message.content` empty and finish_reason='length'. Set max_tokens high enough (256+) to get real answer text.",
+      "OpenAI-compatible: supports streaming (stream:true -> SSE), tools, response_format/json_schema, reasoning_effort (low/medium/high) for reasoning models."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a standard OpenAI chat-completions JSON body to https://x402.orth.sh/baseten/v1/chat/completions; payment is handled via x402 (USDC on Base, ~$0.001-0.004/call). You MUST include both `model` (a valid slug like openai/gpt-oss-120b or deepseek-ai/DeepSeek-V3.1) and `messages`. Read the answer at body.choices[0].message.content. Note that reasoning models split output into reasoning_content + content, so request a generous max_tokens (256+) or content may come back empty with finish_reason='length'.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "baseten-model-apis#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

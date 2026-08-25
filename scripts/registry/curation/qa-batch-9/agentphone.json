@@ -1,0 +1,52 @@
+{
+  "serviceId": "agentphone",
+  "subcat": "sms-phone",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/calls/{call_id}/recording",
+      "method": "GET"
+    },
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/calls/{call_id}/transcript",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.agentphone.ai/x402/v1/calls/{call_id}/recording where {call_id} is the id returned by a prior POST /x402/v1/calls (an actual placed AI voice call). Pays via x402 on Base; price varies.",
+    "inputExample": {},
+    "outputShape": "Untested. Expected to return the audio recording (binary/audio content type) or a JSON wrapper with a recording URL for the call identified by {call_id}.",
+    "quirks": [
+      "URL has an unresolved path placeholder {call_id} that cannot be filled from schema/instructions (all null) — you must first place a real outbound voice call via POST /x402/v1/calls (up to $0.50, outward/irreversible) and capture the returned call id.",
+      "Recordings are wallet-scoped: only the wallet that placed the call can read its recording (per service description).",
+      "Real backend behind the 402 header is api.paysponge.com (transparent proxy); api.agentphone.ai/x402/v1 is the gateway entry point.",
+      "Calls flow uses x402 'upto'/permit2 (up to $0.50), distinct from the 'exact' $0.01 scheme used by /numbers."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint reads the audio recording of an AI voice call you previously placed through AgentPhone. You cannot call it standalone: first POST https://api.agentphone.ai/x402/v1/calls to place an outbound AI voice call and save the returned call id, then GET https://api.agentphone.ai/x402/v1/calls/{call_id}/recording with that id to retrieve the recording. Recordings are wallet-scoped, so use the same wallet that placed the call. It pays via x402 on Base. Not pay-tested in this run because no call_id was available and fabricating one would just hit a 404.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentphone#5",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentphone#6",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

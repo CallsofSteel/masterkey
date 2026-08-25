@@ -1,0 +1,54 @@
+{
+  "serviceId": "orbis-document-signing",
+  "subcat": "e-signature",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-sign-api-f3d620",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/signature-detection-api-28abe7",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/pdf-sign-api-f3d620 with JSON body",
+    "inputExample": {
+      "text": "hello"
+    },
+    "outputShape": "n/a — endpoint returns 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'pdf-sign-api-f3d620'.\"}",
+    "quirks": [
+      "Orbis proxy slug is dead: POST returns 404 API_NOT_FOUND ('No active API found with slug pdf-sign-api-f3d620').",
+      "No payment was charged (qa-pay reported paid:false, costUsd:0, status 404) — the route is unrouteable, not a payment failure.",
+      "inputSchema is empty in the registry; no documented input shape for the PDF/document to sign.",
+      "Do not retry alternate bodies/paths — the slug itself is dead (known Orbis charge-then-404 family)."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Do not use. This Orbis proxy endpoint is broken: a POST to https://orbisapi.com/proxy/pdf-sign-api-f3d620 returns HTTP 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'pdf-sign-api-f3d620'.\"}. The proxy slug is no longer active, so no PDF signing can occur and no useful result is returned. No payment is taken (the 402 pre-flight is misleading). Skip this service for document signing.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "orbis-document-signing#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-document-signing#1",
+      "classification": "needs-input",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    }
+  ]
+}

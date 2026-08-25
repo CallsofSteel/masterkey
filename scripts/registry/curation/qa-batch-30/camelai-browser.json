@@ -1,0 +1,43 @@
+{
+  "serviceId": "camelai-browser",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://browser.camelai.io/session",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://browser.camelai.io/session with JSON body {} (empty object); pay $0.020 USDC via x402 on Base.",
+    "inputExample": {},
+    "outputShape": "body.session_id (the browser session handle), body.created_at (ISO timestamp), body.ws_endpoint (WebSocket endpoint to drive the browser — observed EMPTY in this test)",
+    "quirks": [
+      "No input schema; send an empty JSON body {} — extra fields are not required.",
+      "Response ws_endpoint came back as an empty string (\"\"). session_id is the usable handle; do NOT rely on ws_endpoint being populated to connect a CDP/WebSocket client.",
+      "This is a session-provisioning endpoint: one paid call creates one browser session (returns session_id). Driving the browser is a separate downstream flow not covered by this endpoint.",
+      "Synchronous 200 response — no polling needed; session is created immediately."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://browser.camelai.io/session with an empty JSON body {} and pay $0.020 USDC via x402 (Base, Polygon, or Solana accepted). You get back a JSON object with session_id, created_at, and ws_endpoint. Use body.session_id as the handle for the provisioned cloud browser session. Note that in testing ws_endpoint returned empty, so don't assume a ready-to-use WebSocket URL — the session_id is what identifies the session for subsequent CamelAI browser-driving calls.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "camelai-browser#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

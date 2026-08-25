@@ -1,0 +1,44 @@
+{
+  "serviceId": "discord",
+  "subcat": "live-chat-messaging",
+  "batchId": "batch-8",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/discord-message-api-3576b7",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/discord-message-api-3576b7 with JSON body {content}",
+    "inputExample": {
+      "content": "MasterKey registry QA test message from John Doe (john.doe@gmail.com)"
+    },
+    "outputShape": "none (endpoint dead; returns body.error=\\\"API_NOT_FOUND\\\", body.message)",
+    "quirks": [
+      "Orbis proxy slug is DEAD: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'discord-message-api-3576b7'.\"} even on the unpaid pre-flight.",
+      "No payment was made (paid:false, costUsd:0) because the 404 came before settlement.",
+      "Do not retry or try alternate bodies/paths — the route does not exist."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'discord-message-api-3576b7' does not exist — calling POST https://orbisapi.com/proxy/discord-message-api-3576b7 returns HTTP 404 with {error:\"API_NOT_FOUND\"}. No Discord message is sent and the call fails before any payment settles. Do not call this endpoint; it should be pruned from the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "discord#0: Orbis proxy slug is DEAD: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'discord-message-api-3576b7'.\"} even on the unpaid pre-flight."
+  },
+  "droppedReason": "discord#0: Orbis proxy slug is DEAD: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'discord-message-api-3576b7'.\"} even on the unpaid pre-flight.",
+  "_backends": [
+    {
+      "key": "discord#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

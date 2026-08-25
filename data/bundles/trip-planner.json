@@ -1,0 +1,125 @@
+{
+  "slug": "trip-planner",
+  "name": "Trip Planner",
+  "description": "A travel agent grounded in live paid data (flights, hotels, hyperlocal weather, real reviews, local buzz): finds the trip, surfaces real booking links for the flight and hotel, buys the approved gear in USDC, and delivers an illustrated itinerary + PDF with a spoken phrasebook.",
+  "trigger": "plan a trip / vacation, find flights or hotels, decide when to buy, build an itinerary, find where locals actually go, book a hotel, or produce an illustrated itinerary + reminders",
+  "inputs": [
+    {
+      "name": "destination",
+      "prompt": "Where do you want to go?"
+    },
+    {
+      "name": "dates",
+      "prompt": "When and for how long? (dates or month + number of nights)"
+    },
+    {
+      "name": "home_base",
+      "prompt": "Where are you flying from, and what's your home currency?"
+    },
+    {
+      "name": "trip_style",
+      "prompt": "Who's going, your vibe/quality bar, and rough budget?"
+    },
+    {
+      "name": "actions",
+      "prompt": "Should I just plan, or also book the flight/hotel and buy any gear? Where should I email the finished plan?"
+    }
+  ],
+  "steps": [
+    {
+      "label": "Clarify and echo the plan (no spend)",
+      "instruction": "From the inputs, fill any gaps by asking short follow-ups (cash or miles? prep items needed? deliverables?). Then echo back the plan and an ESTIMATED x402 spend (data/generation is sub-dollar 🟢; any booking/purchase is 🔴 and needs explicit approval later). Build a short numbered deliverables checklist and keep it visible. Get a go-ahead before spending. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Flights: search and a book-now-vs-wait verdict",
+      "serviceId": "stabletravel-google-flights-search",
+      "instruction": "Search flights for the dates and route. Surface 2-3 real options and read `price_insights` (the ~60-day price history) to give a grounded 'book now vs wait' verdict. If the traveler has miles, note award-seat options too. Never fabricate prices or availability — if a call fails, say so and fall back."
+    },
+    {
+      "label": "Weather for the dates",
+      "serviceId": "open-meteo-weather",
+      "instruction": "Pull the forecast for the destination across the travel dates (use japan-weather-jma instead if the destination is Japan). Capture per-day conditions to drive packing and day sequencing. Build the request correctly the first time — some weather endpoints charge even on a bad request."
+    },
+    {
+      "label": "Local spots: ratings, coordinates, addresses",
+      "serviceId": "serper-maps",
+      "instruction": "For each candidate neighborhood/attraction/restaurant, get ratings, coordinates (lat/lng), and addresses. Capture enough real places to fill the itinerary. (Optionally deepen with tripadvisor-location-reviews for review truth.)"
+    },
+    {
+      "label": "Review truth for the shortlist",
+      "serviceId": "tripadvisor-location-reviews",
+      "instruction": "For the top spots, pull real aggregated reviews so recommendations reflect what visitors actually report, not guesswork. You summarize the sentiment yourself — do not pay a separate sentiment step."
+    },
+    {
+      "label": "Local buzz: what people actually say",
+      "serviceId": "exa-answer",
+      "instruction": "Run ONE aggregated question about the destination to surface what travellers and locals actually say right now — hidden gems, overrated spots, current warnings. Ask a single broad question; never fan out per-place (that burns money chasing single hits). Summarize the signal yourself."
+    },
+    {
+      "label": "Hotels: options and whole-stay totals",
+      "serviceId": "apify:johnvc~google-hotels-search-scraper",
+      "instruction": "Find real lodging in the chosen area for the exact dates. Pass the destination, check-in and check-out dates in ONE call. Capture each option's name, nightly rate, whole-stay total, rating and its BOOKING LINK. Present 2-3 options matched to the stated vibe/quality bar and budget. NOTE: this is an Apify actor — $1.00 USDC is captured up front and the UNUSED portion is auto-refunded on-chain ~1h later, so the net cost is the actor's real usage (typically pennies). Still call it ONCE for the whole stay rather than per-hotel: each call re-captures the $1 until its refund lands."
+    },
+    {
+      "label": "FX for the budget",
+      "serviceId": "fx-price",
+      "instruction": "Get the live rate between the destination currency and the home currency so the budget and every price are shown in the traveler's own currency. Do the currency arithmetic yourself — this call is just for the live rate."
+    },
+    {
+      "label": "Build the itinerary (no spend)",
+      "instruction": "Sequence the days using the spots' coordinates (cluster by area to minimize travel), fold in weather per day, and write a day-by-day plan with real places, addresses, and blurbs grounded in the reviews and social signal. Keep a running spend tally. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Gear to buy (present picks; 🔴 confirm before buying)",
+      "serviceId": "channel3-commerce-product-search",
+      "instruction": "First reason (free) about what the destination needs — plug type/voltage, climate, connectivity. Then find real products for the gear the traveler wants (power bank, packing cubes, eSIM/pocket wifi, umbrella, etc.). Show each pick with its exact total and shipping. This is a 🔴 RED action: do NOT purchase here — present the list and wait for explicit approval at the booking gate."
+    },
+    {
+      "label": "Spoken phrasebook (🟢)",
+      "serviceId": "openai-tts",
+      "instruction": "Translate 8-12 key phrases yourself (English + destination native script + romaji). TTS each phrase using the NATIVE SCRIPT as input so pronunciation is native-cadence, not anglicised. Keep the audio for the deliverable's phrasebook table (phrase / native / romaji / when-to-use / playable link)."
+    },
+    {
+      "label": "Illustrated hero map image (🟢)",
+      "serviceId": "gpt-image-2-generate",
+      "instruction": "Generate a detailed illustrated hero map of the trip. If you want numbered markers, instruct the model to draw them matching the itinerary order (bake them into the art, never overlay numbers afterward). This is async: POST returns a job to poll until complete, then use the image URL. If it fails, degrade gracefully to a themed CSS hero and say so."
+    },
+    {
+      "label": "Approval gate — real spend (🔴 STOP for explicit yes)",
+      "instruction": "Present an itemized 'real spend' summary. Be precise about what is actually being CHARGED: only the gear items are a real USDC purchase (each with its EXACT amount, network, and refundability). The flight and hotel are NOT charged here — this bundle returns booking links you complete yourself on the airline/OTA/hotel site — so list them as 'you'll pay at the provider', with their quoted prices. Do NOT proceed until the user explicitly approves. Never auto-escalate a plan into a purchase. When unsure, treat it as RED. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Flight booking links (🔴 after approval)",
+      "serviceId": "stabletravel-google-flights-booking",
+      "instruction": "Only after explicit approval: fetch the booking options for the chosen itinerary (pass the departure_token from the flight search). This endpoint returns AIRLINE AND OTA BOOKING LINKS WITH PRICES — it does NOT issue a ticket, hold a reservation, or take payment. Present the links and their prices so the user can complete the booking themselves. NEVER state that the flight is booked and NEVER invent a confirmation or booking reference."
+    },
+    {
+      "label": "Hotel booking hand-off (🔴 after approval)",
+      "instruction": "There is NO payable hotel-booking endpoint available, so do not attempt one and do not claim the hotel is booked. Present the chosen hotel with its booking link from the hotel search step so the user can complete it themselves, and say plainly that the reservation is theirs to finish. NEVER invent a confirmation number. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Buy the approved gear (🔴 after approval)",
+      "serviceId": "channel3-commerce-product-search",
+      "instruction": "Only for gear the user explicitly approved: complete the purchase to the confirmed shipping address (USDC = product total). Confirm each one. Skip anything not approved."
+    },
+    {
+      "label": "Build and host the interactive itinerary page",
+      "serviceId": "stableupload-file-upload",
+      "instruction": "Assemble the full interactive HTML itinerary — hero map at the top, day tabs, a pinned map with per-spot Open-in-Maps + addresses, a weather strip, spot cards, and a phrasebook table with inline audio players, plus the x402 receipt. Embed EVERYTHING generated (nothing dropped). Upload it with contentType text/html and keep the public link."
+    },
+    {
+      "label": "PDF companion",
+      "serviceId": "html-to-pdf-raw-html",
+      "instruction": "Render a STATIC version of the same content — hero image + all days (Open-in-Maps URLs as text) + phrasebook table (no audio) + receipt. Reveal all day sections (no tabbed hide). Host it and link it from the web page."
+    },
+    {
+      "label": "Deliver: email the links (🔴 confirm)",
+      "serviceId": "stableemail-send",
+      "instruction": "Email both hosted links (the interactive page + the PDF) to the address the user gave. Then tell them to check spam/junk if it isn't in their inbox. If they asked for a wake-up call before departure, offer to schedule it (ai-phone-call)."
+    },
+    {
+      "label": "Close: resolve the checklist + itemized receipt",
+      "instruction": "Resolve the deliverables checklist — every item ✅ with its hosted link/result or ⚠️ with a reason; nothing silently dropped. Show the itemized x402 spend (data/generation total + each approved purchase) and the free-vs-paid contrast: a free assistant gives a plausible plan; this one is grounded in live prices, real reviews, and real forecasts — and it's booked, the gear's bought, and the PDF's in your inbox. Reason this out yourself — no service call."
+    }
+  ]
+}

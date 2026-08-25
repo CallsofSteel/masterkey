@@ -1,0 +1,49 @@
+{
+  "serviceId": "shieldform-bot-protection",
+  "subcat": "captcha-bot-protection",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://shieldform.waltsoft.net/verify",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://shieldform.waltsoft.net/verify with JSON body (form-submission signals); x402 payment via Base USDC ($0.005)",
+    "inputExample": {
+      "ip": "203.0.113.42",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "fields": {
+        "email": "test@example.com",
+        "name": "Jane Doe"
+      }
+    },
+    "outputShape": "body.score (0-100 int), body.decision (string, e.g. \"allow\"), body.requestId (string)",
+    "quirks": [
+      "BROKEN: server-side x402 payment verification is non-functional. The unpaid 402 challenge is well-formed (x402 v2, exact scheme, Base USDC 5000 units = $0.005, valid payTo 0x318A...FD57), but after submitting a payment the server responds 402 {\"error\":\"Payment verification failed\"} on every attempt.",
+      "No USDC is actually spent — costUsd 0, no txHash, no settlement on both attempts. Safe to attempt but it will never succeed.",
+      "Body shape is irrelevant to the failure — both a populated body and an empty {} body produced identical 'Payment verification failed' responses; the rejection happens at the payment-verification layer, not input validation.",
+      "Do NOT retry repeatedly: it consistently fails verification."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not rely on this endpoint — it is broken. The x402 challenge looks valid (POST https://shieldform.waltsoft.net/verify, Base USDC $0.005), but the server's payment verification step rejects all payments with 402 {\"error\":\"Payment verification failed\"} and never settles a charge or returns a score. If the provider fixes verification, the intended call is POST with form-submission signals and the response would contain body.score (0-100), body.decision, and body.requestId. Until then it cannot be used.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "shieldform-bot-protection#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

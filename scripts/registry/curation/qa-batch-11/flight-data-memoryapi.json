@@ -1,0 +1,45 @@
+{
+  "serviceId": "flight-data-memoryapi",
+  "subcat": "flight-aviation",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://flight.memoryapi.org/x402/flight/flights",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://flight.memoryapi.org/x402/flight/flights?airport=JFK&direction=Departure&hours=6",
+    "inputExample": {
+      "airport": "JFK",
+      "direction": "Departure",
+      "hours": 6
+    },
+    "outputShape": "Expected (per outputSchema, unverified): body.flights[] with {flight_number, airline, destination, scheduled_time, status, terminal, gate}, body.count, body.airport, body.success. Not confirmed — endpoint returned 502.",
+    "quirks": [
+      "Endpoint is DOWN: returns 502 Bad Gateway (nginx/1.24.0 Ubuntu) on both default-param and bare calls. Upstream behind the x402 gateway is offline.",
+      "No 402 payment quote is ever reached — the gateway 502s before quoting, so no payment occurs.",
+      "All query params (airport, direction, hours) have defaults; a working call needs no required input."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. GET https://flight.memoryapi.org/x402/flight/flights returns 502 Bad Gateway from nginx on every attempt — the upstream flight service behind the x402 gateway is down. Do not attempt to pay; the gateway 502s before issuing a 402 quote, so no money is at risk but no data is returned. If it comes back online, intended use is a GET with optional query params airport (IATA code, default JFK), direction (Departure|Arrival, default Departure), hours (1-12, default 6), reading results from body.flights[].",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flight-data-memoryapi#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

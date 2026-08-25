@@ -1,0 +1,43 @@
+{
+  "serviceId": "clado-contacts-enrich-stableenrich",
+  "subcat": "company-people-data",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/clado/contacts-enrich",
+      "method": "POST",
+      "amountUsd": 0.2
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/clado/contacts-enrich with JSON body containing exactly one of {linkedin_url|email|phone}",
+    "inputExample": {
+      "linkedin_url": "https://www.linkedin.com/in/satyanadella"
+    },
+    "outputShape": "body.data[0].social[] (array of {link,type,rating}); body.data[0].contacts[] (personal email/phone when available); body.data[0].error (bool)",
+    "quirks": [
+      "contacts[] may be empty even on a successful 200 (no personal email/phone found for that subject); social[] is the primary populated result",
+      "result wrapped in a top-level data[] array — read body.data[0]"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/clado/contacts-enrich with a JSON body holding exactly one identifier: {linkedin_url}, {email}, or {phone}. Pay x402 (~$0.20 USDC on Base), synchronous. Read the result at body.data[0]: contacts[] holds personal email/phone when found, social[] holds matched social profiles ({link,type,rating}). Note contacts[] can be empty on a valid 200.",
+    "costObservedUsd": 0.2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "clado-contacts-enrich-stableenrich#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.2
+    }
+  ]
+}

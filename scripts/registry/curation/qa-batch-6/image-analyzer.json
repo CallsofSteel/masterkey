@@ -1,0 +1,44 @@
+{
+  "serviceId": "image-analyzer",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/image_analyzer",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/image_analyzer with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
+    },
+    "outputShape": "body.description (natural-language description string), body.objects[] ({name, position:{x,y,width,height}} normalized 0-1 bbox), body.insights.mood, body.insights.context, body.processedAt",
+    "quirks": [
+      "inputSchema is null in the registry; the correct body field is image_url (a publicly-accessible image URL). Field name was inferred, not documented.",
+      "Synchronous: full analysis returns in the paid 200 response, no polling.",
+      "qa-pay reported confirmed:false / txHash:null but status 200 with valid body — settlement succeeded, the txHash just was not surfaced."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://gg402.vercel.app/image_analyzer with a JSON body {\"image_url\": \"<public image URL>\"} and pay the x402 charge ($0.01 USDC on Base). The response is synchronous JSON: read body.description for the natural-language caption, body.objects[] for detected objects with normalized bounding boxes, and body.insights.mood / body.insights.context for scene/emotion analysis. The image URL must be publicly fetchable. No API key or sign-in required beyond the x402 payment.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-analyzer#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

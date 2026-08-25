@@ -1,0 +1,64 @@
+{
+  "serviceId": "people-data-labs",
+  "subcat": "company-people-data",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/peopledatalabs/v5/person/enrich",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402.orth.sh/peopledatalabs/v5/company/enrich",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402.orth.sh/peopledatalabs/v5/person/search",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/peopledatalabs/v5/person/enrich?profile=linkedin.com/in/seanthorne (any one identifier query param: name|first_name|last_name|email|phone|lid|profile|company)",
+    "inputExample": {
+      "profile": "linkedin.com/in/seanthorne"
+    },
+    "outputShape": "Untested. Upstream is PDL v5/person/enrich, so expect body.data (full person profile: work history, education, skills, social profiles) and body.status / body.likelihood; exact shape unverified.",
+    "quirks": [
+      "GET endpoint — identifiers go in the query string, NOT a JSON body. At least one of name/first_name+last_name/email/phone/lid/profile/company is required.",
+      "COULD NOT PAY-TEST: qa-pay's Sponge paidFetch fails with 'Sponge payment failed: Body already used' on every attempt (3x), even for a GET with no body — the request stream is consumed on the 402 pre-flight and reused on the paid retry. This is a payment-tool/infra bug, NOT an endpoint problem. No USDC was spent (paid:false all 3 times).",
+      "Endpoint is confirmed ALIVE and payable: raw curl returns a clean x402 v1 402 with full outputSchema. payTo 0x19a09691d0A9c4fB80Cc40694704a15858C6A454, asset USDC base, 350000 (=$0.35).",
+      "Upstream resource in the 402 is https://api.peopledatalabs.com/v5/person/enrich (Orthogonal gateway proxying People Data Labs)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "People Data Labs person-enrich proxied through the Orthogonal x402 gateway. Call it as a plain GET with one or more identifier query params (profile/email/name/lid/phone/company); the response is the enriched PDL person record (data.* with work history, education, skills, social profiles). Price is $0.35 USDC on Base, x402, no API key. NOTE: this run could not complete a live paid call — the qa-pay/Sponge paidFetch layer throws 'Body already used' on every attempt (no money spent), so output shape is inferred not verified. Re-test once the wallet bug is fixed.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "people-data-labs#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "people-data-labs#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "people-data-labs#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

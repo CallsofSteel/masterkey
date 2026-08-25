@@ -1,0 +1,48 @@
+{
+  "serviceId": "venice-embeddings",
+  "subcat": "embeddings-vector",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/text-embedding",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/text-embedding with JSON body {\"texts\":[\"...\"],\"model\":\"default\"}",
+    "inputExample": {
+      "texts": [
+        "hello world"
+      ],
+      "model": "default"
+    },
+    "outputShape": "body.embeddings (array of float vectors aligned with input order), body.count, body.dimensions, body.model, body.usage",
+    "quirks": [
+      "Registry lists method GET, but that is WRONG. A GET on the URL just returns a discovery/schema doc (HTTP 200 with name/description/input_schema/price) — it does NOT embed anything and is not the paid call. The real call is POST.",
+      "Pay with POST and a JSON body {texts:[...], model}. 'texts' is required (1-100 strings, each up to 30000 chars). 'model' is optional: 'default' (gemini-embedding-2-preview, recommended), 'fast' (BGE-M3), 'openai-compat' (text-embedding-3-small), or a full Venice model name.",
+      "Flat price $0.002 per call regardless of how many strings (registry priceDisplay 'Varies' is misleading).",
+      "Result vectors are in body.embeddings and aligned with input order; default model returns 1024 dimensions."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST (not GET) to https://x402-deployer.x402-deployer.workers.dev/text-embedding with JSON body {\"texts\":[\"sentence one\",\"sentence two\"],\"model\":\"default\"}; x402 USDC payment of $0.002 on Base is required per call. The embedding vectors come back in body.embeddings as an array of float arrays in the same order as the input texts, with body.dimensions and body.model describing them. A plain GET on the URL only returns the schema/discovery doc, so always POST to actually embed.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "venice-embeddings#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.002
+    }
+  ]
+}

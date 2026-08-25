@@ -1,0 +1,27 @@
+{
+  "serviceId": "screenshotone",
+  "subcat": "screenshot-rendering",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://screenshotone.x402.paysponge.com/take?url=<target-url>",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body is a base64-encoded JPEG image with a literal 'base64:' prefix (e.g. 'base64:/9j/4AAQ...'); Content-Type: image/jpeg",
+    "quirks": [
+      "Input is a GET request with ?url= query param — there is no JSON body and no inputSchema in the registry; the url parameter is required but undocumented",
+      "Response body has a literal 'base64:' prefix before the base64 JPEG data — callers must strip 'base64:' before decoding",
+      "A second /animate endpoint exists at the same price for animated (GIF) captures"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Make a GET request to https://screenshotone.x402.paysponge.com/take with the target page URL as the ?url= query parameter. The x402 payment of $0.02 USDC on Base is handled automatically. The response body is a base64-encoded JPEG prefixed with 'base64:' — strip that prefix before decoding. For animated captures use the /animate endpoint at the same price. No API key is required.",
+    "costObservedUsd": 0.02
+  },
+  "drop": false,
+  "droppedReason": null
+}

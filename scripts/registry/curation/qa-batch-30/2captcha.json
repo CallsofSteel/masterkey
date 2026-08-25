@@ -1,0 +1,49 @@
+{
+  "serviceId": "2captcha",
+  "subcat": "captcha-bot-protection",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://2captcha.x402.paysponge.com/createTask",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://2captcha.x402.paysponge.com/createTask with JSON body {\"task\":{\"type\":\"ImageToTextTask\",\"body\":\"<base64 image, >=100 bytes>\"}} (or any 2Captcha task type, e.g. RecaptchaV2TaskProxyless with websiteURL+websiteKey). No clientKey needed — the gateway injects it.",
+    "inputExample": {
+      "task": {
+        "type": "ImageToTextTask",
+        "body": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+      }
+    },
+    "outputShape": "On success: body.taskId (number) + body.errorId=0 + body.status. On error: body.errorId (non-zero), body.errorCode (string), body.errorDescription. The actual CAPTCHA solution is NOT in this response — createTask only returns a taskId; you must poll a getTaskResult endpoint with that taskId to retrieve body.solution.",
+    "quirks": [
+      "This is the standard 2Captcha createTask API, which is ASYNC: it returns only a taskId, NOT the solution. You must then poll a getTaskResult call with {taskId} (wait ~5-20s, retry until status='ready') to get the solution.",
+      "Do NOT send a clientKey — the PaySponge gateway injects the 2Captcha account key; the body is just {task:{...}}.",
+      "Image tasks require the base64 image to be >=100 bytes or you get errorCode ERROR_ZERO_CAPTCHA_FILESIZE (errorId 3). Send a real CAPTCHA image, not a tiny test PNG.",
+      "Errors come back with HTTP 200 + body.errorId!=0 (2Captcha convention), not via an HTTP error status. Always check body.errorId, not just the status code.",
+      "Each createTask call costs $0.010; the follow-up getTaskResult poll(s) may be free or separately priced — verify the result endpoint's pricing/path before integrating."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://2captcha.x402.paysponge.com/createTask with a JSON body of the form {\"task\":{\"type\":\"<TaskType>\", ...params}} — no clientKey, the gateway adds it. Use ImageToTextTask with a base64 \"body\" (image >=100 bytes) for image CAPTCHAs, or RecaptchaV2TaskProxyless with websiteURL+websiteKey for reCAPTCHA. The response is HTTP 200 with {errorId, taskId} on success or {errorId, errorCode, errorDescription} on failure — always check errorId (0 = ok). createTask is async: take the returned taskId and poll the 2Captcha getTaskResult endpoint until status='ready', then read body.solution. Each createTask call costs $0.010 USDC on Base.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "2captcha#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

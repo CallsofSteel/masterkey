@@ -1,0 +1,28 @@
+{
+  "serviceId": "exa",
+  "subcat": "ai-semantic-search",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.exa.ai/search with JSON body {query, numResults}",
+    "inputExample": {
+      "query": "machine learning",
+      "numResults": 3
+    },
+    "outputShape": "body.results[].url and body.results[].title; optionally publishedDate, image, favicon per result; body.costDollars.total for actual cost",
+    "quirks": [
+      "Default results include only url/title/id — pass contents:{text:true} or contents:{summary:true} in the request body to retrieve page text or summaries",
+      "numResults is capped at 10 for x402 tier per the schema description",
+      "body.resolvedSearchType may be an empty string even on success"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://api.exa.ai/search with a JSON body containing at minimum {query}. Optionally pass numResults (max 10 on x402), type ('neural', 'keyword', 'auto', etc.), and a contents object ({text:true} or {summary:true}) to get page body in results. Payment of $0.007 USDC is deducted per call on Base via x402 — no upstream API key is needed. Results are returned synchronously in body.results[] with url, title, and optional metadata.",
+    "costObservedUsd": 0.007
+  },
+  "drop": false,
+  "droppedReason": null
+}

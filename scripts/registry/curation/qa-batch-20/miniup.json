@@ -1,0 +1,47 @@
+{
+  "serviceId": "miniup",
+  "subcat": "app-hosting-paas",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://www.miniup.io/api/x402/apps",
+      "method": "POST",
+      "amountUsd": 0.007
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://www.miniup.io/api/x402/apps with JSON body {name, html, visibility?, password?}",
+    "inputExample": {
+      "name": "qa-mk-f0xp1efl",
+      "html": "<!doctype html><html><head><title>QA</title></head><body><h1>hello</h1></body></html>",
+      "visibility": "public"
+    },
+    "outputShape": "body.app.appId (slug), body.app.status (\"created\"), body.app.entryPoint, body.receipt.txHash, body.receipt.receiptId",
+    "quirks": [
+      "The 'name' field is a globally-unique slug. A taken or invalid slug returns HTTP 400 'Page name unavailable' AND STILL CHARGES $0.007. Use a unique random slug.",
+      "required fields: name + html; html must be a complete HTML document used as index.html.",
+      "Response gives app.status='created', no explicit live URL field; the URL is derived from the slug.",
+      "visibility:'public'|'private'; supplying 'password' makes the app private."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Create a hosted micro-app by POSTing JSON {name, html} to https://www.miniup.io/api/x402/apps (x402, ~$0.007 USDC on Base, no API key). 'name' is a globally-unique slug — generate a random one, because a taken/invalid slug returns 400 'Page name unavailable' yet still charges you. 'html' is the full HTML document served as index.html; add visibility:'public'|'private' (or a password for private). On success (200) read body.app.appId and body.app.status='created'; the on-chain receipt is at body.receipt.txHash. The response gives no explicit live URL — it is derived from the slug.",
+    "costObservedUsd": 0.007
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "miniup#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.007
+    }
+  ]
+}

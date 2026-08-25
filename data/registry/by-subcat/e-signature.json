@@ -1,0 +1,435 @@
+[
+  {
+    "id": "orbis-document-signing",
+    "kind": "api",
+    "name": "Orbis Document Signing",
+    "aka": [
+      "pdf-sign-api",
+      "signature-detection-api"
+    ],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Apply a digital signature to a PDF document, and detect, verify and locate signatures and parties in legal documents while generating an audit trail for contract execution. Billed per call via x402 on Base and Solana.",
+    "category": "document-content",
+    "subcategory": "e-signature",
+    "tags": [
+      "e-signature",
+      "pdf-signing",
+      "digital-signature",
+      "audit-trail",
+      "contracts"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/pdf-sign-api-f3d620",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/pdf-sign-api-f3d620"
+              },
+              "description": "Add digital signature to PDF documents",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/pdf-sign-api-f3d620"
+              },
+              "description": "Add digital signature to PDF documents",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:00:09.648Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      },
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/signature-detection-api-28abe7",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": 0.001,
+          "max": 0.001,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/signature-detection-api-28abe7"
+              },
+              "description": "Detect, verify, and locate signatures and generate audit trails for contract execution agents",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "1000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/signature-detection-api-28abe7"
+              },
+              "description": "Detect, verify, and locate signatures and generate audit trails for contract execution agents",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:00:09.648Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/pdf-sign-api-f3d620 with JSON body",
+      "inputExample": {
+        "text": "hello"
+      },
+      "outputShape": "n/a — endpoint returns 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'pdf-sign-api-f3d620'.\"}",
+      "quirks": [
+        "Orbis proxy slug is dead: POST returns 404 API_NOT_FOUND ('No active API found with slug pdf-sign-api-f3d620').",
+        "No payment was charged (qa-pay reported paid:false, costUsd:0, status 404) — the route is unrouteable, not a payment failure.",
+        "inputSchema is empty in the registry; no documented input shape for the PDF/document to sign.",
+        "Do not retry alternate bodies/paths — the slug itself is dead (known Orbis charge-then-404 family)."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "Do not use. This Orbis proxy endpoint is broken: a POST to https://orbisapi.com/proxy/pdf-sign-api-f3d620 returns HTTP 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'pdf-sign-api-f3d620'.\"}. The proxy slug is no longer active, so no PDF signing can occur and no useful result is returned. No payment is taken (the 402 pre-flight is misleading). Skip this service for document signing.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "orbis-document-signing",
+      "discoveredVia": [
+        "e signature api",
+        "esign"
+      ],
+      "lastSyncedAt": "2026-06-02T00:00:09.648Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "agentstools-notarize",
+    "kind": "api",
+    "name": "Agentstools Notarize",
+    "aka": [
+      "agentstools-notarize",
+      "notarize",
+      "web-notarization",
+      "url-attestation",
+      "web-proof"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Notarizes a public URL: the service fetches it server-side and returns a signed snapshot (final URL, HTTP status, content-type, sha256 of the body, server timestamp, upstream host) with two cryptographic attestations — a plain EIP-712 signature and an EAS off-chain attestation — proving integrity, timestamp and non-repudiation of what the endpoint observed at fetch time.",
+    "category": "document-content",
+    "subcategory": "e-signature",
+    "tags": [
+      "notarize",
+      "attestation",
+      "web-proof",
+      "sha256",
+      "eip712",
+      "eas"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0080",
+      "amount": 0.008,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/notarize",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.008,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0080",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "8000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Public http(s) URL to fetch and notarize. REQUIRED. Passed as a query param."
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "hash",
+                "full"
+              ],
+              "description": "hash = metadata + sha256 only (default); full = also return the fetched body (base64)."
+            },
+            "network": {
+              "type": "string",
+              "description": "Reserved (attestations are always chainId 8453 / Base)."
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string"
+            },
+            "snapshot": {
+              "type": "object",
+              "properties": {
+                "requested_url": {
+                  "type": "string"
+                },
+                "final_url": {
+                  "type": "string"
+                },
+                "http_status": {
+                  "type": "integer"
+                },
+                "content_type": {
+                  "type": "string"
+                },
+                "content_length": {
+                  "type": "integer"
+                },
+                "sha256": {
+                  "type": "string",
+                  "description": "0x-prefixed sha256 of the fetched response body."
+                },
+                "fetched_at": {
+                  "type": "string",
+                  "description": "ISO-8601 UTC timestamp of when the service fetched the URL."
+                },
+                "upstream_host": {
+                  "type": "string"
+                },
+                "truncated": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "attestor": {
+              "type": "string",
+              "description": "Ethereum address of the attestor key that signed the snapshot."
+            },
+            "attestations": {
+              "type": "object",
+              "properties": {
+                "eip712": {
+                  "type": "object",
+                  "description": "EIP-712 typed-data signature over the snapshot (domain, primaryType Snapshot, types, message, signature, signer, schemaString)."
+                },
+                "eas_offchain": {
+                  "type": "object",
+                  "description": "EAS off-chain (version 2) attestation (uid, signer, sig{domain, types, message, signature}) verifiable on easscan.org or via the EAS SDK."
+                }
+              }
+            },
+            "verify_hint": {
+              "type": "object",
+              "description": "How to verify each attestation (POST /attest/verify, POST /crypto/verify, or easscan.org / EAS SDK)."
+            },
+            "disclaimer": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:00:09.648Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/notarize?url=<public-http(s)-url>[&mode=hash|full] — inputs are query params, no request body; only `url` is required (mode defaults to hash). Result is inline in the 200 body (synchronous, no poll). Pays $0.008 USDC via x402 v2 on Base (eip155:8453), keyless. NOTE: send requests over HTTP/1.1 — the host's HTTP/2 (h2) upgrade hangs; Node fetch/undici and forced-http1.1 curl both work.",
+      "inputExample": {
+        "url": "https://example.com",
+        "mode": "hash"
+      },
+      "outputShape": "mode (hash|full), snapshot{requested_url, final_url, http_status, content_type, content_length, sha256 (0x-prefixed sha256 of the body), fetched_at (ISO-8601 UTC), upstream_host, truncated}, attestor (0x attestor address), attestations{eip712{domain{name:'AgentsTools Attestation',version,chainId:8453}, primaryType:'Snapshot', types, message, signature, signer, schemaString}, eas_offchain{standard:'eas-offchain', version:2, uid, signer, sig{domain(EAS 1.3.0 @ 0x4200...0021), types, message, signature}}}, verify_hint{eip712, eas_offchain, self}, disclaimer.",
+      "quirks": [
+        "`url` is the ONLY required input, passed as a query param on a GET (no request body). `mode` defaults to `hash` (metadata + sha256 only); `mode=full` also returns the fetched body base64-encoded. `network` is reserved (attestations are always Base/chainId 8453).",
+        "IMPORTANT transport quirk: the host hangs on HTTP/2 (curl's default h2 negotiation times out with no response). Force HTTP/1.1 (curl --http1.1) or use a client that defaults to HTTP/1.1 (Node fetch/undici) — then it responds normally with a fast 402/200.",
+        "Two attestations are returned: an EIP-712 signature (domain 'AgentsTools Attestation' v1, chainId 8453, primaryType Snapshot) and an EAS off-chain v2 attestation (verifiable on easscan.org or with the EAS SDK). verify_hint points to the companion POST /attest/verify (pure-compute recover) and POST /crypto/verify.",
+        "Provider disclaimer: this proves integrity + timestamp + non-repudiation of what THIS service observed at fetch time — signed by the attestor key. It is NOT a trustless proof of the origin server (that would require zkTLS / web-proof).",
+        "Verified live 2026-08-07: url=https://example.com, mode=hash -> http_status 200, content_type text/html, content_length 559, sha256 0xff67a9d764d6a2367a187734e697f6a53217db9a21c101d410a113ca871a299d, attestor 0x48Cbbbf38Bae6394B0D921Fa8c00d4A90e088960; $0.008 charged, tx 0xe57e9d5d39ee3db590a62a58eb896bc25b0c90bf2e21d8474b4de45afe9672a2 on Base."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Notarize a public web URL with a single keyless x402 GET. GET https://api.agentstools.dev/notarize?url=<public http(s) URL> (required) plus optional mode=hash (default; metadata + sha256 only) or mode=full (also returns the fetched body base64). No request body. Pays $0.008 USDC via x402 on Base. Synchronous — the 200 body carries snapshot{final_url, http_status, content_type, content_length, sha256, fetched_at, upstream_host} plus two attestations: an EIP-712 signature and an EAS off-chain (v2) attestation, both from the service's attestor key, so the response is later verifiable (POST /attest/verify, POST /crypto/verify, or easscan.org / EAS SDK). Proves integrity + timestamp + non-repudiation of what the endpoint observed at fetch time — not a trustless proof of the origin server. Transport quirk: use HTTP/1.1 (the host hangs on HTTP/2).",
+      "costObservedUsd": 0.008
+    },
+    "source": {
+      "serviceKey": "agentstools-notarize",
+      "discoveredVia": [
+        "e signature api",
+        "esign"
+      ],
+      "lastSyncedAt": "2026-06-02T00:00:09.648Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

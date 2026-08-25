@@ -1,0 +1,47 @@
+{
+  "serviceId": "whisper-audio-translate-english",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/openai/audio/translations",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/openai/audio/translations with multipart/form-data: fields file=@audio.(mp3|wav|m4a|...) and model=whisper-1 (optional: prompt, response_format, temperature). x402 USDC on Base, $0.020/call.",
+    "inputExample": {
+      "file": "<multipart binary audio file, e.g. speech.mp3>",
+      "model": "whisper-1",
+      "response_format": "json"
+    },
+    "outputShape": "body.text (translated English transcript). Mirrors OpenAI /v1/audio/translations response: JSON {text} by default; plain string for response_format=text/srt/vtt.",
+    "quirks": [
+      "REQUIRES multipart/form-data, NOT JSON. Must send an actual audio file in the 'file' field plus model=whisper-1. A JSON body returns HTTP 400 'you must provide a model parameter'.",
+      "This is a direct OpenAI Whisper passthrough; behaves exactly like OpenAI POST /v1/audio/translations (always translates source language -> English).",
+      "qa-pay's --dry-run flag is NOT honored: it still pays. Verified paid $0.02 on Base (tx 0x998017b819edbc07027ba96b85afca1d525660b31c9ea29885da1aebd3bc6953) sending an empty JSON body -> got 400 missing-model.",
+      "Output is English-only translation, not transcription in the source language."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402.orth.sh/openai/audio/translations as multipart/form-data (not JSON): attach the audio under field 'file' and set model=whisper-1; optionally add prompt, response_format (json|text|srt|vtt), and temperature. Pay $0.020 USDC via x402 on Base (no API key needed). Read the English translation from body.text (or the raw string for non-json formats). It is a thin OpenAI Whisper translation proxy, so any source language is translated into English.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "whisper-audio-translate-english#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": 0.02
+    }
+  ]
+}

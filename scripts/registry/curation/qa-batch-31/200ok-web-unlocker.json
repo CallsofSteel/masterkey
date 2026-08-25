@@ -1,0 +1,45 @@
+{
+  "serviceId": "200ok-web-unlocker",
+  "subcat": "captcha-bot-protection",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://web-unlocker.200ok.xyz/unlock",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://web-unlocker.200ok.xyz/unlock with JSON body {url, type?} — x402 USDC $0.01 on Base (eip155:8453)",
+    "inputExample": {
+      "url": "https://example.com",
+      "type": "html"
+    },
+    "outputShape": "Envelope at body.success / body.url / body.timestamp / body.html. Per outputSchema, real content should be in body.html (HTML string) or body.screenshot (base64 PNG). BUT in practice body.html contained a nested upstream error JSON string instead of page content.",
+    "quirks": [
+      "authMode is apiKey+paid: the x402 micropayment settles and the endpoint returns HTTP 200 with envelope success:true, but the real content field body.html contained an upstream error string {\"code\":401,\"data\":\"User balance is insufficient!\"} — the provider requires its OWN internal account balance / API key on top of the x402 payment, which we do not have.",
+      "CHARGE-THEN-FAIL: paid $0.01 and got NO usable page content. Do not call this endpoint.",
+      "Envelope-level success:true and HTTP 200 are misleading — you MUST inspect body.html for a nested error JSON before trusting the result.",
+      "Violates MasterKey no-API-key policy (apiKey+paid) — should be pruned from the registry."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do NOT use this endpoint. Although it advertises pay-per-call x402 web unlocking ($0.01 USDC on Base) and accepts an x402 payment returning HTTP 200 with success:true, the actual content field (body.html) returned an upstream error: {\"code\":401,\"data\":\"User balance is insufficient!\"}. The service is authMode apiKey+paid — it requires the provider's own account balance/API key in addition to the x402 payment, which is not satisfied by wallet payment alone. Money is charged but no page content is returned. This is a charge-then-fail / no-API-key-policy violation and should be removed from the registry.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "200ok-web-unlocker#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "slug": "research",
+  "name": "Research Report",
+  "description": "Deep-research any question across multiple sources and write a cited report.",
+  "trigger": "research a question / topic across sources and write a report",
+  "inputs": [{ "name": "question", "prompt": "What should I research?" }],
+  "steps": [
+    {
+      "label": "Search broadly",
+      "serviceId": "brave-search",
+      "instruction": "Break the question into 3-5 sub-questions/angles and run a brave-search for each (its search parameter is `q`) — gather diverse, credible, recent sources. Do NOT rely on a single search."
+    },
+    {
+      "label": "Cross-check for breadth",
+      "serviceId": "serper-web-search",
+      "instruction": "Run 1-2 web searches (serper) to corroborate and catch anything recent the first pass missed."
+    },
+    {
+      "label": "Synthesize",
+      "instruction": "Cross-reference the findings across sources; resolve disagreements and note uncertainty/confidence. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Write the cited report",
+      "instruction": "Write a structured markdown report: a short summary, then sections answering the question, then a Sources list with links. Cite sources inline where claims come from them."
+    }
+  ]
+}

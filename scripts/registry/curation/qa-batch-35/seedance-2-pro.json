@@ -1,0 +1,49 @@
+{
+  "serviceId": "seedance-2-pro",
+  "subcat": "video-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/seedance/t2v",
+      "method": "POST",
+      "amountUsd": 1.2
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/seedance/t2v (x402, dynamic price) with JSON body {prompt, duration, aspectRatio, outputResolution} -> {success, jobId, status:\"pending\"}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (free, same wallet) until status=\"complete\"",
+    "inputExample": {
+      "prompt": "a red circle",
+      "duration": "5",
+      "aspectRatio": "16:9",
+      "outputResolution": "720p"
+    },
+    "outputShape": "POST -> body.jobId (+status:\"pending\"). Poll GET /api/jobs/{jobId} (SIWX) -> body.status / body.progress; on body.status==\"complete\" the asset is at body.result.videoUrl (+ body.result.thumbnailUrl). URLs are Vercel blob links that expire ~20min - download immediately.",
+    "quirks": [
+      "TWO-STEP ASYNC: the POST only pays + returns {jobId, status:pending}; the actual video comes from polling GET /api/jobs/{jobId}, which is SIWX-auth (free) and MUST be signed by the SAME wallet that paid.",
+      "DYNAMIC PRICING ABOVE HEADLINE: registry headline is $0.45 but live settle was $1.20 for a 5s 720p clip (price scales with duration/resolution, $0.09-$0.54/s cap). Headline is a floor, not the real cost.",
+      "SLOW: video gen took ~6 min (status sat at progress=10 'loading' for several minutes, then jumped 95% -> complete). Poll patiently; budget 10+ polls.",
+      "RESULT URLs EXPIRE ~20min: body.result.videoUrl/thumbnailUrl are Vercel blob links - download the asset immediately on completion.",
+      "Pays USDC on Base (also Solana/Tempo), no API key. costUsd from qa-pay; on-chain confirmed flag was false (settlement not yet confirmed at capture time)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "StableStudio Seedance 2 Pro text-to-video. POST JSON {prompt, duration, aspectRatio, outputResolution} to /api/generate/seedance/t2v with x402 payment (USDC on Base, no API key) - it returns {jobId, status:\"pending\"} and pays a DYNAMIC price (live: $1.20 for 5s 720p, well above the $0.45 headline). Then poll GET /api/jobs/{jobId} using a SIGN-IN-WITH-X signature (free, must be the SAME wallet that paid) every ~20-30s until body.status==\"complete\" (takes ~6 min). Read the video from body.result.videoUrl and thumbnail from body.result.thumbnailUrl, and DOWNLOAD immediately - the Vercel blob URLs expire in ~20 minutes.",
+    "costObservedUsd": 1.2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-pro#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.2
+    }
+  ]
+}

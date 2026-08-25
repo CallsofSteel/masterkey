@@ -1,0 +1,62 @@
+{
+  "serviceId": "toonhaus-finance",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://finance.toonhaus.dev/api/stock/quote",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://finance.toonhaus.dev/api/stock/price-history",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://finance.toonhaus.dev/api/market/news",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://finance.toonhaus.dev/api/stock/quote?ticker=AAPL",
+    "inputExample": {
+      "ticker": "AAPL"
+    },
+    "outputShape": "body.price, body.change, body.changePercent, body.open, body.high, body.low, body.previousClose, body.marketCap, body.name, body.industry, body.exchange, body.currency, body.timestamp (flat JSON object)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://finance.toonhaus.dev/api/stock/quote with a required query parameter `ticker` set to a stock symbol (e.g. ticker=AAPL). Pay $0.001 USDC via x402 on Base. The response is a flat JSON object with the live quote: read body.price for the current price plus body.change/body.changePercent for the day move, and body.name/body.industry/body.exchange/body.marketCap for company info. Plain synchronous call, no auth or polling needed.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "toonhaus-finance#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toonhaus-finance#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toonhaus-finance#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

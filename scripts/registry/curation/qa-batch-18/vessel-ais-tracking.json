@@ -1,0 +1,90 @@
+{
+  "serviceId": "vessel-ais-tracking",
+  "subcat": "shipping-logistics",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://war-tracker.com/api/v1/vessels/9281554/position",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://war-tracker.com/api/v1/vessels/:imo/position",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://war-tracker.com/api/v1/vessels/:imo/track",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://war-tracker.com/api/v1/vessels/9368223/track",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://war-tracker.com/api/v1/vessels/9217981/track",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://war-tracker.com/api/v1/vessels/:imo/position (the registry's POST returns 405 Method Not Allowed — use GET). :imo = a real 7-digit IMO ship number, e.g. 9074729. No request body.",
+    "inputExample": {
+      "_path": "GET /api/v1/vessels/9074729/position",
+      "_note": "no JSON body; the only input is the :imo path segment (a real IMO vessel number)"
+    },
+    "outputShape": "On success: body holds the latest AIS position (lat/lon/timestamp) for the vessel. When the ship has no recent AIS fix the API returns HTTP 404 with body.detail = 'no recent position for vessel' (graceful, app-level — endpoint is still working).",
+    "quirks": [
+      "Registry method is WRONG: POST returns 405 'Method Not Allowed'. The endpoint is GET, not POST.",
+      "x402 micropayment is charged per call (~$0.001) even when the vessel has no recent position (you still pay for the 404 lookup).",
+      "A 404 with body.detail='no recent position for vessel' is NOT a broken endpoint — it means that specific IMO has no current AIS data. Try another active/large vessel IMO to get a real position.",
+      ":imo path param must be a real IMO number (7 digits, e.g. 9074729)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://war-tracker.com/api/v1/vessels/:imo/position with the x402 wallet (do NOT POST — POST returns 405). Substitute :imo with a real 7-digit IMO number for the ship you want. No request body is needed. On success read the latest AIS position from the JSON body (lat/lon/timestamp). If you get HTTP 404 with body.detail='no recent position for vessel', the endpoint worked but that ship has no recent AIS fix — retry with a different, actively-tracked IMO. Each call costs roughly $0.001 USDC on Base regardless of hit/miss.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "vessel-ais-tracking#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "vessel-ais-tracking#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "vessel-ais-tracking#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "vessel-ais-tracking#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "vessel-ais-tracking#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

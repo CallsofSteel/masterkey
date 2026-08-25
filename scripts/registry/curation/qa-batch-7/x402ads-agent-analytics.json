@@ -1,0 +1,44 @@
+{
+  "serviceId": "x402ads-agent-analytics",
+  "subcat": "web-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402ads.io/v1/agent/analytics",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402ads.io/v1/agent/analytics?period=lifetime (optional period query: 7d|30d|lifetime), x402-paid in USDC ($0.02)",
+    "inputExample": {
+      "period": "lifetime"
+    },
+    "outputShape": "Per outputSchema (never returned at test time): body.campaigns_count, body.active_count, body.total_deposited, body.total_remaining, body.impressions, body.conversions, body.period",
+    "quirks": [
+      "Endpoint returns HTTP 402 {\"error\":\"Payment settlement failed\",\"reason\":\"facilitator_timeout\"} on every call — its own x402 facilitator times out during settlement so payment never completes and the resource is never delivered.",
+      "No USDC was actually charged (paid:false, costUsd:0) — the failure happens before settlement, so retrying is safe but futile; got identical timeout on 2 attempts.",
+      "Probe earlier showed 402/payable (looked healthy) but the actual paid call fails at settlement — do not trust the 402 pre-flight as proof it works.",
+      "Returns analytics scoped to the PAYING wallet's own ad campaigns (total_deposited/total_remaining/impressions for that wallet); a fresh wallet with no x402ads campaigns would get zeros even if settlement succeeded."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken: every paid call returns HTTP 402 with {\"error\":\"Payment settlement failed\",\"reason\":\"facilitator_timeout\"}, meaning x402ads' own facilitator cannot settle the payment, so you never receive analytics data and (good news) no USDC is actually charged. Do not rely on it until the provider fixes settlement. When working, the intended call is a simple GET https://x402ads.io/v1/agent/analytics with an optional ?period=7d|30d|lifetime query, paying $0.02 USDC via x402, returning your wallet's own ad-campaign stats (campaigns_count, active_count, total_deposited, total_remaining, impressions, conversions, period). Note results are scoped to the paying wallet's campaigns, so an unrelated wallet would see zeros.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402ads-agent-analytics#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

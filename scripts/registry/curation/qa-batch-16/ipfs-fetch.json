@@ -1,0 +1,74 @@
+{
+  "serviceId": "ipfs-fetch",
+  "subcat": "decentralized-ipfs",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/ipfs/get",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/ipfs-fetch",
+      "method": "POST",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://402-server.pinata-marketing-enterprise.workers.dev/v1/retrieve/private/bafkreifm6sroj5jdnkbjojh5ra5hiybj3rwq52focjvaup7dn5amqll4ne",
+      "method": "GET"
+    },
+    {
+      "backend": "https://gateway.grapevine.fyi/x402/cid/{cid}",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/ipfs-fetch with JSON body {cid}",
+    "inputExample": {
+      "cid": "bafkreid7qoywk77r7rj3slobqfekdvs57qwuwh5d2z3sqsw52iabe3mqne"
+    },
+    "outputShape": "body.content (base64-encoded file bytes), body.content_type, body.size_bytes, body.gateway_used, body.cid, body.source",
+    "quirks": [
+      "inputSchema was null in registry; the body field name is {cid} (inferred and confirmed working)",
+      "Response body.content is BASE64-encoded, not raw — decode it (e.g. SGVsbG8gV29ybGQh -> 'Hello World!'). body.content_type tells you the actual MIME type",
+      "Sync JSON response; pays $0.005 USDC on Base (eip155:8453) via x402, no auth"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402-deployer.x402-deployer.workers.dev/ipfs-fetch with JSON body {\"cid\":\"<IPFS CID>\"} and pay the $0.005 USDC x402 quote on Base. The response is JSON: the file bytes are in body.content as a base64 string (decode it), with body.content_type giving the real MIME type and body.size_bytes the length. body.gateway_used shows which public gateway served it (e.g. https://ipfs.io). Synchronous — no polling, no auth needed.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ipfs-fetch#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ipfs-fetch#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "ipfs-fetch#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "ipfs-fetch#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

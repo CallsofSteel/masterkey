@@ -1,0 +1,107 @@
+{
+  "serviceId": "orbis-text-utilities-api",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/sentiment",
+      "method": "GET"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/extract",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/clean",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/summarize",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/keywords",
+      "method": "GET"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528/v1/analyze",
+      "method": "GET"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-utilities-api-c4a528",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://orbisapi.com/proxy/text-utilities-api-c4a528 (root returns API catalog). Actual operations are POST sub-paths e.g. POST https://orbisapi.com/proxy/text-utilities-api-c4a528/analyze with JSON body {text}",
+    "inputExample": {
+      "text": "hello world",
+      "operation": "analyze"
+    },
+    "outputShape": "GET root: body.name, body.version, body.endpoints[] (list of available POST operations). For actual text processing, call the listed POST sub-endpoints (/analyze, /sentiment, /extract, /keywords, /summarize, /clean).",
+    "quirks": [
+      "GET root does NOT process text — it returns the API self-description: {name, version, endpoints:[\"POST /analyze\",\"POST /sentiment\",\"POST /extract\",\"POST /keywords\",\"POST /summarize\",\"POST /clean\"]}.",
+      "To actually analyze/clean/summarize text you must POST to a sub-path of the proxy URL (e.g. .../text-utilities-api-c4a528/analyze) with a JSON body containing the text — these sub-paths were NOT pay-tested in this run.",
+      "Observed cost was $0.005 vs the $0.0010 registry surface price (5x higher).",
+      "Orbis proxy endpoint (orbisapi.com/proxy/) — single GET returned valid 200 JSON, no 404/refund pattern observed here.",
+      "No auth/API key required; payment via x402 USDC on Base (eip155:8453) or Solana."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a GET to https://orbisapi.com/proxy/text-utilities-api-c4a528 to retrieve the API catalog: the response JSON's endpoints[] array lists the available text operations (analyze, sentiment, extract, keywords, summarize, clean), each exposed as a POST sub-path. To process actual text, POST to the corresponding sub-path (e.g. .../text-utilities-api-c4a528/analyze) with a JSON body like {\"text\":\"...\"} and read the processed result from the response body. No API key is needed; each call is paid with USDC via x402 (Base or Solana). Note the GET root itself only returns the catalog, not text results.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "orbis-text-utilities-api#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-text-utilities-api#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-text-utilities-api#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-text-utilities-api#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-text-utilities-api#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-text-utilities-api#5",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "orbis-text-utilities-api#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    }
+  ]
+}

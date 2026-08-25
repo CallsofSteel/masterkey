@@ -1,0 +1,1945 @@
+{
+  "subcategory": "payment-processing",
+  "category": "payments-billing",
+  "unit": "per call",
+  "_note": "Curated by claude-main; missed.md sweep + 3-channel re-verify (agentcash + Sponge/Bazaar + x402-search) — added Stripe (Stripe API via HTTPay x402 $0.002) and Laso Finance (order USD prepaid debit cards with USDC on Base, x402). Kept genuine x402 payment tools. Dropped: orbisapi payment fee-calculators/guides mentioning PayPal/Square/Braintree/Adyen (analysis, not the processors), x402 Helper generic payment demo. ✗ VERIFIED ABSENT on x402 across all 3 channels: PayPal, Braintree, Square, Adyen, Mollie, Razorpay, MoonPay, Transak, Crossmint, Lemon Squeezy, Paddle, Chargebee, Recurly, FreshBooks (none have an x402 endpoint; MoonPay/Transak/Crossmint returned 0 results everywhere). | 2026-07-26: corrected live-verified price drift (re-quoted twice with the registry's own usage.inputExample so the quote reflects the real call, not a worst-case empty-body ceiling).",
+  "entries": [
+    {
+      "name": "Credit Card Validator",
+      "provider": "x402node",
+      "providerId": "x402node",
+      "description": "Validate a credit card number (Luhn check) and detect card network.",
+      "tags": [
+        "payments",
+        "card-validation",
+        "luhn"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        5
+      ],
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.x402node.dev/validate/creditcard?card=4242424242424242 (card number as the `card` query param; x402 payment ~0.0022 USDC on Base)",
+        "inputExample": {
+          "card": "4242424242424242"
+        },
+        "outputShape": "body (JSON) — per service description: validity (valid bool), card type/brand, masked number. Exact 2xx field names not captured (corrected paid call was blocked); a 400 with {\"error\":\"?card= is required\"} is returned when the card param is missing.",
+        "quirks": [
+          "AUTHORITATIVE SPEC OVERRIDES SUMMARY: real endpoint is GET https://api.x402node.dev/validate/creditcard, NOT the x402-deployer.workers.dev url in the task summary; price is 0.0022 USDC (2200 base units), not 'Varies'.",
+          "The card number MUST be passed as the query param named `card` (e.g. ?card=4242...). Using `number` returns 400 {\"error\":\"?card= is required\"}.",
+          "inputSchema is just {type:http,method:GET,discoverable:true} with no field hint — the `card` param name was learned only from the 400 error.",
+          "Validation only — no payment processing; safe to send test PANs like 4242424242424242."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://api.x402node.dev/validate/creditcard with the card number in the `card` query param, e.g. ?card=4242424242424242. It is an x402 paid endpoint (~0.0022 USDC on Base, no API key); pay the 402 quote and re-request. The response is JSON containing the Luhn validity, detected card brand/type, and a masked number. Do NOT use a param named `number` — only `card` is accepted (anything else returns a 400 telling you ?card= is required).",
+        "costObservedUsd": 0.0022
+      },
+      "resolved": {
+        "5": {
+          "method": "GET",
+          "amount": 0.0022
+        }
+      }
+    },
+    {
+      "name": "Stripe",
+      "kind": "api",
+      "provider": "Stripe",
+      "providerId": "stripe",
+      "aka": [
+        "stripe.com"
+      ],
+      "description": "Access the Stripe API (charges, payment intents, customers, products, subscriptions) metered per call via an x402 pay-per-call gateway (HTTPay) at $0.002/call — no Stripe secret key required.",
+      "tags": [
+        "payments",
+        "accept-payments",
+        "cards",
+        "subscriptions"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://httpay.xyz/api/gateway/stripe/v1/charges",
+          "method": "POST",
+          "provider": "HTTPay",
+          "providerId": "httpay",
+          "amount": 0.002,
+          "protocols": [
+            "x402"
+          ]
+        }
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://httpay.xyz/api/gateway/stripe/v1/charges with JSON body {amount, currency, source}",
+        "inputExample": {
+          "amount": 50,
+          "currency": "usd",
+          "source": "tok_visa",
+          "description": "QA test charge"
+        },
+        "outputShape": "body.error (no usable result — 401 auth error)",
+        "quirks": [
+          "CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header.",
+          "Registry description ('no Stripe secret key required') is FALSE — an upstream Stripe API key is mandatory.",
+          "Without a Stripe secret key this endpoint cannot produce a result; do not call it.",
+          "This is an outward/irreversible endpoint (creates a real Stripe charge) — would only work with a real Stripe key plus a real payment source token."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Do not use this endpoint. The HTTPay Stripe gateway charges the x402 micropayment ($0.002) but then returns HTTP 401 requiring an upstream Stripe secret key via the X-Upstream-Token header, which the registry does not have. The registry claim of 'no Stripe secret key required' is incorrect. Paying it loses money with no result. It belongs to the class of HTTPay services that proxy to an upstream that needs your own API key.",
+        "costObservedUsd": 0.002,
+        "droppedReason": "stripe#0: CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header."
+      },
+      "_droppedReason": "stripe#0: CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header.",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Sponge Payment Gateway",
+      "provider": "PaySponge",
+      "providerId": "paysponge",
+      "description": "Accept payments via the Sponge x402 payment gateway.",
+      "tags": [
+        "payments",
+        "gateway",
+        "accept-payments"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        10
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/text with JSON body {phone, message}",
+        "inputExample": {
+          "phone": "+15555550123",
+          "message": "Test message from MasterKey registry QA. Please ignore."
+        },
+        "outputShape": "body.success (bool), body.textId (SMS id on success), body.quotaRemaining; on failure body.success=false + body.error",
+        "quirks": [
+          "DELIVERY HUMAN-CONFIRMED 2026-06-09: user received 2 \"Test message from MasterKey registry QA. Please ignore.\" SMS to +15555550123 — the /text SMS endpoint delivers end-to-end (real text sent), not just a paid 200.",
+          "This /text endpoint SENDS an SMS to the supplied phone number - it is an outward, irreversible action.",
+          "Registry inputSchema is EMPTY/wrong (additionalProperties:false). The real required fields are phone (E.164, e.g. +15555550123) and message. Sending {} returns 200 with success:false and error 'Missing phone number parameter'.",
+          "EVERY call costs $0.02 and is charged even when it fails (the malformed empty-body call was still billed). Do not probe with empty bodies.",
+          "Response is HTTP 200 even on logical failure - you MUST check body.success, not the status code.",
+          "Each successful send decrements body.quotaRemaining (per-account SMS quota)."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "POST to the URL with a JSON body {phone, message} where phone is E.164 format (+countrycode...) and message is the SMS text. Payment is $0.02 USDC per call on Base via x402, charged even on malformed requests, so always send a valid phone + message. The response is HTTP 200 regardless of outcome - read body.success: true means the SMS was sent (body.textId is the message id), false means it failed (body.error explains why). This sends a real text message, so confirm the recipient before calling.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active",
+      "resolved": {
+        "10": {
+          "method": "POST",
+          "amount": 0.02
+        }
+      }
+    },
+    {
+      "name": "ClawMoney Escrow",
+      "provider": "ClawMoney",
+      "providerId": "clawmoney",
+      "description": "Agent-to-agent escrow payments via ClawMoney.",
+      "tags": [
+        "payments",
+        "escrow"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        15
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://pay.clawmoney.ai/hub/escrow/:id with JSON body (escrow payment details); :id = a pre-existing escrow record ID",
+        "inputExample": {
+          "id": "<EXISTING_ESCROW_ID>"
+        },
+        "outputShape": "unknown (could not test; outputSchema null)",
+        "quirks": [
+          "URL has unresolved path template :id (an escrow record ID) with no source in schema/instructions/managedResource — cannot be fabricated",
+          "Outward/irreversible: agent-to-agent escrow payment; needs a real recipient + a created escrow before calling",
+          "inputSchema is a bare http-GET stub (no field defs); paymentAccepts empty; price is 'Varies'",
+          "Probe shows 402 (looks payable) but that does not mean a fabricated :id will work — paying a bad id would 404 and lose USDC",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution.",
+          "BROKEN 2026-06-11: 404 — the /hub/escrow/:id template returns 404; the real escrow-create endpoint/shape is unconfirmed.",
+          "DEAD 2026-06-11: BROKEN: /hub/escrow/:id returns 404, real create endpoint/shape unconfirmed. De-scoped (ash 2026-06-11)."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "This endpoint settles an agent-to-agent escrow payment and requires an existing escrow ID in the path (:id). Before calling, you must already have created/obtained that escrow resource and its id — the registry spec provides no way to mint one, so a fresh agent cannot call this blind. Resolve the :id from a prior escrow-creation step, then POST the payment body. Treat as outward/irreversible and get user approval (real funds move).",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "15": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Laso Finance Auth",
+      "kind": "api",
+      "provider": "Laso Finance",
+      "providerId": "laso-finance",
+      "aka": [
+        "laso-finance-auth",
+        "auth"
+      ],
+      "description": "Obtain Laso Finance auth credentials by proving wallet ownership (SIWX / CAIP-122). Returns a 1h Firebase id_token used as a Bearer token for every other Laso endpoint, plus a refresh_token, the callable_base_url, and your user_id (lowercase wallet address). This is the required first step before any read (search-merchants, get-card-data) or before reading card details after ordering.",
+      "tags": [
+        "payments",
+        "prepaid-card",
+        "card-issuing",
+        "spending",
+        "agent"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://laso.finance/auth",
+          "method": "GET",
+          "provider": "Laso Finance",
+          "providerId": "laso-finance",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3291e96b3bff7ed56e3ca8364273c5b4654b2b37",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "3MZVk97x9SeRxbYpc3jhzRfU2fyA3emYutnqfn9kNfYX",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://laso.finance/auth — free, no x402 payment. Authenticated via SIWX: send a base64-encoded CAIP-122 SIGN-IN-WITH-X header proving wallet ownership (agentcash fetch handles this automatically). No query params, no body.",
+        "inputExample": {},
+        "outputShape": "auth.id_token, auth.refresh_token, auth.expires_in (seconds, e.g. '3600'), callable_base_url, user_id",
+        "quirks": [
+          "FREE / SIWX-only: no x402 payment, just a wallet signature (agentcash fetch supplies the SIGN-IN-WITH-X header).",
+          "auth.id_token is a 1h Firebase JWT. Use it as `Authorization: Bearer <id_token>` for ALL other Laso endpoints — they 401 'Missing or invalid Authorization header' without it.",
+          "agentcash fetch does NOT auto-attach the Bearer token to subsequent calls — you must capture id_token here and pass it manually in the Authorization header.",
+          "Renew with POST /auth (grant_type=refresh_token) using auth.refresh_token before the token expires.",
+          "user_id is your lowercase wallet address; all card/balance data is scoped to this identity.",
+          "The paid card-ordering endpoints (/get-card, /order-intl-card) ALSO return fresh auth credentials, so you never need to pay just to get a token."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Obtain Laso Finance auth credentials by proving wallet ownership (SIWX / CAIP-122). Returns a 1h Firebase id_token used as a Bearer token for every other Laso endpoint, plus a refresh_token, the callable_base_url, and your user_id (lowercase wallet address). This is the required first step before any read (search-merchants, get-card-data) or before reading card details after ordering. GET https://laso.finance/auth — free, no x402 payment. Authenticated via SIWX: send a base64-encoded CAIP-122 SIGN-IN-WITH-X header proving wallet ownership (agentcash fetch handles this automatically). No query params, no body. Output: auth.id_token, auth.refresh_token, auth.expires_in (seconds, e.g. '3600'), callable_base_url, user_id",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "Laso Finance Merchant Acceptance Search",
+      "kind": "api",
+      "provider": "Laso Finance",
+      "providerId": "laso-finance",
+      "aka": [
+        "laso-finance-merchant-acceptance-search",
+        "search-merchants"
+      ],
+      "description": "Search Laso's crowdsourced merchant database to check whether a Laso prepaid card is accepted at a given merchant before relying on it. Returns matching merchants with an acceptance status (accepted / not_accepted / unknown), website URL, description, and usage notes.",
+      "tags": [
+        "payments",
+        "prepaid-card",
+        "card-issuing",
+        "spending",
+        "agent"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://laso.finance/search-merchants",
+          "method": "GET",
+          "provider": "Laso Finance",
+          "providerId": "laso-finance",
+          "amount": 0,
+          "accepts": [],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://laso.finance/search-merchants?q=<merchant>&card_type=<Non-Reloadable U.S.|Non-Reloadable International> — query params in URL, no body. Requires header `Authorization: Bearer <id_token from /auth>`. card_type optional (defaults to 'Non-Reloadable U.S.').",
+        "inputExample": {
+          "q": "amazon"
+        },
+        "outputShape": "merchants[].{name, url, status('accepted'|'not_accepted'|'unknown'), description, notes}, query, count, card_type, note",
+        "quirks": [
+          "FREE read, but REQUIRES `Authorization: Bearer <id_token>` from GET /auth first — returns 401 'Missing or invalid Authorization header' otherwise (agentcash fetch does not attach it automatically).",
+          "Required query param `q` = merchant name (e.g. 'amazon', 'netflix').",
+          "card_type enum is exactly 'Non-Reloadable U.S.' or 'Non-Reloadable International' (note the trailing period and capitalization); defaults to 'Non-Reloadable U.S.'.",
+          "status='unknown' does NOT mean the card will fail — the DB only covers merchants users have previously tried (see the `note` field). Returns many fuzzy matches (37 for 'amazon').",
+          "Some merchants carry `notes` advising indirect use (e.g. load funds via Amazon Reload, then spend from the Amazon balance)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search Laso's crowdsourced merchant database to check whether a Laso prepaid card is accepted at a given merchant before relying on it. Returns matching merchants with an acceptance status (accepted / not_accepted / unknown), website URL, description, and usage notes. GET https://laso.finance/search-merchants?q=<merchant>&card_type=<Non-Reloadable U.S.|Non-Reloadable International> — query params in URL, no body. Requires header `Authorization: Bearer <id_token from /auth>`. card_type optional (defaults to 'Non-Reloadable U.S.'). Output: merchants[].{name, url, status('accepted'|'not_accepted'|'unknown'), description, notes}, query, count, card_type, note",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "Laso Finance Get Card Data",
+      "kind": "api",
+      "provider": "Laso Finance",
+      "providerId": "laso-finance",
+      "aka": [
+        "laso-finance-get-card-data",
+        "get-card-data"
+      ],
+      "description": "Retrieve details for the caller's Laso prepaid card(s). With a card_id, returns that single card including the card number, CVV, and expiry once status is 'ready' (US) / 'complete' (intl). Without card_id, lists all of the caller's cards of a given card_type. This is the polling endpoint to fetch the actual card credentials after ordering via /get-card or /order-intl-card.",
+      "tags": [
+        "payments",
+        "prepaid-card",
+        "card-issuing",
+        "spending",
+        "agent"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://laso.finance/get-card-data",
+          "method": "GET",
+          "provider": "Laso Finance",
+          "providerId": "laso-finance",
+          "amount": 0,
+          "accepts": [],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "GET https://laso.finance/get-card-data?card_id=<id>&card_type=<...> — all params optional, no body. Requires header `Authorization: Bearer <id_token from /auth>`. Omit card_id to list all cards (returns {cards:[...]}); pass card_id to get one card (returns the single-card object).",
+        "inputExample": {},
+        "outputShape": "List mode: cards[].{card_id, card_type, usd_amount, status, country?, card_details?{card_number,exp_month,exp_year,cvv,available_balance}, transactions[]}. Single mode (with card_id): same fields at top level, no `cards` wrapper.",
+        "quirks": [
+          "FREE read, but REQUIRES `Authorization: Bearer <id_token>` from GET /auth first — 401 'Missing or invalid Authorization header' otherwise (agentcash fetch does not attach it automatically).",
+          "Response is polymorphic: NO card_id -> {cards:[...]} array; WITH card_id -> a single card object (no `cards` wrapper).",
+          "card_details (card_number/cvv/expiry/available_balance) is only present when status='ready' (US) or 'complete' (international); freshly ordered cards return status='pending'/'queued' with no details — poll until ready.",
+          "card_type filter (list mode) defaults to 'Non-Reloadable U.S.'; pass 'Non-Reloadable International' to see intl cards.",
+          "International cards carry extra fields (label, charged_usd_amount, fees_paid, state, queued_order_card_id) and a different transaction shape (merchant/status vs is_credit). After intl admin fulfillment the card is reissued with a new card_id; querying the ORIGINAL card_id still resolves via queued_order_card_id.",
+          "Empty result for a wallet with no cards is {cards:[]} (verified)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Retrieve details for the caller's Laso prepaid card(s). With a card_id, returns that single card including the card number, CVV, and expiry once status is 'ready' (US) / 'complete' (intl). Without card_id, lists all of the caller's cards of a given card_type. This is the polling endpoint to fetch the actual card credentials after ordering via /get-card or /order-intl-card. GET https://laso.finance/get-card-data?card_id=<id>&card_type=<...> — all params optional, no body. Requires header `Authorization: Bearer <id_token from /auth>`. Omit card_id to list all cards (returns {cards:[...]}); pass card_id to get one card (returns the single-card object). Output: List mode: cards[].{card_id, card_type, usd_amount, status, country?, card_details?{card_number,exp_month,exp_year,cvv,available_balance}, transactions[]}. Single mode (with card_id): same fields at top level, no `cards` wrapper.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "Laso Finance Order USA Prepaid Card",
+      "kind": "api",
+      "provider": "Laso Finance",
+      "providerId": "laso-finance",
+      "aka": [
+        "laso-finance-order-usa-prepaid-card",
+        "get-card"
+      ],
+      "description": "Create and fund a real US-issued USD prepaid debit card. The x402 payment EQUALS the card value: amount=5 charges 5 USDC on Base/Solana and loads a $5 card (min $5, max $1000). Returns a card_id with status='pending'; poll /get-card-data with the id_token to retrieve the card number/CVV/expiry once ready.",
+      "tags": [
+        "payments",
+        "prepaid-card",
+        "card-issuing",
+        "spending",
+        "agent"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://laso.finance/get-card",
+          "method": "GET",
+          "provider": "Laso Finance",
+          "providerId": "laso-finance",
+          "amount": 5,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3291e96b3bff7ed56e3ca8364273c5b4654b2b37",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "3MZVk97x9SeRxbYpc3jhzRfU2fyA3emYutnqfn9kNfYX",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "needsApproval": true,
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "card.status",
+            "submitPendingValues": [
+              "pending",
+              "processing",
+              "created"
+            ],
+            "jobIdPath": "card.card_id",
+            "pollUrlTemplate": "{origin}/get-card-data?card_id={id}",
+            "poll": {
+              "cost": "free",
+              "statusField": "card.status",
+              "completeValues": [
+                "completed",
+                "ready",
+                "active"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": null
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "GET https://laso.finance/get-card?amount=5&format=json — x402-paid (the charge = the amount). amount required (number 5-1000). format optional: 'json' (default, agent-friendly) or 'html' (browser redirect page). No Bearer token needed for this call — the x402 payment authenticates + identifies you, and the response itself returns fresh auth credentials.",
+        "inputExample": {
+          "amount": 5,
+          "format": "json"
+        },
+        "outputShape": "auth.{id_token,refresh_token,expires_in}, callable_base_url, user_id, card.{card_id, usd_amount, country('US'), timestamp, timestamp_readable, status('pending')}",
+        "quirks": [
+          "NOT CALLED (outward / irreversible): this provisions a REAL funded US debit card with REAL money. The x402 charge equals the card value, so amount=5 actually spends $5 (5000000 base units USDC), amount=1000 spends $1000. Requires deliberate human approval.",
+          "THE PRICE IS THE PRODUCT: there is no flat fee — the registry's $5 is the MINIMUM card value, not a service fee. Pricing is dynamic 5-1000 USD.",
+          "Pass &format=json so an agent gets JSON; default mimeType is text/html (browser redirect view).",
+          "Card returns status='pending' with a card_id (e.g. O-01KTN62...). The card number/CVV/expiry are NOT in this response — poll GET /get-card-data?card_id=<id> using the returned auth.id_token as Bearer token.",
+          "US-ONLY: USD card, US merchants only, physical goods must ship to a US address. For non-US use /order-intl-card instead.",
+          "Prepaid cards are not accepted at all merchants — check GET /search-merchants first.",
+          "Card + token are bound to the paying wallet (user_id); no separate SIWX/sign-in needed for this paid call.",
+          "VERIFIED via prior purchase 2026-06-08 (MASTERKEY_ASSETS.md): bought card_id O-01KTN62GBAKT1VERAFMC962NYN, $5 US balance. GET laso.finance/get-card?amount=N — the amount is the card VALUE loaded (recoverable), NOT a fee. Outward/irreversible (real money onto a real card) → needsApproval."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Create and fund a real US-issued USD prepaid debit card. The x402 payment EQUALS the card value: amount=5 charges 5 USDC on Base/Solana and loads a $5 card (min $5, max $1000). Returns a card_id with status='pending'; poll /get-card-data with the id_token to retrieve the card number/CVV/expiry once ready. GET https://laso.finance/get-card?amount=5&format=json — x402-paid (the charge = the amount). amount required (number 5-1000). format optional: 'json' (default, agent-friendly) or 'html' (browser redirect page). No Bearer token needed for this call — the x402 payment authenticates + identifies you, and the response itself returns fresh auth credentials. Output: auth.{id_token,refresh_token,expires_in}, callable_base_url, user_id, card.{card_id, usd_amount, country('US'), timestamp, timestamp_readable, status('pending')}",
+        "costObservedUsd": 5
+      },
+      "status": "active"
+    },
+    {
+      "name": "Laso Finance Order International Prepaid Card",
+      "kind": "api",
+      "provider": "Laso Finance",
+      "providerId": "laso-finance",
+      "aka": [
+        "laso-finance-order-international-prepaid-card",
+        "order-intl-card"
+      ],
+      "description": "Order a real international (non-US) prepaid debit card, admin-fulfilled within ~24h. The x402 payment is the on-card USD amount PLUS a 3.8% fee (min $100, max $1000 on-card). Returns a queued order; poll /get-card-data (card_type 'Non-Reloadable International') with the id_token until the card is fulfilled and details are ready.",
+      "tags": [
+        "payments",
+        "prepaid-card",
+        "card-issuing",
+        "spending",
+        "agent"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://laso.finance/order-intl-card",
+          "method": "GET",
+          "provider": "Laso Finance",
+          "providerId": "laso-finance",
+          "amount": 103.8,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "103800000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3291e96b3bff7ed56e3ca8364273c5b4654b2b37",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "103800000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "3MZVk97x9SeRxbYpc3jhzRfU2fyA3emYutnqfn9kNfYX",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "needsApproval": true,
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending",
+              "processing",
+              "created"
+            ],
+            "jobIdPath": "intl_card_order.card_id",
+            "pollUrlTemplate": null,
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete",
+                "completed",
+                "active"
+              ],
+              "failedValues": [
+                "failed",
+                "cancelled",
+                "error"
+              ],
+              "resultPath": null
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "GET https://laso.finance/order-intl-card?amount=100 — x402-paid. amount required (number, on-card USD, min 100 max 1000); the actual charge = amount + 3.8% fee. No body. Like /get-card, the x402 payment authenticates you and the response returns fresh auth credentials.",
+        "inputExample": {
+          "amount": 100
+        },
+        "outputShape": "auth.{id_token,refresh_token,expires_in}, callable_base_url, user_id, intl_card_order.{on_card_usd_amount, charged_usd_amount, status('queued'), timestamp}, message",
+        "quirks": [
+          "NOT CALLED (outward / irreversible): provisions a REAL funded international debit card with REAL money. Charge = on-card amount + 3.8% fee, so amount=100 charges ~$103.80. Requires deliberate human approval.",
+          "MIN is $100 (NOT $5 like the US card) and max $1000 on-card. The registry's $5 price for this backend is WRONG — real minimum charge is ~$103.80.",
+          "OpenAPI marks requiresPayment:false but the description explicitly states an x402 payment of amount+3.8% is charged — treat it as PAID (the discover index lists it among paywalled routes).",
+          "Admin-fulfilled (NOT instant): order returns status='queued'. After fulfillment the card is REISSUED with a new card_id (issuer's tx id); the original card_id still resolves via queued_order_card_id in /get-card-data.",
+          "Poll GET /get-card-data?card_type=Non-Reloadable International (or by card_id) using the returned id_token; details appear when status='complete'.",
+          "A queued order can be cancelled via POST /cancel-intl-order before fulfillment.",
+          "Use /search-merchants?card_type=Non-Reloadable International to check acceptance.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Order a real international (non-US) prepaid debit card, admin-fulfilled within ~24h. The x402 payment is the on-card USD amount PLUS a 3.8% fee (min $100, max $1000 on-card). Returns a queued order; poll /get-card-data (card_type 'Non-Reloadable International') with the id_token until the card is fulfilled and details are ready. GET https://laso.finance/order-intl-card?amount=100 — x402-paid. amount required (number, on-card USD, min 100 max 1000); the actual charge = amount + 3.8% fee. No body. Like /get-card, the x402 payment authenticates you and the response returns fresh auth credentials. Output: auth.{id_token,refresh_token,expires_in}, callable_base_url, user_id, intl_card_order.{on_card_usd_amount, charged_usd_amount, status('queued'), timestamp}, message",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "StableGiftCards Search",
+      "kind": "api",
+      "provider": "StableGiftCards",
+      "providerId": "stablegiftcards",
+      "aka": [
+        "stablegiftcards-search",
+        "search"
+      ],
+      "description": "Search the Bitrefill catalog (1,500+ gift-card, top-up, and eSIM brands across 180+ countries) by name, country, type, or category. SIWX-gated and FREE (no USDC charged).",
+      "tags": [
+        "payments",
+        "gift-cards",
+        "top-up",
+        "esim",
+        "spending",
+        "bitrefill"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablegiftcards.dev/api/search",
+          "method": "POST",
+          "provider": "StableGiftCards",
+          "providerId": "stablegiftcards",
+          "amount": 0,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "0",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x0000000000000000000000000000000000000000",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "siwx": true
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "protocols": [
+            "x402"
+          ],
+          "authMode": "siwx"
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "siwx",
+        "callShape": "POST https://stablegiftcards.dev/api/search with JSON body {query, country?, product_type?, category?, in_stock?, page?, per_page?} + SIWX wallet signature (no x402 payment). 'query' defaults to '*'. 'country' must be uppercase ISO Alpha-2 (US, IT, BR). 'product_type' enum: 'giftcard' | 'esim'. 'per_page' max 500 (default 25).",
+        "inputExample": {
+          "query": "Netflix",
+          "country": "US",
+          "per_page": 2
+        },
+        "outputShape": "products[].{id, name, country_code, country_name, currency, categories[], recipient_type, image, description, termsAndConditions, in_stock, packages[].{id, value, price, amount}, range?.{min,max,step,price_rate}}, total",
+        "quirks": [
+          "Auth is SIWX, NOT x402 — returns the SIWX challenge until signed; once signed it is FREE (no USDC). Use --siwx.",
+          "Use the product 'id' (e.g. 'netflix-usa') as product_id for /api/product and /api/buy.",
+          "packages[].id is product-prefixed with a '<&>' delimiter, e.g. 'netflix-usa<&>30'. For buying, /api/buy wants the bare packages[].value ('30'), NOT this id.",
+          "packages[].price is an internal minor unit (e.g. 48643 for a $30 card); packages[].amount is the real human value (30).",
+          "country must be UPPERCASE 2-letter ISO; lowercase or 3-letter is rejected.",
+          "Returns 'range' instead of fixed 'packages' for variable-amount products.",
+          "SIWX free read (no payment) — verified 2026-06-11."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search the Bitrefill catalog (1,500+ gift-card, top-up, and eSIM brands across 180+ countries) by name, country, type, or category. SIWX-gated and FREE (no USDC charged). POST https://stablegiftcards.dev/api/search with JSON body {query, country?, product_type?, category?, in_stock?, page?, per_page?} + SIWX wallet signature (no x402 payment). 'query' defaults to '*'. 'country' must be uppercase ISO Alpha-2 (US, IT, BR). 'product_type' enum: 'giftcard' | 'esim'. 'per_page' max 500 (default 25). Output: products[].{id, name, country_code, country_name, currency, categories[], recipient_type, image, description, termsAndConditions, in_stock, packages[].{id, value, price, amount}, range?.{min,max,step,price_rate}}, total",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "StableGiftCards Product Details",
+      "kind": "api",
+      "provider": "StableGiftCards",
+      "providerId": "stablegiftcards",
+      "aka": [
+        "stablegiftcards-product-details",
+        "product"
+      ],
+      "description": "Get full details and available denominations/packages for a single Bitrefill product by id. SIWX-gated and FREE (no USDC charged).",
+      "tags": [
+        "payments",
+        "gift-cards",
+        "top-up",
+        "esim",
+        "spending",
+        "bitrefill"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablegiftcards.dev/api/product",
+          "method": "POST",
+          "provider": "StableGiftCards",
+          "providerId": "stablegiftcards",
+          "amount": 0,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "0",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x0000000000000000000000000000000000000000",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "siwx": true
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "protocols": [
+            "x402"
+          ],
+          "authMode": "siwx"
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "siwx",
+        "callShape": "POST https://stablegiftcards.dev/api/product with JSON body {product_id} (required, the 'id' from /api/search results) + SIWX wallet signature (no x402 payment).",
+        "inputExample": {
+          "product_id": "netflix-usa"
+        },
+        "outputShape": "{id, name, country_code, country_name, currency, categories[], recipient_type, image, description, termsAndConditions, in_stock, packages[].{id, value, price, amount}, range?.{min,max,step,price_rate}}",
+        "quirks": [
+          "Auth is SIWX, NOT x402 — free once signed. Use --siwx.",
+          "Required field is snake_case product_id; use the 'id' from /api/search (e.g. 'netflix-usa').",
+          "packages[].value is the buy-time package_id (e.g. '30'); packages[].id ('netflix-usa<&>30') is NOT what /api/buy wants.",
+          "packages[].price is an internal minor unit; packages[].amount is the human value.",
+          "Variable-amount products return 'range' (min/max/step) instead of fixed 'packages'.",
+          "SIWX free read (no payment) — verified 2026-06-11."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Get full details and available denominations/packages for a single Bitrefill product by id. SIWX-gated and FREE (no USDC charged). POST https://stablegiftcards.dev/api/product with JSON body {product_id} (required, the 'id' from /api/search results) + SIWX wallet signature (no x402 payment). Output: {id, name, country_code, country_name, currency, categories[], recipient_type, image, description, termsAndConditions, in_stock, packages[].{id, value, price, amount}, range?.{min,max,step,price_rate}}",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "StableGiftCards Buy",
+      "kind": "api",
+      "provider": "StableGiftCards",
+      "providerId": "stablegiftcards",
+      "aka": [
+        "stablegiftcards-buy",
+        "buy"
+      ],
+      "description": "Purchase gift cards, top-ups, or eSIMs from Bitrefill. PAID via x402 with a DYNAMIC price equal to the product cost in USDC (0-500 USD). On success returns invoice_id, tx_hash, amount_usdc, and orders with redemption codes (or status 'pending' to be polled via /api/invoice). OUTWARD/irreversible — actually spends real money buying a real product.",
+      "tags": [
+        "payments",
+        "gift-cards",
+        "top-up",
+        "esim",
+        "spending",
+        "bitrefill"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablegiftcards.dev/api/buy",
+          "method": "POST",
+          "provider": "StableGiftCards",
+          "providerId": "stablegiftcards",
+          "amount": 500,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "500000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x71c1e15c80e14Ce9F163bF8d9BFb90930BF782d5",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablegiftcards.dev/api/buy with JSON body {cart_items: [{product_id, package_id, quantity?, phone_number?, email?}]}. x402-protected: first call returns 402 with the USDC price; pay via x402 to complete. cart_items: 1-15 items. package_id is the packages[].value from /api/product (string or number). For phone top-ups include phone_number on the item.",
+        "inputExample": {
+          "cart_items": [
+            {
+              "product_id": "netflix-usa",
+              "package_id": "30"
+            }
+          ]
+        },
+        "outputShape": "{invoice_id, tx_hash, amount_usdc, orders[].{product_id, product_name, value, status, code?, pin?, link?}}",
+        "quirks": [
+          "OUTWARD / IRREVERSIBLE: this buys a real gift card and charges the FULL product price in USDC (dynamic, up to $500), far beyond a flat x402 fee. NEVER auto-call. NOT exercised during remediation — documented from OpenAPI/guidance only.",
+          "Auth is x402 (the ONLY paid route on this origin); all other endpoints are free SIWX.",
+          "package_id = the bare packages[].value (e.g. '30'), NOT packages[].id ('netflix-usa<&>30').",
+          "Use a generous client timeout (60s+); response waits briefly for fast deliveries. DO NOT retry on client-side timeout — the x402 payment is already captured and retrying double-charges.",
+          "Orders may return status 'pending' if Bitrefill hasn't delivered; poll POST /api/invoice with the returned invoice_id to retrieve codes.",
+          "Max 15 cart items per order.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution.",
+          "BROKEN (MASTERKEY_ASSETS.md): 2026-06-08 charged $10 ($5×2) but Bitrefill returned 403 not_available, no code, no refund. Charge-then-fail — do NOT expose/retry."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Purchase gift cards, top-ups, or eSIMs from Bitrefill. PAID via x402 with a DYNAMIC price equal to the product cost in USDC (0-500 USD). On success returns invoice_id, tx_hash, amount_usdc, and orders with redemption codes (or status 'pending' to be polled via /api/invoice). OUTWARD/irreversible — actually spends real money buying a real product. POST https://stablegiftcards.dev/api/buy with JSON body {cart_items: [{product_id, package_id, quantity?, phone_number?, email?}]}. x402-protected: first call returns 402 with the USDC price; pay via x402 to complete. cart_items: 1-15 items. package_id is the packages[].value from /api/product (string or number). For phone top-ups include phone_number on the item. Output: {invoice_id, tx_hash, amount_usdc, orders[].{product_id, product_name, value, status, code?, pin?, link?}}",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "StableGiftCards Invoice Status",
+      "kind": "api",
+      "provider": "StableGiftCards",
+      "providerId": "stablegiftcards",
+      "aka": [
+        "stablegiftcards-invoice-status",
+        "invoice"
+      ],
+      "description": "Check the status of a previously placed order and retrieve redemption codes/PINs/links once Bitrefill has delivered. Read-only poll for an invoice_id minted by /api/buy. SIWX-gated and FREE (no USDC charged).",
+      "tags": [
+        "payments",
+        "gift-cards",
+        "top-up",
+        "esim",
+        "spending",
+        "bitrefill"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablegiftcards.dev/api/invoice",
+          "method": "POST",
+          "provider": "StableGiftCards",
+          "providerId": "stablegiftcards",
+          "amount": 0,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "0",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x0000000000000000000000000000000000000000",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "siwx": true
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "protocols": [
+            "x402"
+          ],
+          "authMode": "siwx"
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "siwx",
+        "callShape": "POST https://stablegiftcards.dev/api/invoice with JSON body {invoice_id} (required) + SIWX wallet signature (no x402 payment).",
+        "inputExample": {
+          "invoice_id": "<uuid-from-/api/buy>"
+        },
+        "outputShape": "{invoice_id, status, payment_status, orders[].{product_id, product_name, value, status, code?, pin?, link?}}",
+        "quirks": [
+          "Auth is SIWX, NOT x402 — free once signed. Use --siwx.",
+          "Required body field is snake_case invoice_id (string). {invoiceId:...} or empty body returns 400.",
+          "Unknown/invalid invoice_id returns HTTP 500 wrapping the upstream Bitrefill 404 ('Invoice not found', error_code not_found). A 500 here means a bad/nonexistent id, NOT a dead endpoint — verified live.",
+          "Read-only status/code-retrieval; it cannot be driven to a 200 standalone — you need a real invoice_id minted by POST /api/buy first. The 200-with-codes path was not produced in QA (no real invoice on hand).",
+          "This is NOT the purchase endpoint — /api/buy is. This only polls an already-placed order.",
+          "SIWX free read (no payment) — verified 2026-06-11."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Check the status of a previously placed order and retrieve redemption codes/PINs/links once Bitrefill has delivered. Read-only poll for an invoice_id minted by /api/buy. SIWX-gated and FREE (no USDC charged). POST https://stablegiftcards.dev/api/invoice with JSON body {invoice_id} (required) + SIWX wallet signature (no x402 payment). Output: {invoice_id, status, payment_status, orders[].{product_id, product_name, value, status, code?, pin?, link?}}",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris BIC Validator",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-bic-validator",
+        "bic-validation",
+        "swift-validation",
+        "validate-bic",
+        "eu-verify-bic"
+      ],
+      "description": "Validate a BIC/SWIFT code offline (ISO 9362 structure — 4-letter bank, 2-letter country, 2-char location, optional 3-char branch — plus a real ISO 3166-1 country-code check), returning validity, the parsed parts and whether it is a test BIC.",
+      "tags": [
+        "bic",
+        "swift",
+        "validation",
+        "banking",
+        "payments",
+        "iso9362"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/validate/bic",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "GET",
+            "queryParams": {
+              "bic": "BIC/SWIFT code, 8 or 11 characters — required"
+            }
+          },
+          "outputSchema": {
+            "ok": "boolean",
+            "data": {
+              "bic": "string",
+              "valid": "boolean",
+              "bank_code": "string (4-letter bank code)",
+              "country": "string (ISO 3166-1 alpha-2)",
+              "location": "string (2-char location code)",
+              "branch": "string|null (optional 3-char branch)",
+              "is_test_bic": "boolean (8th char '0')",
+              "source": "string"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/validate/bic?bic=BNPAFRPP (BIC/SWIFT code as the `bic` query param, 8 or 11 chars). x402 paid endpoint (~0.001 USDC on Base, no API key) — pay the 402 quote and re-request.",
+        "inputExample": {
+          "bic": "BNPAFRPP"
+        },
+        "outputShape": "JSON: { ok: true, data: { bic, valid (bool), bank_code, country (ISO2), location, branch (nullable), is_test_bic (bool), source } }. On an invalid BIC the data object carries valid:false with the parsed parts it could recover.",
+        "quirks": [
+          "Pure offline deterministic computation (ISO 9362 structure check + ISO 3166-1 country table); NO SWIFT-directory existence lookup, so it confirms the code is well-formed and the country code is real, not that the bank/branch actually exists. Provider states a 1-year cache.",
+          "The BIC MUST be passed as the `bic` query param; accepts both 8-char (BNPAFRPP) and 11-char (DEUTDEFF500) forms.",
+          "is_test_bic flags a test BIC (8th character '0').",
+          "Pairs with /v1/validate/iban on the same host for BIC/IBAN country-consistency checks.",
+          "Part of Greeneris 'eu-verify' — sibling validators (IBAN, LEI, ISIN, email) and EU registry lookups live on the same host as separate operations."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://data.greeneris.io/v1/validate/bic with the BIC/SWIFT code in the `bic` query param, e.g. ?bic=BNPAFRPP (8-char) or ?bic=DEUTDEFF500 (11-char). It is an x402 paid endpoint (~0.001 USDC on Base, no API key); pay the 402 quote and re-request. The JSON response is { ok, data: { bic, valid, bank_code, country, location, branch, is_test_bic, source } } — check data.valid. Validation is offline structure + ISO country-code check only, not a SWIFT-directory existence lookup.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris IBAN Validator",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-iban-validator",
+        "iban-validation",
+        "validate-iban",
+        "eu-verify-iban"
+      ],
+      "description": "Validate an IBAN offline (ISO 13616 format regex, per-country length from the SWIFT registry, and the ISO 7064 mod-97 checksum), returning validity, country, BBAN and a precise failure reason.",
+      "tags": [
+        "iban",
+        "validation",
+        "banking",
+        "sepa",
+        "payments"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/validate/iban",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "GET",
+            "queryParams": {
+              "iban": "IBAN to validate (spaces and dashes allowed) — required"
+            }
+          },
+          "outputSchema": {
+            "ok": "boolean",
+            "data": {
+              "iban": "string",
+              "valid": "boolean",
+              "country": "string (ISO 3166-1 alpha-2)",
+              "check_digits": "string",
+              "bban": "string",
+              "source": "string"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/validate/iban?iban=FR1420041010050500013M02606 (IBAN as the `iban` query param; spaces/dashes tolerated). x402 paid endpoint (~0.001 USDC on Base, no API key) — pay the 402 quote and re-request.",
+        "inputExample": {
+          "iban": "FR1420041010050500013M02606"
+        },
+        "outputShape": "JSON: { ok: true, data: { iban, valid (bool), country (ISO2), check_digits, bban, source } }. On an invalid IBAN the data object carries valid:false plus a precise failure reason instead.",
+        "quirks": [
+          "Pure offline deterministic computation (ISO 13616 format + per-country SWIFT-registry length + ISO 7064 mod-97 checksum); provider states a 1-year cache. No live bank-account existence check — checksum/format only.",
+          "The IBAN MUST be passed as the `iban` query param; spaces and dashes in the value are tolerated.",
+          "Covers ~85 countries per the public SWIFT registry.",
+          "Part of Greeneris 'eu-verify' — sibling validators (BIC, LEI, ISIN, email) and EU registry lookups live on the same host as separate operations."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://data.greeneris.io/v1/validate/iban with the IBAN in the `iban` query param, e.g. ?iban=FR1420041010050500013M02606 (spaces/dashes allowed). It is an x402 paid endpoint (~0.001 USDC on Base, no API key); pay the 402 quote and re-request. The JSON response is { ok, data: { iban, valid, country, check_digits, bban, source } } — check data.valid; validation is offline checksum/format only, not a bank-account existence lookup.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "24kLabs IBAN + BIC Validator",
+      "kind": "api",
+      "provider": "24kLabs",
+      "providerId": "24klabs",
+      "aka": [
+        "24klabs-iban-bic-validate",
+        "iban-bic-validate",
+        "iban-bic-format-validator",
+        "validate-iban",
+        "swift-bic-validate"
+      ],
+      "description": "Validate an IBAN (ISO 13616 mod-97 checksum with per-country length rules) together with a SWIFT/BIC code (ISO 9362 structure), returning validity plus extracted country, check digits, BBAN, and BIC bank/country/location/branch parts.",
+      "tags": [
+        "iban",
+        "bic",
+        "swift",
+        "banking",
+        "validation"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.24klabs.ai/api/iban-bic-validate",
+          "method": "POST",
+          "provider": "24kLabs",
+          "providerId": "24klabs",
+          "amount": 0.002,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "POST",
+            "bodyType": "json",
+            "body": {
+              "iban": "string — the IBAN to validate (spaces tolerated) — required",
+              "bic": "string — the SWIFT/BIC code to validate — required"
+            }
+          },
+          "outputSchema": {
+            "service": "string",
+            "result": {
+              "iban_input": "string",
+              "country": "string (ISO 3166-1 alpha-2, from IBAN)",
+              "iban_valid": "boolean",
+              "iban_formatted": "string",
+              "check_digits": "string",
+              "bban": "string",
+              "bic_valid": "boolean",
+              "bic_bank_code": "string",
+              "bic_country": "string (ISO 3166-1 alpha-2, from BIC)",
+              "bic_location": "string",
+              "bic_branch": "string"
+            },
+            "latency_ms": "number"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "POST https://api.24klabs.ai/api/iban-bic-validate with JSON body {\"iban\":\"GB82 WEST 1234 5698 7654 32\",\"bic\":\"DEUTDEFF\"}. Pure x402 paid endpoint (0.002 USDC on Base, no API key) — pay the 402 quote and re-request; the result is returned inline in the 200 response.",
+        "inputExample": {
+          "iban": "GB82 WEST 1234 5698 7654 32",
+          "bic": "DEUTDEFF"
+        },
+        "outputShape": "JSON: { service, result: { iban_input, country (ISO2 from IBAN), iban_valid (bool), iban_formatted, check_digits, bban, bic_valid (bool), bic_bank_code, bic_country (ISO2 from BIC), bic_location, bic_branch }, latency_ms }. Verified response for {iban:'GB82 WEST 1234 5698 7654 32', bic:'DEUTDEFF'}: { service:'iban-bic-validate', result:{ country:'GB', iban_valid:true, check_digits:'82', bban:'WEST12345698765432', bic_valid:true, bic_bank_code:'DEUT', bic_country:'DE', bic_location:'FF', bic_branch:'primary office' }, latency_ms:0 }.",
+        "quirks": [
+          "Validates IBAN and BIC together — provide both `iban` and `bic` in the body. Spaces in the IBAN are tolerated and echoed back in iban_formatted.",
+          "Offline deterministic validation (IBAN ISO 13616 mod-97 checksum + per-country length; SWIFT/BIC ISO 9362 structure with country-code check) — format/checksum only, NOT a live bank-account or SWIFT-network existence check.",
+          "IBAN country and BIC country are reported separately (an IBAN can be GB while the BIC resolves to DE, as in the verified example) — the endpoint does not assert they match.",
+          "Distinct from the sibling 24kLabs IBAN / ABA / SWIFT / Card Validator (single auto-detecting `value` field) and the Greeneris BIC Validator (BIC only) — this one takes explicit iban+bic fields and returns both results.",
+          "Part of the broad 24kLabs pay-per-call developer/finance toolkit on api.24klabs.ai."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST https://api.24klabs.ai/api/iban-bic-validate with JSON body {\"iban\":\"<iban>\",\"bic\":\"<swift/bic>\"}. It is a pure x402 paid endpoint (0.002 USDC on Base, no API key); pay the 402 quote and re-request. The 200 response returns { service, result:{ iban_valid, country, check_digits, bban, bic_valid, bic_bank_code, bic_country, bic_location, bic_branch }, latency_ms } — check result.iban_valid and result.bic_valid. Validation is offline checksum/format only, not a live account or SWIFT-network lookup.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "24kLabs IBAN / ABA / SWIFT / Card Validator",
+      "kind": "api",
+      "provider": "24kLabs",
+      "providerId": "24klabs",
+      "aka": [
+        "24klabs-iban-routing-validate",
+        "iban-routing-validate",
+        "iban-aba-swift-card-validator",
+        "routing-number-validate",
+        "swift-bic-validate"
+      ],
+      "description": "Validate an IBAN checksum (decoding country and BBAN), a US ABA routing number, a SWIFT/BIC format, or Luhn-check a card and detect its network, auto-detecting the identifier kind if not specified.",
+      "tags": [
+        "iban",
+        "routing-number",
+        "swift",
+        "bic",
+        "card-validation",
+        "banking"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.24klabs.ai/api/iban-routing-validate",
+          "method": "POST",
+          "provider": "24kLabs",
+          "providerId": "24klabs",
+          "amount": 0.002,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "POST",
+            "bodyType": "json",
+            "body": {
+              "value": "string — the identifier to validate (IBAN, US ABA routing number, SWIFT/BIC, or card number); kind auto-detected — required"
+            }
+          },
+          "outputSchema": {
+            "service": "string",
+            "result": {
+              "valid": "boolean",
+              "country": "string (ISO 3166-1 alpha-2, for IBAN)",
+              "bban": "string (for IBAN)",
+              "length": "number",
+              "kind": "string (iban | aba | swift | card)"
+            },
+            "latency_ms": "number"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "POST https://api.24klabs.ai/api/iban-routing-validate with JSON body {\"value\":\"DE89370400440532013000\"}. Pure x402 paid endpoint (0.002 USDC on Base, no API key) — pay the 402 quote and re-request; the result is returned inline in the 200 response.",
+        "inputExample": {
+          "value": "DE89370400440532013000"
+        },
+        "outputShape": "JSON: { service, result: { valid (bool), country (ISO2, IBAN only), bban (IBAN only), length, kind (iban|aba|swift|card) }, latency_ms }. Verified response for DE89370400440532013000: { service:'iban-routing-validate', result:{ valid:true, country:'DE', bban:'370400440532013000', length:22, kind:'iban' } }.",
+        "quirks": [
+          "Single `value` field holds any of the four identifier kinds (IBAN, US ABA routing number, SWIFT/BIC, card number); the kind is auto-detected and echoed back as result.kind. Spaces are tolerated in the value.",
+          "Offline deterministic validation (IBAN mod-97 checksum + country/BBAN decode; ABA routing checksum; SWIFT/BIC format; card Luhn + network detect) — format/checksum only, NOT a bank-account or card existence check.",
+          "IBAN result carries country and bban; other kinds return their own relevant fields under result.",
+          "Namespace alias: /api/v1/iban-routing-validate is the SAME operation on the same host — use the /api/ path (indexed here).",
+          "Part of the broad 24kLabs pay-per-call developer/finance toolkit; sibling validators (email-validate, luhn-check, iban-bic-validate) are separate operations on the same host."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST https://api.24klabs.ai/api/iban-routing-validate with JSON body {\"value\":\"<identifier>\"} where the identifier is an IBAN, US ABA routing number, SWIFT/BIC code, or card number (kind auto-detected). It is a pure x402 paid endpoint (0.002 USDC on Base, no API key); pay the 402 quote and re-request. The 200 response returns { service, result:{ valid, country, bban, length, kind }, latency_ms } — check result.valid. Validation is offline checksum/format only, not a live account/card existence lookup.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools BIC Lookup",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-bank-bic",
+        "bic-lookup",
+        "reverse-bic-lookup",
+        "swift-code-lookup",
+        "bic-to-bank-name"
+      ],
+      "description": "Reverse BIC/SWIFT lookup: given a BIC, return the resolved bank name(s), the country and the domestic bank codes, from offline open-registry data (schwifty, MIT) — no network or API keys.",
+      "tags": [
+        "bic",
+        "swift",
+        "bank",
+        "lookup",
+        "payments"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/bank/bic",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "GET",
+            "queryParams": {
+              "bic": "8- or 11-character BIC/SWIFT code, e.g. COBADEFFXXX — required",
+              "swift": "alias of bic — optional"
+            }
+          },
+          "outputSchema": {
+            "valid": "boolean",
+            "bic": "string (the input BIC)",
+            "error_type": "string|null (null on success; set on a malformed BIC)",
+            "bank_names": "string[] (all bank/branch names registered under this BIC)",
+            "country": {
+              "name": "string",
+              "alpha_2": "string (ISO 3166-1 alpha-2)",
+              "alpha_3": "string (ISO 3166-1 alpha-3)",
+              "numeric": "string (ISO 3166-1 numeric)"
+            },
+            "domestic_bank_codes": "string[] (national bank/sort codes mapped to this BIC)",
+            "disclaimer": "string"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET https://api.agentstools.dev/bank/bic?bic=COBADEFFXXX (BIC/SWIFT code as the `bic` query param, 8 or 11 chars; `swift` accepted as an alias). Pure x402 paid endpoint (0.005 USDC on Base, no API key) — pay the 402 quote and re-request; the result is returned inline in the 200 response.",
+        "inputExample": {
+          "bic": "COBADEFFXXX"
+        },
+        "outputShape": "JSON: { valid (bool), bic, error_type (null on success), bank_names (string[] — e.g. ['Commerzbank', 'Commerzbank Bamberg', ...]), country: { name, alpha_2 (ISO2), alpha_3 (ISO3), numeric }, domestic_bank_codes (string[]), disclaimer }. Verified for COBADEFFXXX → valid:true, ~63 Commerzbank name variants, country Germany (DE/DEU/276), ~200 domestic bank codes.",
+        "quirks": [
+          "Pure offline deterministic lookup against open registries (schwifty, MIT) — no live network call, no API key.",
+          "A single BIC can map to many bank_names (one per registered branch/GF unit) and many domestic_bank_codes — the Commerzbank COBADEFFXXX example returns dozens of each.",
+          "A malformed BIC returns valid:false with an error_type, never a 500.",
+          "NOT KYC / Confirmation-of-Payee — it resolves registry metadata only, does not prove the account exists or belongs to anyone (see the response disclaimer)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Look up who owns a BIC/SWIFT code. Call GET https://api.agentstools.dev/bank/bic with the BIC in the `bic` query param (e.g. ?bic=COBADEFFXXX). It is an x402-paid GET (0.005 USDC on Base, no key): the first request returns HTTP 402 with a payment-required quote; pay it and re-request to get the 200 JSON with the resolved bank name(s), country and domestic bank codes. Use it to attach a human-readable bank name/country to a BIC before a payment or for reconciliation; pair with bank/validate or bank/verify for IBAN checks. Not a fraud/KYC verdict.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Bank Validate",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-bank-validate",
+        "bank-validate",
+        "iban-structural-validate",
+        "iso-13616-iban-check"
+      ],
+      "description": "Validate an IBAN offline (ISO 13616 mod-97 checksum + per-country structure/length via the schwifty MIT registry), returning validity, the resolved country, the BBAN/IBAN format spec, and on rejection a granular error_type (invalid_checksum, invalid_length, invalid_structure, invalid_country).",
+      "tags": [
+        "iban",
+        "bank",
+        "validation",
+        "checksum",
+        "iso-13616",
+        "sepa"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/bank/validate",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.003,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "iban": {
+                "type": "string",
+                "description": "IBAN to validate (spaces optional, any case).",
+                "examples": [
+                  "DE89370400440532013000"
+                ]
+              }
+            },
+            "required": [
+              "iban"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "valid": {
+                "type": "boolean",
+                "description": "True if the IBAN passes the ISO 13616 checksum and per-country structure/length."
+              },
+              "iban": {
+                "type": "string",
+                "description": "The echoed input IBAN."
+              },
+              "error_type": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "null when valid; on rejection one of invalid_checksum, invalid_length, invalid_structure, invalid_country."
+              },
+              "country": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "alpha_2": {
+                    "type": "string"
+                  },
+                  "alpha_3": {
+                    "type": "string"
+                  },
+                  "numeric": {
+                    "type": "string"
+                  }
+                }
+              },
+              "format_spec": {
+                "type": "object",
+                "properties": {
+                  "bban_spec": {
+                    "type": "string"
+                  },
+                  "bban_length": {
+                    "type": "integer"
+                  },
+                  "iban_length": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valid",
+              "iban",
+              "country",
+              "format_spec",
+              "disclaimer"
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/bank/validate?iban=<IBAN> (IBAN in the `iban` query param; spaces optional, any case). No request body. Result is inline in the 200 body (synchronous). Pays $0.003 USDC via x402 v2 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "iban": "DE89370400440532013000"
+        },
+        "outputShape": "JSON object: valid (bool), iban (echoed input), error_type (null when valid; else invalid_checksum|invalid_length|invalid_structure|invalid_country), country {name, alpha_2, alpha_3, numeric}, format_spec {bban_spec, bban_length, iban_length}, disclaimer. Verified paid 200 for iban=DE89370400440532013000: { valid:true, iban:'DE89370400440532013000', error_type:null, country:{ name:'Germany', alpha_2:'DE', alpha_3:'DEU', numeric:'276' }, format_spec:{ bban_spec:'8!n10!n', bban_length:18, iban_length:22 }, disclaimer:'...' }.",
+        "quirks": [
+          "Pass the IBAN as the `iban` query param; spaces are optional and case is ignored.",
+          "OFFLINE structural validation only (ISO 13616 mod-97 checksum + per-country structure/length via the schwifty MIT registry) — it does NOT prove the account exists or belongs to anyone; no Confirmation-of-Payee / account-holder name matching, no bank/SEPA network call, no KYC. NOT legal or fraud advice; show the disclaimer.",
+          "On an invalid IBAN the 200 body carries valid:false plus a granular error_type (invalid_checksum, invalid_length, invalid_structure, invalid_country) instead of a null error_type.",
+          "The provider positions this as the 'cheap-first' route before the fuller /bank/verify fusion endpoint (account-existence + risk indicators) on the same host; /bank/bic is a separate BIC lookup.",
+          "The input IBAN is not stored or logged per the provider disclaimer."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate an IBAN's structure in one keyless x402 call. GET https://api.agentstools.dev/bank/validate?iban=<IBAN> (spaces optional, any case), e.g. ?iban=DE89370400440532013000. Synchronous — the 200 body returns { valid, iban, error_type, country{name,alpha_2,alpha_3,numeric}, format_spec{bban_spec,bban_length,iban_length}, disclaimer }. Check `valid`; on rejection read `error_type` (invalid_checksum|invalid_length|invalid_structure|invalid_country). This is OFFLINE ISO 13616 checksum + per-country format validation (schwifty, MIT) — it does not confirm the account exists or its owner, and is not KYC/legal advice. Pays $0.003 USDC via x402 v2 on Base (eip155:8453), no API key or account.",
+        "costObservedUsd": 0.003
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Bank Verify",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-bank-verify",
+        "bank-verify",
+        "iban-verify",
+        "iban-verification"
+      ],
+      "description": "Verify a bank account / IBAN in one keyless call — ISO 13616 checksum + per-country structure validation, BIC / bank name / branch resolution, country details, SEPA-zone flag, and a deterministic 0-100 fraud/KYC risk score with band, reasons and weighted signals, all computed offline from open-registry data.",
+      "tags": [
+        "iban",
+        "bank-verification",
+        "bic",
+        "sepa",
+        "kyc",
+        "payments"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/bank/verify",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.008,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "8000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "iban": {
+                "type": "string",
+                "description": "REQUIRED. IBAN to verify (spaces optional, any case), e.g. DE89370400440532013000.",
+                "examples": [
+                  "DE89370400440532013000"
+                ]
+              },
+              "expected_country": {
+                "type": "string",
+                "description": "Optional ISO-3166 alpha-2 country the account is expected in (e.g. DE); a mismatch raises the risk score."
+              },
+              "country": {
+                "type": "string",
+                "description": "Alias of expected_country (ISO-3166 alpha-2)."
+              }
+            },
+            "required": [
+              "iban"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "valid": {
+                "type": "boolean",
+                "description": "Structural validity (ISO 13616 checksum + per-country BBAN structure)."
+              },
+              "iban": {
+                "type": "string"
+              },
+              "error_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "country": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "alpha_2": {
+                    "type": "string"
+                  },
+                  "alpha_3": {
+                    "type": "string"
+                  },
+                  "numeric": {
+                    "type": "string"
+                  }
+                }
+              },
+              "format_spec": {
+                "type": "object",
+                "properties": {
+                  "bban_spec": {
+                    "type": "string"
+                  },
+                  "bban_length": {
+                    "type": "integer"
+                  },
+                  "iban_length": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "bic": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bank_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "branch_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bank_code": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "in_sepa_zone": {
+                "type": "boolean"
+              },
+              "expected_country": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "risk_score": {
+                "type": "integer",
+                "description": "Deterministic 0-100 fraud/KYC risk score."
+              },
+              "risk_band": {
+                "type": "string",
+                "description": "low | medium | high"
+              },
+              "reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "signals": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "signal": {
+                      "type": "string"
+                    },
+                    "dimension": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string"
+                    },
+                    "weight": {
+                      "type": "number"
+                    }
+                  }
+                }
+              },
+              "high_risk_jurisdiction": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "virtual_iban_issuer": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "bank_sanctions_advisory": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "description": "ADVISORY-ONLY fuzzy name match of the resolved bank name against a public sanctions list: {potential_match, matched_name, list, programs[], score, advisory}. NOT a confirmation."
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "valid",
+              "iban",
+              "disclaimer"
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/bank/verify with query params: iban=<IBAN, required> plus optional expected_country=<ISO-3166 alpha-2> (alias: country). No request body. Result is inline in the 200 body (synchronous). Pays $0.008 USDC via x402 v2 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "iban": "DE89370400440532013000",
+          "expected_country": "DE"
+        },
+        "outputShape": "JSON object: valid (bool, structural ISO 13616 + BBAN validity), iban, error_type, country {name,alpha_2,alpha_3,numeric}, format_spec {bban_spec,bban_length,iban_length}, bic, bank_name, branch_code, bank_code, in_sepa_zone (bool), expected_country, risk_score (0-100), risk_band (low|medium|high), reasons[], signals[] {signal,dimension,severity,weight}, high_risk_jurisdiction, virtual_iban_issuer, bank_sanctions_advisory {potential_match,matched_name,list,programs[],score,advisory}, disclaimer. Live paid 200 for iban=DE89370400440532013000&expected_country=DE returned valid=true, country Germany, bic 'COBADEFFXXX', bank_name 'Commerzbank', bank_code '37040044', in_sepa_zone=true, risk_score 0, risk_band 'low'. Note: the run surfaced a bank_sanctions_advisory potential_match (matched_name 'Ocean Maritime Management Company, Limited', list 'EU') with weight 0 — an ADVISORY-ONLY fuzzy name coincidence, not a real sanctions hit on Commerzbank.",
+        "quirks": [
+          "`iban` is the only required query param; `expected_country` (alias `country`) is optional ISO-3166 alpha-2 — a mismatch against the IBAN's country raises the risk score.",
+          "Fully OFFLINE: computed from schwifty (MIT) open-registry data — no paid bank/HLR API is resold. BIC/bank-name/branch resolution covers ~45 countries (all SEPA plus UA/CH/NO/DK etc.); structural validity covers 127 countries.",
+          "Structural + resolution + risk INDICATORS ONLY. Does NOT prove the account exists or belongs to any person/company — no Confirmation-of-Payee / account-holder name matching. Not legal/KYC advice.",
+          "bank_sanctions_advisory is a fuzzy name match with weight 0 (advisory) — treat as a lead to verify against the official list, not a verdict; the German test IBAN produced a benign false-positive advisory match.",
+          "Use ONLY public test IBANs (e.g. DE89370400440532013000) or provider examples when testing — never real PII. Input IBAN is not stored or logged. Invalid input returns a 4xx, never a 500."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Verify a bank account / IBAN in one keyless x402 call — for fraud, KYC/AML, payout and supplier-onboarding loops. GET https://api.agentstools.dev/bank/verify?iban=<IBAN> (spaces optional, any case), optionally &expected_country=<ISO-3166 alpha-2> to flag a country mismatch. Synchronous — the 200 body carries: structural validity (ISO 13616 checksum + per-country BBAN structure), the parsed country and format_spec, the resolved bic/bank_name/branch_code/bank_code (open bank-registry coverage ~45 countries), the SEPA-zone flag, and a deterministic risk_score (0-100) with a low/medium/high band, human-readable reasons[] and weighted signals[] you can re-rank with your own policy. Computed entirely offline from schwifty (MIT) — no paid bank API resold, input not stored. These are risk INDICATORS, NOT a definitive fraud verdict; the result does NOT prove the account exists or who owns it (no name matching), and any bank-name sanctions match is ADVISORY ONLY. Pays $0.008 USDC via x402 v2 on Base (eip155:8453), no API key or account. Use public test IBANs only when testing.",
+        "costObservedUsd": 0.008
+      },
+      "status": "active"
+    }
+  ]
+}

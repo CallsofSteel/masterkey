@@ -1,0 +1,80 @@
+{
+  "serviceId": "gpt-image-2",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/image/gpt-image-2",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/gpt-image-2/generate",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stablestudio.io/api/generate/gpt-image-2/edit",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/images/generations",
+      "method": "POST",
+      "amountUsd": 0.063
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/gpt-image-2/generate with JSON body {prompt, size?, quality?} (x402 pay). Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth until status===\"complete\".",
+    "inputExample": {
+      "prompt": "a red circle",
+      "size": "1024x1024",
+      "quality": "low"
+    },
+    "outputShape": "POST returns body.jobId (+ body.status=\"pending\"). Poll GET /api/jobs/{jobId} returns body.status, body.progress, and on completion body.result.imageUrl (the PNG URL).",
+    "quirks": [
+      "Registry priceDisplay says $10.00 and paymentAccepts amount is 10000000 (10 USDC), but the LIVE x402 quote was only $0.01 — it paid fine well under the $6 cap. Do NOT skip as over-cap.",
+      "ASYNC: POST only pays + enqueues, returning {success, jobId, status:'pending', type}. No image in the POST response.",
+      "Poll endpoint is GET https://stablestudio.dev/api/jobs/{jobId} (note: /api/jobs/, NOT /api/status/ or /api/generate/...). This URL is NOT in the registry; derive it from the jobId.",
+      "The poll endpoint requires SIWX authentication (returns 402 'SIWX authentication required' with accepts:[] and a sign-in-with-x extension if unauthenticated). It is FREE (no x402 payment) once signed in.",
+      "Job took ~23s to go pending->complete; one poll after generation was enough here.",
+      "Result image is hosted on Vercel blob storage (public.blob.vercel-storage.com); body.result.imageUrl is a live public PNG (verified 200, image/png, 835KB)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Generate an image: POST to https://stablestudio.dev/api/generate/gpt-image-2/generate with JSON {\"prompt\": \"...\", \"size\": \"1024x1024\", \"quality\": \"low|medium|high\"} and pay via x402 (live cost ~$0.01 despite the $10 registry surface). The response gives you a jobId. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIWX authentication (free) every few seconds until body.status === \"complete\". Read the finished image from body.result.imageUrl, a public PNG URL.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-image-2#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "gpt-image-2#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "gpt-image-2#2",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "gpt-image-2#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.021
+    }
+  ]
+}

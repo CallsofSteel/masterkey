@@ -1,0 +1,53 @@
+{
+  "serviceId": "stabletravel-transfers",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/transfers/search",
+      "method": "POST",
+      "amountUsd": 0.00324
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stabletravel.dev/api/transfers/search with JSON body {startLocationCode, endAddressLine, endCityName, endCountryCode, transferType, startDateTime, passengers}",
+    "inputExample": {
+      "startLocationCode": "CDG",
+      "endAddressLine": "5 Avenue Anatole France",
+      "endCityName": "Paris",
+      "endCountryCode": "FR",
+      "endGeoCode": "48.8584,2.2945",
+      "transferType": "PRIVATE",
+      "startDateTime": "2026-07-15T10:00:00",
+      "passengers": 2
+    },
+    "outputShape": "body.data[] (array of transfer-offer objects: .id, .transferType, .vehicle.description, .converted.monetaryAmount + .currencyCode (price), .serviceProvider.name, .start, .end)",
+    "quirks": [
+      "endGeoCode ALONE is NOT enough — it returns 200 but Amadeus error 32803 'MISSING DROP OFF LOCATION INFORMATION'. You MUST send the full drop-off address: endAddressLine + endCityName + endCountryCode (sending endGeoCode too is fine but optional).",
+      "startLocationCode must be a valid IATA airport code (e.g. CDG).",
+      "Each search costs ~$0.003 even when it returns the validation error (you pay for the failed-input call), so build the body correctly the first time.",
+      "Response is large (~280KB) — body.data[] holds many offers; read price from .data[i].converted.monetaryAmount.",
+      "This is the SEARCH endpoint only. The sibling /book and /cancel endpoints are real irreversible money-movers — do not call without explicit user approval."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Search Amadeus airport transfers via POST https://stabletravel.dev/api/transfers/search (x402, ~$0.003/call, no API key). Body must include startLocationCode (IATA airport, e.g. CDG), the full drop-off address (endAddressLine + endCityName + endCountryCode — endGeoCode alone is rejected with 'MISSING DROP OFF LOCATION INFORMATION'), transferType (e.g. PRIVATE), startDateTime (ISO local), and passengers. Read offers from body.data[]: each has a price at .converted.monetaryAmount/.currencyCode, vehicle at .vehicle.description, and provider at .serviceProvider.name. Booking/cancelling is a separate endpoint and is irreversible — confirm with the user first.",
+    "costObservedUsd": 0.00324
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-transfers#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.00324
+    }
+  ]
+}

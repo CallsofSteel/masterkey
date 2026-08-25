@@ -1,0 +1,60 @@
+{
+  "serviceId": "orbis-router",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/unified-multi-provider-agent-completion-api-fa0b3b/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/unified-multi-provider-agent-completion-api-fa0b3b/api/unified-ai/v1/chat/completions",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/unified-multi-provider-agent-completion-api-fa0b3b/v1/chat/completions with OpenAI-compatible JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.output (the completion text string). Metadata: body.provider_used, body.model_used, body.resolved_model_slug, body.token_usage, body.confidence. NOT the standard OpenAI choices[].message.content shape.",
+    "quirks": [
+      "Completion text is at body.output (a plain string), NOT the standard OpenAI choices[].message.content path.",
+      "Model selection defaults to an 'auto' router (requested_model='auto') that picks the provider/model itself; first call routed to google/gemini-2.5-flash. Pass an explicit model field if you need a specific one.",
+      "Orbis proxy slug (orbisapi.com/proxy/...) — paid $0.01 via x402 on Base USDC and returned a valid 200, but Orbis proxy routes are the known charge-then-404 family; if a future call returns 404/HTML/refund the route is dead, do not retry.",
+      "Response is verbose: includes routing metadata, pricing breakdown, recommended_actions, and chain_to suggestions alongside the actual output."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with an OpenAI-style JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]} and pay $0.01 USDC via x402 (Base or Solana, no API key). Read the completion text from body.output (a plain string), not from choices[]. By default the 'auto' router selects a model for you (returned in body.model_used / resolved_model_slug); include an explicit model field if you need a particular provider. The response also carries token_usage, confidence, and routing metadata you can ignore unless needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "orbis-router#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "orbis-router#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

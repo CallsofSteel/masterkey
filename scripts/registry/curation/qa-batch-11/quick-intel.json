@@ -1,0 +1,46 @@
+{
+  "serviceId": "quick-intel",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.quickintel.io/v1/scan/full",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.quickintel.io/v1/scan/full with JSON body {chain, tokenAddress}",
+    "inputExample": {
+      "chain": "base",
+      "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+    },
+    "outputShape": "body.tokenDetails (tokenName, tokenSymbol, tokenOwner, tokenSupply); body.tokenDynamicDetails.is_Honeypot, .buy_Tax, .sell_Tax, .lp_Burned_Percent, .liquidity; body.quickiAudit.* (can_Mint, can_Blacklist, can_Pause_Trading, contract_Renounced, is_Proxy, has_Scams, hidden_Owner, etc.); body.isScam; body.contractVerified",
+    "quirks": [
+      "inputSchema was null in the registry; body shape {chain, tokenAddress} inferred and confirmed working",
+      "chain is a lowercase slug like 'base' (also supports 60+ chains/Solana per description)",
+      "response is large (~7.8KB) and quickiAudit may embed raw contract source code in hidden_Owner_Modifiers/external_Functions fields",
+      "honeypot/tax/scam booleans can be null when not applicable (e.g. isScam:null) — treat null as 'unknown', not safe"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {chain, tokenAddress} to https://x402.quickintel.io/v1/scan/full where chain is a lowercase network slug (e.g. \"base\") and tokenAddress is the token contract address. It is a first-party x402 endpoint on Base — pay ~$0.03 USDC per scan, returns synchronously with a 200. Read the security verdict from body.tokenDynamicDetails.is_Honeypot, buy_Tax/sell_Tax, and the body.quickiAudit booleans (can_Mint, can_Blacklist, can_Pause_Trading, contract_Renounced, is_Proxy, has_Scams). Note that some fields (isScam, *_Renounced) may be null meaning \"unknown\" rather than safe.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "quick-intel#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.03
+    }
+  ]
+}

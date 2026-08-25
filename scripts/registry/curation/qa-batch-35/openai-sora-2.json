@@ -1,0 +1,61 @@
+{
+  "serviceId": "openai-sora-2",
+  "subcat": "video-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/sora-2/generate",
+      "method": "POST",
+      "amountUsd": 0.4
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/sora-2-pro/generate",
+      "method": "POST",
+      "amountUsd": 1.2
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/sora-2/generate (x402, ~$0.40) with JSON body {prompt, seconds, size} -> {jobId}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (free, same wallet) until status=complete",
+    "inputExample": {
+      "prompt": "a red circle",
+      "seconds": "4",
+      "size": "1280x720"
+    },
+    "outputShape": "POST -> body.jobId (+body.status:pending, body.type). Poll GET /api/jobs/{jobId} (SIWX) -> body.status (loading->complete), body.progress; on complete body.result.videoUrl + body.result.thumbnailUrl. Blob URLs expire ~20min, download immediately.",
+    "quirks": [
+      "TWO-STEP ASYNC: POST only pays + returns {jobId, status:pending}; the actual video comes from polling, NOT the POST response.",
+      "POLL IS FREE via SIGN-IN-WITH-X (SIWX): GET /api/jobs/{jobId} signed by the SAME wallet that paid the POST. No per-poll charge (unlike the blockrun.ai sora-2 backend whose polls are paid).",
+      "Input shape is per-model: {prompt, seconds:'4'|'8'|'12', size:'1280x720'|'720x1280'}. seconds/size are STRINGS. Optional input_reference (blob URL) for image-to-video + autoCrop.",
+      "Price settled at exactly $0.40 (bottom of the sora-2 $0.40-$1.20 range, matches registry surface). Headline is a CAP; pass cap>=1.20 to be safe.",
+      "result.videoUrl is a Vercel Blob MP4 that expires ~20min after completion - download it immediately.",
+      "Generation took ~90s (loading 10%->69%->85%->complete over 4 polls).",
+      "Pays USDC on Base (also Solana/Tempo), no API key."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "StableStudio sora-2 text-to-video. POST https://stablestudio.dev/api/generate/sora-2/generate with JSON {prompt, seconds, size} and pay-per-call x402 USDC on Base (~$0.40, cap range $0.40-$1.20). The POST only returns {jobId, status:pending} - it does not return the video. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with a SIGN-IN-WITH-X signature (FREE, signed by the same wallet that paid) every ~30s until body.status=='complete' (~90s typical). Read body.result.videoUrl (and thumbnailUrl) and download immediately - the blob URLs expire in ~20min.",
+    "costObservedUsd": 0.4
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-sora-2#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.4
+    },
+    {
+      "key": "openai-sora-2#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.2
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "orbis-feature-flags",
+  "subcat": "feature-flags",
+  "batchId": "batch-16",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/feature-flag-manager-api-3a023f",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/feature-flag-manager-api-3a023f with JSON body (e.g. {flag, context})",
+    "inputExample": {
+      "flag": "test-flag",
+      "context": {
+        "userId": "user-123"
+      }
+    },
+    "outputShape": "none — endpoint returns 404 {error:\"API_NOT_FOUND\", message}",
+    "quirks": [
+      "DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'feature-flag-manager-api-3a023f'.\"}",
+      "Orbis proxy charge-then-404 pattern: pre-flight probe shows 402 (looks payable) but the live call 404s. Do NOT pay/retry.",
+      "No payment was deducted in this test (qa-pay reported paid:false, costUsd:0) — the 404 came before settlement."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. The Orbis proxy slug 'feature-flag-manager-api-3a023f' is dead and returns HTTP 404 {error:\"API_NOT_FOUND\"} even though the x402 pre-flight probe advertises a payable 402. There is no working result to read. Drop or prune from the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-feature-flags#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'feature-flag-manager-api-3a023f'.\"}"
+  },
+  "droppedReason": "orbis-feature-flags#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'feature-flag-manager-api-3a023f'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-feature-flags#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

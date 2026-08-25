@@ -1,0 +1,32 @@
+{
+  "serviceId": "ip-geolocation",
+  "subcat": "ip-geolocation",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://2s.io/api/geo/ip?ip={ipv4_or_ipv6}",
+    "inputExample": {
+      "ip": "8.8.8.8"
+    },
+    "outputShape": "body.data.items[0] contains: ip, country.{code,name}, region.{code,name}, city, postalCode, coords.{lat,lon}, timezone, network.{isp,org,asn}; body.meta.cost.usd confirms per-call charge",
+    "quirks": [
+      "Registry records method as POST but endpoint only accepts GET — sending POST causes a 405 AFTER payment is deducted (non-refundable); always use GET",
+      "Response is double-nested: useful data is at body.data.items[0], not the top level"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://2s.io/api/geo/ip?ip=8.8.8.8 (or any IPv4/IPv6) via x402 on Base at $0.001 USDC per call. Include the ip as a query parameter in the URL — there is no request body. The geolocation payload is at body.data.items[0] with fields for country, region, city, postalCode, coords, timezone, and network/ISP info. Do not use POST despite what the registry entry says — POST returns 405 Method Not Allowed after payment is already taken.",
+    "costObservedUsd": 0.001,
+    "registryFix": {
+      "field": "method",
+      "wrongValue": "POST",
+      "correctValue": "GET",
+      "backend": "https://2s.io/api/geo/ip"
+    }
+  },
+  "drop": false,
+  "droppedReason": null
+}

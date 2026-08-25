@@ -1,0 +1,48 @@
+{
+  "serviceId": "stableemail",
+  "subcat": "email",
+  "batchId": "batch-39",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stableemail.dev/api/send",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableemail.dev/api/send with JSON body {to:[\"dest@example.com\"], subject, text|html} — x402 paid ($0.02). No 'from' field; sends from relay@stableemail.dev.",
+    "inputExample": {
+      "to": [
+        "dest@example.com"
+      ],
+      "subject": "Hello",
+      "text": "Hi there, this is a test."
+    },
+    "outputShape": "body.success (bool), body.messageId on success; on failure body.success=false, body.error",
+    "quirks": [
+      "OUTWARD/IRREVERSIBLE: sends a real email to a real recipient — requires explicit user authorization. The Claude Code auto-mode classifier BLOCKED the unattended QA payment for exactly this reason; could not pay-test in Phase A.",
+      "This is the NO-PREREQUISITE relay endpoint (POST /api/send, $0.02): body has NO 'from' field; email is sent from relay@stableemail.dev. Do NOT confuse with POST /api/subdomain/send ($0.005) which requires an owned subdomain and a 'from' address.",
+      "Required fields: to (array of recipients), subject, and one of text or html.",
+      "Probe shows 402 payable, but a paid 200 does NOT guarantee delivery — a sibling subdomain-send endpoint had a CONFIRMED non-delivery during prior QA (received 200 but recipient got no email). Verify actual inbox delivery before marking verified."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint sends a real, irreversible email via the StableEmail relay (sends from relay@stableemail.dev), so it requires explicit user approval before calling. POST a JSON body with to (array of recipient addresses), subject, and text or html — there is NO 'from' field for this endpoint (that is the subdomain-send endpoint instead). x402 pays $0.02. On success read body.success and body.messageId. Note a paid 200 has previously not guaranteed delivery for the related subdomain endpoint, so confirm the recipient actually received the email. Could not be auto-tested in Phase A because the payment classifier blocked the outward send.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableemail#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "serviceId": "code-execution-sandbox",
+  "subcat": "sandbox-environments",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.auteng.ai/api/x402/compute",
+      "method": "POST",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/code/run",
+      "method": "POST",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/code-execution-sandbox-api-c11c49",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.auteng.ai/api/x402/compute with JSON body {code, stack?, size?, timeout_seconds?, files?}",
+    "inputExample": {
+      "code": "print(2 + 2)",
+      "stack": "python"
+    },
+    "outputShape": "body.stdout (program output), body.stderr, body.exit_code, body.execution_time_ms, body.files (filename→content map), body.sandbox_id, body.stack, body.size",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with a required `code` string to https://x402.auteng.ai/api/x402/compute, paying $0.002 USDC via x402 on Base. Set `stack` to \"python\" (default, Python 3.14) or \"node\" (Node.js 24 LTS); optional `size` (small/med/large), `timeout_seconds`, and `files` (filename→base64). The endpoint runs the code in an ephemeral sandbox and returns synchronously. Read program output from body.stdout, errors from body.stderr, and check body.exit_code (0 = success); any files produced appear in body.files.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "code-execution-sandbox#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    },
+    {
+      "key": "code-execution-sandbox#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "code-execution-sandbox#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

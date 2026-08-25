@@ -1,0 +1,44 @@
+{
+  "serviceId": "stableenrich-news",
+  "subcat": "news-media",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/serper/news",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/serper/news with JSON body {q, num?, gl?, hl?, location?}",
+    "inputExample": {
+      "q": "openai",
+      "num": 3
+    },
+    "outputShape": "body.news[] (each: .title, .link, .date, .source, .imageUrl, .snippet?); body.searchParameters echoes the query; body.credits",
+    "quirks": [
+      "Service ignores the requested 'num' value and returns ~10 news results regardless (asked num=3, got 10).",
+      "Only the first/featured news item reliably includes a 'snippet' field; most items have title/link/date/source/imageUrl only."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://stableenrich.dev/api/serper/news with a JSON body containing at least {\"q\": \"<search query>\"}. Optional fields: num (result count, but the service returns ~10 regardless), gl (2-letter country), hl (language), location. Payment is x402 USDC (~$0.04 on Base or Solana), settled automatically. Read results from body.news[] — each item has title, link, date (relative, e.g. \"3 hours ago\"), source, and imageUrl. Plain synchronous call; no auth, polling, or sign-in needed.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableenrich-news#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "serviceId": "video-trim",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-trim-api-876fe3",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-trim-api-876fe3 with JSON body {video_url, start, end}",
+    "inputExample": {
+      "video_url": "https://download.samplelib.com/mp4/sample-5s.mp4",
+      "start": 0,
+      "end": 2
+    },
+    "outputShape": "N/A — endpoint dead, returns body.error=\"API_NOT_FOUND\"",
+    "quirks": [
+      "Orbis proxy dead slug: x402 probe returns 402 (payable) but actual POST returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug video-trim-api-876fe3'}.",
+      "No payment was taken (paid:false, costUsd:0) — the route is dead at Orbis before settlement.",
+      "Do NOT retry with alternate bodies/paths; the slug is gone."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is dead. The Orbis proxy slug 'video-trim-api-876fe3' returns 404 API_NOT_FOUND on POST despite advertising an x402 402 quote during pre-flight. No payment is collected (paid:false, costUsd:0), but the service is non-functional. Do not call it; it cannot trim videos. Treat as broken/removed.",
+    "costObservedUsd": 0,
+    "droppedReason": "video-trim#0: Orbis proxy dead slug: x402 probe returns 402 (payable) but actual POST returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug video-trim-api-876fe3'}."
+  },
+  "droppedReason": "video-trim#0: Orbis proxy dead slug: x402 probe returns 402 (payable) but actual POST returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug video-trim-api-876fe3'}.",
+  "_backends": [
+    {
+      "key": "video-trim#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

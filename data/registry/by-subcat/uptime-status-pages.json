@@ -1,0 +1,554 @@
+[
+  {
+    "id": "x402node-website-url-status-check",
+    "kind": "api",
+    "name": "x402node Website URL Status Check",
+    "aka": [
+      "x402node-website-url-status-check",
+      "url-status-check"
+    ],
+    "provider": "x402node",
+    "providerId": "x402node",
+    "description": "Probe any public URL for its live HTTP status. Returns status code, OK flag, redirect info, final URL, content-type, server header, and response time (ms). A true website uptime / health / dead-link / redirect-chain monitor for arbitrary targets.",
+    "category": "devtools-observability",
+    "subcategory": "uptime-status-pages",
+    "tags": [
+      "uptime",
+      "monitoring",
+      "health-check"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0038",
+      "amount": 0.0038,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402node",
+        "providerId": "x402node",
+        "url": "https://api.x402node.dev/url/check-status",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.0038,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0038",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "3800",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:53:38.224Z"
+        },
+        "status": "active",
+        "team": "x402node"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.x402node.dev/url/check-status?url=<TARGET_URL> (x402-paid, no body). Target passed as ?url= query param; include the scheme (https://).",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "url, status, statusText, ok, redirected, finalUrl, contentType, contentLength, server, responseTimeMs, meta.source, timestamp",
+      "quirks": [
+        "MUST pass the target as a ?url= query param. The registry surface shows a bare GET with a 'discoverable' http schema and no documented params; calling with no url param checks nothing useful.",
+        "Pass the full URL including scheme (https://). Response echoes finalUrl with a trailing slash added (https://example.com -> https://example.com/).",
+        "x402 v1 ONLY: agentcash MCP fetch rejects this endpoint ('not supported by agentcash, only x402 v2'). Pay via qa-pay / an x402 v1-capable client instead.",
+        "contentLength may be null even on a 200 (e.g. Cloudflare-fronted hosts).",
+        "Observed cost ~$0.0038 USDC on Base (price advertised as 'Varies')."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Probe any public URL for its live HTTP status. Returns status code, OK flag, redirect info, final URL, content-type, server header, and response time (ms). A true website uptime / health / dead-link / redirect-chain monitor for arbitrary targets. GET https://api.x402node.dev/url/check-status?url=<TARGET_URL> (x402-paid, no body). Target passed as ?url= query param; include the scheme (https://). Output: url, status, statusText, ok, redirected, finalUrl, contentType, contentLength, server, responseTimeMs, meta.source, timestamp",
+      "costObservedUsd": 0.0038
+    },
+    "source": {
+      "serviceKey": "x402node-website-url-status-check",
+      "discoveredVia": [
+        "uptime monitoring",
+        "status page"
+      ],
+      "lastSyncedAt": "2026-06-01T23:53:38.224Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentoracle-service-health-heartbeat",
+    "kind": "api",
+    "name": "AgentOracle Service Health Heartbeat",
+    "aka": [
+      "agentoracle-service-health-heartbeat",
+      "service-health-status"
+    ],
+    "provider": "aiagentoracle",
+    "providerId": "aiagentoracle",
+    "description": "Live self-health snapshot of the AgentOracle service itself: operational/degraded/down status, tracked-token count, last ingestion timestamp, ingestion error counter, process uptime (seconds), and API version. A cheap heartbeat to call before issuing larger AgentOracle queries — NOT a checker for arbitrary external URLs.",
+    "category": "devtools-observability",
+    "subcategory": "uptime-status-pages",
+    "tags": [
+      "uptime",
+      "monitoring",
+      "health-check"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "aiagentoracle",
+        "providerId": "aiagentoracle",
+        "url": "https://aiagentoracle.ai/api/v1/status",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2feCabDFC849C76fdC28CA13Aa0Ab392753EF35C",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:53:38.224Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://aiagentoracle.ai/api/v1/status (x402-paid, no body, no params).",
+      "inputExample": {},
+      "outputShape": "status (operational|degraded|down), tokenCount, lastIngestion (date-time|null), ingestionErrors, uptime (seconds), version",
+      "quirks": [
+        "Takes NO input — it reports the PROVIDER's own service health, not an arbitrary target URL. Do not pass ?url=; it is ignored.",
+        "This was mis-bundled with the x402node URL checker; it is a different operation entirely (provider heartbeat, not website monitor).",
+        "x402 v2 (network eip155:8453). Pays cleanly via agentcash MCP fetch.",
+        "ingestionErrors can be a large nonzero number on a still-'operational' status (observed 5538 errors while operational) — status reflects liveness, not data freshness.",
+        "Observed cost $0.01 USDC on Base."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Live self-health snapshot of the AgentOracle service itself: operational/degraded/down status, tracked-token count, last ingestion timestamp, ingestion error counter, process uptime (seconds), and API version. A cheap heartbeat to call before issuing larger AgentOracle queries — NOT a checker for arbitrary external URLs. GET https://aiagentoracle.ai/api/v1/status (x402-paid, no body, no params). Output: status (operational|degraded|down), tokenCount, lastIngestion (date-time|null), ingestionErrors, uptime (seconds), version",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "agentoracle-service-health-heartbeat",
+      "discoveredVia": [
+        "uptime monitoring",
+        "status page"
+      ],
+      "lastSyncedAt": "2026-06-01T23:53:38.224Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "x402-service-monitor",
+    "kind": "model",
+    "name": "x402 Service Monitor",
+    "aka": [],
+    "provider": "Various",
+    "providerId": "various",
+    "description": "Monitor x402 endpoints — quality/latency, webhooks, and forensics.",
+    "category": "devtools-observability",
+    "subcategory": "uptime-status-pages",
+    "tags": [
+      "monitoring",
+      "x402",
+      "quality"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402trustlayer",
+        "providerId": "x402trustlayer",
+        "url": "https://x402trustlayer.xyz/api/quality-monitor/probe",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": 0.03,
+          "max": 0.03,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "30000",
+              "maxAmountRequired": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xD56013Abd05E588f2d025193FCe90416816BDBBC",
+              "maxTimeoutSeconds": 120,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "30000",
+              "maxAmountRequired": "30000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9c7tE587KpGYBjiNQrjw3nGvxQHhSYKU4Ba6WRgQsHkt",
+              "maxTimeoutSeconds": 120,
+              "extra": {
+                "feePayer": "DeXterR2kQm8AvRHnNPatWkE46TfAcMeBDjb6FySoAb8",
+                "decimals": 6
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "30000",
+              "maxAmountRequired": "30000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c335",
+              "payTo": "0xD56013Abd05E588f2d025193FCe90416816BDBBC",
+              "maxTimeoutSeconds": 120,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "urls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "urls"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "Successful response after x402 settlement",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "allowed": {
+              "type": "boolean"
+            },
+            "summary": {
+              "type": "string"
+            },
+            "confidence": {
+              "type": "number"
+            },
+            "checks_passed": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:53:38.224Z"
+        },
+        "status": "hidden"
+      },
+      {
+        "provider": "x402station",
+        "providerId": "x402station",
+        "url": "https://x402station.io/api/v1/watch",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4053338C7cB38624C0bc23c900F78Cf8470b4E38",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "url",
+            "webhookUrl"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The x402 endpoint URL to watch."
+            },
+            "webhookUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "Where x402station will POST alert payloads. Must be reachable from the public internet."
+            },
+            "signals": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "unknown_endpoint",
+                  "no_history",
+                  "dead",
+                  "zombie",
+                  "decoy_price_extreme",
+                  "suspicious_high_price",
+                  "slow",
+                  "new_provider",
+                  "dead_7d",
+                  "mostly_dead",
+                  "slow_p99",
+                  "price_outlier_high",
+                  "high_concentration",
+                  "never_paid_zombie",
+                  "proxy_markup",
+                  "wildcard_402",
+                  "spa_fallback"
+                ]
+              },
+              "minItems": 1,
+              "maxItems": 20,
+              "description": "Optional. Defaults to ['dead', 'zombie', 'decoy_price_extreme']. Whitelisted to known signal vocabulary so a typo doesn't silently never fire."
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "watchId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "secret": {
+              "type": "string",
+              "description": "64-char hex HMAC seed. Returned ONCE here. Store it."
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "signals": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "alertsPaid": {
+              "type": "integer"
+            },
+            "alertsRemaining": {
+              "type": "integer"
+            },
+            "endpointKnown": {
+              "type": "boolean",
+              "description": "true if the watched URL is in our catalog. false ⇒ alerts will fire only after ingest picks the URL up."
+            },
+            "deliveryFormat": {
+              "type": "object",
+              "description": "Documents how to verify HMAC signatures + the JSON shape of alert payloads."
+            }
+          },
+          "required": [
+            "watchId",
+            "secret",
+            "expiresAt",
+            "signals",
+            "alertsPaid"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:53:38.224Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402station.io/api/v1/watch with JSON body {url, webhookUrl, signals?}",
+      "inputExample": {
+        "url": "https://x402station.io/api/v1/watch",
+        "webhookUrl": "https://x402station.io/qa/webhook-sink"
+      },
+      "outputShape": "body.watchId (uuid), body.secret (one-time 64-char hex HMAC seed), body.expiresAt, body.signals[], body.alertsPaid, body.alertsRemaining, body.endpointKnown, body.deliveryFormat (HMAC verification + alert payload shape), body.statusUrl, body.unsubscribeUrl",
+      "quirks": [
+        "webhookUrl is REQUIRED and must be a publicly reachable URL — x402station POSTs HMAC-SHA256-signed alert payloads there when signals fire. The registration call itself is synchronous and returns immediately even if the webhook is not yet live.",
+        "body.secret is a 64-char hex HMAC seed returned ONLY ONCE in this response — store it; you need it to verify alert signatures (sha256=<hmac-hex> over raw body, constant-time compare) and to access statusUrl/unsubscribeUrl (?secret=...).",
+        "Optional signals[] defaults to ['dead','zombie','decoy_price_extreme']; must be drawn from the fixed enum (e.g. dead, zombie, slow, suspicious_high_price, proxy_markup, wildcard_402, spa_fallback, etc.) — typos are rejected, not silently ignored.",
+        "endpointKnown:false means the watched URL is not yet in x402station's catalog, so alerts only fire after their ingest picks it up.",
+        "Response includes idempotentReplay flag and alertsPaid/alertsRemaining (100 alerts included per watch). Watch has an expiresAt (~30 days out).",
+        "A request-bin / webhook.site style webhookUrl can be flagged by safety classifiers as exfil-shaped; use a legitimate public endpoint you control."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "POST to https://x402station.io/api/v1/watch with a JSON body containing the x402 endpoint URL to monitor (url) and a publicly reachable webhookUrl where alerts will be delivered; optionally pass signals[] from the documented enum (defaults to dead/zombie/decoy_price_extreme). The call costs $0.01 USDC on Base and returns synchronously with a watchId and a one-time HMAC secret — store the secret immediately, as it is required to verify the HMAC-SHA256 signature on incoming alert webhooks and to call the statusUrl/unsubscribeUrl. When a watched signal fires, x402station POSTs a signed payload to your webhookUrl (up to 5 retries, ~5min apart). 100 alerts are included per watch and it expires in ~30 days.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "x402-service-monitor",
+      "discoveredVia": [
+        "uptime monitoring",
+        "status page"
+      ],
+      "lastSyncedAt": "2026-06-01T23:53:38.224Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

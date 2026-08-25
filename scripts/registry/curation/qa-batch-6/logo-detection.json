@@ -1,0 +1,45 @@
+{
+  "serviceId": "logo-detection",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/logo-detect",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/logo-detect with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+    },
+    "outputShape": "body.detected_brands[] (each {name, confidence, where_in_image, evidence, element_type}); body.overall_summary; body.no_brands_detected (bool); body.model",
+    "quirks": [
+      "inputSchema is null in the registry; the correct request field is image_url (a publicly-fetchable raster image URL such as PNG/JPG).",
+      "The image must be reachable by the worker. Some hosts (e.g. Wikimedia upload thumbs) gate non-browser user agents; use a plainly-accessible raster image URL.",
+      "Result is plain synchronous JSON, status 200, billed $0.03 via x402 on Base (eip155:8453, USDC).",
+      "Detection findings are in detected_brands[]; check no_brands_detected to know if nothing was found."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402-deployer.x402-deployer.workers.dev/logo-detect with a JSON body {\"image_url\":\"<public raster image URL>\"} and pay the $0.03 x402 charge (USDC on Base). The response is synchronous JSON. Read detected brands from body.detected_brands[] — each entry has name, confidence, where_in_image, evidence, and element_type (wordmark/logomark/etc.). Use body.no_brands_detected and body.overall_summary for a quick read. Make sure the image_url is fetchable by the server (a plain PNG/JPG URL; avoid UA-gated hosts and SVGs).",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "logo-detection#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.03
+    }
+  ]
+}

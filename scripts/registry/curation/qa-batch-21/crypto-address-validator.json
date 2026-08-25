@@ -1,0 +1,41 @@
+{
+  "serviceId": "crypto-address-validator",
+  "subcat": "address-validation",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://2s.io/api/crypto/address-validate",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://2s.io/api/crypto/address-validate?chain={chain}&address={address} (required query params; chain enum: btc|eth|sol|ltc|trx|xrp|bch)",
+    "inputExample": {
+      "chain": "eth",
+      "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+    },
+    "outputShape": "body.data.items[0].valid (boolean), body.data.items[0].canonical (normalized address), body.data.items[0].format (e.g. eip-55), body.data.items[0].reason (null if valid); body.data.ok and body.data.total summarize the batch",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://2s.io/api/crypto/address-validate with two required query params: chain (one of btc, eth, sol, ltc, trx, xrp, bch) and address (the wallet address string). Payment is x402 USDC ($0.001) on Base or Solana; no API key. Read the result from body.data.items[0]: valid tells you if the address is well-formed for that chain, canonical gives the normalized address, format names the encoding, and reason explains failures when valid is false.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "crypto-address-validator#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

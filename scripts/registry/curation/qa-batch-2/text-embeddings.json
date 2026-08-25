@@ -1,0 +1,46 @@
+{
+  "serviceId": "text-embeddings",
+  "subcat": "embeddings-vector",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d5zgtpg00dvssgj28/embeddings",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d5zgtpg00dvssgj28/embeddings with JSON body {model, input}",
+    "inputExample": {
+      "model": "text-embedding-3-small",
+      "input": "hello"
+    },
+    "outputShape": "body.data[].embedding (array of floats); body.object=\"list\", each item body.data[i].object=\"embedding\" with .index. OpenAI-compatible.",
+    "quirks": [
+      "inputSchema in the registry is EMPTY but the endpoint REQUIRES a 'model' string field — sending only {input} returns HTTP 400 with a zod error: 'expected string, received undefined' at path [model] (you still get charged $0.01 for the failed call).",
+      "Use 'model':'text-embedding-3-small' (OpenAI model name) — accepted and produces a valid embedding.",
+      "'input' holds the text to embed (string).",
+      "Output is OpenAI-compatible: result vector is at body.data[0].embedding."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {\"model\":\"text-embedding-3-small\",\"input\":\"<your text>\"} to the URL; payment is x402 USDC (~$0.01, Base or Solana), no API key needed. The 'model' field is mandatory even though the registry schema lists no fields — omitting it returns a 400 and still costs you a call. Read the embedding vector from body.data[0].embedding; the response mirrors the OpenAI embeddings format ({object:\"list\", data:[{object:\"embedding\", embedding:[...], index}]}).",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "text-embeddings#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

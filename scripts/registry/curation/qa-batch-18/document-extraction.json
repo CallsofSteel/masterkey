@@ -1,0 +1,46 @@
+{
+  "serviceId": "document-extraction",
+  "subcat": "ocr-document-extraction",
+  "batchId": "batch-18",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/pdf/extract",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.x402node.dev/pdf/extract with JSON body {url}",
+    "inputExample": {
+      "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    },
+    "outputShape": "n/a - route returns HTTP 404 'Cannot POST /pdf/extract' HTML error page",
+    "quirks": [
+      "Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>.",
+      "This is a missing-route 404 (not a 400/422 field error), so no alternate body or field name will fix it - the path itself is gone.",
+      "No payment was made (paid:false, costUsd:0) - the 404 returned before any x402 settlement.",
+      "Pre-flight registry probe reported 402/payable on GET, but that is misleading: the POST route does not exist. Do not pay.",
+      "Do NOT retry with alternate bodies/paths - the route is dead."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is dead. POST to https://api.x402node.dev/pdf/extract returns HTTP 404 with an Express 'Cannot POST /pdf/extract' HTML page on any body - the route does not exist on the server. No payment is taken (the 404 precedes x402 settlement), but the service is non-functional. It should be dropped/pruned from the registry until x402node republishes a working PDF extraction route.",
+    "costObservedUsd": 0,
+    "droppedReason": "document-extraction#3: Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>."
+  },
+  "droppedReason": "document-extraction#3: Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>.",
+  "_backends": [
+    {
+      "key": "document-extraction#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

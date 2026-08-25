@@ -1,0 +1,46 @@
+{
+  "serviceId": "onesource-storage",
+  "subcat": "object-file-storage",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://skills.onesource.io/api/chain/storage",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://skills.onesource.io/api/chain/storage?contract=0x...&slot=0x...&network=ethereum (query params; no body)",
+    "inputExample": {
+      "contract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "slot": "0x0",
+      "network": "ethereum"
+    },
+    "outputShape": "body.data.value (32-byte hex word read from the storage slot); body.meta.request_id, body.meta.endpoint",
+    "quirks": [
+      "Despite the name 'OneSource Storage' / subcat object-file-storage, this is NOT file storage — it is an EVM contract storage-slot reader (eth_getStorageAt).",
+      "Required query params: contract (0x + 40 hex) and slot (0x + hex). Optional: block (default 'latest'), network (default 'ethereum'; enum: ethereum, sepolia, avax, megaeth, megaeth-testnet, base).",
+      "Result word is in body.data.value as a 32-byte 0x hex string; for address-typed slots the address is the low 20 bytes."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://skills.onesource.io/api/chain/storage with query params contract (the 0x contract address) and slot (the storage slot as 0x hex), optionally block (default latest) and network (default ethereum). Payment is x402 USDC on Base, $0.005 per call, no API key. The raw 32-byte storage word comes back as a hex string at body.data.value; decode it for the type you expect (e.g. low 20 bytes = an address). This is a contract-storage reader (eth_getStorageAt), not a file/blob store.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "onesource-storage#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

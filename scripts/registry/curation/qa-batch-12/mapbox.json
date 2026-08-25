@@ -1,0 +1,53 @@
+{
+  "serviceId": "mapbox",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/mapbox/geocoding/v5/mapbox.places",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/mapbox/geocoding/v5/mapbox.places (registry shape) — DEAD: returns HTTP 404 {\"message\":\"Not Found\"} after payment",
+    "inputExample": {
+      "_attempted_post_body": [
+        {
+          "types": [
+            "place"
+          ],
+          "q": "San Francisco",
+          "limit": 1
+        }
+      ],
+      "_attempted_get": "/mapbox.places/San Francisco.json?limit=1"
+    },
+    "outputShape": "none — endpoint returns {\"message\":\"Not Found\"} (404), no usable result",
+    "quirks": [
+      "HTTPay gateway charge-then-404: unpaid pre-flight returns 402 (looks payable) but the actual gateway route is dead and returns HTTP 404 {\"message\":\"Not Found\"} AFTER payment.",
+      "Both call shapes fail: POST to base path with Mapbox batch body (404) AND GET with canonical Mapbox /{query}.json path (404).",
+      "Money is lost on every call — do NOT attempt this endpoint; the gateway slug for mapbox geocoding is broken."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. The HTTPay gateway route for Mapbox geocoding (https://httpay.xyz/api/gateway/mapbox/geocoding/v5/mapbox.places) is dead: the x402 pre-flight returns 402 (payable) but the gateway returns HTTP 404 {\"message\":\"Not Found\"} after the USDC payment is settled, regardless of method or path shape. Two paid attempts (POST with a Mapbox batch-geocoding body, and GET with the canonical Mapbox /{query}.json forward-geocoding path) both 404'd, losing $0.001 each. Treat as broken — money is lost with no result returned.",
+    "costObservedUsd": 0.002,
+    "droppedReason": "mapbox#0: HTTPay gateway charge-then-404: unpaid pre-flight returns 402 (looks payable) but the actual gateway route is dead and returns HTTP 404 {\"message\":\"Not Found\"} AFTER payment."
+  },
+  "droppedReason": "mapbox#0: HTTPay gateway charge-then-404: unpaid pre-flight returns 402 (looks payable) but the actual gateway route is dead and returns HTTP 404 {\"message\":\"Not Found\"} AFTER payment.",
+  "_backends": [
+    {
+      "key": "mapbox#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

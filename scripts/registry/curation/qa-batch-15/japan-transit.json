@@ -1,0 +1,56 @@
+{
+  "serviceId": "japan-transit",
+  "subcat": "traffic-transportation",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://transit.agentic-jp.com/stations/search",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://transit.agentic-jp.com/station/:name/status",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://transit.agentic-jp.com/stations/search?q=Shinjuku (query param `q` is required, min 2 chars; accepts kanji/kana/romaji)",
+    "inputExample": {
+      "q": "Shinjuku"
+    },
+    "outputShape": "body.results[] each has {station_id, name_ja, name_en, name_kana, operator_ids[], line_ids[], lat, lng}; also body.query and body.count",
+    "quirks": [
+      "Registry inputSchema is null. The required query param is `q` (NOT `query` or `search`) — discovered only inside the base64 payment-required header's bazaar extension.",
+      "`q` must be at least 2 chars; accepts kanji (新宿), kana, or romaji (Shinjuku), and tolerates the 駅/station suffix.",
+      "Some results have lat/lng = null (e.g. Seibu-Shinjuku); don't assume coordinates are always present.",
+      "name_kana is frequently null."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://transit.agentic-jp.com/stations/search with a single query param `q` set to the station name (romaji like \"Shinjuku\", kana, or kanji; min 2 chars). x402 micropayment of $0.001 USDC on Base settles automatically. Read the matched stations from body.results[], using station_id as the canonical id and operator_ids[]/line_ids[] to know which lines serve it. body.count is the number of matches. Use this to resolve a fuzzy station name to a canonical record before any follow-on transit lookups.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "japan-transit#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "japan-transit#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

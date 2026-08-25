@@ -1,0 +1,57 @@
+{
+  "serviceId": "x402node-sitemap-robots",
+  "subcat": "web-crawling",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/web/robots",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://api.x402node.dev/web/sitemap",
+      "method": "GET",
+      "amountUsd": 0.008
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/web/robots?domain=<host> (x402 paid, ~$0.005 USDC on Base; the `domain` query param is REQUIRED)",
+    "inputExample": {
+      "domain": "example.com"
+    },
+    "outputShape": "body.exists (bool), body.raw (robots.txt text or null), body.rules (per-user-agent allow/disallow map), body.sitemaps[] (sitemap URLs), body.crawl_delay (per-user-agent map), body.domain",
+    "quirks": [
+      "The `domain` query param is REQUIRED but is NOT in the registry inputSchema (schema shows only {type:http,method:GET,discoverable:true}).",
+      "Calling the bare GET with no ?domain= returns HTTP 500 {\"error\":\"Missing domain parameter\"} AND STILL CHARGES the x402 fee — always include ?domain= or you lose money for nothing.",
+      "Pass `domain` as a bare host (e.g. example.com), not a full URL with scheme/path.",
+      "When a site has no robots.txt the call still succeeds 200 with exists:false and empty rules/sitemaps — that is a valid result, not an error.",
+      "Response includes a promotional `_hint` field unrelated to the result; ignore it."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/web/robots with a required `domain` query param set to the bare host you want to inspect (e.g. ?domain=example.com), not a full URL. It is a paid x402 endpoint (~$0.005 USDC on Base) — do NOT call it without the domain param or it returns 500 and still charges you. Read the parsed result from the JSON body: body.exists tells you if robots.txt was found, body.raw is the raw text, body.rules holds per-user-agent allow/disallow directives, body.sitemaps[] lists sitemap URLs, and body.crawl_delay holds crawl-delay values. A 200 with exists:false simply means the site has no robots.txt.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402node-sitemap-robots#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "x402node-sitemap-robots#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "serviceId": "tavily",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.tavily.com/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.signalfuse.co/v1/gateway/search/tavily",
+      "method": "POST",
+      "amountUsd": 0.012
+    },
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68ee1cfebd72982773cd07e8",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.tavily.com/search with JSON body {query, max_results}",
+    "inputExample": {
+      "query": "machine learning",
+      "max_results": 3
+    },
+    "outputShape": "body.results[].{url, title, content, score} — ranked web results with relevance scores; body.answer (null unless include_answer:true); body.response_time; body.request_id",
+    "quirks": [
+      "answer and follow_up_questions are null by default — pass include_answer:true to get an AI-synthesized answer",
+      "raw_content is null by default — pass include_raw_content:true to get full page text",
+      "This is the direct x402.tavily.com backend (was previously needs-review/untested); confirmed working at $0.01 with the same schema as the Orthogonal proxy"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST {query, max_results} as JSON to https://x402.tavily.com/search. Returns body.results[] where each item has url, title, content (cleaned LLM-ready text), and a float score (0–1). Optional params: search_depth ('basic'|'advanced'), topic ('general'|'news'|'finance'), include_answer:true for an AI-synthesized answer in body.answer, include_raw_content:true for full page text. Pay-per-call x402 on Base at $0.01, plain synchronous response.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "tavily#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "tavily#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.012
+    },
+    {
+      "key": "tavily#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

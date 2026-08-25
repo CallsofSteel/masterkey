@@ -1,0 +1,40 @@
+{
+  "serviceId": "strale-geocoding",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/address-geocode",
+      "method": "GET",
+      "amountUsd": 0.0216
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/address-geocode?address=<urlencoded address> (x402 payment)",
+    "inputExample": {
+      "address": "Eiffel Tower, Paris"
+    },
+    "outputShape": "body.latitude, body.longitude, body.display_name, body.place_type, body.bounding_box{north,south,east,west}, body.importance_score, body.found (bool)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Geocode an address or place name to coordinates. Issue a GET to https://api.strale.io/x402/address-geocode with a single required query param `address` (URL-encode it), e.g. address=Eiffel%20Tower%2C%20Paris. Pay the x402 quote (~$0.022 on Base). On a 200, read body.latitude and body.longitude for the coordinates; body.display_name gives the canonical resolved address and body.found indicates success. Plain synchronous JSON response, no auth beyond x402, no async polling.",
+    "costObservedUsd": 0.0216
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-geocoding#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

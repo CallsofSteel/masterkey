@@ -1,0 +1,57 @@
+{
+  "serviceId": "openai-text-embedding-3",
+  "subcat": "embeddings-vector",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/embeddings",
+      "method": "POST",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://x402.orth.sh/openai/embeddings",
+      "method": "POST",
+      "amountUsd": 0.003
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/embeddings with JSON body {\"text\":\"<string>\",\"model\":\"text-embedding-3-small\"} (use \"texts\":[...] for batch)",
+    "inputExample": {
+      "text": "hello",
+      "model": "text-embedding-3-small"
+    },
+    "outputShape": "body.embedding (flat array of floats, ~1536 dims for text-embedding-3-small). NOT OpenAI shape — there is no body.data[].embedding wrapper.",
+    "quirks": [
+      "The field is 'text' (single string) or 'texts' (array of strings) — NOT the OpenAI 'input' field. Sending {input:...} returns HTTP 400 'Provide text (string) or texts (array of strings)' AND still charges you $0.001.",
+      "Response shape is NOT OpenAI-compatible despite the description: result is {embedding:[...]} at the top level, not {data:[{embedding:[...]}]}.",
+      "Pay-per-call x402 on Base USDC ($0.001). Also accepts USDm (eip155:4326) and Solana USDC.",
+      "model defaults likely work but text-embedding-3-small confirmed; pass 'dimensions' if you need a reduced vector."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402-gateway-production.up.railway.app/api/embeddings with a JSON body using the key 'text' for a single string (or 'texts' for an array), plus optional 'model' (e.g. text-embedding-3-small) and 'dimensions'. Do NOT use OpenAI's 'input' key — it returns 400 and still charges you. Payment is x402 USDC on Base, ~$0.001 per call, synchronous. Read the embedding vector directly from body.embedding (a flat float array); it is not wrapped in an OpenAI-style data array.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-text-embedding-3#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "openai-text-embedding-3#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "serviceId": "nano-banana-2",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/nano-banana-2/v1beta/models/gemini-3.1-flash-image-preview:generateContent",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/nano-banana-2/v1beta/models/gemini-3.1-flash-image-preview:generateContent with JSON body {contents:[{parts:[{text}]}], generationConfig:{responseModalities:[\"IMAGE\"]}}",
+    "inputExample": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "a red circle"
+            }
+          ]
+        }
+      ],
+      "generationConfig": {
+        "responseModalities": [
+          "IMAGE"
+        ]
+      }
+    },
+    "outputShape": "body.candidates[0].content.parts[].inlineData.data (base64 image string), body.candidates[0].content.parts[].inlineData.mimeType (e.g. image/jpeg)",
+    "quirks": [
+      "Uses Google Gemini generateContent request/response format, not a simple {prompt} field.",
+      "Image comes back as base64 in candidates[0].content.parts[].inlineData.data; find the part that has inlineData (other parts may carry thoughtSignature/text).",
+      "Optional generationConfig.imageConfig.aspectRatio supports 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9.",
+      "For editing/composition, add an inlineData part to contents with mimeType + base64 source image alongside the text instruction.",
+      "Response is large (~1.8MB) because the JPEG is embedded inline as base64."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to the URL with JSON body {\"contents\":[{\"parts\":[{\"text\":\"<your prompt>\"}]}],\"generationConfig\":{\"responseModalities\":[\"IMAGE\"]}}; payment is x402 USDC on Base, ~$0.05 per call, no API key. The response is synchronous Gemini format: decode body.candidates[0].content.parts[].inlineData.data (base64) using the sibling inlineData.mimeType to get the generated image. Add generationConfig.imageConfig.aspectRatio to control shape, or include an inlineData source-image part in contents for editing/composition.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-2#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

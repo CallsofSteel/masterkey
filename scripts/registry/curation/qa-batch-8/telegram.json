@@ -1,0 +1,46 @@
+{
+  "serviceId": "telegram",
+  "subcat": "live-chat-messaging",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/telegram-send-api-0610c1",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/telegram-send-api-0610c1 with JSON body {chat_id, text} (Telegram Bot API sendMessage shape; chat_id required)",
+    "inputExample": {
+      "chat_id": "<telegram_chat_id_or_@channel>",
+      "text": "hello"
+    },
+    "outputShape": "Unknown (untested). Expected Telegram Bot API sendMessage result at body.result (message_id, chat, date, text) when ok:true.",
+    "quirks": [
+      "Outward/irreversible: sends a real Telegram message.",
+      "inputSchema is empty ({}); body shape must be inferred from the Telegram Bot API (sendMessage) -> requires chat_id + text.",
+      "Requires a destination Telegram chat_id (numeric chat ID or @channel/@username) that must already be reachable by the gateway's bot. The proxy does NOT supply a default destination (managedResource null).",
+      "orbisapi.com/proxy slug = known charge-then-404 pattern: a 402 on unpaid preflight does NOT mean it works; pay at most once and treat any post-pay 404/4xx/HTML/refund as broken.",
+      "Not paid during QA: no valid Telegram chat_id available for the test recipient (email/phone/address are not Telegram identifiers)."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This is an Orbis-gateway proxy for the Telegram Bot API sendMessage, billed $0.005 via x402 on Base (or Solana). To call it, POST JSON {chat_id, text} to https://orbisapi.com/proxy/telegram-send-api-0610c1 and pay the x402 quote once. chat_id must be a real Telegram chat ID or @channel that the gateway's bot can post to; there is no default destination, so you cannot send without it. On success expect a Telegram Bot API response (ok:true, result.message_id). It was NOT tested in QA because no Telegram chat_id was available for the recipient, and as an orbisapi.com/proxy slug it carries the known charge-then-404 risk — verify the slug is live before relying on it.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "telegram#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

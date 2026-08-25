@@ -1,0 +1,216 @@
+{
+  "subcategory": "uptime-status-pages",
+  "category": "devtools-observability",
+  "unit": "per call",
+  "_note": "Curated by claude-main; re-verified (conservative bar) — added the Orbis website-uptime checkers (#12 website-uptime-checker, #2 uptime-monitor) as extra backends to Uptime/Health Monitor. Routed away: aient telemetry/health -> apm (Aient suite); orbis flight-status/blockchain-status -> data-intelligence/crypto; the402 job-status polling (not uptime). Traditional status pages (Statuspage) aren't x402.",
+  "entries": [
+    {
+      "name": "x402node Website URL Status Check",
+      "kind": "api",
+      "provider": "x402node",
+      "providerId": "x402node",
+      "aka": [
+        "x402node-website-url-status-check",
+        "url-status-check"
+      ],
+      "description": "Probe any public URL for its live HTTP status. Returns status code, OK flag, redirect info, final URL, content-type, server header, and response time (ms). A true website uptime / health / dead-link / redirect-chain monitor for arbitrary targets.",
+      "tags": [
+        "uptime",
+        "monitoring",
+        "health-check"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.x402node.dev/url/check-status",
+          "method": "GET",
+          "provider": "x402node",
+          "providerId": "x402node",
+          "amount": 0.0038,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "3800",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.x402node.dev/url/check-status?url=<TARGET_URL> (x402-paid, no body). Target passed as ?url= query param; include the scheme (https://).",
+        "inputExample": {
+          "url": "https://example.com"
+        },
+        "outputShape": "url, status, statusText, ok, redirected, finalUrl, contentType, contentLength, server, responseTimeMs, meta.source, timestamp",
+        "quirks": [
+          "MUST pass the target as a ?url= query param. The registry surface shows a bare GET with a 'discoverable' http schema and no documented params; calling with no url param checks nothing useful.",
+          "Pass the full URL including scheme (https://). Response echoes finalUrl with a trailing slash added (https://example.com -> https://example.com/).",
+          "x402 v1 ONLY: agentcash MCP fetch rejects this endpoint ('not supported by agentcash, only x402 v2'). Pay via qa-pay / an x402 v1-capable client instead.",
+          "contentLength may be null even on a 200 (e.g. Cloudflare-fronted hosts).",
+          "Observed cost ~$0.0038 USDC on Base (price advertised as 'Varies')."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Probe any public URL for its live HTTP status. Returns status code, OK flag, redirect info, final URL, content-type, server header, and response time (ms). A true website uptime / health / dead-link / redirect-chain monitor for arbitrary targets. GET https://api.x402node.dev/url/check-status?url=<TARGET_URL> (x402-paid, no body). Target passed as ?url= query param; include the scheme (https://). Output: url, status, statusText, ok, redirected, finalUrl, contentType, contentLength, server, responseTimeMs, meta.source, timestamp",
+        "costObservedUsd": 0.0038
+      },
+      "status": "active"
+    },
+    {
+      "name": "AgentOracle Service Health Heartbeat",
+      "kind": "api",
+      "provider": "aiagentoracle",
+      "providerId": "aiagentoracle",
+      "aka": [
+        "agentoracle-service-health-heartbeat",
+        "service-health-status"
+      ],
+      "description": "Live self-health snapshot of the AgentOracle service itself: operational/degraded/down status, tracked-token count, last ingestion timestamp, ingestion error counter, process uptime (seconds), and API version. A cheap heartbeat to call before issuing larger AgentOracle queries — NOT a checker for arbitrary external URLs.",
+      "tags": [
+        "uptime",
+        "monitoring",
+        "health-check"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://aiagentoracle.ai/api/v1/status",
+          "method": "GET",
+          "provider": "aiagentoracle",
+          "providerId": "aiagentoracle",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2feCabDFC849C76fdC28CA13Aa0Ab392753EF35C",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://aiagentoracle.ai/api/v1/status (x402-paid, no body, no params).",
+        "inputExample": {},
+        "outputShape": "status (operational|degraded|down), tokenCount, lastIngestion (date-time|null), ingestionErrors, uptime (seconds), version",
+        "quirks": [
+          "Takes NO input — it reports the PROVIDER's own service health, not an arbitrary target URL. Do not pass ?url=; it is ignored.",
+          "This was mis-bundled with the x402node URL checker; it is a different operation entirely (provider heartbeat, not website monitor).",
+          "x402 v2 (network eip155:8453). Pays cleanly via agentcash MCP fetch.",
+          "ingestionErrors can be a large nonzero number on a still-'operational' status (observed 5538 errors while operational) — status reflects liveness, not data freshness.",
+          "Observed cost $0.01 USDC on Base."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Live self-health snapshot of the AgentOracle service itself: operational/degraded/down status, tracked-token count, last ingestion timestamp, ingestion error counter, process uptime (seconds), and API version. A cheap heartbeat to call before issuing larger AgentOracle queries — NOT a checker for arbitrary external URLs. GET https://aiagentoracle.ai/api/v1/status (x402-paid, no body, no params). Output: status (operational|degraded|down), tokenCount, lastIngestion (date-time|null), ingestionErrors, uptime (seconds), version",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "x402 Service Monitor",
+      "provider": "Various",
+      "providerId": "various",
+      "description": "Monitor x402 endpoints — quality/latency, webhooks, and forensics.",
+      "tags": [
+        "monitoring",
+        "x402",
+        "quality"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        58,
+        25
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402station.io/api/v1/watch with JSON body {url, webhookUrl, signals?}",
+        "inputExample": {
+          "url": "https://x402station.io/api/v1/watch",
+          "webhookUrl": "https://x402station.io/qa/webhook-sink"
+        },
+        "outputShape": "body.watchId (uuid), body.secret (one-time 64-char hex HMAC seed), body.expiresAt, body.signals[], body.alertsPaid, body.alertsRemaining, body.endpointKnown, body.deliveryFormat (HMAC verification + alert payload shape), body.statusUrl, body.unsubscribeUrl",
+        "quirks": [
+          "webhookUrl is REQUIRED and must be a publicly reachable URL — x402station POSTs HMAC-SHA256-signed alert payloads there when signals fire. The registration call itself is synchronous and returns immediately even if the webhook is not yet live.",
+          "body.secret is a 64-char hex HMAC seed returned ONLY ONCE in this response — store it; you need it to verify alert signatures (sha256=<hmac-hex> over raw body, constant-time compare) and to access statusUrl/unsubscribeUrl (?secret=...).",
+          "Optional signals[] defaults to ['dead','zombie','decoy_price_extreme']; must be drawn from the fixed enum (e.g. dead, zombie, slow, suspicious_high_price, proxy_markup, wildcard_402, spa_fallback, etc.) — typos are rejected, not silently ignored.",
+          "endpointKnown:false means the watched URL is not yet in x402station's catalog, so alerts only fire after their ingest picks it up.",
+          "Response includes idempotentReplay flag and alertsPaid/alertsRemaining (100 alerts included per watch). Watch has an expiresAt (~30 days out).",
+          "A request-bin / webhook.site style webhookUrl can be flagged by safety classifiers as exfil-shaped; use a legitimate public endpoint you control."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "POST to https://x402station.io/api/v1/watch with a JSON body containing the x402 endpoint URL to monitor (url) and a publicly reachable webhookUrl where alerts will be delivered; optionally pass signals[] from the documented enum (defaults to dead/zombie/decoy_price_extreme). The call costs $0.01 USDC on Base and returns synchronously with a watchId and a one-time HMAC secret — store the secret immediately, as it is required to verify the HMAC-SHA256 signature on incoming alert webhooks and to call the statusUrl/unsubscribeUrl. When a watched signal fires, x402station POSTs a signed payload to your webhookUrl (up to 5 retries, ~5min apart). 100 alerts are included per watch and it expires in ~30 days.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active",
+      "resolved": {
+        "25": {
+          "method": "POST",
+          "amount": 0.01
+        },
+        "58": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "serviceId": "stablesocial",
+  "subcat": "social-media-data",
+  "batchId": "batch-39",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablesocial.dev/api/reddit/post-comments",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/reddit/search-profiles",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/reddit/subreddit",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/chat",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/top-hooks",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/video-search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/creator-search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/trends",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/account-feedback",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/competitor-strategy",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/script-ideas",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/video-ideas",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/video-feedback",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/ugc-brief",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/content-calendar",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/profile",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/brand-mentions",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/lightreel/creator-performance",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/reddit/search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/followers",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/search-music",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/posts",
+      "method": "POST",
+      "amountUsd": 0.06
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablesocial.dev/api/reddit/post-comments with JSON body {post_id, max_comments?, order_by?, max_page_size?, cursor?} (x402-paid ~$0.06). Returns HTTP 202 async job. Then GET the returned pollUrl with SIWX auth from the SAME wallet that paid until body.status===\"finished\".",
+    "inputExample": {
+      "post_id": "1g5z3kq",
+      "max_comments": 1
+    },
+    "outputShape": "POST -> body.jobId, body.pollUrl, body.token, body.status (pending). Poll (GET pollUrl, SIWX) -> body.status (pending|finished), comments at body.data.items[], pagination at body.data.page_info.{cursor,has_next_page}.",
+    "quirks": [
+      "Required field is post_id (the Reddit post ID like '1g5z3kq', NOT a full URL).",
+      "POST returns HTTP 202 async job (jobId+pollUrl+token, status=pending) — the comments are NOT in the POST response.",
+      "The pollUrl REQUIRES SIWX wallet auth from the SAME wallet that paid; a plain unauthenticated GET returns 402 'SIWX authentication required'.",
+      "Poll with SIWX (qa-pay --siwx GET pollUrl) — polling is free (no extra charge). Loop until body.status==='finished'.",
+      "Result comments live at body.data.items[] on the finished poll response, not in the POST body.",
+      "max_comments caps at 300 (use a small value like 1 to keep responses light); only post_id is required.",
+      "Job can finish with data.items:[] if the post has no fetchable comments / is old or removed — empty result is not an error (status still 'finished')."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablesocial.dev/api/reddit/post-comments with JSON {\"post_id\":\"<reddit post id, e.g. 1g5z3kq>\",\"max_comments\":N}; this is x402-paid (~$0.06) and returns a 202 async job containing jobId, pollUrl, token, status:pending. Then GET the returned pollUrl using SIWX authentication signed by the SAME wallet that paid (an unauthenticated poll fails with 'SIWX authentication required'); polling is free. Repeat the poll until body.status === \"finished\", then read the comments from body.data.items[] and paginate via body.data.page_info.cursor if has_next_page is true.",
+    "costObservedUsd": 0.06
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablesocial#34",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#36",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#37",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#38",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#39",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#40",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#41",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#42",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#43",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#44",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#45",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#46",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#47",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#48",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#49",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#5",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#50",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#51",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#8",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#9",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    }
+  ]
+}

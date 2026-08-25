@@ -1,0 +1,65 @@
+{
+  "serviceId": "invoice-generator",
+  "subcat": "invoicing",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/invoice-generator-api-e020f1",
+      "method": "POST"
+    },
+    {
+      "backend": "https://gateway.spraay.app/api/v1/invoice/create",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/invoice-generator-api-e020f1 with JSON body {from, to, number, currency, items:[{name, quantity, unit_cost}]} (slug UNCONFIRMED — see quirks)",
+    "inputExample": {
+      "from": "Acme Corp",
+      "to": "Jane Doe",
+      "number": "INV-001",
+      "currency": "USD",
+      "items": [
+        {
+          "name": "Consulting",
+          "quantity": 1,
+          "unit_cost": 100
+        }
+      ]
+    },
+    "outputShape": "unknown (never paid; expected PDF bytes or structured invoice JSON per description \"Generate an invoice (PDF/structured)\")",
+    "quirks": [
+      "BLOCKING: URL slug mismatch between sources. Task brief says slug 2e3f1d; registry spec (qa-batch-current.json) says slug e020f1. For an Orbis proxy the slug IS the route — paying the wrong one loses money to a 404.",
+      "Auto-mode money classifier DENIED the payment specifically because the spec slug (e020f1) differs from the brief slug (2e3f1d) and could not be cross-verified.",
+      "Orbis proxy: known charge-then-404 pattern. The 402 pre-flight (probe payable:true) does NOT prove the route works.",
+      "inputSchema is empty {} — body shape was inferred from the service name + description; field names (from/to/number/currency/items[].unit_cost) are unconfirmed.",
+      "Never paid — endpoint untested. Resolve canonical slug, then pay exactly once."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Do not call until the canonical Orbis slug is confirmed: the QA task brief and the registry spec disagree (2e3f1d vs e020f1) and for an Orbis proxy the slug is the route, so a wrong slug charges you and returns 404. Once the correct slug is known, POST a JSON invoice body like {from, to, number, currency, items:[{name, quantity, unit_cost}]} (the input schema is empty so these field names are a best-guess from the service description and may need adjustment on a 422). Pay exactly once — Orbis has a charge-then-404 pattern, so if the post-payment response is 404/HTML/refund, treat the endpoint as broken and stop. Expect either PDF invoice bytes or a structured invoice JSON in the response body.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "invoice-generator#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "invoice-generator#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

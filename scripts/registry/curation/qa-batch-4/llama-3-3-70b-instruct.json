@@ -1,0 +1,45 @@
+{
+  "serviceId": "llama-3-3-70b-instruct",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/llama",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/llama with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (assistant reply text); body.model (model id); body.usage.total_tokens / body.usage.cost",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402-gateway-production.up.railway.app/api/llm/llama with a JSON body containing an OpenAI-style messages array, e.g. {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Pay the x402 charge ($0.002 USDC on Base). The response is synchronous JSON; read the assistant's reply from body.content. Token/cost accounting is in body.usage.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "llama-3-3-70b-instruct#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

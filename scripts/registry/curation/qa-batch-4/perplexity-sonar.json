@@ -1,0 +1,61 @@
+{
+  "serviceId": "perplexity-sonar",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/perplexity/chat/completions",
+      "method": "POST"
+    },
+    {
+      "backend": "https://httpay.xyz/api/gateway/perplexity/chat/completions",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/perplexity/chat/completions with JSON body {model, messages} (OpenAI-compatible chat completions)",
+    "inputExample": {
+      "model": "sonar",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 50
+    },
+    "outputShape": "body.choices[0].message.content (OpenAI-compatible); citations in body.citations[] / body.search_results[] (unverified)",
+    "quirks": [
+      "Live paid test BLOCKED: master wallet has $0.00 USDC on base (needs $0.010) — qa-pay returned wallet-error, no payment made, endpoint NOT live-verified.",
+      "Required body fields: model and messages. model is an enum: sonar | sonar-pro | sonar-reasoning-pro | sonar-deep-research.",
+      "reasoning_effort param is ONLY valid for sonar-deep-research.",
+      "Endpoint probed payable (402) on 2026-06-01 via x402 on Base; price $0.010."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402.orth.sh/perplexity/chat/completions with an OpenAI-compatible chat body. Minimum: {\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}; model must be one of sonar, sonar-pro, sonar-reasoning-pro, sonar-deep-research. Payment is x402 USDC on Base (~$0.010/call, no API key). Read the answer at body.choices[0].message.content; web-search citations are returned alongside. NOTE: this entry was not live-verified — the QA wallet had $0.00 USDC so the paid call could not complete; re-run after funding to confirm.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "perplexity-sonar#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "perplexity-sonar#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "serviceId": "runway",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/v1/tools/video-generate",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://x402helper.xyz/v1/tools/video-generate (registry-specified) -> 404 dead route. Payable route is POST but currently rate-limited.",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "unknown (could not obtain a successful response)",
+    "quirks": [
+      "Registry CALL method is GET but GET returns HTTP 404 'Cannot GET /v1/tools/video-generate' — the GET route does not exist (no payment taken).",
+      "Only POST is payable (registry probe.method=POST, status 402).",
+      "POST preflight returns HTTP 429 'Rate limit exceeded for report generation. Maximum 15 requests per 15 minutes' with reset ~8800s out — could not obtain a clean 402 quote to pay safely.",
+      "POST error text references 'report generation', not video generation — suggests a generic/misrouted handler behind this slug.",
+      "No money spent during testing."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this as documented: GET https://x402helper.xyz/v1/tools/video-generate is a dead 404 route and will never produce a result (though it won't charge you). The only payable method is POST (returns 402), but it sits behind a strict 15-requests-per-15-minutes 'report generation' rate limit and its error text does not match a video endpoint, so the slug appears misrouted/unreliable. Treat this endpoint as broken; do not pay against it. If retested later when the rate limit clears, use POST with a JSON body like {\"prompt\":\"a red circle\"} and only pay if a clean 402 quote is returned.",
+    "costObservedUsd": 0,
+    "droppedReason": "runway#0: Registry CALL method is GET but GET returns HTTP 404 'Cannot GET /v1/tools/video-generate' — the GET route does not exist (no payment taken)."
+  },
+  "droppedReason": "runway#0: Registry CALL method is GET but GET returns HTTP 404 'Cannot GET /v1/tools/video-generate' — the GET route does not exist (no payment taken).",
+  "_backends": [
+    {
+      "key": "runway#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "serviceId": "agentcron",
+  "subcat": "cron-job-scheduling",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://cron.memoryapi.org/x402/cron/register",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://cron.memoryapi.org/x402/cron/alerts",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://cron.memoryapi.org/x402/cron/register with JSON body {agent_id, interval_minutes, url, ...}",
+    "inputExample": {
+      "agent_id": "qa-agent-001",
+      "interval_minutes": 60,
+      "url": "https://example.com/webhook",
+      "method": "GET",
+      "name": "qa-test"
+    },
+    "outputShape": "On success expected body with job id; on validation failure body.error is a string naming the next missing required field (e.g. body.error = \\\"agent_id is required\\\")",
+    "quirks": [
+      "inputSchema was null in registry — required fields discovered empirically via 400 errors",
+      "Required fields validated ONE AT A TIME: first 'agent_id is required', then 'interval_minutes is required' — you cannot see all requirements up front",
+      "Schedule is INTERVAL-BASED via integer 'interval_minutes', NOT a cron expression string (a 'schedule':'0 0 * * *' field was ignored/insufficient)",
+      "CHARGE-ON-VALIDATION-FAILURE: each 400 still costs $0.05 — every malformed attempt is billed. Build the full body before calling to avoid burning USDC on schema discovery",
+      "QA hit the 2-paid-attempt ceiling at agent_id+interval_minutes stage; a fully-valid 2xx body was not directly confirmed but the field progression makes the required set clear"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Register a recurring agent cron job by POSTing JSON to https://cron.memoryapi.org/x402/cron/register and paying $0.05 USDC on Base via x402. The body MUST include agent_id (your agent identifier) and interval_minutes (integer minutes between runs — this is interval-based, not a cron expression), plus the target url to call. Send all known fields in ONE request: the server validates required fields sequentially and bills $0.05 on EVERY attempt including validation-failure 400s, so do not probe the schema field-by-field. Read the created job id from the success response body.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentcron#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "agentcron#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

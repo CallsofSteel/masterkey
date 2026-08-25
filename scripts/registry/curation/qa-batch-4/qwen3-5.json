@@ -1,0 +1,49 @@
+{
+  "serviceId": "qwen3-5",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/qwen3.5",
+      "method": "POST",
+      "amountUsd": 0.006
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/qwen3.5 with JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (assistant text); body.model (resolved model id); body.usage.* (token + cost accounting)",
+    "quirks": [
+      "Response is a flat object with the assistant reply at body.content (not the OpenAI choices[] shape).",
+      "Returns extensive body.usage accounting incl. reasoning_tokens; this model emits reasoning tokens (311 of 325 completion tokens were reasoning for a trivial 'hello').",
+      "Resolved model is qwen/qwen3.5-plus-20260216."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with a standard chat body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}; x402 payment is handled automatically (USDC on Base, ~$0.006/call for a short prompt). Read the assistant's reply from body.content. Token/cost accounting is in body.usage; the resolved model id is in body.model. This is a plain synchronous call with no async polling or auth handshake.",
+    "costObservedUsd": 0.006
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "qwen3-5#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.006
+    }
+  ]
+}

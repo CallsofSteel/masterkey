@@ -1,0 +1,44 @@
+{
+  "serviceId": "video-compress",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-compress-api-845ffb",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-compress-api-845ffb with JSON body {video_url} (intended, but route is dead)",
+    "inputExample": {
+      "video_url": "https://download.samplelib.com/mp4/sample-5s.mp4"
+    },
+    "outputShape": "none — endpoint returns {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-compress-api-845ffb'.\"}",
+    "quirks": [
+      "Orbis proxy slug is dead: returns HTTP 404 with body {error:\"API_NOT_FOUND\"} for 'video-compress-api-845ffb'.",
+      "The pre-flight probe shows 402/payable but the route does not actually resolve — do NOT pay; payment would be charge-then-404.",
+      "In this test the 404 came back before any payment was taken (paid:false, costUsd:0), so no funds were lost."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be called. The Orbis proxy slug 'video-compress-api-845ffb' no longer maps to an active API — POSTing to it returns HTTP 404 with {error:\"API_NOT_FOUND\"}. Although a pre-flight probe reports 402/payable, the route is dead and will never return a compressed video. Do not attempt payment.",
+    "costObservedUsd": 0,
+    "droppedReason": "video-compress#0: Orbis proxy slug is dead: returns HTTP 404 with body {error:\"API_NOT_FOUND\"} for 'video-compress-api-845ffb'."
+  },
+  "droppedReason": "video-compress#0: Orbis proxy slug is dead: returns HTTP 404 with body {error:\"API_NOT_FOUND\"} for 'video-compress-api-845ffb'.",
+  "_backends": [
+    {
+      "key": "video-compress#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

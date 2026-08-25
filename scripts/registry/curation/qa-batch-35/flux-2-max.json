@@ -1,0 +1,59 @@
+{
+  "serviceId": "flux-2-max",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/flux-2-max/generate",
+      "method": "POST",
+      "amountUsd": 0.07
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/flux-2-max/edit",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/flux-2-max/generate JSON {prompt} -> jobId; poll GET /api/jobs/{jobId} SIWX until complete",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST returns body.jobId + body.status; final image at (job-poll) body.result.imageUrl (Vercel Blob .webp). Job poll also returns body.status, body.progress, body.input, body.error.",
+    "quirks": [
+      "ASYNC: the paid POST does NOT return the image - it returns {jobId, status:'pending'}. You must poll GET /api/jobs/{jobId} until status='complete', then read body.result.imageUrl.",
+      "Job polling requires SIGN-IN-WITH-X (SIWX) wallet-signature auth and MUST use the SAME wallet that paid for the generation - a different wallet identity gets 403 Unauthorized (confirmed: agentcash fetch with a different identity returned 403, qa-pay --siwx with the paying wallet returned 200).",
+      "Pays on Base (eip155:8453) USDC via x402 - this stablestudio.dev endpoint differs from the registry's prior existing-usage entry (api.xona-agent.com) which was Solana-only.",
+      "Live quote for a minimal {prompt} call was $0.07 (registry priceDisplay $0.040; guidance lists $0.04-$0.17 range; cost rises with resolution up to 4 MP).",
+      "Output defaults: resolution 1 MP, aspect_ratio 1:1, output_format webp. Result imageUrl is a Vercel Blob link that expires after ~20 min - download immediately.",
+      "Do NOT resubmit while job is pending/loading - duplicate POSTs create duplicate PAID jobs. Poll the original jobId.",
+      "There is also a /api/generate/flux-2-max/edit endpoint that takes 1-10 reference images via the upload flow."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Generate an image with FLUX.2 Max (Black Forest Labs). POST https://stablestudio.dev/api/generate/flux-2-max/generate with JSON {\"prompt\":\"...\"} (optionally aspect_ratio, resolution up to 4 MP, output_format). Pay ~$0.07 USDC on Base via x402. The response is async: it returns {jobId, status:\"pending\"} immediately, NOT the image. Poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X auth (using the same wallet that paid - a different wallet gets 403) every ~5s until body.status==\"complete\", then read the finished image from body.result.imageUrl (a Vercel Blob .webp that expires in ~20 min, so download it right away). Never resubmit while pending - that creates a second paid job.",
+    "costObservedUsd": 0.07
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-max#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.07
+    },
+    {
+      "key": "flux-2-max#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.04
+    }
+  ]
+}

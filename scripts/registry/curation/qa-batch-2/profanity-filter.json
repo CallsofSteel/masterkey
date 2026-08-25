@@ -1,0 +1,44 @@
+{
+  "serviceId": "profanity-filter",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/profanity-filter-api-3bac11",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/profanity-filter-api-3bac11 with JSON body {text}",
+    "inputExample": {
+      "text": "You are a damn idiot"
+    },
+    "outputShape": "unknown — endpoint dead, never returned a result body",
+    "quirks": [
+      "DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}",
+      "The registry probe showed 402 (payable) on 2026-06-01, but the slug is now dead — 402 pre-flight does NOT mean it works.",
+      "No payment was charged on this test (paid:false, costUsd:0) because the route 404s before settlement, but do NOT retry — the slug is gone."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint — it is dead. The Orbis proxy slug 'profanity-filter-api-3bac11' returns HTTP 404 API_NOT_FOUND for any POST. It should be pruned from the registry. No working call shape exists.",
+    "costObservedUsd": 0,
+    "droppedReason": "profanity-filter#0: DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}"
+  },
+  "droppedReason": "profanity-filter#0: DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}",
+  "_backends": [
+    {
+      "key": "profanity-filter#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

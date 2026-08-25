@@ -1,0 +1,95 @@
+{
+  "serviceId": "stablebrowser",
+  "subcat": "headless-browsers",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions",
+      "method": "POST",
+      "amountUsd": 0.1
+    },
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions/navigate",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions/screenshot",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions/act",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions/extract",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablebrowser.vercel.app/api/sessions/observe",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stablebrowser.vercel.app/api/sessions with JSON body {} (or {\"sessionId\":\"<id>\"} to reuse) — x402 $0.10 USDC on Base",
+    "inputExample": {},
+    "outputShape": "body.sessionId (Browserbase session ID — use in all subsequent action calls), body.debugUrl (live Browserbase devtools URL), body.viewerUrl (StableBrowser viewer page), body.createdAt",
+    "quirks": [
+      "The create op (/api/sessions) is a plain x402-paid call with an empty body {} — it returns immediately (sync, no auth needed beyond the x402 payment).",
+      "SESSION FLOW: this only CREATES a session. All action endpoints (/api/sessions/navigate|screenshot|act|extract|observe|close) are SIWX-only (eip191 on eip155:8453, no extra payment) and return HTTP 402 with x402Version:2 and accepts:[] — a SIWX challenge, NOT a payment challenge. Standard paid_fetch will error 'No payment requirements found'.",
+      "CRITICAL wallet identity lock: the wallet that pays the $0.10 x402 session creation becomes the session owner. Every SIWX-signed action call MUST come from the EXACT same wallet, or you get 403 'Session belongs to a different wallet'. Do not mix the payment wallet with a different SIWX wallet.",
+      "Use agentcash for the whole flow (including the initial x402 create) — it handles SIWX eip191 signing automatically with the correct wallet identity. Raw HTTP clients must manually construct the eip191 signed Authorization header (format not yet documented).",
+      "www.stablebrowser.dev and stablebrowser.vercel.app serve the same app; sessions are backed by Browserbase and debugUrl is a live fullscreen devtools inspector.",
+      "observe instructions must be very specific (describe location/text/visual traits); generic instructions produce poor results."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Create a cloud browser session with one x402-paid POST to https://stablebrowser.vercel.app/api/sessions ($0.10 USDC on Base) using an empty body {}. The response returns body.sessionId, body.debugUrl (live Browserbase devtools), body.viewerUrl, and body.createdAt. Pass that sessionId to any action endpoint — navigate, screenshot, act, extract, observe, close — each is SIWX-only (eip191, no additional payment). CRITICAL: sign the SIWX challenge with the SAME wallet that made the x402 payment or every action returns 403. Easiest path: use agentcash for the entire flow including the initial create, since it auto-handles SIWX signing with the correct wallet identity.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablebrowser#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.1
+    },
+    {
+      "key": "stablebrowser#2",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablebrowser#3",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablebrowser#4",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablebrowser#5",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablebrowser#6",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

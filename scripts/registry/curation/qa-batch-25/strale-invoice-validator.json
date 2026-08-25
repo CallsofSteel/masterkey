@@ -1,0 +1,64 @@
+{
+  "serviceId": "strale-invoice-validator",
+  "subcat": "invoicing",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/invoice-validate",
+      "method": "POST",
+      "amountUsd": 0.0216
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.strale.io/x402/invoice-validate with JSON body {invoice:{...invoice fields...}}",
+    "inputExample": {
+      "invoice": {
+        "invoice_number": "INV-001",
+        "invoice_date": "2026-06-08",
+        "vendor_name": "Acme Co",
+        "vendor_vat": "DE123456789",
+        "vendor_address": "1 Main St, Berlin",
+        "line_items": [
+          {
+            "description": "Service",
+            "quantity": 1,
+            "unit_price": 100,
+            "line_total": 100
+          }
+        ],
+        "amounts": {
+          "subtotal": 100,
+          "tax": 0,
+          "total": 100
+        },
+        "currency": "USD"
+      }
+    },
+    "outputShape": "body.valid (bool), body.errors[] ({field,issue} required-field failures), body.warnings[] ({field,issue} recommended/EU-compliance gaps), body.tax_calculation_check {expected_tax,actual_tax,difference,pass}, body.line_items_check {total_checked,passed,failed}, body.eu_compliant (bool)",
+    "quirks": [
+      "inputSchema is null in the registry; wrap the invoice under an 'invoice' key. The validator's canonical required fields are: invoice_date, vendor_name, vendor_vat, vendor_address, amounts (object with subtotal/tax/total). Recommended (warning-only) fields: buyer_name, buyer_vat, buyer_address, due_date. Each line item should include line_total or it cannot verify line math.",
+      "Sending unknown/extra field names does NOT error the call (HTTP 200 always for a well-formed JSON body); the validator simply reports missing required fields as errors. So a wrong field name yields valid:false rather than a 4xx.",
+      "body.valid:false is a normal successful response indicating the invoice has issues, not an endpoint failure."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body to https://api.strale.io/x402/invoice-validate with an \"invoice\" object containing the invoice fields. The canonical fields the validator checks are invoice_date, vendor_name, vendor_vat, vendor_address, an amounts object {subtotal,tax,total}, and line_items[] each with a line_total. Pay $0.0216 USDC on Base via x402 (no API key, no sign-in). Read body.valid for the pass/fail verdict, body.errors[] for blocking required-field problems, body.warnings[] for EU-compliance recommendations, and tax_calculation_check / line_items_check for math validation. A valid:false response is still a successful call.",
+    "costObservedUsd": 0.0216
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-invoice-validator#0",
+      "classification": "verified",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0216
+    }
+  ]
+}

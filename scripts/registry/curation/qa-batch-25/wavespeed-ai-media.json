@@ -1,0 +1,44 @@
+{
+  "serviceId": "wavespeed-ai-media",
+  "subcat": "video-generation",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://amn-animations-0xbuildr.replit.app/api/generate",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://amn-animations-0xbuildr.replit.app/api/generate with JSON body {prompt} (per spec file; note task summary listed a different URL https://blockrun.ai/api/v1/videos/generations)",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "unknown (untested — payment was blocked before any response was received)",
+    "quirks": [
+      "Spec file CALL url (amn-animations-0xbuildr.replit.app/api/generate, a Replit proxy) differs from the task summary url (blockrun.ai/api/v1/videos/generations) — the two disagree on the canonical endpoint.",
+      "inputSchema, outputSchema, instructions, and paymentAccepts are all null in the registry — body shape ({prompt}) is inferred from the service being Wavespeed.ai video generation.",
+      "authMode=x402, probe returned 402/payable as of 2026-06-02.",
+      "Backend is a Replit-hosted proxy (amn-animations-0xbuildr.replit) — durability/uptime uncertain."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "UNTESTED. The registry spec's CALL url (https://amn-animations-0xbuildr.replit.app/api/generate) diverges from the task summary url (https://blockrun.ai/api/v1/videos/generations), and the auto-mode payment classifier denied the real-USDC test because of that mismatch (it flagged paying a replit.app target that disagrees with the stated blockrun.ai endpoint). No payment was made. A human must confirm which URL is canonical before a paid QA call can proceed. Once confirmed, POST a minimal JSON body {\"prompt\":\"a red circle\"} ($0.45 x402), expect a video-generation result that may be async — be prepared to poll a returned job/status URL.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "wavespeed-ai-media#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

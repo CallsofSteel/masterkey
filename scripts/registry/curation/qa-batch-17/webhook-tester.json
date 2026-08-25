@@ -1,0 +1,47 @@
+{
+  "serviceId": "webhook-tester",
+  "subcat": "testing-qa",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://webhook-tester.api.klymax402.com/api/test",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://webhook-tester.api.klymax402.com/api/test with JSON body {url, method, body} where url is the target webhook to test",
+    "inputExample": {
+      "url": "https://httpbin.org/post",
+      "method": "POST",
+      "body": {
+        "hello": "world"
+      }
+    },
+    "outputShape": "body.response.statusCode, body.response.statusText, body.response.headers, body.response.body, body.latencyMs, body.success; echoes body.requestBody and body.requestHeaders",
+    "quirks": [
+      "Body field is 'url' = the target webhook to probe (not the API's own URL); supply 'method' and optional 'body' for the test request.",
+      "Response is sync JSON; the probed endpoint's result lives under body.response (statusCode/headers/body) and timing under body.latencyMs."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://webhook-tester.api.klymax402.com/api/test with a JSON body {\"url\": \"<target webhook URL>\", \"method\": \"POST\", \"body\": {...}} and pay $0.002 USDC via x402 on Base. The service fires the request at your target URL and returns a sync JSON analysis. Read the probed result from body.response (statusCode, statusText, headers, body) and the round-trip time from body.latencyMs; body.success indicates whether the call completed. It echoes your requestBody/requestHeaders so you can confirm what was sent.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "webhook-tester#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

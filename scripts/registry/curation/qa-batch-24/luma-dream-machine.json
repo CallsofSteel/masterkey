@@ -1,0 +1,46 @@
+{
+  "serviceId": "luma-dream-machine",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/api/proxy/luma-ray-2-flash-image-to-video-fast-2",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "Registry lists POST https://x402helper.xyz/api/proxy/luma-ray-2-flash-image-to-video-fast-2 but POST returns Express 404. Only GET returns a 402 quote; GET pays then refunds with no result.",
+    "inputExample": {
+      "prompt": "a red circle gently rotating",
+      "image_url": "https://example.com/circle.png"
+    },
+    "outputShape": "No usable output. GET response: body.success=false, body.refunded=true, body.message=\"Price mismatch, you have been refunded\", body.refundTx. POST response: Express 404 HTML.",
+    "quirks": [
+      "POST (the registered method) returns Express 404 'Cannot POST /api/proxy/luma-ray-2-flash-image-to-video-fast-2' — the route does not accept POST.",
+      "Only GET returns a 402 payment quote (amount 13000 = $0.013 USDC on Base).",
+      "Paying the GET charges $0.013 then immediately refunds on-chain with {success:false, refunded:true, message:'Price mismatch, you have been refunded', refundTx:...} and returns NO video.",
+      "Underlying proxy target is obolos.tech (per 402 resource.description) — appears misconfigured/dead.",
+      "Do NOT retry: route is broken; GET wastes gas via charge-then-refund and POST 404s."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be used. The registered POST method returns an Express 404 ('Cannot POST'); only GET returns a 402 payment quote. Paying the GET ($0.013 USDC on Base) results in an immediate on-chain refund with message 'Price mismatch, you have been refunded' and no generated video — the underlying obolos.tech proxy is misconfigured. There is no working call shape; do not attempt to use this for image-to-video generation.",
+    "costObservedUsd": 0.013
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "luma-dream-machine#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    }
+  ]
+}

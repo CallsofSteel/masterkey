@@ -1,0 +1,421 @@
+[
+  {
+    "id": "telegram",
+    "kind": "model",
+    "name": "Telegram",
+    "aka": [
+      "telegram-send",
+      "telegram-bot-api"
+    ],
+    "provider": "Telegram",
+    "providerId": "telegram",
+    "description": "Send messages to Telegram chats and channels via the Telegram Bot API, billed per call via x402 on Base and Solana (served through the Orbis gateway).",
+    "category": "communication",
+    "subcategory": "live-chat-messaging",
+    "tags": [
+      "messaging",
+      "telegram",
+      "send-message",
+      "bot"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per message"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/telegram-send-api-0610c1",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per message",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/telegram-send-api-0610c1"
+              },
+              "description": "Send messages to Telegram chats and channels via Bot API",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/telegram-send-api-0610c1"
+              },
+              "description": "Send messages to Telegram chats and channels via Bot API",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:04:42.842Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/telegram-send-api-0610c1 with JSON body {chat_id, text} (Telegram Bot API sendMessage shape; chat_id required)",
+      "inputExample": {
+        "chat_id": "<telegram_chat_id_or_@channel>",
+        "text": "hello"
+      },
+      "outputShape": "Unknown (untested). Expected Telegram Bot API sendMessage result at body.result (message_id, chat, date, text) when ok:true.",
+      "quirks": [
+        "Outward/irreversible: sends a real Telegram message.",
+        "inputSchema is empty ({}); body shape must be inferred from the Telegram Bot API (sendMessage) -> requires chat_id + text.",
+        "Requires a destination Telegram chat_id (numeric chat ID or @channel/@username) that must already be reachable by the gateway's bot. The proxy does NOT supply a default destination (managedResource null).",
+        "orbisapi.com/proxy slug = known charge-then-404 pattern: a 402 on unpaid preflight does NOT mean it works; pay at most once and treat any post-pay 404/4xx/HTML/refund as broken.",
+        "Not paid during QA: no valid Telegram chat_id available for the test recipient (email/phone/address are not Telegram identifiers).",
+        "MARKED DEAD 2026-06-11 (ash): push/notification provider not viable (Orbis charge-then-404 / requires bring-your-own key). Not exposed."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "This is an Orbis-gateway proxy for the Telegram Bot API sendMessage, billed $0.005 via x402 on Base (or Solana). To call it, POST JSON {chat_id, text} to https://orbisapi.com/proxy/telegram-send-api-0610c1 and pay the x402 quote once. chat_id must be a real Telegram chat ID or @channel that the gateway's bot can post to; there is no default destination, so you cannot send without it. On success expect a Telegram Bot API response (ok:true, result.message_id). It was NOT tested in QA because no Telegram chat_id was available for the recipient, and as an orbisapi.com/proxy slug it carries the known charge-then-404 risk — verify the slug is live before relying on it.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "telegram",
+      "discoveredVia": [
+        "chat messaging api",
+        "live chat"
+      ],
+      "lastSyncedAt": "2026-06-02T00:04:42.842Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "discord",
+    "kind": "model",
+    "name": "Discord",
+    "aka": [
+      "discord-send",
+      "discord-webhook"
+    ],
+    "provider": "Discord",
+    "providerId": "discord",
+    "description": "Send messages and rich embeds to Discord channels via webhook, billed per call via x402 on Base and Solana (served through the Orbis gateway).",
+    "category": "communication",
+    "subcategory": "live-chat-messaging",
+    "tags": [
+      "messaging",
+      "discord",
+      "send-message",
+      "webhook"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per message"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/discord-message-api-3576b7",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per message",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/discord-message-api-3576b7"
+              },
+              "description": "Send messages and embeds to Discord channels via webhook",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/discord-message-api-3576b7"
+              },
+              "description": "Send messages and embeds to Discord channels via webhook",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:04:42.842Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/discord-message-api-3576b7 with JSON body {content}",
+      "inputExample": {
+        "content": "MasterKey registry QA test message from John Doe (john.doe@gmail.com)"
+      },
+      "outputShape": "none (endpoint dead; returns body.error=\\\"API_NOT_FOUND\\\", body.message)",
+      "quirks": [
+        "Orbis proxy slug is DEAD: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'discord-message-api-3576b7'.\"} even on the unpaid pre-flight.",
+        "No payment was made (paid:false, costUsd:0) because the 404 came before settlement.",
+        "Do not retry or try alternate bodies/paths — the route does not exist.",
+        "MARKED DEAD 2026-06-11 (ash): push/notification provider not viable (Orbis charge-then-404 / requires bring-your-own key). Not exposed."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'discord-message-api-3576b7' does not exist — calling POST https://orbisapi.com/proxy/discord-message-api-3576b7 returns HTTP 404 with {error:\"API_NOT_FOUND\"}. No Discord message is sent and the call fails before any payment settles. Do not call this endpoint; it should be pruned from the registry.",
+      "costObservedUsd": 0,
+      "droppedReason": "discord#0: Orbis proxy slug is DEAD: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'discord-message-api-3576b7'.\"} even on the unpaid pre-flight."
+    },
+    "source": {
+      "serviceKey": "discord",
+      "discoveredVia": [
+        "chat messaging api",
+        "live chat"
+      ],
+      "lastSyncedAt": "2026-06-02T00:04:42.842Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "slack",
+    "kind": "model",
+    "name": "Slack",
+    "aka": [
+      "slack-web-api",
+      "chat.postMessage"
+    ],
+    "provider": "Slack",
+    "providerId": "slack",
+    "description": "Post messages to Slack channels and users via the Slack Web API (chat.postMessage and other methods), proxied over an x402 pay-per-call gateway (HTTPay) at $0.001 per call.",
+    "category": "communication",
+    "subcategory": "live-chat-messaging",
+    "tags": [
+      "messaging",
+      "slack",
+      "send-message",
+      "chatops"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per message"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "HTTPay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/slack/api/chat.postMessage",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per message",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:04:42.842Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://httpay.xyz/api/gateway/slack/api/chat.postMessage with JSON body {channel, text} AND header X-Upstream-Token: <your Slack bot token>",
+      "inputExample": {
+        "channel": "C0123456789",
+        "text": "hello from MasterKey"
+      },
+      "outputShape": "Slack Web API response: body.ok (bool), body.ts, body.channel, body.message; on failure body.error",
+      "quirks": [
+        "NOT keyless: the gateway 402s on the unpaid preflight but then requires YOUR OWN Slack bot token passed via the X-Upstream-Token header (authType=bearer). Without it the proxy returns {\"error\":\"Service 'slack' requires authentication\"} even after you pay.",
+        "Free demo mode exists: append ?demo=true (10 calls/IP/hour, no payment) to test before paying. Use it to confirm auth/destination before spending.",
+        "chat.postMessage also needs a real Slack channel ID (e.g. C0123456789) or @user; there is no default channel.",
+        "Outward/irreversible: posts a real Slack message.",
+        "MPP alt payment available (Tempo pathUSD) in addition to x402 on Base; payTo 0x5f5d6FcB315871c26F720dc6fEf17052dD984359.",
+        "MARKED DEAD 2026-06-11 (ash): push/notification provider not viable (Orbis charge-then-404 / requires bring-your-own key). Not exposed."
+      ],
+      "needs": [
+        "Slack bot/upstream token for X-Upstream-Token header",
+        "Slack channel ID destination"
+      ],
+      "needsApproval": true,
+      "guide": "This HTTPay gateway proxies the Slack Web API but is NOT keyless: you must supply your own Slack bot token in the X-Upstream-Token header and target a real channel ID, plus pay $0.001 via x402. POST {\"channel\":\"C...\",\"text\":\"...\"} with X-Upstream-Token set; read body.ok and body.ts on success or body.error on failure. Test safely first with ?demo=true (free, 10/IP/hr). MasterKey has no Slack token/channel, so classify needs-input.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "slack",
+      "discoveredVia": [
+        "chat messaging api",
+        "live chat"
+      ],
+      "lastSyncedAt": "2026-06-02T00:04:42.842Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  }
+]

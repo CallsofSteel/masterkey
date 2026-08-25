@@ -1,0 +1,42 @@
+{
+  "serviceId": "cron-as-a-service",
+  "subcat": "cron-job-scheduling",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://cron-service.replit.app/api/mcp/sse",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://cron-service.replit.app/api/mcp/sse (x402, USDC on Base eip155:8453, 0.001 USDC) — but this is an MCP/SSE endpoint, not a working one-shot paid HTTP call",
+    "inputExample": {},
+    "outputShape": "Intended (per advertised example, NOT achieved): body.job_id, body.status, body.scheduled_at, body.message. In practice the paid GET only returns the unpaid 402 discovery body (body.error = 'X-Payment header is required').",
+    "quirks": [
+      "Paid x402 GET did NOT settle: payProvider ran the flow but the server returned the SAME unpaid 402 challenge ('X-Payment header is required') with paid:false, costUsd:0, no txHash. No money moved.",
+      "URL path is /api/mcp/sse — this is an MCP Server-Sent-Events surface, not a plain paid REST endpoint. A one-shot HTTP GET only fetches the x402 discovery 402; it does not execute a schedule.",
+      "No input surface to actually schedule a job: registry inputSchema is empty {} and the 402's accepts.outputSchema.input is {type:'http', method:'GET', queryParams:{}} with NO field for a target webhook URL or cron expression. You cannot tell it WHAT to schedule or WHEN over this call shape.",
+      "To use this service for real you would need to speak the MCP protocol (initialize + tools/call over SSE/JSON-RPC) with x402 payment on the tool call, not a single GET — out of scope for the registry's call-shape model."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this as a simple paid HTTP GET — it does not work that way. The endpoint at https://cron-service.replit.app/api/mcp/sse is an MCP Server-Sent-Events surface; a one-shot GET only returns the x402 discovery 402 ('X-Payment header is required') even after the payment flow runs, and never settles a charge. There is also no input field (empty schema; queryParams only) to specify the webhook URL or cron expression you'd want to schedule, so the documented {job_id,status,scheduled_at} response is unreachable via this call shape. Treat as broken for registry use; revisit only via a full MCP client (initialize + tools/call with x402 on the tool call).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cron-as-a-service#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

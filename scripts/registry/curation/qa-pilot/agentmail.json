@@ -1,0 +1,55 @@
+{
+  "serviceId": "agentmail",
+  "subcat": "email",
+  "action": "add-usage",
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "Step 1 — POST https://x402.api.agentmail.to/v0/inboxes with optional JSON {username, domain, display_name, client_id} ($2.00, x402, one-time); returns inbox_id (the full address, e.g. myagent@agentmail.to). Step 2 — POST https://x402.api.agentmail.to/v0/inboxes/{inbox_id}/messages/send with JSON {to, subject, text, html, cc, bcc, reply_to, labels} ($0.01, x402, per send).",
+    "inputExample": {
+      "inbox_id": "myagent@agentmail.to",
+      "to": [
+        "recipient@example.com"
+      ],
+      "subject": "Hello from agent",
+      "text": "This is a test message sent via AgentMail."
+    },
+    "outputShape": "body.message_id (string) and body.thread_id (string) on successful send; body.inbox_id on inbox creation",
+    "quirks": [
+      "CHECK-BEFORE-CREATE (money-safety): before paying $2 to create an inbox, FIRST check whether you already own one and reuse its inbox_id — only create a new inbox if you have none. The QA master wallet already owns powerfulrule82@agentmail.to; reuse it. Each redundant create wastes $2.",
+      "inbox_id is the full email address (e.g. myagent@agentmail.to) returned by the Create inbox operation — it doubles as both the id and the from-address",
+      "inbox creation costs $2, above the $1 QA cap; create one inbox once and reuse the inbox_id across all sends to amortize the cost",
+      "inbox_id is a URL path parameter in the send endpoint: /v0/inboxes/{inbox_id}/messages/send — URL-encode it if the address contains special characters",
+      "client_id on the create operation acts as an idempotency key — safe to retry with the same client_id if the $2 payment goes through but the response is lost",
+      "OWNERSHIP GATE: the send endpoint returns HTTP 403 'Ownership required' (not 402) when the inbox does not exist or is not owned by the calling wallet. The x402 payment flow never starts — ownership validation runs before the payment challenge is issued.",
+      "auth:'none' understates the model — the wallet that pays the $2 inbox creation becomes the inbox owner; only that exact wallet address can call the send endpoint. Wallet identity IS the auth mechanism.",
+      "No pre-provisioned inbox exists in the managed-resource store (agentmail:inbox) — the send endpoint cannot be tested until a $2 inbox creation is approved and completed."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "BEFORE creating: check whether you already own an inbox (reuse its inbox_id) — only create if you have none, since create costs $2 each. AgentMail is a two-step managed-resource service. First, create a persistent inbox via POST /v0/inboxes (one-time $2 x402 payment) to obtain an inbox_id such as myagent@agentmail.to; all fields are optional and a random username is assigned if omitted. Then send emails via POST /v0/inboxes/{inbox_id}/messages/send ($0.01 x402 per send) substituting the inbox_id as a path parameter and providing to (array), subject, and at least one of text or html. Both steps are keyless x402 on Base, Solana, Polygon, or Avalanche USDC. The send step is an outward irreversible action — confirm recipients before calling. Reuse the same inbox for many sends; the $2 creation cost is a one-time provisioning expense. The inbox owner is determined by the wallet that paid for creation — only that wallet can subsequently send from it.",
+    "costObservedUsd": 0,
+    "managedResource": {
+      "key": "agentmail:inbox",
+      "kind": "provisioned",
+      "label": "Email inbox",
+      "injectAs": "inbox_id",
+      "createOperation": "Create inbox",
+      "idField": "inbox_id"
+    },
+    "phaseB": {
+      "pass": false,
+      "failReason": "HTTP 403 'Ownership required' on send endpoint — x402 payment never initiated. No pre-provisioned inbox exists; $2 creation cost exceeds $1 QA per-call cap.",
+      "missingFromDoc": [
+        "send endpoint returns 403 (not 402) when inbox does not exist or is not owned by calling wallet — x402 payment is never initiated for invalid/unowned inboxes",
+        "auth:'none' understates the model — wallet identity from x402 payment is used as the ownership credential; only the creating wallet can send from an inbox",
+        "no pre-provisioned inbox_id exists in the environment and the $2 inbox creation cost exceeds the $1 QA per-call cap, making Step 2 untestable"
+      ]
+    }
+  },
+  "drop": false,
+  "droppedReason": null,
+  "reuseExistingInbox": "powerfulrule82@agentmail.to"
+}

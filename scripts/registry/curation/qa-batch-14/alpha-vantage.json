@@ -1,0 +1,43 @@
+{
+  "serviceId": "alpha-vantage",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68c26db13367242ab91229d5",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:68c26db13367242ab91229d5 with JSON body {input}",
+    "inputExample": {
+      "input": "What is the latest stock price for AAPL?"
+    },
+    "outputShape": "body.response (string) — but currently returns the error string \"X402 Service is currently unavailable.\"",
+    "quirks": [
+      "Paid 0.1 USDC on Base then returned HTTP 201 with body {\"response\":\"X402 Service is currently unavailable.\"} — charge-then-dead-service. No data returned.",
+      "QuestFlow agent gateway: body shape is {input: string}, response shape is {response: string}.",
+      "Do NOT call — it charges (0.1 USDC) and the underlying Alpha Vantage agent is down."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This is a QuestFlow x402 agent gateway for Alpha Vantage financial data. Intended call: POST the endpoint with JSON body {\"input\": \"<your question>\"} and read the answer from body.response. However the service is currently BROKEN — it accepts the 0.1 USDC payment (charges on Base), returns HTTP 201, but the body is {\"response\":\"X402 Service is currently unavailable.\"} with no actual data. Do not call it until upstream is restored; you will lose money.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "alpha-vantage#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

@@ -1,0 +1,3003 @@
+[
+  {
+    "id": "ip-geolocation-lookup",
+    "kind": "api",
+    "name": "IP Geolocation Lookup",
+    "aka": [
+      "ip-geolocation-lookup",
+      "ip-geolocation"
+    ],
+    "provider": "2s",
+    "providerId": "2s",
+    "description": "Geolocate a single IPv4 or IPv6 address. Returns country (name + ISO code), region (name + code), city, postal/ZIP, latitude/longitude (city-level precision, not GPS), timezone, ISP, organization, and AS number + name. Multi-gateway: the same lookup is available via four independent x402 providers at different prices and call conventions.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-geolocation",
+      "geolocation",
+      "geoip"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "2s",
+        "providerId": "2s",
+        "url": "https://2s.io/api/geo/ip",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active",
+        "team": "2s"
+      },
+      {
+        "provider": "auor",
+        "providerId": "auor",
+        "url": "https://api.auor.io/ip-stack/v1/lookup",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x57210b95ECbFD6F2EE74d77830228b48D1878867",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "padelmaps",
+        "providerId": "padelmaps",
+        "url": "https://padelmaps.org/api/x402-tools/ip/lookup",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "payTo": "0xd8bA61a0b0974db0EC8E325C7628470526558E9B",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "payTo": "CcYVS3Jbb1JnE8xSpQQmkBWy3ttKadUmqAzNo52HeUMJ",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "x402node",
+        "providerId": "x402node",
+        "url": "https://api.x402node.dev/maps/ip",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active",
+        "team": "x402node"
+      },
+      {
+        "provider": "Webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/geo",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 or IPv6 address to locate. Omit to geolocate the caller's IP."
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "timezone": {
+              "type": "string"
+            },
+            "ll": {
+              "type": "array",
+              "description": "[latitude, longitude], city-level precision"
+            },
+            "eu": {
+              "type": "boolean"
+            },
+            "metro": {
+              "type": "number"
+            },
+            "area": {
+              "type": "number"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://2s.io/api/geo/ip?ip={ipv4_or_ipv6} (default). Other gateways: auor.io GET ?ip=, x402node GET ?ip=, padelmaps POST JSON {ip}.",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "Default (2s.io) is double-nested: data.items[0].{ip,country.{code,name},region.{code,name},city,postalCode,coords.{lat,lon},timezone,network.{isp,org,asn}} + data.source + meta.cost.usd. NOTE: padelmaps & x402node return a FLAT object instead.",
+      "quirks": [
+        "MULTI-GATEWAY, NOT uniform: only the default (2s.io) output is double-nested at data.items[0]; padelmaps and x402node return a FLAT object. Do not assume one parser works for all backends.",
+        "2s.io (default): use GET only. Sending POST returns 405 AFTER payment is deducted (non-refundable). Useful data is at body.data.items[0], country/region are OBJECTS ({code,name}), lat/lon are under coords, ISP/org/asn under network.",
+        "padelmaps backend genuinely requires POST with a JSON body {ip} (alias 'address'); omitting ip looks up the CALLER's IP. Costs $0.01 — 10x the default.",
+        "x402node backend is x402 version 1 (older protocol) and is an ipapi.co passthrough; $0.005.",
+        "auor.io is an IPStack passthrough; check_endpoint_schema throws 'Cannot read properties of null (reading ip-stack)' on the hyphenated path, but the endpoint works — verified via discover_api_endpoints.",
+        "Pricing varies 10x across gateways: 2s.io & auor.io $0.001, x402node $0.005, padelmaps $0.01. Prefer the default unless a specific output shape is needed.",
+        "Lat/lon is city-level, not GPS precision (per 2s.io schema).",
+        "2s.io supports bulk lookups (up to 100 IPs) via a different endpoint /api/ipinfo/bulk — out of scope for this single-IP service."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Geolocate a single IPv4 or IPv6 address. Returns country (name + ISO code), region (name + code), city, postal/ZIP, latitude/longitude (city-level precision, not GPS), timezone, ISP, organization, and AS number + name. Multi-gateway: the same lookup is available via four independent x402 providers at different prices and call conventions. GET https://2s.io/api/geo/ip?ip={ipv4_or_ipv6} (default). Other gateways: auor.io GET ?ip=, x402node GET ?ip=, padelmaps POST JSON {ip}. Output: Default (2s.io) is double-nested: data.items[0].{ip,country.{code,name},region.{code,name},city,postalCode,coords.{lat,lon},timezone,network.{isp,org,asn}} + data.source + meta.cost.usd. NOTE: padelmaps & x402node return a FLAT object instead.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "ip-geolocation-lookup",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-asn-lookup",
+    "kind": "api",
+    "name": "NetIntel ASN Lookup",
+    "aka": [
+      "netintel-asn-lookup",
+      "asn-lookup"
+    ],
+    "provider": "netintel-production-440c.up.railway",
+    "providerId": "netintel-production-440c-up-railway",
+    "description": "Resolves an IPv4/IPv6 address or domain to its Autonomous System Number (ASN), network owner/organization, geolocation (country/region/city), and hosting/cloud/VPN classification, plus a trust score (0-100) and letter grade for assessing infrastructure risk.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "fraud-detection",
+      "threat-intel",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.030",
+      "amount": 0.03,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel-production-440c.up.railway",
+        "providerId": "netintel-production-440c-up-railway",
+        "url": "https://netintel-production-440c.up.railway.app/asn-lookup/analyze",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "needs-review",
+        "team": "NetIntel"
+      },
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/asn-lookup/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "30000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "IP address (v4 or v6) or domain name to look up (aliases accepted: ip, address, host, hostname, query — query param or JSON body)"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string"
+            },
+            "ip": {
+              "type": "string"
+            },
+            "ip_version": {
+              "type": "number"
+            },
+            "hostname": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "asn": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "asn_number": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "organization": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "network": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "country": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "region": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "city": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "is_hosting": {
+              "type": "boolean"
+            },
+            "is_cloud": {
+              "type": "boolean"
+            },
+            "is_vpn": {
+              "type": "boolean"
+            },
+            "classification": {
+              "type": "string"
+            },
+            "score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "findings": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel-production-440c.up.railway.app/asn-lookup/analyze?target=<ip-or-domain> (x402, USDC on Base eip155:8453; no JSON body; target is a query param)",
+      "inputExample": {
+        "target": "8.8.8.8"
+      },
+      "outputShape": "target, ip, ip_version, hostname, asn, asn_number, organization, network, country, region, city, is_hosting, is_cloud, is_vpn, classification, score, grade, findings[].{rule,deduction,detail}",
+      "quirks": [
+        "target is a QUERY PARAM on a GET request (no JSON body): ?target=<value>",
+        "Accepts both IPv4/IPv6 addresses AND domain names as target (resolves domain to IP first)",
+        "network field may come back null even when populated in the spec example",
+        "Network advertised as CAIP-2 eip155:8453 in the 402 (pays cleanly)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Resolves an IPv4/IPv6 address or domain to its Autonomous System Number (ASN), network owner/organization, geolocation (country/region/city), and hosting/cloud/VPN classification, plus a trust score (0-100) and letter grade for assessing infrastructure risk. GET https://netintel-production-440c.up.railway.app/asn-lookup/analyze?target=<ip-or-domain> (x402, USDC on Base eip155:8453; no JSON body; target is a query param) Output: target, ip, ip_version, hostname, asn, asn_number, organization, network, country, region, city, is_hosting, is_cloud, is_vpn, classification, score, grade, findings[].{rule,deduction,detail}",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "netintel-asn-lookup",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-ip-blacklist-check",
+    "kind": "api",
+    "name": "NetIntel IP Blacklist Check",
+    "aka": [
+      "netintel-ip-blacklist-check",
+      "ip-blacklist-check"
+    ],
+    "provider": "netintel-production-440c.up.railway",
+    "providerId": "netintel-production-440c-up-railway",
+    "description": "Checks an IPv4 address against 15 major DNS blacklists (Spamhaus ZEN/SBL/XBL/PBL, SpamCop, Barracuda, SORBS variants, UCEPROTECT, 0spam, DroneBL, s5h, TTK, Manitu) simultaneously and returns which lists it appears on, a reputation score (0-100), letter grade, and threat classification for instant block/allow decisions.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "fraud-detection",
+      "threat-intel",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel-production-440c.up.railway",
+        "providerId": "netintel-production-440c-up-railway",
+        "url": "https://netintel-production-440c.up.railway.app/ip-blacklist/check",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "needs-review",
+        "team": "NetIntel"
+      },
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/ip-blacklist/check",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 address to check (e.g. 1.2.3.4)"
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "reversed_ip": {
+              "type": "string"
+            },
+            "listed_count": {
+              "type": "number"
+            },
+            "total_checked": {
+              "type": "number"
+            },
+            "threat_level": {
+              "type": "string"
+            },
+            "score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "findings": {
+              "type": "array"
+            },
+            "blacklists": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel-production-440c.up.railway.app/ip-blacklist/check?ip=<ipv4> (x402, USDC on Base eip155:8453; no JSON body; ip is a query param)",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "ip, reversed_ip, listed_count, total_checked, threat_level, score, grade, findings[], blacklists[].{name,listed,description}",
+      "quirks": [
+        "ip is a QUERY PARAM on a GET request (no JSON body): ?ip=<value>",
+        "IPv4 ONLY (input schema is ipv4-only, unlike the asn-lookup which accepts domains/IPv6)",
+        "Always checks exactly 15 DNSBL zones; blacklists[] always returns all 15 with listed=true/false",
+        "Network advertised as CAIP-2 eip155:8453 in the 402 (pays cleanly)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Checks an IPv4 address against 15 major DNS blacklists (Spamhaus ZEN/SBL/XBL/PBL, SpamCop, Barracuda, SORBS variants, UCEPROTECT, 0spam, DroneBL, s5h, TTK, Manitu) simultaneously and returns which lists it appears on, a reputation score (0-100), letter grade, and threat classification for instant block/allow decisions. GET https://netintel-production-440c.up.railway.app/ip-blacklist/check?ip=<ipv4> (x402, USDC on Base eip155:8453; no JSON body; ip is a query param) Output: ip, reversed_ip, listed_count, total_checked, threat_level, score, grade, findings[], blacklists[].{name,listed,description}",
+      "costObservedUsd": 0.003
+    },
+    "source": {
+      "serviceKey": "netintel-ip-blacklist-check",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "shieldapi-ip-reputation",
+    "kind": "api",
+    "name": "ShieldAPI IP Reputation",
+    "aka": [
+      "shieldapi-ip-reputation",
+      "ip-reputation"
+    ],
+    "provider": "shield.vainplex",
+    "providerId": "shield-vainplex",
+    "description": "Agent-security IP reputation pre-flight: checks an IPv4 address against blacklists (Spamhaus ZEN, SpamCop, SORBS, Barracuda), reverse DNS, and Tor-exit-node status, returning a risk_score and risk_level. Intended as a paid trust check before an agent connects to or trusts an IP.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "fraud-detection",
+      "threat-intel",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "shield.vainplex",
+        "providerId": "shield-vainplex",
+        "url": "https://shield.vainplex.dev/api/cdp/check/ip",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xFcAfd9dAc06a03F588D6f55B5336162dFd7202a6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://shield.vainplex.dev/api/cdp/check/ip?ip=<ipv4> (x402, USDC on Base; no JSON body; ip is a query param). Optional: shieldapi_source=<tag> query param or X-ShieldAPI-Source header for attribution.",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "ip, blacklists[].{name,listed,response?}, reverse_dns, is_tor_exit, risk_score, risk_level",
+      "quirks": [
+        "ip is a QUERY PARAM on a GET request (no JSON body): ?ip=<value>; ip is REQUIRED",
+        "IPv4 only (schema format ipv4)",
+        "Optional demo=true query param enables demo mode; optional shieldapi_source / X-ShieldAPI-Source for campaign attribution (NOT required)",
+        "Real output shape is blacklists/reverse_dns/is_tor_exit/risk_score/risk_level — leaner than the /api/check-ip variant; same provider also exposes /api/check-ip (non-cdp path)",
+        "Provider has a large catalog of sibling security endpoints (check-email, check-domain, check-url, check-password, full-scan, scan-skill, check-prompt) under both /api/ and /api/cdp/ prefixes"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Agent-security IP reputation pre-flight: checks an IPv4 address against blacklists (Spamhaus ZEN, SpamCop, SORBS, Barracuda), reverse DNS, and Tor-exit-node status, returning a risk_score and risk_level. Intended as a paid trust check before an agent connects to or trusts an IP. GET https://shield.vainplex.dev/api/cdp/check/ip?ip=<ipv4> (x402, USDC on Base; no JSON body; ip is a query param). Optional: shieldapi_source=<tag> query param or X-ShieldAPI-Source header for attribution. Output: ip, blacklists[].{name,listed,response?}, reverse_dns, is_tor_exit, risk_score, risk_level",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "shieldapi-ip-reputation",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "cusethejuice-ip-threat-check",
+    "kind": "api",
+    "name": "CuseTheJuice IP Threat Check",
+    "aka": [
+      "cusethejuice-ip-threat-check",
+      "ip-threat-check"
+    ],
+    "provider": "app.cusethejuice",
+    "providerId": "app-cusethejuice",
+    "description": "LLM-assisted IP threat scoring for spam/phishing/abuse. Takes an IP plus optional free-text context and a strictness mode, runs PTR/DNSBL intel, and returns an LLM verdict (known_threat/likely_threat/uncertain/likely_benign), likelihood 0-100, confidence 1-10, rationale, contributing factors, and limitations.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "fraud-detection",
+      "threat-intel",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "app.cusethejuice",
+        "providerId": "app-cusethejuice",
+        "url": "https://app.cusethejuice.com/api/bots/ip-threat-check",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "1000",
+              "resource": "https://app.cusethejuice.com/api/bots/ip-threat-check",
+              "description": "CuseTheJuice app: IP threat scoring for spam/phishing/abuse. GET/POST: ip, optional context, mode (strict|balanced|lenient). Returns verdict, likelihood 0-100, confidence, rationale, factors, intel, limitations. Pay with x402 (Base USDC). HTTP shape: extensions.bazaar on the 402. Catalog: https://app.cusethejuice.com/agents",
+              "mimeType": "application/json",
+              "payTo": "0xF9905a9c4784533c8cee3487b4546ed03126DcA5",
+              "maxTimeoutSeconds": 300,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "outputSchema": {
+                "input": {
+                  "type": "http",
+                  "method": "GET",
+                  "discoverable": true
+                },
+                "output": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "ip": {
+                          "type": "string"
+                        },
+                        "verdict": {
+                          "type": "string",
+                          "enum": [
+                            "known_threat",
+                            "likely_threat",
+                            "uncertain",
+                            "likely_benign"
+                          ]
+                        },
+                        "likelihood": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "confidence": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 10
+                        },
+                        "rationale": {
+                          "type": "string"
+                        },
+                        "factors": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "limitations": {
+                          "type": "string"
+                        },
+                        "modelUsed": {
+                          "type": "string"
+                        },
+                        "intel": {
+                          "type": "object",
+                          "properties": {
+                            "ptrHostnames": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "ptrError": {
+                              "type": "string"
+                            },
+                            "dnsblSkipped": {
+                              "type": "string"
+                            },
+                            "dnsblZonesChecked": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "dnsblListedOn": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "dnsblPartialErrors": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "ip",
+                        "verdict",
+                        "likelihood",
+                        "confidence",
+                        "rationale",
+                        "factors",
+                        "limitations",
+                        "modelUsed"
+                      ]
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://app.cusethejuice.com/api/bots/ip-threat-check with JSON body {ip, context?, mode?} (also accepts GET ?ip=...). x402 v2, USDC on Base. mode is one of strict|balanced|lenient.",
+      "inputExample": {
+        "ip": "198.51.100.45",
+        "context": "Repeated failed logins and bursty request traffic from this source.",
+        "mode": "balanced"
+      },
+      "outputShape": "result.{ip, verdict(known_threat|likely_threat|uncertain|likely_benign), likelihood(0-100), confidence(1-10), rationale, factors[], limitations, modelUsed, intel.{ptrHostnames[],ptrError?,dnsblSkipped?,dnsblZonesChecked,dnsblListedOn[],dnsblPartialErrors}}",
+      "quirks": [
+        "BROKEN/UNPAYABLE with current tooling: the 402 challenge advertises network as the bare string \"base\" instead of CAIP-2 \"eip155:8453\". Both the Sponge pay primitive (qa-pay error: 'Unsupported network format: base (expected eip155:CHAIN_ID)') and the agentcash fetch client ('Invalid network: base' / 'No network/scheme registered for x402 version 2') reject it. Forcing paymentNetwork=base/protocol=x402 does not help.",
+        "Registry input was WRONG: it listed this as GET with empty inputSchema. It is actually POST with JSON body {ip}; ip is the only required field. Also accepts GET ?ip=.",
+        "Optional fields: context (free-text signal for the LLM) and mode (strict|balanced|lenient, default balanced)",
+        "Response is wrapped in a top-level result object (result.verdict, etc.), unlike the other 3 backends which return flat objects",
+        "Verdict/rationale are LLM-generated (modelUsed e.g. openai/gpt-4o-mini), so non-deterministic",
+        "Provider also exposes /api/bots/email-spam-check, /api/bots/email-open-relay, /api/bots/hash-anchor/* and /api/jupiter/quote-x402 — likely share the same malformed network identifier"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "LLM-assisted IP threat scoring for spam/phishing/abuse. Takes an IP plus optional free-text context and a strictness mode, runs PTR/DNSBL intel, and returns an LLM verdict (known_threat/likely_threat/uncertain/likely_benign), likelihood 0-100, confidence 1-10, rationale, contributing factors, and limitations. POST https://app.cusethejuice.com/api/bots/ip-threat-check with JSON body {ip, context?, mode?} (also accepts GET ?ip=...). x402 v2, USDC on Base. mode is one of strict|balanced|lenient. Output: result.{ip, verdict(known_threat|likely_threat|uncertain|likely_benign), likelihood(0-100), confidence(1-10), rationale, factors[], limitations, modelUsed, intel.{ptrHostnames[],ptrError?,dnsblSkipped?,dnsblZonesChecked,dnsblListedOn[],dnsblPartialErrors}}",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "cusethejuice-ip-threat-check",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "dns-lookup",
+    "kind": "api",
+    "name": "DNS Lookup",
+    "aka": [],
+    "provider": "Various",
+    "providerId": "various",
+    "description": "DNS record lookup / DNS-over-HTTPS resolution for a domain (A, AAAA, MX, TXT, etc.). Pay-per-call x402 (multiple providers).",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "dns",
+      "dns-lookup",
+      "doh",
+      "networking"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "dns-lookup.api.klymax402",
+        "providerId": "dns-lookup-api-klymax402",
+        "url": "https://dns-lookup.api.klymax402.com/api/lookup",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": 0.002,
+          "max": 0.002,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6E8B64638b24C6D625b045dD353120d850064E2E",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Domain name to lookup (e.g. example.com)"
+            },
+            "type": {
+              "type": "string",
+              "description": "DNS record type: A, AAAA, MX, TXT, CNAME, NS, SOA, SRV (default: A)"
+            }
+          },
+          "required": [
+            "domain"
+          ]
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "hidden"
+      },
+      {
+        "provider": "x402.agentutility",
+        "providerId": "x402-agentutility",
+        "url": "https://x402.agentutility.ai/dns-lookup",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": 0.02,
+          "max": 0.02,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.agentutility.ai/dns-lookup with JSON body {domain}",
+      "inputExample": {
+        "domain": "example.com",
+        "type": "A"
+      },
+      "outputShape": "body.records.<TYPE>[] (each {name,ttl,data}); convenience arrays at body.flat.{a,aaaa,mx,ns,txt,cname,caa}; body.domain, body.types_queried[], body.total_records, body.source",
+      "quirks": [
+        "Service ignores any 'type' param and always queries all record types (A, AAAA, MX, TXT, NS, CAA) at once — read the type you want from body.records or body.flat.",
+        "No txHash returned by payment layer (confirmed=false), but call settled and returned 200."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://x402.agentutility.ai/dns-lookup with a JSON body containing {\"domain\":\"<domain>\"} and pay the $0.02 USDC x402 charge (Base, eip155:8453). The response is synchronous JSON. Read records by type at body.records (e.g. body.records.A[].data for IPv4) or use the flattened lists at body.flat (body.flat.a, body.flat.mx, body.flat.ns, etc.). It always returns all record types regardless of any 'type' field you send.",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "dns-lookup",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-ip-report",
+    "kind": "api",
+    "name": "NetIntel IP Report",
+    "aka": [
+      "netintel-ip-report",
+      "ip-report-full",
+      "full ip profile",
+      "ip workup"
+    ],
+    "provider": "NetIntel",
+    "providerId": "netintel",
+    "description": "One call returns a complete five-part IP profile — geolocation, ASN/network ownership, multi-DNSBL blacklist status, threat reputation, and an aggregate block/allow risk verdict — run concurrently with graceful partial-failure handling.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-intelligence",
+      "ip-reputation",
+      "geolocation",
+      "asn",
+      "blacklist",
+      "threat"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.200",
+      "amount": 0.2,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/ip-report/full",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.2,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.200",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "200000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "200000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 or IPv6 address to profile (query param). Private/reserved ranges are rejected; the blacklist section is IPv4-only and reports error:\"ipv4_only\" for IPv6 input."
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "generated_at": {
+              "type": "string"
+            },
+            "sections": {
+              "type": "object",
+              "description": "geo, network, blacklist, reputation, risk — each with an `available` flag plus its own fields"
+            },
+            "sections_ok": {
+              "type": "number"
+            },
+            "sections_failed": {
+              "type": "number"
+            },
+            "overall_recommendation": {
+              "type": "string"
+            },
+            "score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/ip-report/full?ip=<ipv4-or-ipv6> (x402, USDC on Base or Solana; the target IP is passed as the `ip` query param, no JSON body)",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "body.ip, body.generated_at, body.sections{geo,network,blacklist,reputation,risk} (each with .available + its fields, e.g. geo.country/city/timezone/isp, network.asn/organization/classification, blacklist.listed_count/lists_checked/listed_on[], reputation.abuse_confidence/otx_pulses, risk.risk_score/recommendation), body.sections_ok, body.sections_failed, body.overall_recommendation, body.score (0-100), body.grade (A-F), body.findings[]{rule,deduction,detail}",
+      "quirks": [
+        "ip is a QUERY PARAM on a GET request (no JSON body): ?ip=8.8.8.8",
+        "Private/reserved IP ranges are rejected (SSRF-safe)",
+        "Blacklist section is IPv4-only — reports error:\"ipv4_only\" for IPv6 input; other sections still resolve for IPv6",
+        "Partial-failure tolerant: sections that fail come back with available:false; sections_ok/sections_failed report the split, and partials never read as safe",
+        "Failed calls (4xx/5xx, upstream failure, input rejection) are never charged (agent fair-trade)"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://netintel.dev/ip-report/full with a single query param `ip` set to an IPv4 or IPv6 address, e.g. ?ip=8.8.8.8. Pay via x402 (USDC on Base eip155:8453 or Solana), ~$0.20/call. The JSON response is returned synchronously (no polling): read body.overall_recommendation and body.risk.recommendation for the block/allow decision, body.score (0-100) + body.grade (A-F) for the aggregate verdict, and body.sections.{geo,network,blacklist,reputation,risk} for the five-part breakdown. Check each section's .available flag since sections degrade gracefully on partial failure.",
+      "costObservedUsd": 0.2
+    },
+    "source": {
+      "serviceKey": "netintel-ip-report",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-ip-reputation",
+    "kind": "api",
+    "name": "NetIntel IP Reputation",
+    "aka": [
+      "netintel-ip-reputation",
+      "ip-reputation-analyze",
+      "ip-threat-intel"
+    ],
+    "provider": "netintel.dev",
+    "providerId": "netintel-dev",
+    "description": "Checks an IPv4/IPv6 address against the AbuseIPDB and AlienVault OTX threat feeds and returns a composite risk score, risk level, threat categories, malware families, and the full per-source intelligence data.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "threat-intel",
+      "abuseipdb",
+      "alienvault-otx",
+      "fraud-detection",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/ip-reputation/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 or IPv6 address to check (query param)"
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "risk_score": {
+              "type": "number"
+            },
+            "risk_level": {
+              "type": "string"
+            },
+            "composite": {
+              "type": "object",
+              "properties": {
+                "is_malicious": {
+                  "type": "boolean"
+                },
+                "threat_categories": {
+                  "type": "array"
+                },
+                "first_seen": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "last_seen": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "abuseipdb": {
+              "type": "object",
+              "properties": {
+                "confidence_score": {
+                  "type": "number"
+                },
+                "total_reports": {
+                  "type": "number"
+                },
+                "distinct_reporters": {
+                  "type": "number"
+                },
+                "last_reported_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "isp": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "usage_type": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "domain": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "categories": {
+                  "type": "array"
+                }
+              }
+            },
+            "otx": {
+              "type": "object",
+              "properties": {
+                "available": {
+                  "type": "boolean"
+                },
+                "pulse_count": {
+                  "type": "number"
+                },
+                "malware_families": {
+                  "type": "array"
+                },
+                "threat_types": {
+                  "type": "array"
+                },
+                "asn": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "country_code": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "reputation": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/ip-reputation/analyze?ip=<ipv4-or-ipv6> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; ip is a required query param)",
+      "inputExample": {
+        "ip": "185.220.101.45"
+      },
+      "outputShape": "ip, risk_score (0-100), risk_level (e.g. critical/high/medium/low), composite.{is_malicious,threat_categories[],first_seen,last_seen}, abuseipdb.{confidence_score,total_reports,distinct_reporters,last_reported_at,isp,usage_type,domain,categories[]}, otx.{available,pulse_count,malware_families[],threat_types[],asn,country_code,reputation}",
+      "quirks": [
+        "ip is a QUERY PARAM on a GET request (no JSON body): ?ip=<value>",
+        "Aggregates two threat feeds: AbuseIPDB (confidence/reports) and AlienVault OTX (pulses/malware families) into a composite risk_score/risk_level",
+        "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.05",
+        "Blocks private/internal IPs (SSRF-safe); failed/invalid-input calls are never billed",
+        "Distinct from NetIntel ASN Lookup (/asn-lookup/analyze) and NetIntel IP Blacklist Check (/ip-blacklist/check) — this is the threat-feed reputation op"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Checks an IPv4/IPv6 address against the AbuseIPDB and AlienVault OTX threat feeds and returns a composite risk score, risk level, threat categories, malware families, and the full per-source intelligence data. GET https://netintel.dev/ip-reputation/analyze?ip=<ipv4-or-ipv6> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; ip is a required query param), e.g. ?ip=185.220.101.45. Pay via x402 (~$0.05/call). The JSON response is returned synchronously: read risk_score (0-100) and risk_level for the verdict, composite.threat_categories[] and composite.is_malicious for the summary, and the abuseipdb.* and otx.* objects for the underlying per-source evidence (AbuseIPDB confidence/report counts; OTX pulse_count and malware_families).",
+      "costObservedUsd": 0.05
+    },
+    "source": {
+      "serviceKey": "netintel-ip-reputation",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-ip-risk-score",
+    "kind": "api",
+    "name": "NetIntel IP Risk Score",
+    "aka": [
+      "netintel-ip-risk-score",
+      "ip-risk-score",
+      "ip-risk"
+    ],
+    "provider": "netintel.dev",
+    "providerId": "netintel-dev",
+    "description": "Returns a complete risk profile for an IPv4/IPv6 address — geolocation, ASN/network owner, DNSBL blacklist status, and proxy/VPN/hosting classification — aggregated into a single 0-100 risk score, letter grade, and allow/block recommendation.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip-reputation",
+      "fraud-detection",
+      "threat-intel",
+      "geolocation",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.100",
+      "amount": 0.1,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/ip-risk/score",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.1,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.100",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "100000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 or IPv6 address to risk-score (query param; private/reserved ranges are rejected; DNSBL blacklist checks are IPv4-only and are skipped for IPv6 with a blacklist_skipped_ipv6 finding)"
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string"
+            },
+            "risk_score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "recommendation": {
+              "type": "string"
+            },
+            "geo": {
+              "type": "object",
+              "properties": {
+                "available": {
+                  "type": "boolean"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "country_code": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "timezone": {
+                  "type": "string"
+                },
+                "isp": {
+                  "type": "string"
+                },
+                "is_proxy": {
+                  "type": "boolean"
+                },
+                "is_hosting": {
+                  "type": "boolean"
+                },
+                "is_mobile": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "network": {
+              "type": "object",
+              "properties": {
+                "available": {
+                  "type": "boolean"
+                },
+                "asn": {
+                  "type": "string"
+                },
+                "organization": {
+                  "type": "string"
+                },
+                "classification": {
+                  "type": "string"
+                }
+              }
+            },
+            "blacklist": {
+              "type": "object",
+              "properties": {
+                "available": {
+                  "type": "boolean"
+                },
+                "listed_count": {
+                  "type": "number"
+                },
+                "lists_checked": {
+                  "type": "number"
+                },
+                "listed_on": {
+                  "type": "array"
+                }
+              }
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rule": {
+                    "type": "string"
+                  },
+                  "deduction": {
+                    "type": "number"
+                  },
+                  "detail": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/ip-risk/score?ip=<ipv4-or-ipv6> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; ip is a query param)",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "ip, risk_score (0-100), grade, recommendation (allow/block), geo{available,country,country_code,city,timezone,isp,is_proxy,is_hosting,is_mobile}, network{available,asn,organization,classification}, blacklist{available,listed_count,lists_checked,listed_on[]}, findings[]{rule,deduction,detail}",
+      "quirks": [
+        "ip is a QUERY PARAM on a GET request (no JSON body): ?ip=<value>",
+        "Only accepts a raw IP address (IPv4 or IPv6) — NOT domain names (unlike NetIntel ASN Lookup); private/reserved ranges are rejected (SSRF-safe)",
+        "DNSBL blacklist checks are IPv4-only; for IPv6 the blacklist section is skipped and a blacklist_skipped_ipv6 finding is added",
+        "Aggregates geo + ASN + blacklist + proxy/VPN/hosting into one verdict, replacing four separate NetIntel IP endpoint calls",
+        "Failed calls (server error, upstream failure, input-validation rejection) are never charged (agent fair-trade)",
+        "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.10"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Returns a complete risk profile for an IP address aggregated into a single verdict. Call GET https://netintel.dev/ip-risk/score with a single query param ip set to an IPv4 or IPv6 address, e.g. ?ip=8.8.8.8 (raw IP only — domain names are not accepted). Pay via x402 (USDC on Base eip155:8453 or Solana, ~$0.10/call; no JSON body). The JSON response returns synchronously: read risk_score (0-100), grade, and recommendation (allow/block) for the verdict; geo{country,city,isp,is_proxy,is_hosting,is_mobile}, network{asn,organization,classification}, and blacklist{listed_count,lists_checked,listed_on[]} for the underlying signals; and findings[]{rule,deduction,detail} for the score breakdown.",
+      "costObservedUsd": 0.1
+    },
+    "source": {
+      "serviceKey": "netintel-ip-risk-score",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-subnet-calculator",
+    "kind": "api",
+    "name": "NetIntel Subnet Calculator",
+    "aka": [
+      "netintel-subnet-calculator",
+      "subnet-calc",
+      "cidr-calculator"
+    ],
+    "provider": "netintel.dev",
+    "providerId": "netintel-dev",
+    "description": "Calculates IPv4/IPv6 subnet details from CIDR notation — network/broadcast address, netmask, wildcard (Cisco ACL) mask, binary/hex masks, usable host range, RFC classification (private/loopback/multicast), supernet, and subnet-split counts; comma-separated CIDRs return overlap/containment analysis.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "subnet-calculator",
+      "cidr",
+      "ip-networking",
+      "networking",
+      "ip-ranges"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/subnet/calc",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "cidr": {
+              "type": "string",
+              "description": "CIDR block, e.g. 10.0.1.0/24 or 2001:db8::/48 (IPv6). Comma-separate multiple CIDRs for overlap/containment analysis, e.g. 10.0.0.0/16,10.0.1.0/24. Query param on a GET request."
+            }
+          },
+          "required": [
+            "cidr"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "cidr": {
+              "type": "string"
+            },
+            "ip_version": {
+              "type": "number"
+            },
+            "network": {
+              "type": "string"
+            },
+            "broadcast": {
+              "type": "string"
+            },
+            "netmask": {
+              "type": "string"
+            },
+            "wildcard": {
+              "type": "string"
+            },
+            "binary_mask": {
+              "type": "string"
+            },
+            "hex_mask": {
+              "type": "string"
+            },
+            "prefix_length": {
+              "type": "number"
+            },
+            "total_hosts": {
+              "type": "number"
+            },
+            "usable_hosts": {
+              "type": "number"
+            },
+            "first_usable": {
+              "type": "string"
+            },
+            "last_usable": {
+              "type": "string"
+            },
+            "is_private": {
+              "type": "boolean"
+            },
+            "supernet": {
+              "type": "string"
+            },
+            "subnets": {
+              "type": "array"
+            },
+            "rfc_classification": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/subnet/calc?cidr=<cidr> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; cidr is a query param)",
+      "inputExample": {
+        "cidr": "10.0.1.0/24"
+      },
+      "outputShape": "cidr, ip_version, network, broadcast, netmask, wildcard, binary_mask, hex_mask, prefix_length, total_hosts, usable_hosts, first_usable, last_usable, is_private, supernet, subnets[].{prefix,count}, rfc_classification. Multi-CIDR (comma-separated) input returns {subnets, overlaps} instead.",
+      "quirks": [
+        "cidr is a QUERY PARAM on a GET request (no JSON body): ?cidr=10.0.1.0/24",
+        "Comma-separate multiple CIDRs (e.g. 10.0.0.0/16,10.0.1.0/24) to get overlap/containment analysis — the response shape switches to {subnets, overlaps} with each pair classified subnet/supernet/partial overlap/disjoint",
+        "Supports both IPv4 and IPv6 CIDRs (e.g. 2001:db8::/48)",
+        "Deterministic calculator (pure math, not an AI model); output matched the provider's documented example exactly on the paid call",
+        "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.005"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Calculates IPv4/IPv6 subnet details from CIDR notation — network/broadcast address, netmask, wildcard (Cisco ACL) mask, binary/hex masks, usable host range, RFC classification, supernet, and subnet-split counts. GET https://netintel.dev/subnet/calc?cidr=<cidr> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; cidr is a query param). Pass a single CIDR (e.g. 10.0.1.0/24) for full subnet math, or comma-separate multiple CIDRs (10.0.0.0/16,10.0.1.0/24) for overlap/containment analysis ({subnets, overlaps}). Output: cidr, ip_version, network, broadcast, netmask, wildcard, binary_mask, hex_mask, prefix_length, total_hosts, usable_hosts, first_usable, last_usable, is_private, supernet, subnets[].{prefix,count}, rfc_classification.",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "netintel-subnet-calculator",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "24klabs-ip-cidr-subnet-calculator",
+    "kind": "api",
+    "name": "24kLabs IP / CIDR Subnet Calculator",
+    "aka": [
+      "ip-cidr-calc",
+      "cidr calculator",
+      "subnet calculator",
+      "cidr math",
+      "netmask calculator"
+    ],
+    "provider": "24kLabs",
+    "providerId": "24klabs",
+    "description": "CIDR/subnet math for IPv4 and IPv6: network, broadcast, netmask, wildcard, prefix length, usable host range and count, mask<->prefix conversion, plus an optional address-membership (contains) check.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip",
+      "cidr",
+      "subnet",
+      "networking",
+      "ipv4",
+      "x402"
+    ],
+    "modality": {
+      "input": "json",
+      "output": "json"
+    },
+    "pricing": {
+      "headline": "$2000.00",
+      "amount": 2000,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "24kLabs",
+        "providerId": "24klabs",
+        "url": "https://api.24klabs.ai/api/ip-cidr-calc",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 2000,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$2000.00",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "cidr": {
+              "type": "string",
+              "description": "The IPv4 or IPv6 network in CIDR notation, e.g. 192.168.1.0/24"
+            },
+            "contains": {
+              "type": "string",
+              "description": "Optional IP address to test for membership within the CIDR block"
+            }
+          },
+          "required": [
+            "cidr"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "cidr": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "number",
+                  "description": "IP version (4 or 6)"
+                },
+                "network": {
+                  "type": "string"
+                },
+                "netmask": {
+                  "type": "string"
+                },
+                "prefixlen": {
+                  "type": "number"
+                },
+                "num_addresses": {
+                  "type": "number",
+                  "description": "Total addresses in the block"
+                },
+                "is_private": {
+                  "type": "boolean"
+                },
+                "is_global": {
+                  "type": "boolean"
+                },
+                "broadcast": {
+                  "type": "string"
+                },
+                "wildcard": {
+                  "type": "string",
+                  "description": "Wildcard (inverse) mask"
+                },
+                "host_min": {
+                  "type": "string",
+                  "description": "First usable host address"
+                },
+                "host_max": {
+                  "type": "string",
+                  "description": "Last usable host address"
+                },
+                "usable_hosts": {
+                  "type": "number",
+                  "description": "Count of usable host addresses"
+                },
+                "contains": {
+                  "type": "boolean",
+                  "description": "Whether the optional 'contains' IP falls within the block (present only when 'contains' was supplied)"
+                }
+              }
+            },
+            "latency_ms": {
+              "type": "number"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "x402",
+      "callShape": "POST JSON body { cidr, contains? } — cidr is the network in CIDR notation; contains is an optional IP tested for membership. The full subnet computation is returned inline (synchronous) in the 200 under result.",
+      "inputExample": {
+        "cidr": "192.168.1.0/24",
+        "contains": "192.168.1.42"
+      },
+      "outputShape": {
+        "service": "ip-cidr-calc",
+        "result": {
+          "cidr": "192.168.1.0/24",
+          "version": 4,
+          "network": "192.168.1.0",
+          "netmask": "255.255.255.0",
+          "prefixlen": 24,
+          "num_addresses": 256,
+          "is_private": true,
+          "is_global": false,
+          "broadcast": "192.168.1.255",
+          "wildcard": "0.0.0.255",
+          "host_min": "192.168.1.1",
+          "host_max": "192.168.1.254",
+          "usable_hosts": 254,
+          "contains": true
+        },
+        "latency_ms": 0
+      },
+      "quirks": [
+        "contains is optional; when omitted the response drops the result.contains boolean. Everything else (network/broadcast/netmask/wildcard/host range/count) is always returned.",
+        "Works for both IPv4 and IPv6 CIDR blocks. Deterministic subnet math — no upstream LLM.",
+        "num_addresses is the total block size; usable_hosts excludes network + broadcast (254 for a /24).",
+        "Namespace alias /api/v1/ip-cidr-calc is the same op on the same host (deferred — index and pay only /api/ip-cidr-calc)."
+      ],
+      "needs": [
+        "A CIDR block string (e.g. 192.168.1.0/24); optionally an IP to test for membership."
+      ],
+      "needsApproval": false,
+      "guide": "POST https://api.24klabs.ai/api/ip-cidr-calc with JSON body { \"cidr\": \"192.168.1.0/24\", \"contains\": \"192.168.1.42\" } (contains optional). Pays via x402 (Base USDC, ~$0.002, scheme exact). The full subnet calculation — network, broadcast, netmask, wildcard, prefix, usable host range and count, and the optional membership boolean — comes back inline in the 200 response under result (synchronous, no polling).",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "24klabs-ip-cidr-subnet-calculator",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "24klabs-ip-address-classifier",
+    "kind": "api",
+    "name": "24kLabs IP Address Classifier",
+    "aka": [
+      "ip classify",
+      "ip address classifier",
+      "classify ip",
+      "ip parser",
+      "cidr membership test"
+    ],
+    "provider": "24kLabs",
+    "providerId": "24klabs",
+    "description": "Classify an IPv4/IPv6 address: version, public/private/loopback/link-local/multicast flags, integer and hex forms, reverse-DNS pointer, and an optional CIDR membership test, via a pay-per-call x402 endpoint.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip",
+      "networking",
+      "cidr",
+      "ipv4",
+      "ipv6",
+      "x402"
+    ],
+    "modality": {
+      "input": "json",
+      "output": "json"
+    },
+    "pricing": {
+      "headline": "$2000.00",
+      "amount": 2000,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "24kLabs",
+        "providerId": "24klabs",
+        "url": "https://api.24klabs.ai/api/ip-classify",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 2000,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$2000.00",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "The IPv4 or IPv6 address to classify"
+            },
+            "cidr": {
+              "type": "string",
+              "description": "Optional CIDR block to test the IP for membership (e.g. 192.168.0.0/16)"
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "number",
+                  "description": "IP version (4 or 6)"
+                },
+                "compressed": {
+                  "type": "string"
+                },
+                "exploded": {
+                  "type": "string"
+                },
+                "integer": {
+                  "type": "number",
+                  "description": "The IP as an integer"
+                },
+                "hex": {
+                  "type": "string",
+                  "description": "The IP in hexadecimal form"
+                },
+                "is_private": {
+                  "type": "boolean"
+                },
+                "is_global": {
+                  "type": "boolean"
+                },
+                "is_loopback": {
+                  "type": "boolean"
+                },
+                "is_link_local": {
+                  "type": "boolean"
+                },
+                "is_multicast": {
+                  "type": "boolean"
+                },
+                "reverse_pointer": {
+                  "type": "string",
+                  "description": "Reverse-DNS PTR name"
+                },
+                "cidr": {
+                  "type": "string",
+                  "description": "The CIDR block tested (echoed from input, if provided)"
+                },
+                "in_cidr": {
+                  "type": "boolean",
+                  "description": "Whether the IP is within the provided CIDR block"
+                },
+                "cidr_hosts": {
+                  "type": "number",
+                  "description": "Number of hosts in the provided CIDR block"
+                }
+              }
+            },
+            "latency_ms": {
+              "type": "number"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "x402",
+      "callShape": "POST JSON body { ip, cidr? } — ip is the address to classify; cidr is an optional block for a membership test; the full classification is returned inline (synchronous) in the 200 under result.",
+      "inputExample": {
+        "ip": "192.168.1.10",
+        "cidr": "192.168.0.0/16"
+      },
+      "outputShape": {
+        "service": "ip-classify",
+        "result": {
+          "input": "192.168.1.10",
+          "version": 4,
+          "compressed": "192.168.1.10",
+          "exploded": "192.168.1.10",
+          "integer": 3232235786,
+          "hex": "0xc0a8010a",
+          "is_private": true,
+          "is_global": false,
+          "is_loopback": false,
+          "is_link_local": false,
+          "is_multicast": false,
+          "reverse_pointer": "10.1.168.192.in-addr.arpa",
+          "cidr": "192.168.0.0/16",
+          "in_cidr": true,
+          "cidr_hosts": 65536
+        },
+        "latency_ms": 0
+      },
+      "quirks": "cidr is optional; when omitted the response drops the cidr/in_cidr/cidr_hosts fields. Works for both IPv4 and IPv6 (compressed and exploded forms are returned). Namespace alias /api/v1/ip-classify is the same op on the same host (deferred).",
+      "needs": "An IPv4 or IPv6 address string; optionally a CIDR block to test membership against.",
+      "needsApproval": false,
+      "guide": "POST https://api.24klabs.ai/api/ip-classify with JSON body { \"ip\": \"192.168.1.10\", \"cidr\": \"192.168.0.0/16\" } (cidr optional). Pays via x402 (Base USDC, $0.002). Response returns the full classification inline in the 200 under result (version, private/global/loopback/link-local/multicast flags, integer + hex forms, reverse_pointer, and CIDR membership when cidr is provided).",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "24klabs-ip-address-classifier",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "24klabs-ip-address-info",
+    "kind": "api",
+    "name": "24kLabs IP Address Info",
+    "aka": [
+      "ip-info",
+      "ip-address-info",
+      "24klabs-ip-info"
+    ],
+    "provider": "24kLabs",
+    "providerId": "24klabs",
+    "description": "Classify an IPv4/IPv6 address: IP version, private/loopback/global/multicast flags, reverse DNS pointer, and compressed/exploded string forms.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "ip",
+      "networking",
+      "ip-classify",
+      "developer-utility",
+      "24klabs"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "24kLabs",
+        "providerId": "24klabs",
+        "url": "https://api.24klabs.ai/api/ip-info",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "ip": {
+              "type": "string",
+              "description": "IPv4 or IPv6 address to classify"
+            }
+          },
+          "required": [
+            "ip"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "integer"
+                },
+                "is_private": {
+                  "type": "boolean"
+                },
+                "is_global": {
+                  "type": "boolean"
+                },
+                "is_loopback": {
+                  "type": "boolean"
+                },
+                "is_multicast": {
+                  "type": "boolean"
+                },
+                "reverse_pointer": {
+                  "type": "string"
+                },
+                "compressed": {
+                  "type": "string"
+                },
+                "exploded": {
+                  "type": "string"
+                }
+              }
+            },
+            "latency_ms": {
+              "type": "integer"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://api.24klabs.ai/api/ip-info with JSON body {\"ip\":\"<ipv4-or-ipv6>\"}. Pure x402 (Base USDC, no API key). Result is returned inline in the 200 response body under result — synchronous, no poll.",
+      "inputExample": {
+        "ip": "8.8.8.8"
+      },
+      "outputShape": "Flat JSON: {service:\"ip-info\", result:{version:int, is_private:bool, is_global:bool, is_loopback:bool, is_multicast:bool, reverse_pointer:string, compressed:string, exploded:string}, latency_ms:int}",
+      "quirks": [
+        "This is IP-address CLASSIFICATION, not geolocation — it returns no country/city/ISP/ASN. For geo, use 'IP Geolocation Lookup'.",
+        "IPv6 addresses are returned in both compressed and exploded forms; reverse_pointer is the in-addr.arpa / ip6.arpa PTR name.",
+        "Aliased at /api/v1/ip-info (same op, same host); the registered backend is the canonical /api/ip-info path."
+      ],
+      "needs": [
+        "An IPv4 or IPv6 address string"
+      ],
+      "needsApproval": false,
+      "guide": "Send the IP as {\"ip\":\"8.8.8.8\"} in a JSON POST body. Payment is settled via x402 (USDC on Base); the result comes back inline in the same 200 response — no polling. Omitting a required valid IP will error after payment is spent, so always pass a well-formed address.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "24klabs-ip-address-info",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "webbersites-timezone",
+    "kind": "api",
+    "name": "Webbersites Timezone",
+    "aka": [
+      "webbersites-timezone",
+      "timezone-from-coordinates",
+      "gps-timezone-lookup"
+    ],
+    "provider": "Webbersites",
+    "providerId": "webbersites",
+    "description": "Resolve the IANA timezone, current UTC offset, abbreviation, DST status, and local time for any lat/lng GPS coordinate pair via a fast offline lookup.",
+    "category": "maps-location",
+    "subcategory": "ip-geolocation",
+    "tags": [
+      "timezone",
+      "geolocation",
+      "location",
+      "gps",
+      "utc-offset"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/timezone",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "queryParams": {
+            "lat": "number (latitude, -90 to 90, required)",
+            "lng": "number (longitude, -180 to 180, required)"
+          }
+        },
+        "outputSchema": {
+          "lat": "number",
+          "lng": "number",
+          "timezone": "string (IANA zone, e.g. America/New_York)",
+          "utc_offset": "string (e.g. -04:00)",
+          "utc_offset_minutes": "number",
+          "abbreviation": "string (e.g. EDT)",
+          "dst_in_effect": "boolean",
+          "local_time": "string",
+          "ts": "string (ISO-8601)"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:30:39.567Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.webbersites.com/api/timezone?lat={lat}&lng={lng} — lat/lng passed as URL query params; pure x402 (Base USDC), no API key.",
+      "inputExample": {
+        "lat": 40.7128,
+        "lng": -74.006
+      },
+      "outputShape": "Flat JSON object: {lat, lng, timezone (IANA), utc_offset, utc_offset_minutes, abbreviation, dst_in_effect, local_time, ts}.",
+      "quirks": [
+        "Offline lookup — approximate near timezone borders (per provider description).",
+        "The 402 body advertises a loyalty discount (X-Wallet header / ?wallet= drops the price to $0.0005 if the wallet spent >$0.001 in the last 24h) and an unrelated agent-memory upsell; neither affects the base call.",
+        "DST is reflected live: the documented example shows EST/-05:00 but a July call returns EDT/-04:00 for the same New York coordinates."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get the timezone for a GPS coordinate. GET https://api.webbersites.com/api/timezone?lat={lat}&lng={lng} with lat (-90..90) and lng (-180..180) as query params. Returns a flat JSON object with the IANA timezone, utc_offset, utc_offset_minutes, abbreviation, dst_in_effect, and local_time. Pure x402 on Base USDC ($0.001/call), no auth. Pairs with an IP-geolocation lookup for scheduling/analytics agents.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "webbersites-timezone",
+      "discoveredVia": [
+        "ip geolocation",
+        "ip lookup"
+      ],
+      "lastSyncedAt": "2026-06-02T00:30:39.567Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

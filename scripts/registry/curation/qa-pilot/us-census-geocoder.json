@@ -1,0 +1,31 @@
+{
+  "serviceId": "us-census-geocoder",
+  "subcat": "maps-geolocation",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402-geocoder-production.up.railway.app/geocode/address?street={street}&city={city}&state={state}&zip={zip} for forward geocoding; GET /geocode/reverse?lat={lat}&lng={lng} for reverse. Both cost $0.001 USDC on Base.",
+    "inputExample": {
+      "street": "1600 Pennsylvania Ave NW",
+      "city": "Washington",
+      "state": "DC",
+      "zip": "20500"
+    },
+    "outputShape": "body.match (boolean), body.address (Census-canonical string), body.lat (number), body.lng (number), body.matchType (string or null), body.fips.{state, county, tract, block} (Census FIPS codes)",
+    "quirks": [
+      "matchType field may be null even when match=true — always use body.match (boolean) to determine geocode success, not matchType",
+      "Rate limit is 60 req/min per IP (returned as ratelimit header: limit=60, remaining=N, reset=Ns)",
+      "Only geocodes US addresses; non-US addresses will return match=false",
+      "zip param is optional but improves match quality for ambiguous addresses"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "To forward geocode a US address, send a GET to /geocode/address with query params street, city, state, and optionally zip. To reverse geocode, send a GET to /geocode/reverse with lat and lng as decimals. Both endpoints return the same response shape: match (boolean), address (Census-canonical string), lat, lng, matchType (may be null even on success — use match instead), and fips object with state/county/tract/block codes. Payment is $0.001 USDC on Base via x402. Rate limit is 60 req/min.",
+    "costObservedUsd": 0.001
+  },
+  "drop": false,
+  "droppedReason": null
+}

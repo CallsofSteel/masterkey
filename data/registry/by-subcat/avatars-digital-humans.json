@@ -1,0 +1,421 @@
+[
+  {
+    "id": "tavus",
+    "kind": "model",
+    "name": "Tavus",
+    "aka": [],
+    "provider": "Tavus",
+    "providerId": "tavus",
+    "description": "Tavus — real-time video conversations with an AI replica (digital human) that can see, hear, and respond like a person, driven by a persona.",
+    "category": "media",
+    "subcategory": "avatars-digital-humans",
+    "tags": [
+      "digital-human",
+      "conversational-video",
+      "real-time",
+      "avatar"
+    ],
+    "modality": {
+      "input": [
+        "text",
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/tavus/v2/conversations",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": null,
+          "method": "GET",
+          "payable": false,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:25:33.936Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "GET https://x402.orth.sh/tavus/v2/conversations (as registered) — returns 404, route does not exist",
+      "inputExample": {},
+      "outputShape": "body.error, body.message (404 error: \"No matching endpoint found for GET /v2/conversations\")",
+      "quirks": [
+        "GET https://x402.orth.sh/tavus/v2/conversations returns HTTP 404 'No matching endpoint found for GET /v2/conversations' — no 402, no payment taken, no money lost.",
+        "The registry probe that classified this payable used POST (status 402), not GET. Tavus creates conversations via POST /v2/conversations, so the working method is almost certainly POST — the GET registration is wrong.",
+        "Do NOT retry GET; the route is dead. A future fix should re-register this as POST and re-QA, since POST may also require a body (e.g. {persona_id} or {replica_id})."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "As registered (GET https://x402.orth.sh/tavus/v2/conversations) this endpoint is broken: it returns HTTP 404 'No matching endpoint found for GET /v2/conversations' with no payment required. Do not call it as a GET. The Tavus conversations API creates a conversation via POST /v2/conversations (the registry's own probe got a 402 on POST), likely requiring a body such as a persona_id or replica_id, so the registered method/shape is incorrect and must be fixed before this can work.",
+      "costObservedUsd": 0,
+      "droppedReason": "tavus#0: GET https://x402.orth.sh/tavus/v2/conversations returns HTTP 404 'No matching endpoint found for GET /v2/conversations' — no 402, no payment taken, no money lost."
+    },
+    "source": {
+      "serviceKey": "tavus",
+      "discoveredVia": [
+        "ai avatar",
+        "digital human",
+        "talking avatar",
+        "talking head video",
+        "heygen",
+        "avatar video",
+        "d-id",
+        "synthesia",
+        "arcads",
+        "colossyan",
+        "deepbrain ai"
+      ],
+      "lastSyncedAt": "2026-06-02T02:25:33.936Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "liveportrait-studio",
+    "kind": "model",
+    "name": "LivePortrait Studio",
+    "aka": [],
+    "provider": "LivePortrait",
+    "providerId": "liveportrait",
+    "description": "LivePortrait — animate a portrait image into a talking/expressive avatar video.",
+    "category": "media",
+    "subcategory": "avatars-digital-humans",
+    "tags": [
+      "avatar",
+      "portrait-animation",
+      "talking-head"
+    ],
+    "modality": {
+      "input": [
+        "image"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402-live-portrait.vercel",
+        "providerId": "x402-live-portrait-vercel",
+        "url": "https://x402-live-portrait.vercel.app/api/generate-x402",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Vercel",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": 0.05,
+          "max": 0.05,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6B3e6bc9f83d751D7373609433d83399294bc736",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "$schema": "https://json-schema.org/draft/2020-12/schema",
+          "type": "object",
+          "properties": {
+            "source_image_url": {
+              "description": "HTTPS URL to source image",
+              "type": "string",
+              "format": "uri"
+            },
+            "driving_video_url": {
+              "description": "HTTPS URL to driving video",
+              "type": "string",
+              "format": "uri"
+            },
+            "flag_relative": {
+              "description": "Use relative motion transfer",
+              "default": "true",
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "flag_do_crop": {
+              "description": "Auto-crop face region",
+              "default": "true",
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            },
+            "flag_pasteback": {
+              "description": "Paste result back to original",
+              "default": "true",
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          "required": [
+            "source_image_url",
+            "driving_video_url"
+          ]
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:25:33.936Z"
+        },
+        "status": "needs-review"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402-live-portrait.vercel.app/api/generate-x402 with JSON body {source_image_url, driving_video_url} (both HTTPS URLs, required); optional string flags flag_relative/flag_do_crop/flag_pasteback (\"true\"|\"false\")",
+      "inputExample": {
+        "source_image_url": "https://raw.githubusercontent.com/KwaiVGI/LivePortrait/main/assets/examples/source/s0.jpg",
+        "driving_video_url": "https://github.com/KwaiVGI/LivePortrait/raw/main/assets/examples/driving/d0.mp4"
+      },
+      "outputShape": "body.videoUrl (final mp4), body.thumbnailUrl (jpg), body.videoContentType, body.thumbnailContentType",
+      "quirks": [
+        "Synchronous despite being video gen: the paid POST blocks until the result is ready and returns the final videoUrl directly in the body — no job id, no polling.",
+        "Both source_image_url and driving_video_url are REQUIRED and must be publicly reachable HTTPS URLs (the service fetches them server-side).",
+        "The optional flag_* params are STRINGS \"true\"/\"false\", not booleans.",
+        "Output is hosted on Vercel blob storage (public.blob.vercel-storage.com); download/re-host promptly if you need persistence."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST a JSON body with source_image_url (a portrait image) and driving_video_url (the motion to transfer), both as public HTTPS URLs, to https://x402-live-portrait.vercel.app/api/generate-x402. Pay the $0.05 x402 charge on Base. The call is synchronous — when it returns 200 the body already contains the finished result. Read body.videoUrl for the animated mp4 and body.thumbnailUrl for the preview image; both are directly downloadable.",
+      "costObservedUsd": 0.05
+    },
+    "source": {
+      "serviceKey": "liveportrait-studio",
+      "discoveredVia": [
+        "ai avatar",
+        "digital human",
+        "talking avatar",
+        "talking head video",
+        "heygen",
+        "avatar video",
+        "d-id",
+        "synthesia",
+        "arcads",
+        "colossyan",
+        "deepbrain ai"
+      ],
+      "lastSyncedAt": "2026-06-02T02:25:33.936Z",
+      "hosting": "platform"
+    },
+    "status": "active"
+  },
+  {
+    "id": "hypercli-speaking-video",
+    "kind": "model",
+    "name": "HyperCLI Speaking Video",
+    "aka": [],
+    "provider": "HyperCLI",
+    "providerId": "hypercli",
+    "description": "Generate a speaking-avatar / talking-head video — animate a portrait (image_url) to lip-sync supplied audio (audio_url) or a text prompt, on HyperCLI's universal GPU runtime. Async render with status/cancel polling. Pay-per-call x402 (USDC on Base).",
+    "category": "media",
+    "subcategory": "avatars-digital-humans",
+    "tags": [
+      "digital-human",
+      "talking-head",
+      "avatar",
+      "lip-sync",
+      "speaking-video"
+    ],
+    "modality": {
+      "input": [
+        "text",
+        "image",
+        "audio"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.250",
+      "amount": 0.25,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "HyperCLI",
+        "providerId": "hypercli",
+        "url": "https://api.hypercli.com/api/x402/flow/speaking-video",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.25,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.250",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "prompt"
+          ],
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "image_url": {
+              "type": "string",
+              "description": "Portrait/source image URL"
+            },
+            "audio_url": {
+              "type": "string",
+              "description": "Driving audio URL"
+            },
+            "width": {
+              "type": "integer"
+            },
+            "height": {
+              "type": "integer"
+            }
+          }
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:25:33.936Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://api.hypercli.com/api/x402/flow/speaking-video with JSON body {prompt, image_url?, audio_url?, width?, height?}",
+      "inputExample": {
+        "prompt": "a person saying hello",
+        "image_url": "https://example.com/portrait.jpg"
+      },
+      "outputShape": "unknown — server returns HTTP 500 plain-text \"Internal Server Error\" after payment; no body schema observed",
+      "quirks": [
+        "Charges x402 ($0.25 USDC on Base, payment settles) then returns HTTP 500 'Internal Server Error' (plain text, 21 bytes) — broken server-side render.",
+        "Returns NO job id / async handle on failure, so the documented status/cancel polling cannot be reached.",
+        "Tested twice (minimal {prompt} and {prompt,image_url}); both identical 500. Do not retry — money is lost on each call."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do NOT call this endpoint — it is broken.",
+      "costObservedUsd": 0.5
+    },
+    "source": {
+      "serviceKey": "hypercli-speaking-video",
+      "discoveredVia": [
+        "ai avatar",
+        "digital human",
+        "talking avatar",
+        "talking head video",
+        "heygen",
+        "avatar video",
+        "d-id",
+        "synthesia",
+        "arcads",
+        "colossyan",
+        "deepbrain ai"
+      ],
+      "lastSyncedAt": "2026-06-02T02:25:33.936Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  }
+]

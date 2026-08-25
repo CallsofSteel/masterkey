@@ -1,0 +1,43 @@
+{
+  "serviceId": "emotion-analyzer",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/text_emotion_analysis",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/text_emotion_analysis with JSON body {text}",
+    "inputExample": {
+      "text": "I am so happy and excited today, but a little nervous too."
+    },
+    "outputShape": "body.emotions (STUB: returns the literal string \"emotions value\", not real data), body.processedAt",
+    "quirks": [
+      "Endpoint charges $0.01 and returns HTTP 200 but the body is a hardcoded placeholder: body.emotions is the literal string 'emotions value' — NOT real per-emotion intensities.",
+      "The server does not actually process the input text; the response is a fixed template regardless of body. Do not pay this endpoint — money is lost for no useful result.",
+      "No txHash returned by facilitator (confirmed=false)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. It is a non-functional stub: although it accepts a POST {text} body, charges $0.01 USDC on Base, and returns HTTP 200, the response is always a hardcoded placeholder {\"emotions\":\"emotions value\",\"processedAt\":<timestamp>} with no real emotion analysis. Use a different emotion/sentiment analysis provider.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "emotion-analyzer#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "coingecko-onchain",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://pro-api.coingecko.com/api/v3/x402/onchain/simple/networks/monad/token_price/:address",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://pro-api.coingecko.com/api/v3/x402/onchain/simple/networks/{network}/token_price/{address} — path segments only, no body or query params. The registry-declared POST returns 404; use GET.",
+    "inputExample": {
+      "url": "https://pro-api.coingecko.com/api/v3/x402/onchain/simple/networks/monad/token_price/0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701",
+      "method": "GET"
+    },
+    "outputShape": "body.data.attributes.token_prices.<address> — USD price as a string, or absent/empty object ({}) if CoinGecko has no onchain price for that contract; body.data.type is always 'simple_token_price'",
+    "quirks": [
+      "MUST use GET, not POST. The registry lists method=POST but POST returns HTTP 404 {\"error\":\"Incorrect path\"} (caught on the unpaid pre-flight, so no money is lost) — only GET routes correctly and charges $0.01.",
+      "token_prices may be an empty object {} (or the address key may be null) for contracts CoinGecko does not track on that network — this is a valid 200 OK, NOT an error. WMON 0x760AfE86e5de5fa0Ee542fc7B7B713e1c5425701 on monad returned {} during this test.",
+      "Output path is body.data.attributes.token_prices.<address> — one level shallower than the prior existingUsage note (body.data.data.attributes was wrong).",
+      "No query params or request body are accepted; network slug + contract address are path segments. Pay $0.01 USDC on Base (eip155:8453) or Solana via x402.",
+      "This backend hardcodes network=monad in the path; swap the :address segment for the target contract. For other networks use the {network} variant."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call this with GET (NOT the POST the registry lists — POST 404s for free, GET is the working verb). Put the network slug (this backend uses 'monad') and the ERC-20/token contract address as path segments; send no body and no query params. Pay $0.01 USDC on Base via x402. Read the USD price from body.data.attributes.token_prices.<address> as a string. If token_prices is {} or the address is null, the contract simply isn't tracked onchain by CoinGecko for that network — treat it as a valid 'no data' 200, not a failure.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "coingecko-onchain#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

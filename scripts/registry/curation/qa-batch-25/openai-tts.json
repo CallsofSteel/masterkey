@@ -1,0 +1,45 @@
+{
+  "serviceId": "openai-tts",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/tts/openai",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/tts/openai with JSON body {model, input, voice} (UNVERIFIED — conflicts with task-header URL https://x402.orth.sh/openai/audio/speech body {text})",
+    "inputExample": {
+      "model": "tts-1",
+      "input": "hello how are you?",
+      "voice": "alloy"
+    },
+    "outputShape": "unknown (untested) — TTS endpoints typically return audio bytes (audio/mpeg) as the raw response body",
+    "quirks": [
+      "URL CONFLICT: registry spec url is https://x402-gateway-production.up.railway.app/api/tts/openai but the QA task header names https://x402.orth.sh/openai/audio/speech — these are different hosts with different path conventions and likely different body shapes ({model,input,voice} vs {text}). Must be resolved before paying.",
+      "inputSchema, outputSchema, and instructions are all null in the registry — body had to be inferred as OpenAI-native TTS shape.",
+      "Real-money payment to the railway.app spec URL was denied by the auto-mode safety classifier because it did not match the user-named endpoint; could not verify which URL is canonical."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Could not pay-test due to URL conflict; resolve canonical URL first. See notes.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-tts#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

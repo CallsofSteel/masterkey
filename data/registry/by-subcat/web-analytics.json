@@ -1,0 +1,1999 @@
+[
+  {
+    "id": "stableanalytics-overview",
+    "kind": "api",
+    "name": "StableAnalytics Overview",
+    "aka": [
+      "stableanalytics-overview",
+      "site-overview"
+    ],
+    "provider": "stableanalytics",
+    "providerId": "stableanalytics",
+    "description": "Get visits-over-time overview (totals + daily series) for a tracked site owned by the calling wallet.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "traffic",
+      "events",
+      "metrics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "Free",
+      "amount": 0,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableanalytics",
+        "providerId": "stableanalytics",
+        "url": "https://stableanalytics.dev/api/site/overview",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Free",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableanalytics.dev/api/site/overview?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header (signed by the wallet that owns the site). No per-call payment.",
+      "inputExample": {
+        "site_id": "<owned-site-id>",
+        "period": "7d",
+        "limit": 100
+      },
+      "outputShape": "site_id, period, totals.visits, totals.unique_ips_estimate, series[].date, series[].visits",
+      "quirks": [
+        "SIWX identity-only — NO per-call payment (accepts[] in the 402 challenge is empty); the calling wallet must OWN the site (the wallet that paid to create it via POST /api/site/create).",
+        "Unknown/unowned site_id returns HTTP 404 {success:false,error:'Site not found'} — NOT an auth failure.",
+        "period enum is exactly 24h|7d|30d (default 7d); limit 1-500 (default 100).",
+        "SIWX nonce is single-use: re-probe a fresh 402 challenge before each authenticated request; SIWX JSON uri must exactly match the full request URL incl. query string; chainId must be eip155 string form (e.g. eip155:8453); use issuedAt from the signer, not the challenge.",
+        "Test wallet owns no site (GET /api/sites => {sites:[]}); 200 body verified via OpenAPI schema, auth+call-shape verified live (404 path)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get visits-over-time overview (totals + daily series) for a tracked site owned by the calling wallet. GET https://stableanalytics.dev/api/site/overview?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header (signed by the wallet that owns the site). No per-call payment. Output: site_id, period, totals.visits, totals.unique_ips_estimate, series[].date, series[].visits",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "stableanalytics-overview",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "stableanalytics-top-pages",
+    "kind": "api",
+    "name": "StableAnalytics Top Pages",
+    "aka": [
+      "stableanalytics-top-pages",
+      "site-pages"
+    ],
+    "provider": "stableanalytics",
+    "providerId": "stableanalytics",
+    "description": "Get top pages (pathname + visit counts) for a tracked site owned by the calling wallet.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "traffic",
+      "events",
+      "metrics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "Free",
+      "amount": 0,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableanalytics",
+        "providerId": "stableanalytics",
+        "url": "https://stableanalytics.dev/api/site/pages",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Free",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableanalytics.dev/api/site/pages?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment.",
+      "inputExample": {
+        "site_id": "<owned-site-id>",
+        "period": "7d",
+        "limit": 100
+      },
+      "outputShape": "rows[].pathname, rows[].visits",
+      "quirks": [
+        "SIWX identity-only — NO per-call payment; calling wallet must OWN the site.",
+        "Unknown/unowned site_id returns HTTP 404 {success:false,error:'Site not found'}.",
+        "period enum 24h|7d|30d (default 7d); limit 1-500 (default 100).",
+        "SIWX nonce single-use; uri must match full URL incl. query; chainId eip155 string form; issuedAt from signer."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get top pages (pathname + visit counts) for a tracked site owned by the calling wallet. GET https://stableanalytics.dev/api/site/pages?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment. Output: rows[].pathname, rows[].visits",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "stableanalytics-top-pages",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "stableanalytics-sources",
+    "kind": "api",
+    "name": "StableAnalytics Sources",
+    "aka": [
+      "stableanalytics-sources",
+      "site-sources"
+    ],
+    "provider": "stableanalytics",
+    "providerId": "stableanalytics",
+    "description": "Get referrer and UTM (source/campaign) breakdowns for a tracked site owned by the calling wallet.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "traffic",
+      "events",
+      "metrics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "Free",
+      "amount": 0,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableanalytics",
+        "providerId": "stableanalytics",
+        "url": "https://stableanalytics.dev/api/site/sources",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Free",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableanalytics.dev/api/site/sources?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment.",
+      "inputExample": {
+        "site_id": "<owned-site-id>",
+        "period": "7d",
+        "limit": 100
+      },
+      "outputShape": "referrers[].referrer(nullable), referrers[].visits, utm_sources[].utm_source(nullable), utm_sources[].visits, utm_campaigns[].utm_campaign(nullable), utm_campaigns[].visits",
+      "quirks": [
+        "SIWX identity-only — NO per-call payment; calling wallet must OWN the site.",
+        "referrer/utm_source/utm_campaign values can be null (direct/untagged traffic).",
+        "Unknown/unowned site_id returns HTTP 404 {success:false,error:'Site not found'}.",
+        "period enum 24h|7d|30d (default 7d); limit 1-500 (default 100).",
+        "SIWX nonce single-use; uri must match full URL incl. query; chainId eip155 string form; issuedAt from signer."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get referrer and UTM (source/campaign) breakdowns for a tracked site owned by the calling wallet. GET https://stableanalytics.dev/api/site/sources?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment. Output: referrers[].referrer(nullable), referrers[].visits, utm_sources[].utm_source(nullable), utm_sources[].visits, utm_campaigns[].utm_campaign(nullable), utm_campaigns[].visits",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "stableanalytics-sources",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "stableanalytics-tech",
+    "kind": "api",
+    "name": "StableAnalytics Tech",
+    "aka": [
+      "stableanalytics-tech",
+      "site-tech"
+    ],
+    "provider": "stableanalytics",
+    "providerId": "stableanalytics",
+    "description": "Get browser, OS, device, and country breakdowns for a tracked site owned by the calling wallet.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "traffic",
+      "events",
+      "metrics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "Free",
+      "amount": 0,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableanalytics",
+        "providerId": "stableanalytics",
+        "url": "https://stableanalytics.dev/api/site/tech",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Free",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableanalytics.dev/api/site/tech?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment.",
+      "inputExample": {
+        "site_id": "<owned-site-id>",
+        "period": "7d",
+        "limit": 100
+      },
+      "outputShape": "browsers[].browser, browsers[].visits, os[].os, os[].visits, devices[].device, devices[].visits, countries[].country(nullable), countries[].visits",
+      "quirks": [
+        "SIWX identity-only — NO per-call payment; calling wallet must OWN the site.",
+        "country can be null (geo-undetermined visits).",
+        "Unknown/unowned site_id returns HTTP 404 {success:false,error:'Site not found'}.",
+        "period enum 24h|7d|30d (default 7d); limit 1-500 (default 100).",
+        "SIWX nonce single-use; uri must match full URL incl. query; chainId eip155 string form; issuedAt from signer."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get browser, OS, device, and country breakdowns for a tracked site owned by the calling wallet. GET https://stableanalytics.dev/api/site/tech?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment. Output: browsers[].browser, browsers[].visits, os[].os, os[].visits, devices[].device, devices[].visits, countries[].country(nullable), countries[].visits",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "stableanalytics-tech",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "stableanalytics-recent-visits",
+    "kind": "api",
+    "name": "StableAnalytics Recent Visits",
+    "aka": [
+      "stableanalytics-recent-visits",
+      "site-visits"
+    ],
+    "provider": "stableanalytics",
+    "providerId": "stableanalytics",
+    "description": "Get recent individual visit rows (timestamp, path, referrer, UTM, browser/OS/device, country, masked IP prefix) for a tracked site owned by the calling wallet.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "traffic",
+      "events",
+      "metrics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "Free",
+      "amount": 0,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableanalytics",
+        "providerId": "stableanalytics",
+        "url": "https://stableanalytics.dev/api/site/visits",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Free",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": []
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableanalytics.dev/api/site/visits?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment.",
+      "inputExample": {
+        "site_id": "<owned-site-id>",
+        "period": "7d",
+        "limit": 100
+      },
+      "outputShape": "rows[].timestamp, rows[].pathname, rows[].referrer(nullable), rows[].utm_source(nullable), rows[].browser, rows[].os, rows[].device, rows[].country(nullable), rows[].ip_prefix",
+      "quirks": [
+        "SIWX identity-only — NO per-call payment; calling wallet must OWN the site.",
+        "ip_prefix is a masked/truncated IP (privacy), not a full address; referrer/utm_source/country may be null.",
+        "Unknown/unowned site_id returns HTTP 404 {success:false,error:'Site not found'}.",
+        "period enum 24h|7d|30d (default 7d); limit 1-500 (default 100).",
+        "SIWX nonce single-use; uri must match full URL incl. query; chainId eip155 string form; issuedAt from signer."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get recent individual visit rows (timestamp, path, referrer, UTM, browser/OS/device, country, masked IP prefix) for a tracked site owned by the calling wallet. GET https://stableanalytics.dev/api/site/visits?site_id={site_id}&period={24h|7d|30d}&limit={1-500} with Sign-In-With-X header. No per-call payment. Output: rows[].timestamp, rows[].pathname, rows[].referrer(nullable), rows[].utm_source(nullable), rows[].browser, rows[].os, rows[].device, rows[].country(nullable), rows[].ip_prefix",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "stableanalytics-recent-visits",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-review"
+  },
+  {
+    "id": "tech-stack-detector",
+    "kind": "api",
+    "name": "Tech Stack Detector",
+    "aka": [
+      "tech-stack-detector",
+      "tech-stack-detect"
+    ],
+    "provider": "netintel-production-440c.up.railway",
+    "providerId": "netintel-production-440c-up-railway",
+    "description": "Fetch a URL and detect its full technology stack (CMS, framework, CDN, server, WAF, analytics) from HTTP response headers, HTML meta tags, cookies, and script patterns — plus a security-header score and letter grade. Wappalyzer/BuiltWith alternative, no browser required. Available via three gateways with different input conventions.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "tech-stack",
+      "fingerprinting",
+      "competitive-intel"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "netintel-production-440c.up.railway",
+        "providerId": "netintel-production-440c-up-railway",
+        "url": "https://netintel-production-440c.up.railway.app/tech-fingerprint/analyze",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Railway",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "needs-review",
+        "team": "NetIntel"
+      },
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/tech-stack-detect",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      },
+      {
+        "provider": "domain.hugen",
+        "providerId": "domain-hugen",
+        "url": "https://domain.hugen.tokyo/domain/tech",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "10000",
+              "payTo": "0x29322Ea7EcB34aA6164cb2ddeB9CE650902E4f60",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "amount": "10000",
+              "payTo": "4du4AfkjJEwch2zk3shkPJVZfyJHNDnNjEWC6AboaS5Z",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "D6ZhtNQ5nT9ZnTHUbqXZsTx5MH2rPFiBBggX4hY1WePM"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "netintel.dev",
+        "providerId": "netintel-dev",
+        "url": "https://netintel.dev/tech-fingerprint/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL to fingerprint (e.g. https://example.com); bare domains are accepted and get https:// prepended. Aliases also accepted: target, domain, host, site (query param or JSON body)."
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "status_code": {
+              "type": "number"
+            },
+            "response_time_ms": {
+              "type": "number"
+            },
+            "detections": {
+              "type": "array"
+            },
+            "summary": {
+              "type": "object",
+              "properties": {
+                "server": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "cdn": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "cms": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "waf": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "javascript_frameworks": {
+                  "type": "array"
+                },
+                "analytics": {
+                  "type": "array"
+                }
+              }
+            },
+            "security_headers_present": {
+              "type": "array"
+            },
+            "security_headers_missing": {
+              "type": "array"
+            },
+            "score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "findings": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "Webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/platform?url={url}",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Public http(s) URL to fingerprint, e.g. https://example.com — passed as the ?url= query parameter."
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "final_url": {
+              "type": "string"
+            },
+            "http_status": {
+              "type": "number"
+            },
+            "platform": {
+              "type": "string",
+              "description": "e.g. wordpress, shopify, squarespace, wix, webflow, nextjs, custom-php, static-or-custom-html"
+            },
+            "category": {
+              "type": "string",
+              "description": "cms, ecommerce, site-builder, framework, static-generator, static, custom"
+            },
+            "confidence": {
+              "type": "string",
+              "description": "high, medium, or low"
+            },
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "the fingerprints behind the verdict"
+            },
+            "generator": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "raw meta generator tag when present"
+            },
+            "also_detected": {
+              "type": "array"
+            },
+            "stack": {
+              "type": "object",
+              "properties": {
+                "server": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "powered_by": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "cdn": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "checked_at": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "DEFAULT (netintel): GET https://netintel-production-440c.up.railway.app/tech-fingerprint/analyze?url=https://example.com  (query param `url` = FULL URL incl. scheme; no body; x402 ~$0.002 on Base). ALT (x402-deployer): POST https://x402-deployer.x402-deployer.workers.dev/tech-stack-detect with JSON body {\"url\":\"https://example.com\"} (~$0.01). ALT (hugen): GET https://domain.hugen.tokyo/domain/tech?domain=example.com (query param `domain` = BARE hostname, NO scheme; ~$0.01).",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "netintel returns: url, status_code, response_time_ms, detections[].{name,category,confidence}, summary.{server,cdn,cms,waf,javascript_frameworks[],analytics[]}, security_headers_present[], security_headers_missing[], score (number), grade (letter A-F), findings[].{rule,deduction,detail}",
+      "quirks": [
+        "Multi-gateway: each gateway uses a DIFFERENT input field/shape — netintel=GET query `url` (full URL w/ scheme), x402-deployer=POST JSON body `url`, hugen=GET query `domain` (BARE hostname, no scheme/path). Do not cross the field names or you get a 400.",
+        "Default netintel is cheapest ($0.002 vs $0.01) AND richest: only it returns the security-header score/grade/findings; the others return detection lists only.",
+        "netintel normalizes the URL (input https://example.com → output url https://example.com/).",
+        "Synchronous single-call (no async/poll). Pure read of public site headers — safe to auto-verify."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Fetch a URL and detect its full technology stack (CMS, framework, CDN, server, WAF, analytics) from HTTP response headers, HTML meta tags, cookies, and script patterns — plus a security-header score and letter grade. Wappalyzer/BuiltWith alternative, no browser required. Available via three gateways with different input conventions. DEFAULT (netintel): GET https://netintel-production-440c.up.railway.app/tech-fingerprint/analyze?url=https://example.com  (query param `url` = FULL URL incl. scheme; no body; x402 ~$0.002 on Base). ALT (x402-deployer): POST https://x402-deployer.x402-deployer.workers.dev/tech-stack-detect with JSON body {\"url\":\"https://example.com\"} (~$0.01). ALT (hugen): GET https://domain.hugen.tokyo/domain/tech?domain=example.com (query param `domain` = BARE hostname, NO scheme; ~$0.01). Output: netintel returns: url, status_code, response_time_ms, detections[].{name,category,confidence}, summary.{server,cdn,cms,waf,javascript_frameworks[],analytics[]}, security_headers_present[], security_headers_missing[], score (number), grade (letter A-F), findings[].{rule,deduction,detail}",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "tech-stack-detector",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "x402ads-agent-analytics",
+    "kind": "model",
+    "name": "x402ads Agent Analytics",
+    "aka": [],
+    "provider": "x402ads",
+    "providerId": "x402ads",
+    "description": "Agent traffic & ad analytics — track agent visits and engagement. Pay-per-call x402.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "web-analytics",
+      "agent-analytics",
+      "ads"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402ads",
+        "providerId": "x402ads",
+        "url": "https://x402ads.io/v1/agent/analytics",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": 0.02,
+          "max": 0.02,
+          "source": "agentcash",
+          "dynamic": true
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "xadsGrwFkbrspsx38T4R6h6Ni1WbdZixztDsHd2G7oi",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "DeXterR2kQm8AvRHnNPatWkE46TfAcMeBDjb6FySoAb8",
+                "decimals": 6
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:42161",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:10",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:43114",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:56",
+              "amount": "20000000000000000",
+              "maxAmountRequired": "20000000000000000",
+              "asset": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 18,
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:1187947933",
+              "amount": "20000",
+              "maxAmountRequired": "20000",
+              "asset": "0x85889c8c714505E0c94b30fcfcF64fE3Ac8FCb20",
+              "payTo": "0xDDDDC75b74aD51d836AfBBeDe9e63215Fc0e8267",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "decimals": 6,
+                "name": "Bridged USDC (SKALE Bridge)",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "parameters": [
+            {
+              "name": "period",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "7d",
+                  "30d",
+                  "lifetime"
+                ],
+                "default": "lifetime"
+              },
+              "description": "Time window for impression and conversion counts. Stocks (total_deposited, total_remaining) are always lifetime."
+            }
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "campaigns_count": {
+              "type": "integer"
+            },
+            "active_count": {
+              "type": "integer"
+            },
+            "total_deposited": {
+              "type": "string",
+              "description": "Atomic USDC across all the wallet's campaigns, lifetime."
+            },
+            "total_remaining": {
+              "type": "string",
+              "description": "Atomic USDC currently funded across all the wallet's campaigns."
+            },
+            "impressions": {
+              "type": "integer",
+              "description": "Count of impressions in the selected period."
+            },
+            "conversions": {
+              "type": "integer",
+              "description": "Count of conversions in the selected period."
+            },
+            "period": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://x402ads.io/v1/agent/analytics?period=lifetime (optional period query: 7d|30d|lifetime), x402-paid in USDC ($0.02)",
+      "inputExample": {
+        "period": "lifetime"
+      },
+      "outputShape": "Per outputSchema (never returned at test time): body.campaigns_count, body.active_count, body.total_deposited, body.total_remaining, body.impressions, body.conversions, body.period",
+      "quirks": [
+        "Endpoint returns HTTP 402 {\"error\":\"Payment settlement failed\",\"reason\":\"facilitator_timeout\"} on every call — its own x402 facilitator times out during settlement so payment never completes and the resource is never delivered.",
+        "No USDC was actually charged (paid:false, costUsd:0) — the failure happens before settlement, so retrying is safe but futile; got identical timeout on 2 attempts.",
+        "Probe earlier showed 402/payable (looked healthy) but the actual paid call fails at settlement — do not trust the 402 pre-flight as proof it works.",
+        "Returns analytics scoped to the PAYING wallet's own ad campaigns (total_deposited/total_remaining/impressions for that wallet); a fresh wallet with no x402ads campaigns would get zeros even if settlement succeeded."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is currently broken: every paid call returns HTTP 402 with {\"error\":\"Payment settlement failed\",\"reason\":\"facilitator_timeout\"}, meaning x402ads' own facilitator cannot settle the payment, so you never receive analytics data and (good news) no USDC is actually charged. Do not rely on it until the provider fixes settlement. When working, the intended call is a simple GET https://x402ads.io/v1/agent/analytics with an optional ?period=7d|30d|lifetime query, paying $0.02 USDC via x402, returning your wallet's own ad-campaign stats (campaigns_count, active_count, total_deposited, total_remaining, impressions, conversions, period). Note results are scoped to the paying wallet's campaigns, so an unrelated wallet would see zeros.",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "x402ads-agent-analytics",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "netintel-cloud-fingerprint",
+    "kind": "api",
+    "name": "NetIntel Cloud Fingerprint",
+    "aka": [
+      "cloud-fingerprint",
+      "netintel-cloud-fingerprint",
+      "cdn-detection",
+      "infrastructure-fingerprint",
+      "cloud-stack-detector"
+    ],
+    "provider": "NetIntel",
+    "providerId": "netintel",
+    "description": "Fingerprints a domain's cloud infrastructure by probing DNS records, HTTP headers, and PTR lookups to detect the CDN, WAF, hosting provider, DNS provider, and email provider with per-signal confidence scores, plus an infrastructure security score (0-100) and letter grade (A-F).",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "cdn-detection",
+      "infrastructure",
+      "cloud-provider",
+      "web-intelligence",
+      "osint",
+      "security"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/cloud-fingerprint/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Domain to fingerprint, e.g. cloudflare.com (bare hostname, no scheme/path). Required query parameter."
+            }
+          },
+          "required": [
+            "domain"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string"
+            },
+            "resolved_ips": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "cname_chain": {
+              "type": "array"
+            },
+            "hosting": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "signals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "cdn": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "signals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "waf": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "confidence": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "signals": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "dns_provider": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "signals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "email_provider": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "confidence": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "signals": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "http_fingerprint": {
+              "type": "object",
+              "properties": {
+                "https_enforced": {
+                  "type": "boolean"
+                },
+                "server_header": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "server_version_exposed": {
+                  "type": "boolean"
+                },
+                "x_powered_by": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "notable_headers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "tls": {
+              "type": "object",
+              "properties": {
+                "issuer": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "wildcard": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "san_count": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              }
+            },
+            "score": {
+              "type": "number"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "findings": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/cloud-fingerprint/analyze?domain=<domain> (single required query param `domain`, a bare hostname like cloudflare.com; no request body). x402 paid, no API key.",
+      "inputExample": {
+        "domain": "cloudflare.com"
+      },
+      "outputShape": "Synchronous top-level JSON: .domain (echoed), .resolved_ips[] (A-record IPs), .cname_chain[], .hosting{provider,confidence,signals[]}, .cdn{provider,confidence,signals[]}, .waf[]{provider,confidence,signals[]}, .dns_provider{provider,confidence,signals[]}, .email_provider{provider,confidence,signals[]}, .http_fingerprint{https_enforced,server_header,server_version_exposed,x_powered_by,notable_headers[]}, .tls{issuer,wildcard,san_count}, .score (0-100), .grade (A-F letter), .findings[] (security findings). Result is at the top level (NOT nested under body.data).",
+      "quirks": [
+        "Input is a query-string param (?domain=), not a JSON body — it is a GET. Pass a bare hostname including TLD, e.g. cloudflare.com (no scheme, no path).",
+        "Confidence is per-detection ('high' | 'medium' | ... ) with human-readable .signals[] explaining the evidence (e.g. 'cf-ray header present', 'NS ns3.cloudflare.com contains cloudflare.com'); a provider can be null with empty signals when nothing was detected (e.g. email_provider was null for cloudflare.com).",
+        "The .tls sub-object came back all-null in this probe (issuer/wildcard/san_count) even though the schema advertises them — treat TLS fields as best-effort/optional.",
+        "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.01.",
+        "Distinct from NetIntel Tech Stack Detector (/tech-fingerprint/analyze): this detects cloud/CDN/WAF/DNS/email INFRASTRUCTURE + a security grade, not the web app framework/library stack.",
+        "qa-pay reported confirmed:false / txHash:null but status 200 with the full payload — Base settlement is async; the call succeeded and is billed only on success."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://netintel.dev/cloud-fingerprint/analyze with a single required query param `domain` set to a bare hostname including TLD (e.g. ?domain=cloudflare.com — no scheme, no path). It is an x402 pay-per-call endpoint at $0.01 USDC on Base (also settleable in Solana USDC) — no API key, no signup; the pay layer handles the 402. The response is synchronous JSON at the top level. Read .hosting / .cdn / .waf[] / .dns_provider / .email_provider — each carries {provider, confidence, signals[]} where signals[] explains the evidence; a null provider means undetected. .http_fingerprint reports .https_enforced, .server_header, .server_version_exposed, .x_powered_by and .notable_headers[]; .tls carries issuer/wildcard/san_count (best-effort, may be null). .resolved_ips[] and .cname_chain[] give the DNS resolution path. For a quick verdict read .score (0-100) and .grade (A-F). Use it to identify a domain's cloud/CDN/WAF/DNS/email infrastructure and assess its infra security posture in one call — attack-surface mapping, vendor/tech due diligence, or supply-chain recon.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "netintel-cloud-fingerprint",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "webbersites-opengraph-checker",
+    "kind": "api",
+    "name": "Webbersites OpenGraph Checker",
+    "aka": [
+      "og-check",
+      "opengraph-checker",
+      "social-share-checker",
+      "webbersites-og-check"
+    ],
+    "provider": "webbersites",
+    "providerId": "webbersites",
+    "description": "Social-share / OpenGraph audit for any page: fetches the URL and reports its OpenGraph and Twitter Card meta tags (og:title, og:image, og:description, og:url, og:type, twitter:card), the page title/description/canonical/robots, an image check, and a list of problems, warnings, and an overall verdict for how the link will render when shared.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "seo",
+      "opengraph",
+      "social-share",
+      "meta-tags",
+      "audit",
+      "web-analytics"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/og/check",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Public URL of the page to audit (required query parameter, including scheme)"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The normalized URL that was audited (echoed back, may add a trailing slash)"
+            },
+            "meta": {
+              "type": "object",
+              "description": "Parsed page meta",
+              "properties": {
+                "og": {
+                  "type": "object",
+                  "description": "OpenGraph tags found (og:title, og:image, og:description, og:url, og:type, ...); empty object when none present"
+                },
+                "twitter": {
+                  "type": "object",
+                  "description": "Twitter Card tags found (twitter:card, ...); empty object when none present"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "The page <title> text"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The meta description (null when absent)"
+                },
+                "canonical": {
+                  "type": "string",
+                  "description": "The canonical link (null when absent)"
+                },
+                "robots": {
+                  "type": "string",
+                  "description": "The robots meta directive (null when absent)"
+                }
+              }
+            },
+            "image_check": {
+              "type": "object",
+              "description": "Result of validating the og:image (dimensions/reachability); null when no og:image is present"
+            },
+            "problems": {
+              "type": "array",
+              "description": "Blocking issues that break the social preview (e.g. og:title/og:image missing)",
+              "items": {
+                "type": "string"
+              }
+            },
+            "warnings": {
+              "type": "array",
+              "description": "Non-blocking recommendations (e.g. og:description/og:url/og:type/twitter:card/canonical missing)",
+              "items": {
+                "type": "string"
+              }
+            },
+            "verdict": {
+              "type": "string",
+              "description": "Overall assessment, e.g. 'broken' when problems exist"
+            },
+            "ts": {
+              "type": "string",
+              "description": "ISO 8601 timestamp of when the audit was performed"
+            }
+          },
+          "required": [
+            "url",
+            "meta",
+            "problems",
+            "warnings",
+            "verdict",
+            "ts"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.webbersites.com/api/og/check?url=<url> — single required query parameter `url` (public URL of the page to audit, including scheme). No request body. x402-paid $0.001 USDC on Base (eip155:8453). Synchronous JSON response.",
+      "inputExample": {
+        "url": "https://example.org"
+      },
+      "outputShape": "Top-level JSON object: .url (normalized), .meta {og{}, twitter{}, title, description, canonical, robots}, .image_check (object or null when no og:image), .problems[] (blocking issues as strings), .warnings[] (recommendations as strings), .verdict (e.g. 'broken'), .ts (ISO 8601 timestamp).",
+      "quirks": [
+        "Input is a query-string parameter (?url=), not a JSON body — it is a GET request; URL-encode the url value.",
+        "The url parameter is required; omitting it returns HTTP 400.",
+        "image_check is null when the page has no og:image; it is populated (object) only when an og:image is present.",
+        "meta.og and meta.twitter are empty objects {} when the page has no OpenGraph/Twitter Card tags.",
+        "Results are URL-normalized (input https://example.org -> output url https://example.org/); HTTP vs HTTPS is treated as a different page.",
+        "The endpoint is non-mutating (read-only audit); safe for repeated calls on the same URL."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Audit how a page will render when shared on social platforms. Call GET https://api.webbersites.com/api/og/check?url=https://example.org with the public URL to check (no request body, x402-paid $0.001 USDC on Base). Response is synchronous JSON reporting the page's OpenGraph and Twitter Card meta tags, title/description/canonical/robots, an og:image check, plus problems[] (blocking), warnings[] (recommendations) and an overall verdict. Use for SEO/social-preview audits, link-unfurl debugging, or agent content QA.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "webbersites-opengraph-checker",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "webbersites-alt-text-audit",
+    "kind": "api",
+    "name": "Webbersites Alt-Text Audit",
+    "aka": [
+      "alt-check",
+      "alt-text-audit",
+      "seo-alt-check"
+    ],
+    "provider": "webbersites",
+    "providerId": "webbersites",
+    "description": "Audits any public web page for image alt-text issues — missing alt attributes, filename-as-alt, generic/over-long alt, unlabeled svg[role=img], image-map areas and image inputs without alternatives — for SEO and accessibility.",
+    "category": "analytics-bi",
+    "subcategory": "web-analytics",
+    "tags": [
+      "seo",
+      "accessibility",
+      "a11y",
+      "alt-text",
+      "audit",
+      "images"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/seo/alt-check",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "resource": "https://api.webbersites.com/api/seo/alt-check",
+              "description": "Alt-text audit for any page: finds images with missing alt attributes, flags filename-as-alt and generic alt text, over-long alt, unlabeled svg[role=img], image-map areas and image inputs without alternatives. Counts decorative alt=\"\" separately. For SEO and accessibility agents.",
+              "mimeType": "application/json",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "url"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Public URL of the page to audit",
+              "example": "https://example.com"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "images_total": {
+              "type": "number"
+            },
+            "with_good_alt": {
+              "type": "number"
+            },
+            "missing_alt": {
+              "type": "number"
+            },
+            "empty_alt_decorative": {
+              "type": "number"
+            },
+            "low_quality_alt": {
+              "type": "number"
+            },
+            "svg_img_unlabeled": {
+              "type": "number"
+            },
+            "issues": {
+              "type": "array",
+              "description": "Per-image issue list, each {tag, src, issue}"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:18:57.651Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.webbersites.com/api/seo/alt-check?url=<page URL> (x402 payment, 0.001 USDC on Base eip155:8453)",
+      "inputExample": {
+        "url": "https://example.com"
+      },
+      "outputShape": "body.{url, images_total, with_good_alt, missing_alt, empty_alt_decorative, low_quality_alt, svg_img_unlabeled}, body.issues[] (each {tag, src, issue}), body.note, body.ts",
+      "quirks": [
+        "GET request: pass the page under audit in the ?url= query string (URL-encoded), NOT a JSON body. The url must be a public page.",
+        "The unpaid 402 returns a free preview with only totals (images_total, missing_alt) plus the note 'Pay and retry for the per-image issue list'; the paid 200 adds the full breakdown and body.issues[].",
+        "alt=\"\" on purely decorative images is valid and counted separately under empty_alt_decorative, not flagged as an issue.",
+        "Provider offers a half-price rate ($0.0005) if you send an X-Wallet header (or ?wallet=) for a wallet that spent >$0.001 in the last 24h; the base price is $0.001.",
+        "Verified against https://example.com, which has no images, so all counts returned 0 and issues[] was empty — shape confirmed but a real page is needed to see issues populated."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://api.webbersites.com/api/seo/alt-check with the page to audit URL-encoded into the ?url= query parameter (e.g. ?url=https%3A%2F%2Fexample.com). It is pure x402: the first request returns a 402 with payment requirements (0.001 USDC on Base, EIP-3009), so pay and retry with the X-PAYMENT header (@x402/fetch automates this). On success you get a synchronous 200 JSON: read the summary counts from body.images_total / with_good_alt / missing_alt / empty_alt_decorative / low_quality_alt / svg_img_unlabeled and the per-image problems from body.issues[] (each {tag, src, issue}). No API key, no accounts.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "webbersites-alt-text-audit",
+      "discoveredVia": [
+        "web analytics"
+      ],
+      "lastSyncedAt": "2026-06-02T00:18:57.651Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

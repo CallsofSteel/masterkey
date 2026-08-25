@@ -1,0 +1,52 @@
+{
+  "serviceId": "x-router",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x-router.ai/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.x-router.ai/v1/chat/completions with OpenAI-compatible JSON body {model, messages:[{role,content}], max_tokens?}. Paid per call via x402 (USDC on Base).",
+    "inputExample": {
+      "model": "minimax/minimax-m3",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 20
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); token usage at body.usage; some models also populate body.choices[0].message.reasoning",
+    "quirks": [
+      "Model field MUST be an OpenRouter-style slug 'provider/model' (e.g. minimax/minimax-m3, anthropic/claude-opus-4.8, qwen/qwen3.7-plus) — bare OpenAI names like 'gpt-4o-mini' return a free HTTP 400 INVALID_MODEL with no charge.",
+      "List valid models via free GET https://api.x-router.ai/v1/models (300 models, each with id + per-1k-token pricing).",
+      "Price 'Varies' = per-model token-based billing; pick a cheap model + small max_tokens to keep cost down (minimax/minimax-m3 was $0.001 for a tiny call).",
+      "Reasoning models may put output in message.reasoning and leave message.content null if max_tokens is too small (finish_reason 'length'); raise max_tokens to get content."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a standard OpenAI chat-completions POST to https://api.x-router.ai/v1/chat/completions with body {model, messages, max_tokens}. The model MUST be an OpenRouter-style slug (provider/model) — fetch the free GET /v1/models list first if unsure; bare OpenAI names fail with a free 400. Payment is automatic via x402 (USDC on Base), priced per model and token count. Read the assistant reply at body.choices[0].message.content (give enough max_tokens or reasoning models leave content null).",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x-router#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

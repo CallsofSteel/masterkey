@@ -1,0 +1,85 @@
+{
+  "serviceId": "uptime-health-monitor",
+  "subcat": "uptime-status-pages",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/url/check-status",
+      "method": "GET",
+      "amountUsd": 0.0038
+    },
+    {
+      "backend": "https://api.agentstatus.tech/v1/monitors",
+      "method": "GET"
+    },
+    {
+      "backend": "https://aiagentoracle.ai/api/v1/status",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/website-uptime-checker-api-2af501",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/uptime-monitor-api-d0edb4",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/url/check-status?url=<TARGET_URL> (x402-paid, no body)",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.status (HTTP code), body.ok (bool), body.statusText, body.finalUrl, body.redirected, body.responseTimeMs, body.contentType, body.server, body.timestamp",
+    "quirks": [
+      "Registry surface shows a bare GET with a 'discoverable' http schema and no documented params, but you MUST pass the target as a ?url= query param. Calling it with no url param checks nothing useful.",
+      "Pass the full URL including scheme (https://). Response echoes finalUrl with trailing slash added.",
+      "Price displayed as 'Varies'; observed cost was ~$0.0038 USDC on Base for one check."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/url/check-status with a ?url= query parameter set to the full target URL you want to health-check (e.g. ?url=https://example.com). It is x402-paid (~$0.0038 USDC on Base), no body, no auth beyond payment. The JSON response returns synchronously: read body.status for the HTTP status code, body.ok for up/down, and body.responseTimeMs for latency. Add the ?url= param yourself — the registry schema is marked discoverable and does not list it.",
+    "costObservedUsd": 0.0038
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "uptime-health-monitor#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "uptime-health-monitor#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "uptime-health-monitor#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "uptime-health-monitor#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "uptime-health-monitor#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

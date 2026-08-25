@@ -1,0 +1,46 @@
+{
+  "serviceId": "memoryapi",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.memoryapi.org/x402/memory",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.memoryapi.org/x402/memory?query=<text>&agent_id=<your-agent-id>&limit=<n>",
+    "inputExample": {
+      "query": "hello",
+      "agent_id": "qa-test-agent",
+      "limit": 1
+    },
+    "outputShape": "body.success (bool), body.results[] (matched memory items), body.count (int)",
+    "quirks": [
+      "query and agent_id are BOTH required query-string params; omitting either will likely 4xx",
+      "Results are scoped per agent_id — a fresh/unknown agent_id returns {success:true,results:[],count:0}. You must have stored memories under that same agent_id first to get hits.",
+      "This is the semantic-retrieval (read) endpoint only; it does not store memories."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.memoryapi.org/x402/memory with required query params query (natural-language search) and agent_id (your stable agent identifier), plus optional limit (default 5). Pay $0.001 USDC on Base via x402. The response is JSON: read body.results[] for the matched memory items and body.count for how many were returned. Use the same agent_id you stored memories under, otherwise results will be empty.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "memoryapi#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

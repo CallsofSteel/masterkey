@@ -1,0 +1,41 @@
+{
+  "serviceId": "strale-web-extract",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/web-extract",
+      "method": "POST",
+      "amountUsd": 0.162
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.strale.io/x402/web-extract with JSON body {url, extract}",
+    "inputExample": {
+      "url": "https://example.com",
+      "extract": "page title and main content"
+    },
+    "outputShape": "body.data.main_content (extracted text), body.data.page_title, body.data.page_url; top-level body.page_title and body.source_url; payment meta at body.data._meta.payment",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with required \"url\" (the page to scrape) and optional \"extract\" (natural-language description of what data you want) to https://api.strale.io/x402/web-extract. Payment is x402 USDC on Base, settled synchronously; one call returned ~$0.162. Read the structured result from body.data (page_title, main_content, page_url, and optionally links/headings/paragraphs per the schema). It renders JavaScript so it works on dynamic pages.",
+    "costObservedUsd": 0.162
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-web-extract#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.162
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "serviceId": "agentmail",
+  "subcat": "email",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/agentmail/v0/inboxes",
+      "method": "POST",
+      "amountUsd": 2
+    },
+    {
+      "backend": "https://x402.orth.sh/agentmail/v0/inboxes/{inbox_id}/messages/send",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/agentmail/v0/inboxes with optional JSON body {username, domain, display_name, client_id} ($2.00 x402 on Base, one-time inbox provisioning). Returns inbox_id = the full email address (e.g. powerfulrule82@agentmail.to).",
+    "inputExample": {
+      "display_name": "John Doe",
+      "client_id": "masterkey-qa-agentmail-0-20260608"
+    },
+    "outputShape": "body.inbox_id and body.email (both = the full new address, e.g. \"powerfulrule82@agentmail.to\"); also body.organization_id, body.pod_id, body.client_id, body.created_at",
+    "quirks": [
+      "This endpoint is Step 1 of 2: it CREATES a managed inbox ($2.00, one-time). It does NOT send email. Sending is a separate endpoint: POST /v0/inboxes/{inbox_id}/messages/send ($0.01 per send).",
+      "All body fields are optional; omitting username assigns a random one (got 'powerfulrule82@agentmail.to').",
+      "inbox_id IS the full email address and doubles as the from-address; URL-encode it (the @) when using it as a path param in the send endpoint.",
+      "client_id acts as an idempotency key on create — safe to retry with the same client_id if the $2 payment goes through but the response is lost.",
+      "OWNERSHIP GATE: only the wallet that paid the $2 creation can call the send endpoint for that inbox. Wallet identity IS the auth. The send endpoint returns HTTP 403 'Ownership required' (not 402) for inboxes you don't own — payment flow never starts.",
+      "$2 is a one-time provisioning cost — create one inbox and reuse the inbox_id across many sends to amortize.",
+      "Inbox created during this QA run: powerfulrule82@agentmail.to (owned by the QA master wallet)."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "AgentMail is a two-step service; this endpoint is Step 1 (Create inbox). POST to https://x402.orth.sh/agentmail/v0/inboxes with an optional JSON body (display_name, username, domain, client_id all optional) and pay the $2.00 x402 charge on Base. Read the new address from body.inbox_id (it equals body.email). This is a one-time $2 provisioning cost — persist and reuse the inbox_id. To actually send mail (Step 2, outward/irreversible), POST to /v0/inboxes/{inbox_id}/messages/send (URL-encode the @) with {to:[...], subject, text} at $0.01 per send; only the wallet that created the inbox may send from it.",
+    "costObservedUsd": 2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentmail#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 2
+    },
+    {
+      "key": "agentmail#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

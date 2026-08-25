@@ -1,0 +1,43 @@
+{
+  "serviceId": "purch-agent-commerce",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-19",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://purch-backend-741433844771.us-east1.run.app/api/agent/shop",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://purch-backend-741433844771.us-east1.run.app/api/agent/shop",
+    "inputExample": {},
+    "outputShape": "none — endpoint returns plain text body \"404 Not Found\" (Content-Type text/plain), no JSON, no payment challenge",
+    "quirks": [
+      "Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain; charset=UTF-8, 13 bytes) with NO x402/402 payment challenge.",
+      "Nothing is payable — there is no 402 challenge, so no charge can occur. Do not attempt to pay.",
+      "Confirmed broken live on 2026-06-08; matched independent probes on 2026-06-02 and the batch probe — consistently 404, not transient.",
+      "Advertised 'Agent Shop' product-search/order functionality is not reachable at this path."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. GET https://purch-backend-741433844771.us-east1.run.app/api/agent/shop returns a plain text '404 Not Found' (13 bytes, Content-Type text/plain) with no x402 payment challenge, so it cannot be paid for or used. Do not attempt to call or pay it until the provider restores the route. The advertised agent commerce / 'Agent Shop' search-and-order functionality is not reachable at this path.",
+    "costObservedUsd": 0,
+    "droppedReason": "purch-agent-commerce#2: Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain; charset=UTF-8, 13 bytes) with NO x402/402 payment challenge."
+  },
+  "droppedReason": "purch-agent-commerce#2: Route is dead: GET returns plain text body '404 Not Found' (Content-Type text/plain; charset=UTF-8, 13 bytes) with NO x402/402 payment challenge.",
+  "_backends": [
+    {
+      "key": "purch-agent-commerce#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

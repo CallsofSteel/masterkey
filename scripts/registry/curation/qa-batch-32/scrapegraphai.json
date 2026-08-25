@@ -1,0 +1,81 @@
+{
+  "serviceId": "scrapegraphai",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/scrapegraphai/api/scrape",
+      "method": "POST",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapegraphai/api/extract",
+      "method": "POST",
+      "amountUsd": 0.025
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapegraphai/api/crawl",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapegraphai/api/monitor",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/scrapegraphai/api/crawl with JSON body {url, maxDepth?, maxPages?, maxLinksPerPage?, allowExternal?, includePatterns?, excludePatterns?, contentTypes?, fetchConfig?} — only url is required. Returns a job: {id, status, total, finished, pages}. Then poll GET https://x402.orth.sh/scrapegraphai/api/crawl/{id} (free) until status===\"completed\".",
+    "inputExample": {
+      "url": "https://example.com",
+      "maxDepth": 1,
+      "maxPages": 1,
+      "maxLinksPerPage": 1
+    },
+    "outputShape": "Initial paid POST: body.id (job id), body.status (\"running\"). Poll result GET /api/crawl/{id}: body.status (\"completed\"), body.pages[] each with {url, depth, links[], title, status, parentUrl, contentType, scrapeRefId}. Page content is referenced by scrapeRefId (fetch via the scrape endpoint for full content).",
+    "quirks": [
+      "Async: the paid POST only QUEUES the crawl and returns {id, status:'running', pages:[]} — the result is NOT in the POST response.",
+      "Poll GET https://x402.orth.sh/scrapegraphai/api/crawl/{id} (no payment, returns 200 free) until body.status==='completed'; example.com crawl completed within the first poll.",
+      "Status sub-paths like /api/crawl/status/{id} or /api/crawl?id={id} return 404 — only /api/crawl/{id} works.",
+      "Each crawled page returns metadata + links + a scrapeRefId rather than inline page content; full page content lives behind the scrapeRefId.",
+      "Set maxPages/maxDepth/maxLinksPerPage low to bound cost/time; price is 'Varies' but the minimal 1-page crawl cost $0.01."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/scrapegraphai/api/crawl with a JSON body containing at least {\"url\": \"<seed-url>\"}; add maxPages/maxDepth/maxLinksPerPage to bound the crawl (recommended to keep cost low). Pay via x402 (USDC on Base, no API key). The POST returns a job {id, status:\"running\"} — the crawl runs async. Then poll GET https://x402.orth.sh/scrapegraphai/api/crawl/{id} (free, no payment) every few seconds until body.status === \"completed\". Read results from body.pages[], where each entry gives the page url, discovered links[], title, contentType, and a scrapeRefId for the full scraped content.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "scrapegraphai#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "scrapegraphai#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025
+    },
+    {
+      "key": "scrapegraphai#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "scrapegraphai#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

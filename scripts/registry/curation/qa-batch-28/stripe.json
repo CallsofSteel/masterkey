@@ -1,0 +1,48 @@
+{
+  "serviceId": "stripe",
+  "subcat": "payment-processing",
+  "batchId": "batch-28",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/stripe/v1/charges",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/stripe/v1/charges with JSON body {amount, currency, source}",
+    "inputExample": {
+      "amount": 50,
+      "currency": "usd",
+      "source": "tok_visa",
+      "description": "QA test charge"
+    },
+    "outputShape": "body.error (no usable result — 401 auth error)",
+    "quirks": [
+      "CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header.",
+      "Registry description ('no Stripe secret key required') is FALSE — an upstream Stripe API key is mandatory.",
+      "Without a Stripe secret key this endpoint cannot produce a result; do not call it.",
+      "This is an outward/irreversible endpoint (creates a real Stripe charge) — would only work with a real Stripe key plus a real payment source token."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Do not use this endpoint. The HTTPay Stripe gateway charges the x402 micropayment ($0.002) but then returns HTTP 401 requiring an upstream Stripe secret key via the X-Upstream-Token header, which the registry does not have. The registry claim of 'no Stripe secret key required' is incorrect. Paying it loses money with no result. It belongs to the class of HTTPay services that proxy to an upstream that needs your own API key.",
+    "costObservedUsd": 0.002,
+    "droppedReason": "stripe#0: CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header."
+  },
+  "droppedReason": "stripe#0: CHARGE-THEN-401: the x402 payment IS taken ($0.002 on Base) but the call then fails 401 because the HTTPay gateway requires YOUR OWN Stripe secret key passed via the X-Upstream-Token header.",
+  "_backends": [
+    {
+      "key": "stripe#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

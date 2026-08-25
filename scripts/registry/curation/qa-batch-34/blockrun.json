@@ -1,0 +1,53 @@
+{
+  "serviceId": "blockrun",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://sol.blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://sol.blockrun.ai/api/v1/chat/completions with JSON body {model, messages:[{role,content}], max_tokens} (OpenAI chat-completions shape)",
+    "inputExample": {
+      "model": "anthropic/claude-haiku-4.5",
+      "max_tokens": 16,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); finish_reason at body.choices[0].finish_reason; token usage at body.usage.prompt_tokens / body.usage.completion_tokens / body.usage.total_tokens; resolved model at body.model",
+    "quirks": [
+      "This is the OpenAI-compatible chat-completions endpoint: response text is at body.choices[0].message.content (NOT body.content[0].text — that is the sibling Anthropic /api/v1/messages endpoint).",
+      "'model' must be a router enum ID from the BlockRun catalog, e.g. anthropic/claude-haiku-4.5, openai/gpt-5.4-mini, google/gemini-3.5-flash. A bare model name will not resolve.",
+      "Pricing is token-based/dynamic; $0.001 is the floor. Keep prompts short and max_tokens small to control cost.",
+      "Payment is x402 USDC on SOLANA (not Base) — asset USDC EPjFWdd...Dt1v, payTo AQqnMFB...EeKA, fee-payer sponsored. No API key/account.",
+      "Must be POST; GET returns 402 only as the payment probe and will not complete a chat."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://sol.blockrun.ai/api/v1/chat/completions with an OpenAI chat-completions JSON body: {\"model\":\"anthropic/claude-haiku-4.5\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}],\"max_tokens\":16}. The model must be a BlockRun router enum ID (e.g. anthropic/claude-haiku-4.5, openai/gpt-5.4-mini). Pay via x402 USDC on Solana; no API key or account needed. Read the assistant reply at body.choices[0].message.content and token usage at body.usage. Cost is dynamic/token-based (floor ~$0.001), so keep prompts short and max_tokens small.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

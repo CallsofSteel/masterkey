@@ -1,0 +1,55 @@
+{
+  "serviceId": "orbis-document-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-translate-api-22e8e8",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/doc-translate-api-9100d6",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/pdf-translate-api-22e8e8 with JSON body {text, target_language}",
+    "inputExample": {
+      "text": "Hello, how are you?",
+      "target_language": "Spanish"
+    },
+    "outputShape": "N/A — endpoint dead, returns {error, message}",
+    "quirks": [
+      "DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead.",
+      "No payment was taken on the broken call (paid:false, costUsd:0) — Orbis returns 404 before charging in this case.",
+      "Do NOT retry or try alternate bodies/paths; the slug is gone."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint. The Orbis proxy slug 'pdf-translate-api-22e8e8' is dead and returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"}. Although the x402 pre-flight advertises a $0.005 payment requirement, the route no longer exists and the POST fails with no useful result. No payment was captured in this test.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-document-translate#0: DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead. | orbis-document-translate#1: Orbis proxy dead-route: slug 'doc-translate-api-9100d6' is not active. POST returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'doc-translate-api-9100d6'.\"}"
+  },
+  "droppedReason": "orbis-document-translate#0: DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead. | orbis-document-translate#1: Orbis proxy dead-route: slug 'doc-translate-api-9100d6' is not active. POST returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'doc-translate-api-9100d6'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-document-translate#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-document-translate#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

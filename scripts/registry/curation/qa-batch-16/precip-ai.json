@@ -1,0 +1,48 @@
+{
+  "serviceId": "precip-ai",
+  "subcat": "weather",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/precip/embed/location",
+      "method": "GET",
+      "amountUsd": 0.1
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/precip/embed/location?lat={lat}&lon={lon}&units=metric&widgets=current,temp,precip (x402-paid, no apiKey supplied by caller)",
+    "inputExample": {
+      "lat": 42.378792,
+      "lon": -83.7935,
+      "units": "metric",
+      "widgets": "current,temp,precip"
+    },
+    "outputShape": "Response body is a full text/html document (the Precip embed widget SPA page, ~6KB), NOT JSON. The weather data is rendered client-side inside this embeddable widget page; there is no JSON dot-path. Treat body as an HTML widget to iframe/render.",
+    "quirks": [
+      "Returns text/html (an embeddable widget SPA page), NOT JSON weather data — an agent expecting structured precip/temp values will not find them in the raw response; the data is rendered client-side.",
+      "The inputSchema lists apiKey as required, but the caller does NOT supply it — the x402 gateway auto-applies the apiKey header after payment. Do not pass apiKey.",
+      "lat and lon are required query params; units (metric/imperial, default metric) and widgets (comma-separated keys like current,temp,precip; defaults to all) are optional.",
+      "This is the /embed/location route — it serves an HTML widget for embedding, not a data API."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.orth.sh/precip/embed/location with required lat and lon query params (e.g. lat=42.378792&lon=-83.7935); add optional units (metric|imperial) and widgets (comma-separated: current,event,calendar,cumulative,total,precip,table,wind,temp,soiltemp,soilmoisture,snow). Pay via x402 (~$0.10 USDC on Base) — do NOT pass the apiKey param, the gateway injects it after payment. The 200 response is a text/html embeddable widget page, not JSON; use it by embedding/rendering the HTML (iframe), since the weather values are rendered client-side rather than returned as structured data.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "precip-ai#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

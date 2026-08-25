@@ -1,0 +1,104 @@
+{
+  "slug": "routing-probe",
+  "name": "Routing Probe (branch + loop self-test)",
+  "description": "Internal self-test for BUNDLE_STUDIO_SPEC §9.3: proves the run brain follows compiled BRANCH and LOOP routing. The branch is forced by an operator-supplied mode input (never data-dependent) and every step calls a FREE registry service, so a full run costs $0 USDC while leaving hard tool_call evidence in the transcript.",
+  "inputs": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input-mode",
+        "kind": "input",
+        "position": { "x": 0, "y": 0 },
+        "data": {
+          "label": "Mode",
+          "prompt": "Which branch should this run take? Type exactly A or B.",
+          "required": true
+        }
+      },
+      {
+        "id": "input-tickers",
+        "kind": "input",
+        "position": { "x": 0, "y": 160 },
+        "data": {
+          "label": "Tickers",
+          "prompt": "Crypto tickers to price, comma-separated (e.g. BTC-USD, ETH-USD, SOL-USD).",
+          "required": true
+        }
+      },
+      {
+        "id": "decide-mode",
+        "kind": "decision",
+        "position": { "x": 320, "y": 0 },
+        "data": {
+          "label": "Mode?",
+          "question": "Read the operator-supplied mode input. If it is exactly A, choose the commodity path. If it is exactly B, choose the FX path. Do not infer the mode from anything else, and take EXACTLY ONE path",
+          "options": [
+            { "id": "mode-a", "label": "A — commodity path" },
+            { "id": "mode-b", "label": "B — FX path" }
+          ]
+        }
+      },
+      {
+        "id": "path-a",
+        "kind": "service",
+        "position": { "x": 640, "y": -100 },
+        "data": {
+          "label": "Path A — gold spot",
+          "serviceId": "commodity-price",
+          "instruction": "ONLY run this step if the mode input is A. First output the exact line BRANCH=A. Then call the commodity-price service for the symbol XAU-USD. Then output the line PATH_A_PRICE=<price you got back>."
+        }
+      },
+      {
+        "id": "path-b",
+        "kind": "service",
+        "position": { "x": 640, "y": 100 },
+        "data": {
+          "label": "Path B — EUR spot",
+          "serviceId": "fx-price",
+          "instruction": "ONLY run this step if the mode input is B. First output the exact line BRANCH=B. Then call the fx-price service for the symbol EUR-USD. Then output the line PATH_B_PRICE=<price you got back>."
+        }
+      },
+      {
+        "id": "loop-tickers",
+        "kind": "loop",
+        "position": { "x": 960, "y": 0 },
+        "data": {
+          "label": "For each ticker",
+          "overRef": "{{input-tickers.output}}",
+          "until": "every ticker supplied in the tickers input has been priced exactly once",
+          "bodyNodeIds": ["price-one"]
+        }
+      },
+      {
+        "id": "price-one",
+        "kind": "service",
+        "position": { "x": 1280, "y": 0 },
+        "data": {
+          "label": "Price one ticker",
+          "serviceId": "crypto-price",
+          "instruction": "For the CURRENT ticker of this iteration ONLY, call the crypto-price service with that one symbol. Then output exactly one line: ITEM <iteration number> <ticker> = <price>. Do not price more than one ticker in this step, and do not batch the tickers into a single call."
+        }
+      },
+      {
+        "id": "report",
+        "kind": "output",
+        "position": { "x": 1600, "y": 0 },
+        "data": {
+          "label": "Report",
+          "format": "Plain text",
+          "template": "BRANCH / PRICE lines from the path you took, then every ITEM line, then a final line:\nSTEPS_EXECUTED=<comma-separated numbers of the steps you actually performed>"
+        }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "input-mode", "target": "decide-mode" },
+      { "id": "e2", "source": "decide-mode", "sourceHandle": "mode-a", "target": "path-a" },
+      { "id": "e3", "source": "decide-mode", "sourceHandle": "mode-b", "target": "path-b" },
+      { "id": "e4", "source": "path-a", "target": "loop-tickers" },
+      { "id": "e5", "source": "path-b", "target": "loop-tickers" },
+      { "id": "e6", "source": "input-tickers", "target": "loop-tickers" },
+      { "id": "e7", "source": "loop-tickers", "target": "price-one" },
+      { "id": "e8", "source": "price-one", "target": "report" }
+    ]
+  }
+}

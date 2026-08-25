@@ -1,0 +1,45 @@
+{
+  "serviceId": "openweather",
+  "subcat": "weather",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://openweather-coral.vercel.app/weather/current",
+      "method": "GET",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://openweather-coral.vercel.app/weather/current?lat=51.5&lon=-0.12 (x402, USDC on Base $0.002). Pass lat & lon as query params.",
+    "inputExample": {
+      "lat": "51.5",
+      "lon": "-0.12"
+    },
+    "outputShape": "body.city, body.country, body.temperature.{current,feels_like,min,max,unit}, body.humidity, body.pressure, body.wind.{speed,direction,gust}, body.weather.{main,description,icon}, body.clouds, body.sunrise, body.sunset, body.updated_at",
+    "quirks": [
+      "The documented ?city=<name> query param is BROKEN: it returns HTTP 500 (HTML 'Internal Server Error') after the payment flow even though the unpaid pre-flight shows 402. Server-side city-name geocoding fails. Use ?lat=&lon= instead — that variant works reliably.",
+      "Pass lat/lon as query-string params on the GET (not a JSON body).",
+      "Response city field reflects the resolved locality (e.g. lat 51.5/lon -0.12 -> 'City of Westminster'), not necessarily the nearest major city name."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://openweather-coral.vercel.app/weather/current with ?lat=<latitude>&lon=<longitude> query params; payment is x402 USDC on Base (~$0.002). Do NOT use the ?city= param — it is documented but returns a 500 server error. Read current conditions from the JSON body: body.temperature.current (celsius), body.humidity, body.wind.speed/direction, and body.weather.main / body.weather.description for the textual condition.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openweather#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

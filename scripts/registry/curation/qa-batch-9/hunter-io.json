@@ -1,0 +1,55 @@
+{
+  "serviceId": "hunter-io",
+  "subcat": "company-people-data",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/hunter/v2/email-finder",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402.orth.sh/hunter/v2/email-verifier",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/hunter/v2/email-verifier?email=<email_address> (x402 Base USDC, no body)",
+    "inputExample": {
+      "email": "patrick@stripe.com"
+    },
+    "outputShape": "body.data.status (\"valid\"/\"invalid\"), body.data.score (0-100), body.data.result (\"deliverable\", deprecated), body.data.smtp_check, body.data.mx_records, body.data.disposable, body.data.webmail, body.data.accept_all, body.data.sources[]",
+    "quirks": [
+      "inputSchema is null in the registry but the endpoint REQUIRES an ?email=<address> query parameter; without it the call would fail",
+      "Input is passed as a URL query param, not a JSON body (it is a GET)",
+      "Read body.data.status (valid/invalid/accept_all/etc) and body.data.score (0-100); body.data.result is present but deprecated per the response's own _deprecation_notice"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Verify an email address's deliverability by calling GET https://x402.orth.sh/hunter/v2/email-verifier with the email passed as a query parameter (?email=someone@domain.com). It is x402-paid (~$0.01 USDC on Base), no API key and no request body. The response is synchronous JSON: read body.data.status (\"valid\"/\"invalid\"/etc.) and body.data.score (0-100 confidence) to judge deliverability, plus body.data.mx_records / smtp_check / disposable / webmail for detail. Do NOT rely on body.data.result — it is deprecated in favor of status.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hunter-io#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "hunter-io#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,490 @@
+{
+  "subcategory": "authentication-user-management",
+  "category": "auth-identity",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Auth/identity utility endpoints (password-breach checks, token/JWT inspection) reachable pay-per-call over x402. Subcategory defined in taxonomy.txt (auth-identity/authentication-user-management); onboarded during the netintel.dev sweep.",
+  "entries": [
+    {
+      "name": "NetIntel Password Breach Check",
+      "kind": "api",
+      "provider": "netintel.dev",
+      "providerId": "netintel-dev",
+      "aka": [
+        "netintel-breach-check",
+        "breach-check-password",
+        "pwned-password-check",
+        "haveibeenpwned"
+      ],
+      "description": "Checks whether a password has appeared in known data breaches via the HaveIBeenPwned Pwned Passwords API using k-anonymity (only a 5-character SHA-1 hash prefix is sent — the full password never leaves the server), returning breach count, a risk level, and an A-F grade so agents can enforce password policies without storing or exposing credentials.",
+      "tags": [
+        "password-security",
+        "breach-check",
+        "credential-leak",
+        "security",
+        "osint"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://netintel.dev/breach-check/password",
+          "method": "GET",
+          "provider": "netintel.dev",
+          "providerId": "netintel-dev",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "description": "Password to check against known data breaches (1-500 characters; sent as a query param but only a k-anonymity SHA-1 prefix leaves the server)"
+              }
+            },
+            "required": [
+              "password"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "breached": {
+                "type": "boolean"
+              },
+              "breach_count": {
+                "type": "number"
+              },
+              "risk_level": {
+                "type": "string"
+              },
+              "score": {
+                "type": "number"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "findings": {
+                "type": "array"
+              }
+            }
+          }
+        },
+        {
+          "url": "https://api.agentstools.dev/breach/password",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.003,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "3000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "description": "Plaintext password to check — hashed locally with SHA-1; only a 5-char k-anonymity prefix leaves the server. Never stored, logged or transmitted in full."
+              },
+              "sha1": {
+                "type": "string",
+                "description": "Alternative input: a full 40-hex SHA-1 hash of the password (so the plaintext never leaves your side)."
+              },
+              "ntlm": {
+                "type": "string",
+                "description": "Alternative input: a full 32-hex NTLM hash (checked against the NTLM Pwned Passwords corpus)."
+              }
+            },
+            "required": []
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "compromised": {
+                "type": "boolean"
+              },
+              "breach_count": {
+                "type": "number"
+              },
+              "hash_prefix": {
+                "type": "string"
+              },
+              "hash_mode": {
+                "type": "string"
+              },
+              "k_anonymity": {
+                "type": "boolean"
+              },
+              "source": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "attribution_url": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              },
+              "ts": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://netintel.dev/breach-check/password?password=<password> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; password is a query param — only a k-anonymity SHA-1 prefix is forwarded upstream)",
+        "inputExample": {
+          "password": "test123"
+        },
+        "outputShape": "breached (bool), breach_count (number), risk_level (string: e.g. critical), score (number 0-100), grade (letter A-F), findings[].{rule,deduction,detail}",
+        "quirks": [
+          "password is a QUERY PARAM on a GET request (no JSON body): ?password=<value>",
+          "Privacy-preserving: uses HaveIBeenPwned k-anonymity — only the first 5 chars of the password's SHA-1 hash are sent upstream; the full password never leaves netintel.dev",
+          "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.01",
+          "Failed calls (4xx/5xx, input-validation rejections) are never charged (NetIntel agent fair-trade guarantee)",
+          "Paid probe with password=test123 returned breach_count 1383480, risk_level 'critical', grade 'F'"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Checks whether a password has appeared in known data breaches via the HaveIBeenPwned Pwned Passwords API using k-anonymity (only a 5-character SHA-1 hash prefix is sent — the full password never leaves the server), returning breach count, a risk level, and an A-F grade so agents can enforce password policies without storing or exposing credentials. GET https://netintel.dev/breach-check/password?password=<password> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; password is a query param). Output: breached, breach_count, risk_level, score, grade, findings[].{rule,deduction,detail}",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "NetIntel JWT Inspector",
+      "kind": "api",
+      "provider": "netintel.dev",
+      "providerId": "netintel-dev",
+      "aka": [
+        "netintel-jwt-inspector",
+        "jwt-decode",
+        "jwt-inspector"
+      ],
+      "description": "Decodes and inspects any JWT — extracts the header algorithm, all payload claims (issuer, subject, audience, issued-at, expiry), signature presence, and a security score/grade with findings — without requiring the signing secret, so agents can debug auth issues, check token expiry, and extract identity claims.",
+      "tags": [
+        "jwt",
+        "token-decoder",
+        "authentication",
+        "security",
+        "debugging"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://netintel.dev/jwt-inspector/decode",
+          "method": "GET",
+          "provider": "netintel.dev",
+          "providerId": "netintel-dev",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "JWT token string (3 dot-separated segments); a 'Bearer ' prefix is stripped automatically. Query param on a GET request."
+              }
+            },
+            "required": [
+              "token"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "valid_structure": {
+                "type": "boolean"
+              },
+              "header": {
+                "type": "object"
+              },
+              "payload": {
+                "type": "object"
+              },
+              "is_expired": {
+                "type": [
+                  "boolean",
+                  "null"
+                ],
+                "description": "null when the token has no exp claim"
+              },
+              "seconds_until_expiry": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "human_expiry": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "signature_hex": {
+                "type": "string"
+              },
+              "signature_present": {
+                "type": "boolean"
+              },
+              "security_flags": {
+                "type": "array"
+              },
+              "score": {
+                "type": "number"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "findings": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://netintel.dev/jwt-inspector/decode?token=<jwt> (x402, USDC on Base eip155:8453 OR Solana; no JSON body; token is a query param, URL-encode it)",
+        "inputExample": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        },
+        "outputShape": "valid_structure (bool), header{algorithm,token_type,key_id}, payload{issuer,subject,audience,expires_at,expires_at_unix,issued_at,issued_at_unix,not_before,jwt_id,custom_claims}, is_expired (bool|null), seconds_until_expiry (num|null), human_expiry (str|null), signature_hex, signature_present (bool), security_flags[], score (0-100), grade (A-F), findings[].{rule,label,impact,detail}",
+        "quirks": [
+          "token is a QUERY PARAM on a GET request (no JSON body): ?token=<jwt>; URL-encode it.",
+          "A leading 'Bearer ' prefix is stripped automatically.",
+          "Decodes only — does NOT verify the signature (no secret needed); signature_present/signature_hex just report the third segment.",
+          "is_expired / seconds_until_expiry / human_expiry come back null when the token has no exp claim.",
+          "This host (netintel.dev) advertises two accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.005.",
+          "Provider is agent fair-trade: 4xx/5xx (e.g. malformed token) are never charged."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Decode/inspect a JWT without its secret. GET https://netintel.dev/jwt-inspector/decode?token=<url-encoded-jwt> (x402, USDC on Base eip155:8453 OR Solana; token is a query param, no JSON body). Pay $0.005 USDC. Read header.algorithm, payload claims (subject/issuer/audience/issued_at/expires_at), is_expired, and the security score/grade + findings[]. Signature is reported but NOT verified.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Account-Takeover Risk Assessment",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-breach-assess",
+        "breach-assess",
+        "account-takeover-risk",
+        "ato-risk-score",
+        "credential-exposure-assessment"
+      ],
+      "description": "Composite account-takeover risk score (0-100) that fuses a privacy-preserving k-anonymity Pwned-Passwords exposure check with a domain's known Have I Been Pwned breach history, returning a risk category, weighted per-signal reasons, per-dimension detail and coverage so an agent can triage credential risk before accepting or reusing a login.",
+      "tags": [
+        "breach",
+        "account-takeover",
+        "credential-exposure",
+        "password-check",
+        "k-anonymity",
+        "security"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/breach/assess",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "10000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "password": {
+                "type": "string",
+                "description": "Plaintext password — hashed locally with SHA-1 (k-anonymity, only a 5-char prefix sent upstream); never stored, logged or transmitted"
+              },
+              "sha1": {
+                "type": "string",
+                "description": "Alternative to password: a full 40-hex SHA-1 hash (so the plaintext never leaves your side)"
+              },
+              "ntlm": {
+                "type": "string",
+                "description": "Alternative to password: a full 32-hex NTLM hash (MD4 not computable server-side, so send the hash for the NTLM corpus)"
+              },
+              "domain": {
+                "type": "string",
+                "description": "Optional domain to fold in its known HIBP breach history as additional ATO signals"
+              }
+            },
+            "required": []
+          },
+          "outputSchema": {
+            "ato_risk_score": "integer 0-100 (composite account-takeover risk)",
+            "risk_category": "string: minimal | low | medium | high | critical",
+            "password_compromised": "boolean",
+            "password_breach_count": "integer (times the password appears in breach corpora)",
+            "hash_prefix": "string (the 5-char k-anonymity SHA-1 prefix that was sent upstream)",
+            "reasons": "string[] (human-readable rationale per fired signal)",
+            "signals": "object[] { signal, dimension, severity, weight, reason }",
+            "dimensions": "object { password{status,compromised,breach_count,hash_prefix,hash_mode,k_anonymity}, domain{status,domain,breaches[],summary{total_breaches,total_accounts,most_recent_breach,has_password_breach,has_stealer_log,has_sensitive_data}} }",
+            "coverage": "object { dimensions_evaluated[], password_evaluated, domain_evaluated }",
+            "source": "string (e.g. 'pwnedpasswords + hibp_breaches')",
+            "attribution": "string",
+            "attribution_url": "string",
+            "disclaimer": "string"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/breach/assess with a JSON body: password (plaintext — hashed locally via k-anonymity, never transmitted) OR sha1 (40-hex) OR ntlm (32-hex); plus an optional domain to fold in its HIBP breach history. x402 v2 exact, $0.01 USDC on Base (eip155:8453), no API key. Result is inline in the synchronous 200 body; no polling.",
+        "inputExample": {
+          "password": "Summer2024!",
+          "domain": "example.com"
+        },
+        "outputShape": "JSON: ato_risk_score (0-100), risk_category (minimal|low|medium|high|critical), password_compromised (bool), password_breach_count, hash_prefix (5-char k-anonymity prefix), reasons[], signals[]{signal,dimension,severity,weight,reason}, dimensions{password{status,compromised,breach_count,hash_prefix,hash_mode,k_anonymity}, domain{status,domain,breaches[],summary{total_breaches,total_accounts,most_recent_breach,has_password_breach,has_stealer_log,has_sensitive_data}}}, coverage{dimensions_evaluated[],password_evaluated,domain_evaluated}, source, attribution, attribution_url, disclaimer.",
+        "quirks": [
+          "Body input: supply ONE of password | sha1 | ntlm (password is hashed locally with SHA-1 and only the 5-char prefix is sent upstream — plaintext never transmitted/stored/logged). domain is OPTIONAL; without it only the password dimension is scored.",
+          "Static price $0.01 (amount 10000 = 0.01 USDC, 6 decimals) — a fixed quote, not dynamic.",
+          "The score is deterministic and weighted: password prevalence drives the password signal (a password seen millions of times = trivially credential-stuffed); the domain dimension adds signals for stealer-log dumps, password-exposing breaches, highly-sensitive-data breaches, recency (<1yr) and repeated exposure. Re-rank via signals[] weights if needed.",
+          "Best-effort: an unavailable upstream is flagged in dimensions[*].status, never returned as an error.",
+          "Verified body {password:'Summer2024!', domain:'example.com'} -> ato_risk_score 22, risk_category medium, password_breach_count 3614; example.com had 0 known domain breaches, so only the password signal fired.",
+          "Credential-exposure / ATO INDICATORS only, not a guarantee: a breached password means it is unsafe to use, but a domain's breach history does NOT mean any specific account on it is compromised. Source: Have I Been Pwned (CC BY 4.0).",
+          "Distinct from siblings on this host: /breach/password (password-only compromise check), /breach/domain (a domain's known breach catalogue), /breach/account (email->breach metadata, needs a keyed HIBP subscription — returns available:false when unconfigured). This op is the composite ATO score that fuses password + domain."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Triage account-takeover risk for a credential in one call before accepting or reusing it. POST https://api.agentstools.dev/breach/assess with {password:'<plaintext>'} (or {sha1:'<40-hex>'} / {ntlm:'<32-hex>'} so the plaintext never leaves you), plus an optional {domain:'<domain>'} to fold in that domain's known Have I Been Pwned breach history. The password is checked with k-anonymity (hashed locally, only a 5-char SHA-1 prefix sent upstream). It is an x402 endpoint costing $0.01 USDC on Base (no API key) — pay the 402 quote and re-request; the result is inline in the synchronous 200 body. Read the headline from ato_risk_score (0-100) and risk_category (minimal|low|medium|high|critical); password_compromised + password_breach_count for the password dimension; dimensions.domain.summary + signals[]/reasons[] for what drove the score; coverage for what was evaluated. Treat as automated indicators, not a guarantee — a breached password is unsafe to reuse, but a domain's breach history does not prove any given account is compromised. Verified 2026-07-30 with {password:'Summer2024!', domain:'example.com'} -> HTTP 200, $0.01 charged, ato_risk_score 22 / medium.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "serviceId": "civicmerge-transcribe",
+  "subcat": "speech-to-text",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402-ai-api.civicmerge.workers.dev/v1/audio/transcribe",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-ai-api.civicmerge.workers.dev/v1/audio/transcribe with JSON body {file: <audio>} (x402 USDC on Base, $0.020). NOTE: backend 500s on every JSON encoding tried.",
+    "inputExample": {
+      "file": "<base64-encoded WAV audio>"
+    },
+    "outputShape": "Declared output: body.text (e.g. {\"text\":\"Hello, world.\"}). NOT OBSERVED — server returned 500 plain-text \"Internal Server Error\" instead.",
+    "quirks": [
+      "Backend is broken: pays then returns HTTP 500 'Internal Server Error' (text/plain). Charge-then-fail — payment settles but no transcription is returned.",
+      "inputSchema says 'file' is multipart form-data binary, but the live bazaar metadata declares bodyType=json with body {file: '<binary audio data>'} and output example {text: 'Hello, world.'} — contradictory.",
+      "Tried file as raw base64 string AND as data:audio/wav;base64 data-URL in a JSON body; both 500'd.",
+      "Untested: true multipart/form-data file upload (qa-pay only sends application/json, so the multipart path could not be exercised). The 500 may be specific to JSON; a multipart client might behave differently but was not verifiable here.",
+      "Spent $0.04 total across 2 paid attempts, both 500."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This speech-to-text endpoint is currently broken via JSON: it accepts the x402 payment ($0.020 USDC on Base) and then returns HTTP 500 'Internal Server Error' with no transcription. Two JSON encodings of the audio (raw base64 and base64 data-URL in a {file:...} body) were paid for and both 500'd. The declared success shape is {\"text\": \"...\"} read from body.text, but it was never observed. A fresh agent should treat this as broken; if attempting, the only untried path is a real multipart/form-data file upload (the schema's stated format), but expect to lose money given the consistent 500s.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "civicmerge-transcribe#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    }
+  ]
+}

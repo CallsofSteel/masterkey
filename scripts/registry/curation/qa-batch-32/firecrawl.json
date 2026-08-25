@@ -1,0 +1,40 @@
+{
+  "serviceId": "firecrawl",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/firecrawl/scrape",
+      "method": "POST",
+      "amountUsd": 0.0126
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/firecrawl/scrape with JSON body {url}",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.url (final URL), body.title (page title), body.content (clean markdown of the page)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {\"url\":\"<page to scrape>\"} to https://stableenrich.dev/api/firecrawl/scrape and pay the x402 quote (~$0.013 USDC, exact scheme, USDC on Base eip155:8453 or Solana). The response is a plain synchronous JSON object: read body.content for the page rendered as clean LLM-ready markdown, body.title for the page title, and body.url for the final URL after redirects. No auth, no polling, no template params.",
+    "costObservedUsd": 0.0126
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "firecrawl#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0126
+    }
+  ]
+}

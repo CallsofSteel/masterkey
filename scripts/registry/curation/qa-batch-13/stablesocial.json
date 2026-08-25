@@ -1,0 +1,91 @@
+{
+  "serviceId": "stablesocial",
+  "subcat": "social-media-data",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablesocial.dev/api/facebook/posts",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/search-profiles",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/profile",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://socialx402.com/api/tiktok/profile",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://socialx402.com/api/tiktok/search-profiles",
+      "method": "POST",
+      "amountUsd": 0.06
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablesocial.dev/api/facebook/posts with JSON body {profile_id, max_posts?, order_by?, max_page_size?, cursor?} (x402-paid). Returns 202 async job. Then GET the returned pollUrl with SIWX auth from the SAME wallet that paid until status===\"finished\".",
+    "inputExample": {
+      "profile_id": "zuck",
+      "max_posts": 1
+    },
+    "outputShape": "POST -> body.jobId, body.pollUrl, body.token, body.status (pending). Poll (GET pollUrl, SIWX) -> body.status (pending|finished), final posts at body.data.items[].",
+    "quirks": [
+      "POST returns HTTP 202 with an async job (jobId+pollUrl+token, status=pending) — the posts are NOT in the POST response.",
+      "The pollUrl REQUIRES SIWX wallet auth from the SAME wallet that paid for the job; a plain unauthenticated GET returns 402 'SIWX authentication required'.",
+      "Poll with SIWX (e.g. qa-pay --siwx GET pollUrl) — polling is free (no extra charge). Loop until body.status==='finished'.",
+      "Result data lives at body.data.items[] on the finished poll response, not in the POST body.",
+      "Only profile_id is required; max_posts caps at 300 (use a small value like 1 to keep responses light)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablesocial.dev/api/facebook/posts with JSON {\"profile_id\":\"<fb username or id>\",\"max_posts\":N}; this is x402-paid (~$0.06) and returns a 202 async job containing jobId, pollUrl, token, status:pending. Then GET the returned pollUrl using SIWX authentication signed by the SAME wallet that paid (an unauthenticated poll fails with 'SIWX authentication required'); polling is free. Repeat the poll until body.status === \"finished\", then read the Facebook posts from body.data.items[] (each item has id, text, owner_username/owner_full_name, timestamp, shares_count, comments_count, media URLs).",
+    "costObservedUsd": 0.06
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablesocial#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    }
+  ]
+}

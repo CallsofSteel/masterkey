@@ -1,0 +1,102 @@
+{
+  "serviceId": "blockrun-stock-market-data",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun-web-vbsbhh7lea-uc.a.run.app/api/v1/stocks/us/price/MU",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun-web-vbsbhh7lea-uc.a.run.app/api/v1/stocks/us/price/VOO",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/usstock/price/AAPL",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/usstock/history/AAPL",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/stocks/us/price/AAPL",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/stocks/us/history/AAPL",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/usstock/history/{SYMBOL}?from={epochSeconds}&to={epochSeconds} — e.g. /usstock/history/AAPL?from=1778373520&to=1780965520. x402 USDC on Base, no API key.",
+    "inputExample": {
+      "symbol_in_path": "AAPL",
+      "from": 1778373520,
+      "to": 1780965520
+    },
+    "outputShape": "body.bars[] (array of OHLC daily bars: {t: epochSec, o, h, l, c, v}); body.symbol, body.resolution (\"D\"), body.source (\"pyth\"), body.category. NOTE: v (volume) is 0 from the Pyth source.",
+    "quirks": [
+      "MANDATORY query param: `from` (Unix epoch SECONDS). Calling /usstock/history/AAPL with no query params returns HTTP 400 {error: 'Missing or invalid `from` (Unix epoch seconds)'} AND STILL CHARGES you $0.001 — always include from before paying.",
+      "Also pass `to` (epoch seconds) to bound the range; with both set it returns 200 daily OHLC bars.",
+      "Symbol is a path segment, not a query param (e.g. /usstock/history/AAPL).",
+      "Resolution is daily ('D'); volume field `v` is always 0 (Pyth-sourced)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/usstock/history/{SYMBOL} with REQUIRED query params from and to as Unix epoch SECONDS (e.g. ?from=1778373520&to=1780965520). Omitting `from` returns a 400 but still charges you, so always include it. Pay via x402 USDC on Base — no API key. Read the OHLC history from body.bars[], each bar being {t (epoch sec), o, h, l, c, v}; note volume v is 0. Symbol goes in the path, not the query string.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun-stock-market-data#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun-stock-market-data#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun-stock-market-data#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun-stock-market-data#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun-stock-market-data#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun-stock-market-data#5",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

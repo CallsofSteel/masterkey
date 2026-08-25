@@ -1,0 +1,27 @@
+{
+  "slug": "news-clip",
+  "name": "News Clip",
+  "description": "Turn a topic into a short AI news video.",
+  "trigger": "make a short news video / clip about a topic",
+  "inputs": [{ "name": "topic", "prompt": "What topic should the clip cover?" }],
+  "steps": [
+    {
+      "label": "Find the latest (multiple sources)",
+      "serviceId": "brave-search",
+      "instruction": "Run 2-4 searches with varied queries using brave-search (its search parameter is `q`; optionally serper too) to gather solid, recent facts on the topic — don't rely on a single search."
+    },
+    {
+      "label": "Write a 6-second script",
+      "instruction": "From the results, write a punchy ~20-word script for a 6-second clip plus a one-line visual description. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Generate the video",
+      "serviceId": "grok-imagine-video",
+      "instruction": "Generate a short video from the script and visual description. It returns a job; the runtime polls it until ready."
+    },
+    {
+      "label": "Show it",
+      "instruction": "Surface the finished video to the user along with the script."
+    }
+  ]
+}

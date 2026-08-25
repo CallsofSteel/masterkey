@@ -1,0 +1,52 @@
+{
+  "serviceId": "qwen3-coder-480b",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[], max_tokens}",
+    "inputExample": {
+      "model": "nvidia/qwen3-coder-480b",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); actual served model in body.model; token usage in body.usage",
+    "quirks": [
+      "OpenAI-compatible chat completions API.",
+      "This call returned HTTP 200 with NO payment required (free) despite the registry probe expecting 402 — pricing/gating appears request-dependent.",
+      "CRITICAL: the requested model 'nvidia/qwen3-coder-480b' was silently swapped for the free fallback 'nvidia/llama-4-maverick'. Response body.model came back 'nvidia/llama-4-maverick' and the content literally said 'I'm Llama 4 Maverick (Free)'. Always check body.model to confirm which model actually served — the qwen3-coder-480b id did not route to that model in this test.",
+      "Use model id 'nvidia/qwen3-coder-480b' per registry modelParam, but verify body.model in the response."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/chat/completions with an OpenAI-style JSON body: {\"model\":\"nvidia/qwen3-coder-480b\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Read the assistant reply from body.choices[0].message.content. IMPORTANT: confirm body.model in the response matches what you requested — in QA testing the API silently fell back to the free 'nvidia/llama-4-maverick' model instead of serving qwen3-coder-480b. The call may come back free (200, no x402) or may require payment depending on the request; handle a 402 with x402 payment if it occurs.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "qwen3-coder-480b#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

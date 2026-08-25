@@ -1,0 +1,43 @@
+{
+  "serviceId": "klymax-web-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://web-search.api.klymax402.com/api/search",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://web-search.api.klymax402.com/api/search with JSON body {query, count}",
+    "inputExample": {
+      "query": "OpenAI",
+      "count": 3
+    },
+    "outputShape": "body.results[] (array of search results), body.resultCount, body.source, body.query, body.timestamp",
+    "quirks": [
+      "Charges $0.003 per call via x402 on Base but the duckduckgo upstream returns resultCount:0 and an EMPTY results[] for every query tested, including high-signal terms like 'OpenAI'. You pay and get no search data back. Do NOT use — it is non-functional as a web search.",
+      "Returns HTTP 200 with a well-formed JSON envelope ({query, resultCount, results[], source:'duckduckgo', timestamp}) so it LOOKS like it works on status code alone; you must inspect results[] which is always empty."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is effectively broken: POST to https://web-search.api.klymax402.com/api/search with body {query, count} pays $0.003 USDC on Base and returns a 200 with valid JSON shape, but body.results[] is always empty (resultCount:0) even for common queries like \"OpenAI\". Do not rely on it for web search — it charges without returning any results. If retesting, check body.results[] length, not just the HTTP status.",
+    "costObservedUsd": 0.003
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "klymax-web-search#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "serviceId": "channel3-commerce",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableproduct.dev/api/channel3/v0/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stableproduct.dev/api/channel3/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableproduct.dev/api/channel3/v0/search with JSON body {\"query\":\"red shoes\"} (NOTE: POST, not GET as registry states)",
+    "inputExample": {
+      "query": "red shoes"
+    },
+    "outputShape": "Response body is a JSON ARRAY of product objects (not wrapped). Each item: body[].id, body[].title, body[].brands[].name, body[].main_image_url, body[].categories[], body[].price.price, body[].price.currency, body[].availability, body[].best_offer.url (buy link), body[].offers[].{url,domain,price.price,availability}.",
+    "quirks": [
+      "Registry lists method=GET but the endpoint is POST-ONLY. A GET returns HTTP 405 (Allow: OPTIONS, POST). You MUST use POST.",
+      "Send a JSON body with at least {\"query\": \"...\"}; Content-Type: application/json. Empty {} is also accepted/payable but query is what makes it useful.",
+      "Response is a top-level JSON ARRAY of products, not an object with a results field.",
+      "Price is fixed 0.01 USDC on Base (eip155:8453 USDC), advertised as 'Varies' in the registry.",
+      "Optional advanced params (from the 402 bazaar schema): limit (1-30, default 20), filters{brand_ids,gender,condition,age,price{min_price,max_price},availability,...}, config{language,country,currency,keyword_search_only}, image_url / base64_image for visual search, page_token for pagination.",
+      "best_offer.url and offers[].url are trychannel3.com affiliate buy-links (purchase happens off-platform, not via this endpoint)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://stableproduct.dev/api/channel3/v0/search (NOT GET — GET returns 405) with header Content-Type: application/json and JSON body {\"query\":\"<search text>\"}. x402 will charge 0.01 USDC on Base. The 200 response is a JSON array of product objects; read each product's title, price.price/price.currency, availability, and main_image_url, and use best_offer.url (or offers[].url) as the buy link. This is a read-only product-catalog search — it returns listings/affiliate links and does not place orders, so no approval needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "channel3-commerce#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "channel3-commerce#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

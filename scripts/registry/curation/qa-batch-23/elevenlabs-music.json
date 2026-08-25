@@ -1,0 +1,57 @@
+{
+  "serviceId": "elevenlabs-music",
+  "subcat": "music-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/audio/elevenlabs-music",
+      "method": "POST",
+      "amountUsd": 0.083333
+    },
+    {
+      "backend": "https://x402.orth.sh/elevenlabs/v1/music",
+      "method": "POST",
+      "amountUsd": 0.5
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/base-main/audio/elevenlabs-music with JSON body {prompt, music_length_ms?, output_format?, force_instrumental?}",
+    "inputExample": {
+      "prompt": "a short upbeat acoustic guitar loop",
+      "music_length_ms": 10000
+    },
+    "outputShape": "body.music_url (MP3 CDN URL), body.duration_seconds, body.metadata.{model,output_format,music_length_ms,generatedAt}",
+    "quirks": [
+      "Dynamic pricing: $1 per 120 seconds, max 180000ms (3 min). The registry $0.250 is only a nominal surface price; the real charge scales with music_length_ms (10000ms cost $0.0833 here). Set --cap accordingly for longer tracks.",
+      "x402 settlement can fail transiently on-chain ('settle_exact_failed_onchain') returning a 402 with costUsd 0 (no money lost). Simply retry once; the second attempt settled and succeeded.",
+      "Body field is 'prompt' (required). Optional: music_length_ms (1000-180000), output_format (e.g. mp3_standard), force_instrumental (bool). Schema is published in the 402 response's extensions.bazaar.schema.",
+      "Result is a remote MP3 URL (body.music_url) on a DigitalOcean Spaces CDN, not inline audio bytes — fetch it to download the track."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://api.xona-agent.com/base-main/audio/elevenlabs-music with JSON {\"prompt\":\"...\"}. Optional music_length_ms (1000-180000), output_format, force_instrumental. Dynamic price $1/120s (max 3min); ~$0.08 for 10s, ~$1.50 for full 3min — size cap to duration. Synchronous: read body.music_url for the MP3. Retry once on transient 402 settle_exact_failed_onchain.",
+    "costObservedUsd": 0.083333
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "elevenlabs-music#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.083333
+    },
+    {
+      "key": "elevenlabs-music#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.5
+    }
+  ]
+}

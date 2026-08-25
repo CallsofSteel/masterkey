@@ -1,0 +1,77 @@
+{
+  "serviceId": "defillama",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/defillama/protocols",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/defillama/chains",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/defillama/yields",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/defillama/prices/{coins}",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/defillama/prices/{coins} where {coins} is a DefiLlama coin id (e.g. coingecko:ethereum or {chain}:{tokenAddress}, comma-separated for multiple)",
+    "inputExample": {
+      "coins": "coingecko:ethereum"
+    },
+    "outputShape": "body.coins[\"<coinId>\"].price, .symbol, .timestamp, .confidence (e.g. body.coins[\"coingecko:ethereum\"].price)",
+    "quirks": [
+      "The {coins} path segment is NOT free-form — it must use DefiLlama coin-id syntax: 'coingecko:<id>' (e.g. coingecko:ethereum) or '<chain>:<tokenAddress>' (e.g. ethereum:0x...). The input/output schema in the registry is null, so this format is not documented there.",
+      "Multiple coins can be requested comma-separated in the same path segment; the response keys each by its coin id under body.coins.",
+      "x402 micropayment of $0.001 USDC on Base; pay-per-call, no API key."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/defillama/prices/{coins} where {coins} is a DefiLlama coin identifier such as coingecko:ethereum or chain:tokenAddress (comma-separate several in one request). It is x402-paid ($0.001 USDC on Base, no API key) and returns synchronously. Read the price from body.coins[\"<your-coin-id>\"].price, with .symbol, .timestamp, and .confidence alongside it.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "defillama#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "defillama#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "defillama#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "defillama#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

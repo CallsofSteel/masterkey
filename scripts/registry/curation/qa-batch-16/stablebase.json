@@ -1,0 +1,46 @@
+{
+  "serviceId": "stablebase",
+  "subcat": "relational-databases",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablebase.dev/api/stablebase/database/query",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stablebase.dev/api/stablebase/database/query with JSON body {ref, query}",
+    "inputExample": {
+      "ref": "abcdefghijklmnop",
+      "query": "SELECT 1"
+    },
+    "outputShape": "untested — query result rows (output schema empty; expected rows array in body)",
+    "quirks": [
+      "Requires a valid `ref` for a Postgres project OWNED BY THE CALLING WALLET — access is wallet-scoped, you can only query projects your own wallet created.",
+      "No standalone ref exists: you must first POST /api/stablebase/projects/create ($1.00) to provision a DB and get a ref, OR POST /api/stablebase/projects/list ({}, $0.01) to find an existing one.",
+      "Master wallet currently owns ZERO projects (projects/list returned []), so this query endpoint could not be exercised with a real ref.",
+      "The PAYING wallet must match the owning wallet — querying with a ref owned by a different wallet will be rejected.",
+      "Guessing/fabricating a ref will 404 and waste the $0.02 payment."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Stablebase query runs SQL against a serverless Postgres project that YOUR wallet owns. Before calling, obtain a `ref`: either provision one via POST https://stablebase.dev/api/stablebase/projects/create ($1.00, body {name, db_pass, region}) or find an existing owned one via POST https://stablebase.dev/api/stablebase/projects/list ({}, $0.01). Then POST https://stablebase.dev/api/stablebase/database/query with {ref, query} ($0.02) and read the returned rows from the JSON body. Access is wallet-scoped, so the wallet that pays for the query must be the same one that created the project; a foreign or fake ref fails.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablebase#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

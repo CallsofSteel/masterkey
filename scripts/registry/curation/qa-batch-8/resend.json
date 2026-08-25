@@ -1,0 +1,51 @@
+{
+  "serviceId": "resend",
+  "subcat": "email",
+  "batchId": "batch-8",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/resend/v1/emails",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/resend/v1/emails with JSON body {from, to[], subject, text|html}",
+    "inputExample": {
+      "from": "onboarding@resend.dev",
+      "to": [
+        "john.doe@gmail.com"
+      ],
+      "subject": "MasterKey registry QA — Resend via HTTPay",
+      "text": "This is a money-real QA test confirming the Resend x402 gateway endpoint works. — MasterKey QA"
+    },
+    "outputShape": "N/A — endpoint never returns email result; after payment it returns body.error + body.instructions (401)",
+    "quirks": [
+      "RECIPIENT NON-DELIVERY CONFIRMED 2026-06-09: the user (john.doe@gmail.com) received NO email from this service during QA — corroborates broken/untested (do not mark verified on a paid 200 alone; this one did not actually deliver).",
+      "HTTPay charge-then-401 pattern: the x402 probe returns 402 (looks payable) but after you PAY the gateway returns HTTP 401 'Service \\'resend\\' requires authentication' and instructs you to pass your own upstream Resend API key via the X-Upstream-Token header",
+      "No email is actually sent without your own Resend bearer key — unusable for keyless agents",
+      "Money is lost on the call ($0.001) even though it 401s — do NOT retry",
+      "Violates MasterKey no-API-key policy; should be dropped/excluded from the registry"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Do not use this endpoint. Although the x402 preflight shows 402/payable, the HTTPay gateway charges you and then returns 401 requiring your own Resend API key via the X-Upstream-Token header. No email is sent without that upstream key, so it is unusable for a keyless agent and should be excluded from the registry.",
+    "costObservedUsd": 0.001,
+    "droppedReason": "resend#0: HTTPay charge-then-401 pattern: the x402 probe returns 402 (looks payable) but after you PAY the gateway returns HTTP 401 'Service \\'resend\\' requires authentication' and instructs you to pass your own upstream Resend API key via the X-Upstream-Token header"
+  },
+  "droppedReason": "resend#0: HTTPay charge-then-401 pattern: the x402 probe returns 402 (looks payable) but after you PAY the gateway returns HTTP 401 'Service \\'resend\\' requires authentication' and instructs you to pass your own upstream Resend API key via the X-Upstream-Token header",
+  "_backends": [
+    {
+      "key": "resend#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

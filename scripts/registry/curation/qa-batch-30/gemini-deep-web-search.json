@@ -1,0 +1,43 @@
+{
+  "serviceId": "gemini-deep-web-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:687df69ab234010b7d3317e5",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:687df69ab234010b7d3317e5 with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "What is the capital of France?"
+    },
+    "outputShape": "body.response (currently returns the error string \"X402 Service is currently unavailable.\")",
+    "quirks": [
+      "Charge-then-error: returns HTTP 201 and DEBITS payment ($0.10 USDC on Base) but the body is {\"response\":\"X402 Service is currently unavailable.\"} — no real search result.",
+      "The 201 status is misleading; success must be judged by body.response content, not HTTP status.",
+      "QuestFlow x402 agent gateway; price is 'Varies' but observed quote/charge was $0.10."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This QuestFlow x402 agent endpoint is currently broken. A paid POST with JSON body {\"prompt\": \"...\"} returns HTTP 201 but charges USDC and yields body.response = \"X402 Service is currently unavailable.\" — no actual web search result. Do not call it expecting results; it will lose money. If revisited later, send {\"prompt\": \"<query>\"} and read body.response, but only treat it as working if that field contains real content rather than the unavailability message.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-deep-web-search#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "serviceId": "allium-onchain-data",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://agents.allium.so/api/v1/explorer/queries/run-async",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://agents.allium.so/api/v1/developer/wallet/transactions",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://agents.allium.so/api/v1/explorer/queries/run-async with JSON body {\"parameters\":{\"sql\":\"<SQL query string>\"}} -> returns {run_id}. Then GET /api/v1/explorer/query-runs/{run_id}/status (FREE) until \"succeeded\", then GET /api/v1/explorer/query-runs/{run_id}/results (SEPARATE x402 paid ~$0.01) for the rows.",
+    "inputExample": {
+      "parameters": {
+        "sql": "SELECT 1 AS x"
+      }
+    },
+    "outputShape": "Submit: body.run_id (string). Status poll: body is a bare JSON string (\"queued\"|\"running\"|\"succeeded\"|...). Results: body.data[] (rows), body.sql (echoed query).",
+    "quirks": [
+      "Async multi-step flow: the run-async endpoint only submits and returns {run_id} — it does NOT return rows.",
+      "Body shape is {\"parameters\":{\"sql\":\"...\"}} — the SQL goes inside parameters.sql, not at top level.",
+      "Status endpoint GET /api/v1/explorer/query-runs/{run_id}/status is FREE and returns a bare JSON string like \"queued\" then \"running\" then \"succeeded\". Poll it (no payment) until succeeded.",
+      "Fetching results requires a SECOND paid x402 call: GET /api/v1/explorer/query-runs/{run_id}/results (~$0.01 USDC). So a full query costs ~$0.02 total across two paid calls.",
+      "Note path differs: submit uses /queries/run-async but status+results use /query-runs/{run_id}/... (GET /queries/{run_id}/results returns 404).",
+      "Observed price was $0.01 per call (registry listed 0.03/Varies).",
+      "Accepts USDC on Base (eip155:8453), Solana, and X Layer (eip155:196)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Submit a raw SQL query by POSTing JSON {\"parameters\":{\"sql\":\"SELECT ... LIMIT n\"}} to https://agents.allium.so/api/v1/explorer/queries/run-async (x402 paid, ~$0.01). Read run_id from the response. Then poll GET /api/v1/explorer/query-runs/{run_id}/status (free) until it returns \"succeeded\". Finally GET /api/v1/explorer/query-runs/{run_id}/results (a SECOND x402 paid call, ~$0.01) and read the rows from body.data[]. Use small queries with LIMIT — this runs against indexed blockchain data tables (e.g. ethereum.blocks, crosschain.metrics.overview).",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "allium-onchain-data#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "allium-onchain-data#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.03
+    }
+  ]
+}

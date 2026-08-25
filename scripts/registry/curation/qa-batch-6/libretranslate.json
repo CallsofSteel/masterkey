@@ -1,0 +1,58 @@
+{
+  "serviceId": "libretranslate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/translate",
+      "method": "GET"
+    },
+    {
+      "backend": "https://api.memoryapi.org/x402/translate",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://httpay.xyz/api/translate?text=<text>&source=<lang>&target=<lang> (NOT POST — POST returns 404). x402 on Base, quote $0.003.",
+    "inputExample": {
+      "text": "hello",
+      "source": "en",
+      "target": "es"
+    },
+    "outputShape": "BROKEN: response is 200 but body is {error, detail, meta} — never returns a translation. Working shape would be body.translatedText but it is never produced.",
+    "quirks": [
+      "Registry CALL method (POST) is WRONG: POST /api/translate returns 404 'Cannot POST /api/translate' (no charge).",
+      "The x402 402 schema declares input.method enum [GET,HEAD,DELETE]; correct method is GET with query params.",
+      "Param name is ?text= NOT ?q= (paying with ?q= returns 200 {error:'Missing ?text= parameter'} and STILL charges $0.003).",
+      "priceDisplay 'Free' is wrong — endpoint quotes $0.003 USDC on Base (3000 atomic units).",
+      "BACKEND DEAD: gateway forwards to upstream LibreTranslate which returns HTTP 400 'Visit https://portal.libretranslate.com to get an API key'. The gateway has no upstream key, so it charges but can never translate.",
+      "Returns HTTP 200 even on failure — the real error is inside body.error/body.detail, so status code is not a reliable success signal."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do NOT use this endpoint — it is broken and will charge you ($0.003 USDC on Base) without translating. The correct call is GET https://httpay.xyz/api/translate?text=hello&source=en&target=es (POST 404s; param is text not q), but the upstream LibreTranslate instance behind the gateway demands its own API key the gateway does not supply, so every paid call returns HTTP 200 with body {error:'LibreTranslate returned HTTP 400', detail:'...get an API key'} and no translation. Skip it.",
+    "costObservedUsd": 0.006
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "libretranslate#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "libretranslate#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

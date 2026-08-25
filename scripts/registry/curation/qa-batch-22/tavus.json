@@ -1,0 +1,42 @@
+{
+  "serviceId": "tavus",
+  "subcat": "avatars-digital-humans",
+  "batchId": "batch-22",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/tavus/v2/conversations",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/tavus/v2/conversations (as registered) — returns 404, route does not exist",
+    "inputExample": {},
+    "outputShape": "body.error, body.message (404 error: \"No matching endpoint found for GET /v2/conversations\")",
+    "quirks": [
+      "GET https://x402.orth.sh/tavus/v2/conversations returns HTTP 404 'No matching endpoint found for GET /v2/conversations' — no 402, no payment taken, no money lost.",
+      "The registry probe that classified this payable used POST (status 402), not GET. Tavus creates conversations via POST /v2/conversations, so the working method is almost certainly POST — the GET registration is wrong.",
+      "Do NOT retry GET; the route is dead. A future fix should re-register this as POST and re-QA, since POST may also require a body (e.g. {persona_id} or {replica_id})."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "As registered (GET https://x402.orth.sh/tavus/v2/conversations) this endpoint is broken: it returns HTTP 404 'No matching endpoint found for GET /v2/conversations' with no payment required. Do not call it as a GET. The Tavus conversations API creates a conversation via POST /v2/conversations (the registry's own probe got a 402 on POST), likely requiring a body such as a persona_id or replica_id, so the registered method/shape is incorrect and must be fixed before this can work.",
+    "costObservedUsd": 0,
+    "droppedReason": "tavus#0: GET https://x402.orth.sh/tavus/v2/conversations returns HTTP 404 'No matching endpoint found for GET /v2/conversations' — no 402, no payment taken, no money lost."
+  },
+  "droppedReason": "tavus#0: GET https://x402.orth.sh/tavus/v2/conversations returns HTTP 404 'No matching endpoint found for GET /v2/conversations' — no 402, no payment taken, no money lost.",
+  "_backends": [
+    {
+      "key": "tavus#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

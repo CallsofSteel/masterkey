@@ -1,0 +1,952 @@
+[
+  {
+    "id": "stableupload-file-upload",
+    "kind": "api",
+    "name": "StableUpload File Upload",
+    "aka": [
+      "stableupload-file-upload",
+      "upload"
+    ],
+    "provider": "stableupload",
+    "providerId": "stableupload",
+    "description": "Buy a pay-per-upload single-file hosting slot. Returns a presigned S3 form to upload one file plus a permanent publicUrl that serves the bytes until expiresAt. No API key (x402/MPP on Base).",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "file-storage",
+      "upload",
+      "hosting",
+      "permanent-url"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableupload",
+        "providerId": "stableupload",
+        "url": "https://stableupload.dev/api/upload",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x06dFF3c8380b5D1799874adA903fc3422882FD6f",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "95xcrFtRVn2fkoAKiCUKxPpTc1GN8MTyonVwLFfJfzux",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "dmiKRewjvSBZeHQKFYuLnGoFq1XJiVcL4T4KyjN64w5",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://stableupload.dev/api/upload with JSON {filename, contentType, tier, policyTtlSeconds?}. Then perform the two-step upload: if uploadMethod=='post', POST multipart/form-data to postUrl with EVERY postFields key/value PLUS a 'file' part containing the bytes (use curlExample verbatim); if 'put', PUT raw bytes to uploadUrl with the requested Content-Type. The file is then served at publicUrl.",
+      "inputExample": {
+        "filename": "a.txt",
+        "contentType": "text/plain",
+        "tier": "short-10mb"
+      },
+      "outputShape": "uploadId, uploadUrl, uploadMethod ('post'|'put'), uploadUrlExpiresAt, postUrl, postFields.{key,Content-Type,x-amz-algorithm,x-amz-credential,x-amz-date,policy,x-amz-signature}, publicUrl, expiresAt, maxSize, curlExample, txHash",
+      "quirks": [
+        "REQUIRED fields: filename, contentType, tier. contentType is MANDATORY here (the site endpoint does NOT take it) — omitting it 400s.",
+        "Two-step flow: the POST only ISSUES a presigned S3 form; it does NOT accept file bytes. Upload the bytes separately to postUrl (uploadMethod 'post', multipart with all postFields + 'file') or uploadUrl ('put', raw bytes). curlExample is the exact command.",
+        "Unlike /api/site, this response DOES include publicUrl (served at https://f.stableupload.dev/<uploadId>/<filename>). Bytes available until expiresAt.",
+        "PRICE IS TIER-DEPENDENT and the body 'tier' overrides the x402 default quote. File tiers (6-month): 10mb=$0.02, 100mb=$0.20, 1gb=$2.00. Short-term 7-day: short-10mb=$0.005, short-100mb=$0.02, short-1gb=$0.10, short-5gb=$0.50 (5gb is FILE-ONLY, not sites). Pick smallest that fits.",
+        "Use short-* tiers only for temporary/intermediate links; default to 6-month tiers for anything a user keeps.",
+        "Optional policyTtlSeconds (60-86400) sets the presigned form/URL TTL (uploadUrlExpiresAt) — use a longer TTL only when handing the postUrl/postFields to a downstream service to upload.",
+        "Presigned form expires fast (uploadUrlExpiresAt ~15 min) — upload promptly.",
+        "S3 enforces Content-Type and a content-length-range (maxSize) before storing; mismatched Content-Type is rejected by S3.",
+        "txHash may be null in the qa-pay response (paid:true, confirmed:false) yet payment settles and the call returns 200.",
+        "Owner-side SIWX (free, no payment) helpers exist for inspection: GET /api/uploads (list wallet uploads), GET /api/download/:uploadId (metadata only, not bytes)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Buy a pay-per-upload single-file hosting slot. Returns a presigned S3 form to upload one file plus a permanent publicUrl that serves the bytes until expiresAt. No API key (x402/MPP on Base). POST https://stableupload.dev/api/upload with JSON {filename, contentType, tier, policyTtlSeconds?}. Then perform the two-step upload: if uploadMethod=='post', POST multipart/form-data to postUrl with EVERY postFields key/value PLUS a 'file' part containing the bytes (use curlExample verbatim); if 'put', PUT raw bytes to uploadUrl with the requested Content-Type. The file is then served at publicUrl. Output: uploadId, uploadUrl, uploadMethod ('post'|'put'), uploadUrlExpiresAt, postUrl, postFields.{key,Content-Type,x-amz-algorithm,x-amz-credential,x-amz-date,policy,x-amz-signature}, publicUrl, expiresAt, maxSize, curlExample, txHash",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "stableupload-file-upload",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "stableupload-site-create",
+    "kind": "api",
+    "name": "StableUpload Site Create",
+    "aka": [
+      "stableupload-site-create",
+      "site-create"
+    ],
+    "provider": "stableupload",
+    "providerId": "stableupload",
+    "description": "Buy a static-site hosting slot: upload a zip, activate it, and serve it as a static website at <uploadId>.s.stableupload.dev. No API key (x402/MPP on Base).",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "file-storage",
+      "upload",
+      "hosting",
+      "permanent-url"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableupload",
+        "providerId": "stableupload",
+        "url": "https://stableupload.dev/api/site",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x06dFF3c8380b5D1799874adA903fc3422882FD6f",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "95xcrFtRVn2fkoAKiCUKxPpTc1GN8MTyonVwLFfJfzux",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "FiQSTyyLLFTXzaSxWioougLFPLPVNWQKEKJDUbhMHakj",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "POST https://stableupload.dev/api/site with JSON {filename, tier, policyTtlSeconds?} (NO contentType). Then POST the zip multipart/form-data to postUrl with every postFields entry + a 'file' part (curlExample). Then POST /api/site/activate (SIWX) with {uploadId} to extract the zip and get siteUrl. To update later: PUT /api/site (SIWX) {uploadId} -> upload new zip -> POST /api/site/activate again.",
+      "inputExample": {
+        "filename": "site.zip",
+        "tier": "short-10mb"
+      },
+      "outputShape": "uploadId, uploadUrl, uploadMethod, uploadUrlExpiresAt, postUrl, postFields.{key,Content-Type='application/zip',...}, expiresAt, maxSize, curlExample, txHash (NO publicUrl)",
+      "quirks": [
+        "REQUIRED fields: filename, tier ONLY. Do NOT send contentType — the API forces Content-Type application/zip on the S3 form regardless.",
+        "Response does NOT include publicUrl (unlike /api/upload). The usable site URL comes only AFTER POST /api/site/activate (SIWX), typically https://<uploadId>.s.stableupload.dev/.",
+        "THREE-step flow: (1) POST /api/site (paid) issues a presigned S3 form, (2) POST the zip bytes to postUrl as multipart (all postFields + 'file'; S3 returns 204), (3) POST /api/site/activate {uploadId} to extract & go live. Activate runs once per uploaded zip; re-activating an already-live site without a new zip errors.",
+        "Site tier = uncompressed extracted total; max 500 files per site. Allowed site tiers: 10mb,100mb,1gb,short-10mb,short-100mb,short-1gb. short-5gb is NOT supported for sites.",
+        "PRICE IS TIER-DEPENDENT, body 'tier' overrides the x402 default quote: 10mb=$0.02,100mb=$0.20,1gb=$2.00; short-10mb=$0.005,short-100mb=$0.02,short-1gb=$0.10. Retention: short-* = 7 days, default tiers = 6 months.",
+        "Presigned form expires fast (~15 min) — upload promptly.",
+        "txHash may be null (paid:true, confirmed:false) but payment settles, returns 200.",
+        "Custom domains supported via SIWX endpoints (GET /api/site/domain/preview -> create CNAMEs -> POST /api/site/domain -> poll GET /api/site/domain/status until ssl=='active'); subdomains only, not apex."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Buy a static-site hosting slot: upload a zip, activate it, and serve it as a static website at <uploadId>.s.stableupload.dev. No API key (x402/MPP on Base). POST https://stableupload.dev/api/site with JSON {filename, tier, policyTtlSeconds?} (NO contentType). Then POST the zip multipart/form-data to postUrl with every postFields entry + a 'file' part (curlExample). Then POST /api/site/activate (SIWX) with {uploadId} to extract the zip and get siteUrl. To update later: PUT /api/site (SIWX) {uploadId} -> upload new zip -> POST /api/site/activate again. Output: uploadId, uploadUrl, uploadMethod, uploadUrlExpiresAt, postUrl, postFields.{key,Content-Type='application/zip',...}, expiresAt, maxSize, curlExample, txHash (NO publicUrl)",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "stableupload-site-create",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "stableupload-site-renew",
+    "kind": "api",
+    "name": "StableUpload Site Renew",
+    "aka": [
+      "stableupload-site-renew",
+      "site-renew"
+    ],
+    "provider": "stableupload",
+    "providerId": "stableupload",
+    "description": "Extend the retention window of an existing StableUpload static site by count x the original tier period. Price = tier price x count. No API key (x402/MPP on Base).",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "file-storage",
+      "upload",
+      "hosting",
+      "permanent-url"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableupload",
+        "providerId": "stableupload",
+        "url": "https://stableupload.dev/api/site/renew",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x06dFF3c8380b5D1799874adA903fc3422882FD6f",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "95xcrFtRVn2fkoAKiCUKxPpTc1GN8MTyonVwLFfJfzux",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "FiQSTyyLLFTXzaSxWioougLFPLPVNWQKEKJDUbhMHakj",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://stableupload.dev/api/site/renew with JSON {uploadId, tier, count?}. Single metadata call (no S3 upload step). Returns the new expiry.",
+      "inputExample": {
+        "uploadId": "8432en6evc",
+        "tier": "short-10mb",
+        "count": 1
+      },
+      "outputShape": "uploadId, newExpiresAt (ISO; extended by count x tier retention window), count",
+      "quirks": [
+        "REQUIRED: uploadId, tier. tier MUST MATCH the original tier the site was created with — a mismatch is rejected.",
+        "DEPENDENT op: requires a pre-existing site uploadId (from POST /api/site). Cannot be called standalone; verified by renewing a site bought moments earlier in the same run.",
+        "count (default 1, range 1-10) = number of retention periods to add. Price = tier price x count, so short-10mb x1 = $0.005; 100mb x4 = $0.80. The x402 default quote ($0.005-$20.00 range) is overridden by tier x count.",
+        "Single-step — unlike upload/site there is NO presigned form and NO byte upload; returns immediately with newExpiresAt.",
+        "Verified: renewing short-10mb x1 pushed newExpiresAt out by 7 days from the prior expiresAt.",
+        "txHash may be null (paid:true, confirmed:false) but payment settles, returns 200."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Extend the retention window of an existing StableUpload static site by count x the original tier period. Price = tier price x count. No API key (x402/MPP on Base). POST https://stableupload.dev/api/site/renew with JSON {uploadId, tier, count?}. Single metadata call (no S3 upload step). Returns the new expiry. Output: uploadId, newExpiresAt (ISO; extended by count x tier retention window), count",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "stableupload-site-renew",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "miniup-file-storage",
+    "kind": "api",
+    "name": "MiniUp File Storage",
+    "aka": [],
+    "provider": "MiniUp",
+    "providerId": "miniup",
+    "description": "MiniUp — presigned file uploads and data-file storage (create/replace, multipart, convert).",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "file-storage",
+      "upload",
+      "presigned"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "www.miniup",
+        "providerId": "www-miniup",
+        "url": "https://www.miniup.io/api/x402/apps/:siteId/data-files/upload-url",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": 0.001,
+          "max": 0.001,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x318a8BAC69c4ec1F9e489CE223B7cE2D719bcD3b",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "fileName": {
+              "type": "string"
+            },
+            "fileSize": {
+              "type": "number"
+            },
+            "fileType": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "fileName",
+            "fileSize"
+          ]
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "untested",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://www.miniup.io/api/x402/apps/:siteId/data-files/upload-url with JSON body {fileName, fileSize, fileType?}",
+      "inputExample": {
+        "fileName": "test.txt",
+        "fileSize": 1024,
+        "fileType": "text/plain"
+      },
+      "outputShape": "untested — outputSchema is generic {object}; expected to return a presigned upload URL (likely body.uploadUrl or similar) for the named file",
+      "quirks": [
+        "URL has an unresolved :siteId path segment that identifies a specific MiniUp app/site the caller must own — it cannot be filled from schema/instructions/managedResource, all null",
+        "Cannot be pay-tested without a valid siteId; an arbitrary siteId would 404 and waste USDC",
+        "Body requires fileName + fileSize (number); fileType optional"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint issues a presigned upload URL for a data file in a specific MiniUp app/site, identified by the :siteId path segment. You MUST supply a real siteId for an app you own/created on miniup.io — there is no default and it is not derivable from the registry. POST JSON {fileName, fileSize, fileType?} where fileSize is a number (bytes). The response is expected to contain a presigned upload URL you then PUT/POST the file bytes to. Without a known siteId this call cannot be made safely (it would 404).",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "miniup-file-storage",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "needs-input"
+  },
+  {
+    "id": "onesource-storage",
+    "kind": "api",
+    "name": "OneSource Storage",
+    "aka": [],
+    "provider": "OneSource",
+    "providerId": "onesource",
+    "description": "OneSource — pay-per-call file/object storage.",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "file-storage",
+      "object-storage"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "skills.onesource",
+        "providerId": "skills-onesource",
+        "url": "https://skills.onesource.io/api/chain/storage",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402",
+            "mpp",
+            "mpp"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "currency": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0x52E29e0d2Aa49bfBfC548C0A9F2196F4aa51f3ea",
+              "recipient": "0x52E29e0d2Aa49bfBfC548C0A9F2196F4aa51f3ea",
+              "maxTimeoutSeconds": 3600,
+              "extra": {
+                "credentialTypes": [
+                  "authorization"
+                ],
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "batch-settlement",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "currency": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0x52E29e0d2Aa49bfBfC548C0A9F2196F4aa51f3ea",
+              "recipient": "0x52E29e0d2Aa49bfBfC548C0A9F2196F4aa51f3ea",
+              "maxTimeoutSeconds": 3600,
+              "extra": {
+                "name": "USD Coin",
+                "receiverAuthorizer": "0x11dF9F6280632aB8F12926b3f569E493EaEcf81b",
+                "version": "2",
+                "withdrawDelay": 86400
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "parameters": [
+            {
+              "description": "Contract address",
+              "in": "query",
+              "name": "contract",
+              "required": true,
+              "schema": {
+                "pattern": "^0x[a-fA-F0-9]{40}$",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Storage slot (hex)",
+              "in": "query",
+              "name": "slot",
+              "required": true,
+              "schema": {
+                "pattern": "^0x[a-fA-F0-9]+$",
+                "type": "string"
+              }
+            },
+            {
+              "description": "Block tag (default: \"latest\")",
+              "in": "query",
+              "name": "block",
+              "required": false,
+              "schema": {
+                "oneOf": [
+                  {
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  {
+                    "enum": [
+                      "latest",
+                      "pending",
+                      "earliest",
+                      "safe",
+                      "finalized"
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "pattern": "^0x[a-fA-F0-9]+$",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "description": "Blockchain network",
+              "in": "query",
+              "name": "network",
+              "required": false,
+              "schema": {
+                "default": "ethereum",
+                "enum": [
+                  "ethereum",
+                  "sepolia",
+                  "avax",
+                  "megaeth",
+                  "megaeth-testnet",
+                  "base"
+                ],
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "outputSchema": {
+          "properties": {
+            "data": {
+              "description": "Response payload",
+              "type": "object"
+            },
+            "error": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "meta": {
+              "properties": {
+                "cost_usdc": {
+                  "type": "string"
+                },
+                "endpoint": {
+                  "type": "string"
+                },
+                "payment_chain": {
+                  "type": "string"
+                },
+                "payment_token": {
+                  "type": "string"
+                },
+                "request_id": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://skills.onesource.io/api/chain/storage?contract=0x...&slot=0x...&network=ethereum (query params; no body)",
+      "inputExample": {
+        "contract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "slot": "0x0",
+        "network": "ethereum"
+      },
+      "outputShape": "body.data.value (32-byte hex word read from the storage slot); body.meta.request_id, body.meta.endpoint",
+      "quirks": [
+        "Despite the name 'OneSource Storage' / subcat object-file-storage, this is NOT file storage — it is an EVM contract storage-slot reader (eth_getStorageAt).",
+        "Required query params: contract (0x + 40 hex) and slot (0x + hex). Optional: block (default 'latest'), network (default 'ethereum'; enum: ethereum, sepolia, avax, megaeth, megaeth-testnet, base).",
+        "Result word is in body.data.value as a 32-byte 0x hex string; for address-typed slots the address is the low 20 bytes."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://skills.onesource.io/api/chain/storage with query params contract (the 0x contract address) and slot (the storage slot as 0x hex), optionally block (default latest) and network (default ethereum). Payment is x402 USDC on Base, $0.005 per call, no API key. The raw 32-byte storage word comes back as a hex string at body.data.value; decode it for the type you expect (e.g. low 20 bytes = an address). This is a contract-storage reader (eth_getStorageAt), not a file/blob store.",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "onesource-storage",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "webbersites-scratchpad-list",
+    "kind": "api",
+    "name": "Webbersites Scratchpad List",
+    "aka": [
+      "webbersites-scratchpad-list",
+      "scratchpad",
+      "list-scratchpads"
+    ],
+    "provider": "webbersites",
+    "providerId": "webbersites",
+    "description": "Lists the paying wallet's own scratchpads (agent-memory pads) with their names, byte sizes, and updated/expiry dates — the cheap 'do I have memory here?' check at the start of a session.",
+    "category": "database-storage",
+    "subcategory": "object-file-storage",
+    "tags": [
+      "agent-memory",
+      "datastore",
+      "scratchpad",
+      "storage",
+      "x402"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "webbersites",
+        "providerId": "webbersites",
+        "url": "https://api.webbersites.com/api/scratchpad",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {},
+          "description": "No request parameters. The paying x402 wallet is the identity that owns the scratchpads."
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "wallet": {
+              "type": "string"
+            },
+            "pads": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "bytes": {
+                    "type": "number"
+                  },
+                  "updated_at": {
+                    "type": "string"
+                  },
+                  "expires_at": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:43:31.495Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31T00:15:16.768Z",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.webbersites.com/api/scratchpad with no query params or body; the paying x402 wallet is the identity whose scratchpads are listed.",
+      "inputExample": {},
+      "outputShape": "JSON object { wallet: string, pads: Array<{ name, bytes, updated_at, expires_at }>, hint?: string, ts: string }. For a wallet with no pads yet, pads is [] and hint suggests POST /api/scratchpad/{name} to create one.",
+      "quirks": [
+        "Account-bound: results are scoped to the paying wallet address (no accounts or API keys). A fresh wallet returns pads: [] plus a hint.",
+        "Sibling ops on the same host manage individual pads: POST/GET/DELETE /api/scratchpad/{name} to write, read, or delete a named pad.",
+        "Provider offers a repeat-buyer discount ($0.0005 instead of $0.001) if you pass ?wallet= or an X-Wallet header after any purchase in the last 24h; the base indexed price is $0.001.",
+        "Response also includes a ts timestamp and, on empty accounts, a hint field."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://api.webbersites.com/api/scratchpad with no parameters to enumerate the paying wallet's scratchpad memory pads. Read a pad's contents with GET /api/scratchpad/{name}; create/update with POST /api/scratchpad/{name} (text or JSON); delete with DELETE /api/scratchpad/{name}.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "webbersites-scratchpad-list",
+      "discoveredVia": [
+        "object storage",
+        "file storage api",
+        "upload file"
+      ],
+      "lastSyncedAt": "2026-06-01T23:43:31.495Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

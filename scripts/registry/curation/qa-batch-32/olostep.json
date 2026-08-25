@@ -1,0 +1,47 @@
+{
+  "serviceId": "olostep",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/olostep/v1/scrapes",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/olostep/v1/scrapes with JSON body {url_to_scrape, formats?}",
+    "inputExample": {
+      "url_to_scrape": "https://example.com",
+      "formats": [
+        "markdown"
+      ]
+    },
+    "outputShape": "body.result.markdown_content (also .result.html_content, .result.text_content, .result.json_content; hosted file mirrors at .result.markdown_hosted_url / .result.html_hosted_url etc.; .result.links_on_page[]; .result.page_metadata.status_code)",
+    "quirks": [
+      "Only url_to_scrape is required. formats is a string array e.g. [\"markdown\",\"html\",\"text\"]; the chosen format populates the matching .result.<fmt>_content field and the others stay null.",
+      "Result is nested under body.result, not at top level. Each scrape also gets a hosted S3 URL mirror (e.g. .result.markdown_hosted_url) you can fetch for free.",
+      "Synchronous: response returns the scraped content directly with status:200, no polling/job id."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/olostep/v1/scrapes with a JSON body containing url_to_scrape (required) and optionally formats (e.g. [\"markdown\"]). Payment is x402 USDC on Base, ~$0.01 per call. The response is synchronous (status 200) with the scraped content under body.result — read body.result.markdown_content (or the *_content field matching your requested format). Optional knobs: remove_images, remove_css_selectors, country, transformer, links_on_page, llm_extract, parser. No auth/sign-in needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "olostep#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

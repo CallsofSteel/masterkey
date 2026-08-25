@@ -1,0 +1,47 @@
+{
+  "serviceId": "elevenlabs",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/elevenlabs/v1/text-to-speech/{voice_id}",
+      "method": "POST",
+      "amountUsd": 0.08
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/elevenlabs/v1/text-to-speech/{voice_id} with JSON body {text}. voice_id is a REQUIRED path segment (use a real ElevenLabs voice id, e.g. 21m00Tcm4TlvDq8ikWAM for the default Rachel voice).",
+    "inputExample": {
+      "text": "hello how are you?"
+    },
+    "outputShape": "Raw response body is binary audio (Content-Type: audio/mpeg, MP3). Not JSON — save the bytes directly to a .mp3 file.",
+    "quirks": [
+      "The registry-listed URL/method are WRONG: it shows GET https://x402.orth.sh/elevenlabs/v1/text-to-speech/{voice_id} but the real call is POST and {voice_id} must be a concrete value.",
+      "The base path WITHOUT a voice_id (https://x402.orth.sh/elevenlabs/v1/text-to-speech) returns 404 for both GET and POST — you MUST append a real voice_id path segment.",
+      "Use a real ElevenLabs voice id in the path. 21m00Tcm4TlvDq8ikWAM (Rachel) is a known-good default and was used for this verified call.",
+      "Response is binary MP3 audio, NOT JSON. Write the raw body to disk as .mp3.",
+      "body.text is the only required field; optional: model_id, language_code, voice_settings, seed, previous_text, next_text, apply_text_normalization. Optional query params: output_format, enable_logging.",
+      "Price is per-call ~$0.08 USDC on Base (maxAmountRequired 80000), billed against api.elevenlabs.io/v1/text-to-speech/{voice_id}."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402.orth.sh/elevenlabs/v1/text-to-speech/{voice_id} where {voice_id} is a real ElevenLabs voice id (e.g. 21m00Tcm4TlvDq8ikWAM for the default Rachel voice) — the base path without a voice_id 404s. Send a JSON body {\"text\":\"...your text...\"}; optionally add model_id, voice_settings, or an output_format query param. Pay the x402 quote (~$0.08 USDC on Base). The response body is raw MP3 audio (Content-Type audio/mpeg), so write the bytes straight to a .mp3 file — do not parse it as JSON.",
+    "costObservedUsd": 0.08
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "elevenlabs#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

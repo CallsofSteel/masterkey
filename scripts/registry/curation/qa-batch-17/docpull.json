@@ -1,0 +1,45 @@
+{
+  "serviceId": "docpull",
+  "subcat": "ocr-document-extraction",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://docpull.ai/extract",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://docpull.ai/extract with JSON body {url}",
+    "inputExample": {
+      "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    },
+    "outputShape": "body.markdown (extracted text as Markdown string); also body.success (bool), body.pageCount (int), body.charCount (int)",
+    "quirks": [
+      "Registry surface says METHOD=GET, but GET https://docpull.ai/extract returns ONLY an API help/info page (not an extraction) and STILL charges $0.001 — do NOT use GET. The real extraction is POST https://docpull.ai/extract with JSON body {\"url\":\"<public_pdf_url>\"}.",
+      "Pricing is $0.001 USDC PER PAGE, not per call. A 12-page PDF costs ~$0.012. Budget accordingly for large PDFs.",
+      "Free pre-flight: GET https://docpull.ai/probe?url=<pdf_url> returns page count + cost estimate with no payment — call it first to size the cost.",
+      "url must be a publicly accessible PDF (no auth/login walls)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://docpull.ai/extract with JSON body {\"url\":\"<public PDF url>\"} and pay via x402 (USDC on Base). Do NOT use GET — GET only returns a help page yet still bills $0.001. Read the result from body.markdown (clean Markdown of the PDF), with body.pageCount and body.charCount as metadata. Pricing is $0.001 per page; optionally hit the free GET /probe?url=<pdf_url> first to get the page count and cost estimate before paying.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "docpull#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

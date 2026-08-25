@@ -1,0 +1,44 @@
+{
+  "serviceId": "melotts",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/v1/ai/tts",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "UNRESOLVED — conflicting targets. Spec: GET https://x402helper.xyz/v1/ai/tts. Task header: POST https://api.xona-agent.com/base-main/audio/melotts.",
+    "inputExample": {
+      "text": "hello how are you?"
+    },
+    "outputShape": "unknown (untested) — likely audio bytes (audio/mpeg or audio/wav) in response body, since this is a TTS endpoint",
+    "quirks": [
+      "Registry spec URL (GET https://x402helper.xyz/v1/ai/tts) and the QA task header URL (POST https://api.xona-agent.com/base-main/audio/melotts) disagree — two unrelated domains AND methods. Cannot test without resolving which is the real money-real destination.",
+      "inputSchema, instructions, async, managedResource are all null in the spec — body/query param shape for the text is unspecified (best guess: 'text').",
+      "Probe was run with POST and returned 402, but registry method field says GET — method itself is ambiguous.",
+      "Payment attempt to the spec URL was blocked by the auto-mode money-safety classifier as an unauthorized inferred destination."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not pay this endpoint until the correct target is resolved. The registry spec and the QA task header point at two different, unrelated services (x402helper.xyz GET vs api.xona-agent.com POST) and the input schema is empty, so an agent cannot safely construct a correct call. Once the real URL+method are confirmed, send the short text to synthesize (likely as ?text=... for a GET or {\\\"text\\\":\\\"...\\\"} for a POST) and read the returned audio bytes from the response body.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "melotts#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

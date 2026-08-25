@@ -1,0 +1,57 @@
+{
+  "serviceId": "flux-2-pro",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/flux-2-pro/generate",
+      "method": "POST",
+      "amountUsd": 0.03
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/flux-2-pro/edit",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/flux-2-pro/generate with JSON body {prompt}; returns async {jobId}; then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until status==complete",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST body.jobId (job id) + body.status:\"pending\". Final result on poll: body.status==\"complete\", body.result.imageUrl (Vercel Blob webp URL); also body.progress, body.input.* (model/resolution/aspect_ratio/output_format), body.error",
+    "quirks": [
+      "Async: the paid POST returns {success,jobId,status:'pending'} — NOT the image. Must poll.",
+      "Poll URL is https://stablestudio.dev/api/jobs/{jobId} via GET — this is SIWX-gated (returns 402 'SIWX authentication required' without a wallet proof) but is FREE (no USDC charge). Use --siwx / a SIWX signer.",
+      "Do NOT confuse status paths: /api/generate/status/{id} and /api/generate/flux-2-pro/{id} return 405 (wrong method/route); only /api/jobs/{id} works.",
+      "Final image is body.result.imageUrl (Vercel Blob, webp format, public CDN), not body.image_url.",
+      "Job completed in ~16s in this test; poll a few times with short backoff."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablestudio.dev/api/generate/flux-2-pro/generate with a JSON body {\"prompt\":\"<your image description>\"}. Payment is x402 USDC on Base (~$0.02-0.03/call); no API key needed for the pay step. The POST is asynchronous — it returns {jobId,status:\"pending\"}, not the image. Then poll GET https://stablestudio.dev/api/jobs/{jobId}, which requires SIWX wallet authentication (sign-in-with-x, but free — no extra charge), repeatedly with a short backoff until body.status==\"complete\". Read the finished image from body.result.imageUrl (a public Vercel Blob webp URL). Defaults to 1:1 aspect, 1MP, webp.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-pro#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.03
+    },
+    {
+      "key": "flux-2-pro#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.03
+    }
+  ]
+}

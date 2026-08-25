@@ -1,0 +1,243 @@
+[
+  {
+    "id": "background-removal",
+    "kind": "api",
+    "name": "Background Removal",
+    "aka": [
+      "background-removal",
+      "background-remove"
+    ],
+    "provider": "x402-deployer.x402-deployer.workers",
+    "providerId": "x402-deployer-x402-deployer-workers",
+    "description": "AI background removal / background eraser / cutout. POST an image URL, receive a transparent PNG. Same operation offered via three x402 gateways (Orbis, dellbot, deployer); all currently broken. Default backend (deployer, fal.ai imageutils/rembg) returns JSON {image_url,width,height}; dellbot returns the PNG as a raw binary body. Pick by output preference once a backend is healthy.",
+    "category": "image-video-processing",
+    "subcategory": "background-removal",
+    "tags": [
+      "background-removal",
+      "image-processing",
+      "cutout"
+    ],
+    "modality": {
+      "input": [
+        "image"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per image"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/remove-bg",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.08,
+          "currency": "USD",
+          "unit": "per image",
+          "display": "$0.080",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "80000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:33:42.481Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      },
+      {
+        "provider": "x402.dellbot",
+        "providerId": "x402-dellbot",
+        "url": "https://x402.dellbot.win/background-remove",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.06,
+          "currency": "USD",
+          "unit": "per image",
+          "display": "$0.060",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "60000",
+              "payTo": "0x234864Febc3AD18Fc99620c576729bdebfb62bCb",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:33:42.481Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/background-removal-api-4291ed/:endpoint",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per image",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/background-removal-api-4291ed/:endpoint"
+              },
+              "description": "Remove or replace image backgrounds and generate segmentation masks for e-commerce and creative automation",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "1000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/background-removal-api-4291ed/:endpoint"
+              },
+              "description": "Remove or replace image backgrounds and generate segmentation masks for e-commerce and creative automation",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:33:42.481Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/remove-bg with JSON body {image_url, crop_to_bbox?} -> JSON {image_url,width,height}. (dellbot variant: POST {image_url} or {image base64} -> raw binary image/png body.)",
+      "inputExample": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Altja_j%C3%B5gi_Lahemaal.jpg/640px-Altja_j%C3%B5gi_Lahemaal.jpg"
+      },
+      "outputShape": "deployer: result.image_url (string PNG url), result.width (int), result.height (int). dellbot: raw binary image/png (no JSON wrapper; tooling may surface it as a 'base64:...' string).",
+      "quirks": [
+        "MULTI-GATEWAY same-op: all 3 backends do background removal from an image_url; do NOT split them.",
+        "ALL BACKENDS BROKEN as of 2026-06-10/11 — serve hidden until one recovers.",
+        "Orbis ($0.001 cheapest) is a charge-then-404 trap with an unresolved ':endpoint' path template — never route here (do-not-register decision in memory).",
+        "dellbot ($0.06) is a CHARGE-THEN-502 trap right now: payment settles ($0.06) but upstream returns Cloudflare 502 Bad Gateway with no image. Burned $0.12 across 2 attempts during this remediation.",
+        "deployer ($0.08) is the safest default: it fails WITHOUT charging (payment negotiation 'fetch failed', paid:false) — but its POST path is currently unresponsive (empty body, no 402 challenge on no-payment POST), so it could not be verified live.",
+        "Output shapes DIFFER by gateway: deployer = JSON {image_url,width,height}; dellbot = raw binary image/png body. Downstream handlers must branch on backend.",
+        "deployer supports optional crop_to_bbox:boolean. dellbot supports {image} base64 as an alternative to {image_url} and accepts sources <25MB.",
+        "Processed full-res PNGs can be ~2MB — plan downstream handling for large binaries (dellbot)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "AI background removal / background eraser / cutout. POST an image URL, receive a transparent PNG. Same operation offered via three x402 gateways (Orbis, dellbot, deployer); all currently broken. Default backend (deployer, fal.ai imageutils/rembg) returns JSON {image_url,width,height}; dellbot returns the PNG as a raw binary body. Pick by output preference once a backend is healthy. POST https://x402-deployer.x402-deployer.workers.dev/remove-bg with JSON body {image_url, crop_to_bbox?} -> JSON {image_url,width,height}. (dellbot variant: POST {image_url} or {image base64} -> raw binary image/png body.) Output: deployer: result.image_url (string PNG url), result.width (int), result.height (int). dellbot: raw binary image/png (no JSON wrapper; tooling may surface it as a 'base64:...' string).",
+      "costObservedUsd": 0.12
+    },
+    "source": {
+      "serviceKey": "background-removal",
+      "discoveredVia": [
+        "background removal",
+        "remove background"
+      ],
+      "lastSyncedAt": "2026-06-01T22:33:42.481Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "slug": "news-anchor",
+  "name": "Audio News Anchor",
+  "description": "Research a topic and produce a ~60-second spoken news briefing.",
+  "trigger": "make an audio news briefing / anchor segment about a topic",
+  "inputs": [{ "name": "topic", "prompt": "What should the briefing cover?" }],
+  "steps": [
+    {
+      "label": "Research (multiple sources)",
+      "serviceId": "brave-search",
+      "instruction": "Gather COMPREHENSIVE, credible, recent data — do NOT rely on a single search. Run 3-5 searches with varied queries (different angles/subtopics) using brave-search (its search parameter is `q`), and pull from a second source (e.g. serper or grok-live-search) for breadth. Collect concrete facts, figures, and source names."
+    },
+    {
+      "label": "Write the anchor script",
+      "instruction": "Write a clean, ~60-second spoken news-anchor script — plain prose, no stage directions or markdown. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Narrate it",
+      "serviceId": "openai-tts",
+      "instruction": "Convert the script to speech in a clear, professional news-anchor voice."
+    },
+    {
+      "label": "Deliver",
+      "instruction": "Surface the audio and the script to the user."
+    }
+  ]
+}

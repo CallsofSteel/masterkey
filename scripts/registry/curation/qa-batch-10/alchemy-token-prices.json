@@ -1,0 +1,45 @@
+{
+  "serviceId": "alchemy-token-prices",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.alchemy.com/prices/v1/tokens/by-symbol",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.alchemy.com/prices/v1/tokens/by-symbol?symbols=ETH (comma-separate multiple symbols, e.g. ?symbols=ETH,BTC,USDC)",
+    "inputExample": {
+      "symbols": "ETH"
+    },
+    "outputShape": "body.data[] is an array of {symbol, prices[]}; each price is {currency, value, lastUpdatedAt}. USD price = body.data[0].prices[0].value (string).",
+    "quirks": [
+      "URL requires a ?symbols= query param even though inputSchema is null — a bare GET would return no useful data; pass one or more tickers comma-separated (e.g. ?symbols=ETH or ?symbols=ETH,BTC,USDC)",
+      "Prices come back as STRINGS, not numbers (value:\"1684.84\")",
+      "Each token's prices is an array keyed by currency (currently just usd)",
+      "Pay confirmed:false in result but on-chain payment went through and 200 returned with live data — settlement is fine"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.alchemy.com/prices/v1/tokens/by-symbol with a ?symbols= query string listing one or more ticker symbols (comma-separated for multiple, e.g. ?symbols=ETH,BTC). Pay via x402 USDC on Base ($0.001/call). Read prices from body.data[]: match by .symbol, then take .prices[0].value (a USD price string) and .prices[0].lastUpdatedAt for freshness. No auth or API key needed; payment is the only gate.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "alchemy-token-prices#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

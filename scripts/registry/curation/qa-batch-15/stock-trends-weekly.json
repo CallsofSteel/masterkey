@@ -1,0 +1,46 @@
+{
+  "serviceId": "stock-trends-weekly",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.stocktrends.com/v1/prices/history",
+      "method": "GET",
+      "amountUsd": 0.0075
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.stocktrends.com/v1/prices/history?symbol=AAPL&exchange=Q (query params: either symbol_exchange OR symbol+exchange; exchange is a single-letter code)",
+    "inputExample": {
+      "symbol": "AAPL",
+      "exchange": "Q"
+    },
+    "outputShape": "Body is JSON. Weekly price history series returned on a successful 200 (not reached within attempt cap). On error, body.detail holds {error, message} or a string explaining the param problem.",
+    "quirks": [
+      "Registry inputSchema was null — required query params discovered via error hints.",
+      "MUST provide query params: either ?symbol_exchange=... OR ?symbol=AAPL&exchange=Q. With no params it returns 400 missing_required_param.",
+      "exchange is a SINGLE-LETTER code, not a name. Valid: ['A','B','I','N','Q','T']. Q=NASDAQ, N=NYSE. Passing exchange=NASDAQ returns 400 'Invalid exchange'.",
+      "x402 charges per call even on 400 param errors — get the params right before paying. Each malformed call costs $0.0075."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.stocktrends.com/v1/prices/history with query params symbol (ticker, e.g. AAPL) and exchange as a single-letter code (Q for NASDAQ, N for NYSE; valid set ['A','B','I','N','Q','T']), or alternatively a combined symbol_exchange param. Pay via x402 USDC on Base ($0.0075/call, no API key, auth=none). Read the weekly price/trend series from the JSON body. Note: every call is charged including 400 param errors, so format params correctly first — exchange must be the letter code, NOT the exchange name.",
+    "costObservedUsd": 0.015
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stock-trends-weekly#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0075
+    }
+  ]
+}

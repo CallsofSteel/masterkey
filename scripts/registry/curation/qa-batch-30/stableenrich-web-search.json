@@ -1,0 +1,41 @@
+{
+  "serviceId": "stableenrich-web-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/firecrawl/search",
+      "method": "POST",
+      "amountUsd": 0.0252
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/firecrawl/search with JSON body {query, limit?}",
+    "inputExample": {
+      "query": "hello",
+      "limit": 1
+    },
+    "outputShape": "body.results[] (each has .title, .url, .description, and optionally .snippet), body.query, body.resultCount",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://stableenrich.dev/api/firecrawl/search with a JSON body containing a required \"query\" string and an optional \"limit\" number (1-10, default 5). Pay the x402 charge (~$0.025 USDC on Base). The response is a plain synchronous JSON object: read body.results, an array of ranked web results each with title, url, description, and an optional snippet. body.resultCount gives the count and body.query echoes your query. No auth, no polling, no async.",
+    "costObservedUsd": 0.0252
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableenrich-web-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0252
+    }
+  ]
+}

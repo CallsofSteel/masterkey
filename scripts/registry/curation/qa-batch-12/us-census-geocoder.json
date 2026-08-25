@@ -1,0 +1,47 @@
+{
+  "serviceId": "us-census-geocoder",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-geocoder-production.up.railway.app/geocode/reverse",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402-geocoder-production.up.railway.app/geocode/reverse?lat={lat}&lng={lng} for reverse geocoding; GET https://x402-geocoder-production.up.railway.app/geocode/address?street={street}&city={city}&state={state}&zip={zip} for forward geocoding. Both GET with query params, NOT POST with JSON body.",
+    "inputExample": {
+      "lat": "38.8977",
+      "lng": "-77.0365"
+    },
+    "outputShape": "body.match (boolean — true on success), body.fips.{state, county, tract, block} (Census FIPS codes), body.lat, body.lng (echoed coords), body.address (Census-canonical string, may be null on reverse), body.matchType (may be null even on success)",
+    "quirks": [
+      "Registry surface lists method=POST /geocode/reverse but the real endpoint is GET with query params (?lat=&lng=) — sending POST/JSON will fail; use GET.",
+      "matchType field is null even when match=true (was null on the verified reverse call) — always use body.match (boolean) to determine success, never matchType.",
+      "On reverse geocode body.address came back null even with match=true; the useful payload is body.fips (state/county/tract/block).",
+      "Only geocodes US coords/addresses; non-US returns match=false.",
+      "Rate limit 60 req/min per IP (ratelimit header). Price $0.001 USDC on Base."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Reverse geocode: send a GET to /geocode/reverse with lat and lng as decimal query params (e.g. ?lat=38.8977&lng=-77.0365). Forward geocode: GET /geocode/address with query params street, city, state, and optional zip. Do NOT use POST/JSON despite the registry CALL line — it is a GET API. Read success from body.match (boolean); the location result is in body.fips (state, county, tract, block). matchType and address may be null even on a successful match. Payment is $0.001 USDC on Base via x402, sync response.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "us-census-geocoder#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

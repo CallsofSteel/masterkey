@@ -1,0 +1,59 @@
+{
+  "serviceId": "nano-banana-gemini-2-5-flash",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/nano-banana/generate",
+      "method": "POST",
+      "amountUsd": 0.07
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/nano-banana/edit",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/nano-banana/generate with JSON body {prompt} (x402 pay) -> {jobId, status:\"pending\"}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (free) until status:\"complete\"",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "Generate call: body.jobId, body.status (\"pending\"). Poll call: body.status (\"complete\"), body.result.imageUrl (URL to generated PNG); also body.progress (0-100).",
+    "quirks": [
+      "This stablestudio.dev surface uses a FLAT {prompt:\"...\"} body, NOT the Gemini-native {contents:[{parts:[{text}]}]} shape. The contents shape 400s with 'path:prompt expected string received undefined'.",
+      "ASYNC: the paid POST returns 200 with {jobId, status:'pending'} and does NOT contain the image. You MUST poll GET /api/jobs/{jobId}.",
+      "Job polling requires SIGN-IN-WITH-X (SIWX) auth signed by the SAME wallet that paid the generate call; a different wallet identity gets 403 Unauthorized. The poll itself is free (no payment).",
+      "Result is at body.result.imageUrl (a URL, not inline base64). For this registry surface the output is a hosted PNG URL, unlike the prior x402.orth.sh variant which returned inline base64.",
+      "Returned imageUrl is a Vercel blob link that expires after ~20 min - download immediately.",
+      "Optional generate fields: aspectRatio (1:1,2:3,3:2,3:4,4:3,4:5,5:4,9:16,16:9,21:9,1:4,1:8,4:1,8:1), imageSize (512,1K,2K,4K), thinkingLevel (minimal,high). Defaults: 1K, 1:1, minimal.",
+      "Price is dynamic ($0.045-$0.151); observed $0.07 for a default 1K request. Poll interval ~5s; completed in ~23s."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Text-to-image via Google Gemini 2.5 Flash Image on StableStudio. POST a flat JSON body {prompt:\"your prompt\"} (optional aspectRatio, imageSize 512/1K/2K/4K, thinkingLevel) to https://stablestudio.dev/api/generate/nano-banana/generate, paying ~$0.045-$0.15 USDC on Base via x402 (no API key). You get back {jobId, status:\"pending\"} - the image is NOT in this response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIGN-IN-WITH-X auth signed by the same wallet that paid (free; ~5s intervals) until status:\"complete\", and read the image from body.result.imageUrl. Download the URL immediately - it is a Vercel blob link that expires in ~20 minutes.",
+    "costObservedUsd": 0.07
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-gemini-2-5-flash#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.07
+    },
+    {
+      "key": "nano-banana-gemini-2-5-flash#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.04
+    }
+  ]
+}

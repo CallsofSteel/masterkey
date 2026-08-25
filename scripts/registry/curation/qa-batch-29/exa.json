@@ -1,0 +1,56 @@
+{
+  "serviceId": "exa",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/exa/answer",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/exa/contents",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/exa/answer with JSON body {query}",
+    "inputExample": {
+      "query": "What is the capital of France?"
+    },
+    "outputShape": "body.answer (synthesized answer string with inline [n] citation markers); body.citations[].{title,url,publishedDate,image,favicon}; body.costDollars.total; body.requestId",
+    "quirks": [
+      "Required field is `query` (a natural-language question) — this is the answer endpoint, NOT find-similar (which uses `url`)",
+      "Answer text contains inline [1][2] citation markers that index into body.citations[]",
+      "Some citation entries omit publishedDate/image/favicon; only title and url are reliably populated",
+      "Provider-reported costDollars.total ($0.005) is less than the x402 quote charged ($0.010)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/exa/answer with a JSON body containing {\"query\": \"<your natural-language question>\"}. Payment of $0.01 USDC is charged per call on Base via x402 — no API key needed. The response is synchronous: read body.answer for the synthesized answer (which contains inline [n] markers), and body.citations[] for the supporting sources (each has url and title). Use this for direct factual answers with citations rather than raw search results.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "exa#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "exa#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "serviceId": "onesource-onchain",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://skills.onesource.io/api/chain/receipt/0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://skills.onesource.io/api/chain/tx/:hash",
+      "method": "GET",
+      "amountUsd": 0.008
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://skills.onesource.io/api/chain/receipt/{hash}?network=ethereum (hash = 0x-prefixed 64-hex tx hash; no request body; x402 USDC on Base)",
+    "inputExample": {
+      "hash": "0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060",
+      "network": "ethereum"
+    },
+    "outputShape": "body.data.result (full tx receipt: .status \"0x1\"=success, .from, .to, .blockNumber, .gasUsed, .effectiveGasPrice, .logs[], .contractAddress); body.meta.request_id; body.error is null on success",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Look up an Ethereum (or other supported chain) transaction receipt by hash. Put the 0x-prefixed 64-char tx hash as the last path segment of GET https://skills.onesource.io/api/chain/receipt/{hash}; optionally add ?network= (ethereum default; also sepolia, avax, megaeth, megaeth-testnet, base). Pay $0.005 USDC on Base via x402 — no API key, no body. Read the receipt from response body.data.result (hex-encoded fields; status \"0x1\" means success). meta.request_id is the trace id.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "onesource-onchain#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "onesource-onchain#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

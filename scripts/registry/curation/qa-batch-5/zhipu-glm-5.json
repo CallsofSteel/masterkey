@@ -1,0 +1,50 @@
+{
+  "serviceId": "zhipu-glm-5",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[], max_tokens}",
+    "inputExample": {
+      "model": "zai/glm-5.1",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 50
+    },
+    "outputShape": "body.choices[0].message.content (OpenAI-compatible chat completion); token usage at body.usage",
+    "quirks": [
+      "OpenAI-compatible chat completions API; pass model: zai/glm-5.1 (also supports glm-5, glm-5-turbo per description)",
+      "Payment via x402 USDC on Base, settled per-call; price varies by tokens"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://blockrun.ai/api/v1/chat/completions with an OpenAI-style JSON body: {\"model\":\"zai/glm-5.1\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Optionally set max_tokens. Payment is x402 USDC on Base, automatically settled per call (~$0.001 for a tiny prompt; scales with tokens). Read the assistant reply from body.choices[0].message.content and token usage from body.usage.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "zhipu-glm-5#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

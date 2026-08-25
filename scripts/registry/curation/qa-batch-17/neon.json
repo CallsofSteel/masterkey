@@ -1,0 +1,44 @@
+{
+  "serviceId": "neon",
+  "subcat": "relational-databases",
+  "batchId": "batch-17",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/neon/v2/projects",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/neon/v2/projects with JSON body {project:{}}",
+    "inputExample": {
+      "project": {}
+    },
+    "outputShape": "body.error / body.instructions (401 auth-required error; no usable result)",
+    "quirks": [
+      "NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\".",
+      "Requires your own upstream Neon API bearer token passed via the X-Upstream-Token header (authType=bearer). The x402 payment does NOT cover upstream auth.",
+      "Charge-then-401 pattern: paying does not unlock the endpoint without supplying your own Neon credentials. Do not retry without a real Neon API key."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This HTTPay gateway endpoint is NOT usable keyless. It charges $0.001 USDC on the x402 payment, then returns HTTP 401 demanding your own upstream Neon API key via the X-Upstream-Token header (e.g. X-Upstream-Token: <your-neon-bearer-token>). The registry's \"no API key required\" claim is incorrect. Without a Neon account API token there is no usable result. If you do have a Neon token, retry POST with body {project:{}} plus the X-Upstream-Token header to create a Neon project.",
+    "costObservedUsd": 0.001,
+    "droppedReason": "neon#0: NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\"."
+  },
+  "droppedReason": "neon#0: NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\".",
+  "_backends": [
+    {
+      "key": "neon#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

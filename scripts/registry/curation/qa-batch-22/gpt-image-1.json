@@ -1,0 +1,58 @@
+{
+  "serviceId": "gpt-image-1",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.imgzen.dev/v1/models/gpt-image-1/generate",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/images/generations",
+      "method": "POST",
+      "amountUsd": 0.021
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/images/generations with JSON body {model:\"openai/gpt-image-1\", prompt}; then poll-GET the returned poll_url (each poll is its own x402 paid call)",
+    "inputExample": {
+      "model": "openai/gpt-image-1",
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST: body.id + body.poll_url (status queued). Final result after polling: body.data[0].url (PNG image URL); body.status==\"completed\"; body.payment.tx_hash for settlement",
+    "quirks": [
+      "Async: POST returns 202 with status:queued and a relative poll_url (/api/v1/images/generations/<id>) — the image is NOT in the POST response.",
+      "Poll endpoint enforces its OWN x402 402 challenge, wallet-bound. Each GET poll must carry a fresh x-payment header signed by the SAME wallet that did the POST, and EACH POLL COSTS ANOTHER PAYMENT (~$0.021). Total observed cost = POST $0.021 + 1 poll $0.021 = $0.042.",
+      "A fresh signature works (server enforces wallet binding, not signature byte-equality), so standard x402 clients re-sign automatically on the 402.",
+      "Result image URL is at body.data[0].url; settlement tx_hash appears on the completed poll under body.payment.tx_hash.",
+      "Price billed $0.021 (registry surface said $0.020).",
+      "Use model value exactly 'openai/gpt-image-1'."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST https://blockrun.ai/api/v1/images/generations with JSON {\"model\":\"openai/gpt-image-1\",\"prompt\":\"<your prompt>\"} and pay the ~$0.021 x402 charge on Base USDC. The response is a 202 queued job with an id and a relative poll_url. Then GET the poll_url with the same x402 wallet — the poll endpoint returns its own 402 challenge, so each poll is a SEPARATE paid call (~$0.021); budget for at least one extra payment. Poll until status==\"completed\", then read the image at body.data[0].url. The whole job typically costs ~$0.042 (POST + one completing poll).",
+    "costObservedUsd": 0.042
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-image-1#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "gpt-image-1#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.021
+    }
+  ]
+}

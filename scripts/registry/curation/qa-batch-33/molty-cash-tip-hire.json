@@ -1,0 +1,54 @@
+{
+  "serviceId": "molty-cash-tip-hire",
+  "subcat": "crypto-web3-payments",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.molty.cash/web3idan/a2a",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.molty.cash/{username}/a2a — JSON-RPC 2.0 body {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tip\"|\"hire\",\"params\":{\"amount\":<USDC 0.01-10>,\"description\":\"...\",\"identity_token\":\"<Molty JWT>\"}}. The {username} path segment is the X (Twitter) handle of the recipient; the registry URL hardcodes it to \"web3idan\".",
+    "inputExample": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "tip",
+      "params": {
+        "amount": 0.01,
+        "description": "tip"
+      }
+    },
+    "outputShape": "body.result.payment_request_id, body.result.amount, body.result.x_handle, body.result.receipt (URI), body.result.message",
+    "quirks": [
+      "OUTWARD/IRREVERSIBLE: actually sends USDC. The x402 fee (~$0.02) is SEPARATE from and ON TOP OF the params.amount tip (min 0.01 USDC) it forwards.",
+      "Recipient is set by the URL path segment {username} = an X/Twitter handle, NOT by the body. Registry URL fixes it to 'web3idan'. To tip a different person you must change the path segment to their X handle.",
+      "Body is JSON-RPC 2.0: requires jsonrpc='2.0', method ('tip' or 'hire'), and params; params.amount is required (0.01-10). 'hire' additionally needs params.description.",
+      "params.identity_token is a Molty identity JWT to attribute the sender; not auto-provided by the x402 wallet and may be required for proper sender attribution.",
+      "Could not pay-test: the fixed recipient (web3idan) is not the QA verifiable contact, so receipt cannot be confirmed."
+    ],
+    "needs": [
+      "A recipient X (Twitter) handle to substitute into the {username} path segment that maps to the verifiable QA contact (John Doe), since the registry URL hardcodes 'web3idan' and the tip cannot otherwise be confirmed received",
+      "A Molty identity_token (JWT) for sender attribution, if required"
+    ],
+    "needsApproval": true,
+    "guide": "This is an outward money-movement endpoint: it sends a real USDC tip (or funds a hire task) to an X/Twitter handle, charging both an x402 service fee and the tip amount. Set the recipient by putting their X handle in the URL path segment (the registry URL fixes it to https://api.molty.cash/web3idan/a2a). POST a JSON-RPC 2.0 body: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tip\",\"params\":{\"amount\":0.01}} for a tip, or method \"hire\" with params.description for a task; optionally include params.identity_token (a Molty JWT) to identify the sender. On success read body.result.receipt for the receipt URL and body.result.payment_request_id. Always confirm the recipient X handle and amount before paying — it is irreversible.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "molty-cash-tip-hire#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

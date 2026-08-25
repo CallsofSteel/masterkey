@@ -1,0 +1,63 @@
+{
+  "serviceId": "orbis-email-send-api",
+  "subcat": "email",
+  "batchId": "batch-8",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/email-send-trigger-6148ac",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/email-send-trigger-6148ac/bulk",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/email-send-trigger-6148ac with JSON body {from, to[], subject, html, text}",
+    "inputExample": {
+      "from": "noreply@orbisapi.com",
+      "to": [
+        "john.doe@gmail.com"
+      ],
+      "subject": "Orbis QA test email",
+      "html": "<p>Hello John, this is a test from the Orbis Email Send API QA run.</p>",
+      "text": "Hello John, this is a test from the Orbis Email Send API QA run."
+    },
+    "outputShape": "HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'email-send-trigger-6148ac'.\"} — endpoint deactivated/unregistered, no useful result",
+    "quirks": [
+      "RECIPIENT NON-DELIVERY CONFIRMED 2026-06-09: the user (john.doe@gmail.com) received NO email from this service during QA — corroborates broken/untested (do not mark verified on a paid 200 alone; this one did not actually deliver).",
+      "DEAD: orbisapi.com proxy gateway returns HTTP 404 API_NOT_FOUND for slug 'email-send-trigger-6148ac' — the slug is not registered or has been deactivated",
+      "404 was returned BEFORE payment this time (paid:false, costUsd:0) — no money lost on this attempt, but the Orbis proxy family is known to sometimes charge-then-404, so treat as money-unsafe",
+      "inputSchema is empty in registry — required fields undocumented; inferred from/to/subject/html/text from service description",
+      "Sibling slug 'email-send-api-6d5de4' (other backend) is also confirmed dead with the same 404 API_NOT_FOUND pattern as of 2026-06-08",
+      "Pre-flight probe shows 402 (looks payable) but this is a dead slug — 402 payability does NOT imply the endpoint works"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "DO NOT USE — endpoint is dead as of 2026-06-08. The Orbis proxy gateway returns HTTP 404 API_NOT_FOUND for slug 'email-send-trigger-6148ac', meaning no active API is registered at that route. On this test no payment was taken (paid:false), but the Orbis proxy family is known to sometimes deduct the x402 fee before returning the 404, so calling it risks losing money for no service. There is no working call shape — the route itself is dead.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-email-send-api#1: DEAD: orbisapi.com proxy gateway returns HTTP 404 API_NOT_FOUND for slug 'email-send-trigger-6148ac' — the slug is not registered or has been deactivated | orbis-email-send-api#2: DEAD: orbisapi.com proxy gateway accepts x402 payment then returns HTTP 404 API_NOT_FOUND — the email-send-trigger/email-send-api slugs are deactivated"
+  },
+  "droppedReason": "orbis-email-send-api#1: DEAD: orbisapi.com proxy gateway returns HTTP 404 API_NOT_FOUND for slug 'email-send-trigger-6148ac' — the slug is not registered or has been deactivated | orbis-email-send-api#2: DEAD: orbisapi.com proxy gateway accepts x402 payment then returns HTTP 404 API_NOT_FOUND — the email-send-trigger/email-send-api slugs are deactivated",
+  "_backends": [
+    {
+      "key": "orbis-email-send-api#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-email-send-api#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

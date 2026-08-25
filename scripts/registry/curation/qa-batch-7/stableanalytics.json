@@ -1,0 +1,80 @@
+{
+  "serviceId": "stableanalytics",
+  "subcat": "web-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableanalytics.dev/api/site/sources",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stableanalytics.dev/api/site/tech",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stableanalytics.dev/api/site/visits",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stableanalytics.dev/api/site/pages",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "GET https://stableanalytics.dev/api/site/sources?site_id={site_id}&period={period}&limit={limit} with a Sign-In-With-X request header set to base64(JSON.stringify(SIWE payload)). No USDC payment ($0, identity-only).",
+    "inputExample": {
+      "site_id": "example.com",
+      "period": "7d",
+      "limit": 100
+    },
+    "outputShape": "body.referrers[].{referrer, visits}, body.utm_sources[].{utm_source, visits}, body.utm_campaigns[].{utm_campaign, visits}. For untracked domains: HTTP 404 {success:false, error:'Site not found'}.",
+    "quirks": [
+      "SIWX-only endpoint: $0, identity-gated, no USDC payment — accepts[] in the 402 challenge is empty.",
+      "Before each call, probe the exact target URL (incl. query string) with a plain GET to receive a FRESH 402 challenge; the nonce is single-use, so re-probe for every new authenticated request.",
+      "The 'uri' field in the SIWE JSON payload must exactly match the full request URL including the query string (e.g. https://stableanalytics.dev/api/site/sources?site_id=example.com&period=7d&limit=100).",
+      "Use 'issuedAt' from the SIWE signer output, not from the 402 challenge.",
+      "chainId in the JSON payload must be the eip155 string form 'eip155:8453', not the numeric integer; generate the signature with chain_id 8453.",
+      "Required query param: site_id. Optional: period (24h|7d|30d, default 7d), limit (1-500, default 100).",
+      "Untracked/unowned domains return HTTP 404 {success:false, error:'Site not found'} — this is a data-availability result, NOT an auth failure or broken endpoint. Tested with example.com which is untracked.",
+      "Header name is the literal 'Sign-In-With-X' header carrying base64(JSON.stringify(payload))."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "StableAnalytics /api/site/sources is a free, SIWX (Sign-In-With-X) identity-gated web-analytics endpoint returning traffic-source breakdowns (referrers, utm_sources, utm_campaigns) for a tracked site. To call it: first probe the exact full URL (with query string) via a plain GET to get a fresh 402 challenge, read extensions['sign-in-with-x'].info (domain, uri, version, chainId, type, nonce, issuedAt, expirationTime, statement), sign it with the SIWE tool (chain_id 8453, chainId rendered as 'eip155:8453', issuedAt from the signer), base64-encode JSON.stringify(payload), and send it as the 'Sign-In-With-X' header. Cost is always $0. Required query param is site_id (the domain you want analytics for); period and limit are optional. Read results at body.referrers[], body.utm_sources[], body.utm_campaigns[]. A 404 {error:'Site not found'} means that site_id is not tracked, not that the endpoint is broken — query a domain you own/track for real data.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableanalytics#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stableanalytics#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stableanalytics#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stableanalytics#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

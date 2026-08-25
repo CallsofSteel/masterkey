@@ -1,0 +1,45 @@
+{
+  "serviceId": "orbis-image-translate-ocr",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/translate-picture-api-0ba223",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/translate-picture-api-0ba223 with JSON body {image_url, target_language}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Stop_sign_MUTCD.svg/240px-Stop_sign_MUTCD.svg.png",
+      "target_language": "es"
+    },
+    "outputShape": "n/a — endpoint returns 404 {error:\"API_NOT_FOUND\", message}",
+    "quirks": [
+      "DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}",
+      "Orbis proxy charge-then-404 pattern: unpaid pre-flight shows 402 (looks payable) but the real call 404s. Do NOT pay — the slug/route is dead.",
+      "In this test the qa-pay tool reported paid:false / costUsd:0, so no USDC was lost; a naive x402 client could still attempt payment against the 402 pre-flight."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint — it is broken. POST to https://orbisapi.com/proxy/translate-picture-api-0ba223 returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\"} because the Orbis proxy slug 'translate-picture-api-0ba223' is no longer active. The unpaid pre-flight returns a 402 that makes it look payable, but any real request 404s; do not pay against it. This service should be pruned from the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "orbis-image-translate-ocr#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}"
+  },
+  "droppedReason": "orbis-image-translate-ocr#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}",
+  "_backends": [
+    {
+      "key": "orbis-image-translate-ocr#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

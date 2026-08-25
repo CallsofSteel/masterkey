@@ -1,0 +1,51 @@
+{
+  "serviceId": "grok-imagine-video",
+  "subcat": "video-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/grok-video/generate",
+      "method": "POST",
+      "amountUsd": 0.15
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/grok-video/generate with JSON body {prompt, duration, resolution, aspect_ratio} (x402 pay ~$0.15 USDC on Base); returns 200 {success, jobId, status:\"pending\"}. Then GET https://stablestudio.dev/api/jobs/{jobId} (SIWX-signed, FREE) to poll until status=\"complete\".",
+    "inputExample": {
+      "prompt": "a red circle",
+      "duration": "3",
+      "resolution": "480p",
+      "aspect_ratio": "1:1"
+    },
+    "outputShape": "POST: body.jobId, body.status=\"pending\". Poll GET body.status (\"pending\"->\"complete\"), body.progress (0-100), and on completion body.result.videoUrl (mp4) + body.result.thumbnailUrl (jpg). Echoed inputs at body.input.",
+    "quirks": [
+      "Registry CALL url (stablestudio.dev) is a DIFFERENT, cleaner deployment than the older existingUsage entry (blockrun.ai) — use stablestudio.dev.",
+      "Async two-step: POST charges ~$0.15 once and returns a pending jobId (NOT the video). You must poll a separate endpoint to get the result.",
+      "Poll URL is https://stablestudio.dev/api/jobs/{jobId} (the jobId from the POST response). It returns 402 with error 'SIWX authentication required' (amount=0, accepts:[]) — polling is FREE but requires a wallet SIWX signature (use an x402/SIWX-capable client; qa-pay --siwx works). It is NOT pay-per-poll, so no per-poll charge.",
+      "POST body requires ALL FOUR fields: prompt, duration (enum '3'/'6'/'9'/'12'/'15', strings not ints), resolution ('480p'/'720p'), aspect_ratio ('1:1'/'16:9'/'9:16'/'4:3'/'3:4'/'3:2'/'2:3'). additionalProperties:false. Optional 'image' (uri) for image-to-video.",
+      "Real price observed $0.15 USDC on Base (amount 300000), matches registry surface ($0.150) — the existingUsage $0.42 figure was the blockrun.ai deployment, not this one.",
+      "Generation is fast: '3'-second 480p clip completed in ~28s. Larger duration/resolution likely slower.",
+      "POST also offered a Solana payment rail in accepts[]; Base USDC used here."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablestudio.dev/api/generate/grok-video/generate via an x402 client (~$0.15 USDC on Base) with JSON {\"prompt\":\"...\",\"duration\":\"3\",\"resolution\":\"480p\",\"aspect_ratio\":\"1:1\"} — all four fields are required and values are strings. You get back {jobId, status:\"pending\"}; this is async, the video is not in this response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with a SIWX-signed request (free, no per-poll charge) every ~10-30s until body.status===\"complete\", then read the mp4 at body.result.videoUrl (and thumbnail at body.result.thumbnailUrl). A 3s/480p clip finishes in roughly 30s.",
+    "costObservedUsd": 0.15
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "grok-imagine-video#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.15
+    }
+  ]
+}

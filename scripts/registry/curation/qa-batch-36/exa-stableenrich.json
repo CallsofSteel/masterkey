@@ -1,0 +1,74 @@
+{
+  "serviceId": "exa-stableenrich",
+  "subcat": "web-search-apis",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/exa/search",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stableenrich.dev/api/exa/find-similar",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stableenrich.dev/api/exa/contents",
+      "method": "POST",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://stableenrich.dev/api/exa/answer",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/exa/search with JSON body {query, numResults}",
+    "inputExample": {
+      "query": "hello",
+      "numResults": 2
+    },
+    "outputShape": "body.results[] (each: .id, .title, .url, .publishedDate); body.requestId; body.searchTime; body.costDollars.total",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Exa semantic web search via StableEnrich. POST https://stableenrich.dev/api/exa/search with a JSON body {\"query\": \"...\", \"numResults\": N}. Pay x402 (~$0.01 USDC on Base, no API key). Synchronous JSON: read ranked results from body.results[] (each has title, url, id, optional publishedDate). Sibling routes under /api/exa/ are find-similar {url,numResults}, contents {urls[]} (~$0.002), and answer {query} (AI answer with citations).",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "exa-stableenrich#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "exa-stableenrich#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "exa-stableenrich#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    },
+    {
+      "key": "exa-stableenrich#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,1029 @@
+{
+  "subcategory": "testing-qa",
+  "category": "devtools-observability",
+  "unit": "per call",
+  "_note": "Re-verified (conservative bar) — previously PRUNED. Revived with real testing utilities: Webhook Tester (Klymax402 — send a test request to a webhook and analyze the response) and the distinct Orbis API Testing capability (generate test cases, API mocking from OpenAPI, response/contract validation). Routed away: QuickNode testnet RPC (#38-48 — blockchain RPC, not testing) -> infrastructure/crypto; Apify actor runs -> web-automation; orth tavily/tomba/didit -> search/enrichment. Dropped: echo/ping/wait/demo 'test' endpoints (agoragentic, openfacilitator, testmint, qrbase, artlu, getsly, wurkapi, x402.jobs, market-api echoes) and QA scorers/ROI calculators (analysis, not testing). | 2026-07-26: corrected live-verified price drift (re-quoted twice with the registry's own usage.inputExample so the quote reflects the real call, not a worst-case empty-body ceiling).",
+  "entries": [
+    {
+      "name": "Webhook Tester",
+      "kind": "api",
+      "provider": "Klymax402",
+      "providerId": "klymax402",
+      "description": "Send a test request to any webhook URL and analyze the response (status, headers, body, latency), billed per call via x402.",
+      "tags": [
+        "testing",
+        "webhook",
+        "qa",
+        "integration-testing"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://webhook-tester.api.klymax402.com/api/test",
+          "method": "POST",
+          "provider": "Klymax402",
+          "providerId": "klymax402",
+          "amount": 0.005,
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6E8B64638b24C6D625b045dD353120d850064E2E",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-09T21:43:52.689Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://webhook-tester.api.klymax402.com/api/test with JSON body {url, method, body} where url is the target webhook to test",
+        "inputExample": {
+          "url": "https://httpbin.org/post",
+          "method": "POST",
+          "body": {
+            "hello": "world"
+          }
+        },
+        "outputShape": "body.response.statusCode, body.response.statusText, body.response.headers, body.response.body, body.latencyMs, body.success; echoes body.requestBody and body.requestHeaders",
+        "quirks": [
+          "Body field is 'url' = the target webhook to probe (not the API's own URL); supply 'method' and optional 'body' for the test request.",
+          "Response is sync JSON; the probed endpoint's result lives under body.response (statusCode/headers/body) and timing under body.latencyMs."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://webhook-tester.api.klymax402.com/api/test with a JSON body {\"url\": \"<target webhook URL>\", \"method\": \"POST\", \"body\": {...}} and pay $0.002 USDC via x402 on Base. The service fires the request at your target URL and returns a sync JSON analysis. Read the probed result from body.response (statusCode, statusText, headers, body) and the round-trip time from body.latencyMs; body.success indicates whether the call completed. It echoes your requestBody/requestHeaders so you can confirm what was sent.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "Orbis API Testing",
+      "kind": "api",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "qa-testing-api",
+        "api-mock-generator",
+        "api-response-validator",
+        "api-contract-testing"
+      ],
+      "description": "API testing toolkit: generate test cases and regression suites, generate API mocks from OpenAPI specs, and validate API responses against expected schemas (type checking, null detection, contract testing). Billed per call via x402 on Base and Solana.",
+      "tags": [
+        "testing",
+        "qa",
+        "api-mocking",
+        "contract-testing",
+        "validation"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        0,
+        16,
+        17,
+        1
+      ],
+      "resolved": {
+        "0": {
+          "amount": 0.007,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "1": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "16": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "17": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/qa-testing-api-9f659f with JSON body (empty inputSchema)",
+        "inputExample": {
+          "action": "validate",
+          "response": {
+            "status": 200
+          },
+          "schema": {
+            "type": "object"
+          }
+        },
+        "outputShape": "none (returns 404 HTML error page after payment)",
+        "quirks": [
+          "Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but post-payment returns HTTP 404 with HTML error 'Cannot POST /qa-testing/'.",
+          "Upstream route is dead — payment is taken but no service is delivered. Money is lost.",
+          "Do NOT call this endpoint; do not retry with alternate bodies/paths."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint. It is a dead Orbis proxy that charges USDC then returns an HTTP 404 HTML error page ('Cannot POST /qa-testing/'). The x402 pre-flight 402 makes it look payable, but the upstream route does not exist, so payment is lost with no result returned. Treat as broken and skip.",
+        "costObservedUsd": 0.005,
+        "droppedReason": "orbis-api-testing#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but post-payment returns HTTP 404 with HTML error 'Cannot POST /qa-testing/'. | orbis-api-testing#1: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. The pre-flight probe returns 402 (looks payable) but after payment the route returns HTTP 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'api-mock-generator-api-935663'.\"}. | orbis-api-testing#2: DEAD ENDPOINT: Orbis proxy charge-then-404. Pre-flight returns HTTP 402 (looks payable) but after payment it returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'api-response-validator-api-68a100'\"}. | orbis-api-testing#3: Orbis proxy dead slug: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'api-contract-testing-api-05b50b'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "orbis-api-testing#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but post-payment returns HTTP 404 with HTML error 'Cannot POST /qa-testing/'. | orbis-api-testing#1: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. The pre-flight probe returns 402 (looks payable) but after payment the route returns HTTP 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'api-mock-generator-api-935663'.\"}. | orbis-api-testing#2: DEAD ENDPOINT: Orbis proxy charge-then-404. Pre-flight returns HTTP 402 (looks payable) but after payment it returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'api-response-validator-api-68a100'\"}. | orbis-api-testing#3: Orbis proxy dead slug: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'api-contract-testing-api-05b50b'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "ToolOracle Agent Card A2A Readiness",
+      "kind": "api",
+      "provider": "ToolOracle",
+      "providerId": "tooloracle",
+      "aka": [
+        "AgentNOMOS A2A Readiness",
+        "agent_card_a2a_readiness_v1"
+      ],
+      "description": "Deterministic automated readiness assessment of a public agent card or A2A discovery URL across eight dimensions (fetch/parse, identity, skills, protocol, auth, commercial, trust, privacy), returning a READY/WARN/NOT_READY decision, a readiness_level and a signed record digest, billed per call via x402.",
+      "tags": [
+        "a2a",
+        "agent-card",
+        "readiness",
+        "trust",
+        "testing",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://tooloracle.io/v2/agent_card_a2a_readiness_v1",
+          "method": "POST",
+          "provider": "ToolOracle",
+          "providerId": "tooloracle",
+          "amount": 0.1,
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x11f591C3496C0632e7B173184f5Bc71dC941125D",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T04:24:00Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "job_id",
+              "quote_id"
+            ],
+            "properties": {
+              "job_id": {
+                "type": "string",
+                "description": "Job id minted by the free /deal/a2a handshake (a2aj_...)."
+              },
+              "quote_id": {
+                "type": "string",
+                "description": "x402 quote id minted by the free /deal/a2a handshake (x402q_...), bound to the assessed target."
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "job_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "example": "COMPLETED_WITH_WARNINGS"
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "READY",
+                  "WARN",
+                  "NOT_READY"
+                ]
+              },
+              "readiness_level": {
+                "type": "integer",
+                "example": 3
+              },
+              "credential_id": {
+                "type": "string",
+                "example": "a2ard_..."
+              },
+              "record_digest": {
+                "type": "string",
+                "example": "sha256:..."
+              },
+              "assessed_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "Two steps. STEP 1 (free): POST https://tooloracle.io/deal/a2a (a2a-jsonrpc) with {jsonrpc:'2.0',id:1,method:'message/send',params:{schema_version:'AgentCardReadinessTaskRequestV1',offer_id:'AgentCardReadinessOfferV1',request_id:<unique>,idempotency_key:<unique>,target_type:'agent_card_url'|'a2a_discovery_url'|'domain',target:<url/domain to assess>,accepted_terms_version:'nomos.a2a.terms.v1'}} -> mints result.payment_required.pay_with = {job_id, quote_id}. STEP 2 (paid $0.10 x402 Base): POST https://tooloracle.io/v2/agent_card_a2a_readiness_v1 with JSON body {job_id, quote_id} -> sync verdict.",
+        "inputExample": {
+          "job_id": "a2aj_ba337064fe01e0ed0dc12a0f",
+          "quote_id": "x402q_95097f6464dccd7fed006ffd"
+        },
+        "outputShape": "Sync JSON verdict at the top level: decision (READY|WARN|NOT_READY), readiness_level (integer), status (e.g. COMPLETED_WITH_WARNINGS), job_id, credential_id (a2ard_...), record_digest (sha256:...), assessed_at. The record_digest/credential_id are the signed evidence handles for the assessment.",
+        "quirks": [
+          "TWO-STEP: the paid endpoint body is only {job_id, quote_id}; the real input (the agent card / A2A URL to assess) is supplied in a prior FREE a2a-jsonrpc handshake at POST https://tooloracle.io/deal/a2a that mints the {job_id, quote_id} binding (bound to a sha256 target_digest, ~7-day expiry).",
+          "The free handshake request must be a valid AgentCardReadinessTaskRequestV1: schema_version MUST equal the literal string 'AgentCardReadinessTaskRequestV1' (not a semver), offer_id 'AgentCardReadinessOfferV1', a unique request_id and idempotency_key, a valid target_type (agent_card_url | a2a_discovery_url | domain) + target, and terms accepted via the field 'accepted_terms_version':'nomos.a2a.terms.v1' (note: 'terms_accepted'/'terms_version' are NOT the accepting field).",
+          "Result is delivered synchronously in the paid POST 200 body (no polling needed); the free status poll (POST /deal/a2a method 'tasks/get' with {job_id}) only returns status metadata (has_result, status), not the verdict.",
+          "Automated assessment only — explicitly not a certification, not regulator-approved, not an AI-Act compliance check, not a penetration test.",
+          "x402 paid $0.10 USDC on Base (asset 0x833589..., payTo 0x11f591...); confirmed on-chain (tx 0x5873ec95...). No API key / no sign-in."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "To assess whether a public AI agent is A2A/agent-card ready: (1) FREE handshake — POST https://tooloracle.io/deal/a2a with {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"message/send\",\"params\":{\"schema_version\":\"AgentCardReadinessTaskRequestV1\",\"offer_id\":\"AgentCardReadinessOfferV1\",\"request_id\":\"<unique>\",\"idempotency_key\":\"<unique>\",\"target_type\":\"agent_card_url\",\"target\":\"https://<host>/.well-known/agent.json\",\"accepted_terms_version\":\"nomos.a2a.terms.v1\"}} (target_type may also be a2a_discovery_url or domain). Read result.payment_required.pay_with = {job_id, quote_id}. (2) PAID — POST https://tooloracle.io/v2/agent_card_a2a_readiness_v1 with JSON body {\"job_id\":\"...\",\"quote_id\":\"...\"} and pay $0.10 USDC via x402 on Base (no API key). The 200 response is the verdict: read decision (READY/WARN/NOT_READY), readiness_level, status, and the signed evidence handles credential_id + record_digest.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Webbersites Contrast Check",
+      "kind": "api",
+      "provider": "Webbersites",
+      "providerId": "webbersites",
+      "aka": [
+        "webbersites-a11y-contrast",
+        "wcag-contrast-ratio"
+      ],
+      "description": "Compute the WCAG contrast ratio between a foreground and background color (hex or rgb()), returning the exact ratio plus AA/AAA pass/fail for normal text, large text, and UI components with a plain-English verdict, billed per call via x402 on Base.",
+      "tags": [
+        "accessibility",
+        "a11y",
+        "wcag",
+        "contrast",
+        "testing",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.webbersites.com/api/a11y/contrast",
+          "method": "GET",
+          "provider": "Webbersites",
+          "providerId": "webbersites",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdd5fcEa81CA6f1EB39FEd5B973DE794293B81ba6",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:17:52Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "fg",
+              "bg"
+            ],
+            "properties": {
+              "fg": {
+                "type": "string",
+                "description": "Foreground/text color — hex (#111 or #111111) or rgb()."
+              },
+              "bg": {
+                "type": "string",
+                "description": "Background color — hex or rgb()."
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "foreground": {
+                "type": "string"
+              },
+              "background": {
+                "type": "string"
+              },
+              "contrast_ratio": {
+                "type": "number"
+              },
+              "ratio_string": {
+                "type": "string"
+              },
+              "passes": {
+                "type": "object",
+                "properties": {
+                  "normal_text": {
+                    "type": "object"
+                  },
+                  "large_text": {
+                    "type": "object"
+                  },
+                  "ui_components": {
+                    "type": "object"
+                  }
+                }
+              },
+              "summary": {
+                "type": "string"
+              },
+              "guidance": {
+                "type": "string"
+              },
+              "ts": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.webbersites.com/api/a11y/contrast?fg=<color>&bg=<color> — colors are hex (#767676) or rgb(); pay $0.001 USDC via x402 on Base. Result is returned synchronously in the 200 JSON body.",
+        "inputExample": {
+          "fg": "#767676",
+          "bg": "#ffffff"
+        },
+        "outputShape": "Sync JSON at top level: foreground, background, contrast_ratio (number, e.g. 4.54), ratio_string ('4.54:1'), passes {normal_text:{AA,AAA}, large_text:{AA,AAA}, ui_components:{AA}} (booleans), summary (plain-English verdict), guidance (nullable), ts (ISO timestamp).",
+        "quirks": [
+          "Colors are passed as URL query params fg and bg (URL-encode the '#', e.g. %23767676); both hex and rgb() are accepted. No request body — this is a GET.",
+          "Pure computation on two supplied colors (does not fetch a URL); the description notes it complements the URL-based a11y endpoint which can't do this.",
+          "The 402/200 body advertises a wallet-memory discount: passing X-Wallet / ?wallet with a wallet that spent >$0.001 in 24h halves the price to $0.0005 (optional; default is $0.001).",
+          "x402 paid $0.001 USDC on Base (asset 0x833589..., payTo 0xdd5fcEa8...); no API key / no sign-in."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "To check WCAG color contrast: GET https://api.webbersites.com/api/a11y/contrast with query params fg and bg (foreground and background colors as hex like %23767676 or rgb()), and pay $0.001 USDC via x402 on Base (no API key). The 200 response is the verdict: read contrast_ratio and ratio_string for the numeric ratio, and passes.normal_text / passes.large_text / passes.ui_components (each AA/AAA booleans) for WCAG conformance, plus a plain-English summary.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Accessibility Batch Check",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-a11y-batch",
+        "a11y-batch",
+        "wcag-batch-check"
+      ],
+      "description": "Batch static WCAG 2.2 accessibility check of many UI files at once (HTML/JSX/TSX/Vue/Angular markup you supply): returns a per-file pass/caution/block verdict with rule-level findings plus a rollup of the worst verdict and totals by severity.",
+      "tags": [
+        "accessibility",
+        "a11y",
+        "wcag",
+        "testing",
+        "qa",
+        "ui"
+      ],
+      "modality": {
+        "input": [
+          "code"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/a11y/batch",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "files": {
+                "type": "array",
+                "description": "List of UI files to check. Each item: {filename, optional framework, markup}.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {
+                      "type": "string"
+                    },
+                    "framework": {
+                      "type": "string",
+                      "enum": [
+                        "auto",
+                        "html",
+                        "jsx",
+                        "tsx",
+                        "vue",
+                        "angular"
+                      ],
+                      "description": "Optional per-file framework; falls back to the top-level default."
+                    },
+                    "markup": {
+                      "type": "string",
+                      "description": "The raw source markup for this file."
+                    }
+                  },
+                  "required": [
+                    "filename"
+                  ]
+                }
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "AA"
+                ],
+                "description": "Default WCAG level applied to every file (default AA)."
+              },
+              "framework": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "html",
+                  "jsx",
+                  "tsx",
+                  "vue",
+                  "angular"
+                ],
+                "description": "Default framework for files that do not set one."
+              }
+            },
+            "required": [
+              "files"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "Batch accessibility report.",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "worst_verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "file_count": {
+                "type": "number"
+              },
+              "totals": {
+                "type": "object"
+              },
+              "files": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "filename": {
+                      "type": "string"
+                    },
+                    "verdict": {
+                      "type": "string"
+                    },
+                    "framework_detected": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "object"
+                    },
+                    "findings": {
+                      "type": "array"
+                    },
+                    "findings_truncated": {
+                      "type": "boolean"
+                    },
+                    "skipped_needs_render": {
+                      "type": "array"
+                    }
+                  }
+                }
+              },
+              "ruleset_version": {
+                "type": "string"
+              },
+              "wcag_version": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/a11y/batch with JSON body {\"files\":[{\"filename\":..., \"framework\":..., \"markup\":...}, ...]}. `files` is the only required field; optional top-level `level` (A|AA, default AA) and `framework` (auto|html|jsx|tsx|vue|angular) set defaults for files that omit them. Result is inline in the 200. Pays $0.10 USDC via x402 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "files": [
+            {
+              "filename": "Logo.jsx",
+              "framework": "jsx",
+              "markup": "<img src=\"logo.png\" />"
+            },
+            {
+              "filename": "ok.html",
+              "framework": "html",
+              "markup": "<img src=\"a.png\" alt=\"A\">"
+            }
+          ]
+        },
+        "outputShape": "JSON object. Top level: object (\"a11y_batch\"), worst_verdict (pass|caution|block), file_count, totals.{by_severity:{block,caution}, findings}, files[], ruleset_version (e.g. 2026.07.16), wcag_version (WCAG 2.2), disclaimer. Each files[] item: filename, verdict (pass|caution|block), framework_detected, summary.{by_severity, counts.{findings, by_category}}, findings[] (each: rule_id e.g. img-alt, wcag_sc e.g. 1.1.1, wcag_level, severity, category e.g. text-alternatives, element, location e.g. \"line 1\", message, remediation), findings_truncated (bool), skipped_needs_render[]. Verified live: Logo.jsx -> block with img-alt finding (1.1.1); ok.html -> pass, zero findings; worst_verdict block.",
+        "quirks": [
+          "STATIC analysis only — it parses the markup YOU supply; it does NOT render the page, resolve the CSS cascade, or run assistive tech, so it can miss real barriers (false negatives). Per its own disclaimer a `pass` is not proof of accessibility and it is NOT a legal compliance guarantee.",
+          "Flat per-call price ($0.10) for the whole batch regardless of how many files are in `files` — batch multiple files in one request rather than paying per file.",
+          "worst_verdict is the roll-up (worst of all files): block > caution > pass. Check per-file `verdict` for which file failed.",
+          "Findings can be truncated per file (`findings_truncated`); some elements are skipped when they need a rendered DOM (`skipped_needs_render`).",
+          "`framework` may be given per-file or as a top-level default; `auto` lets the service detect it (returned as `framework_detected`)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Batch-check the accessibility (WCAG 2.2) of UI source you already have. POST https://api.agentstools.dev/a11y/batch with JSON {\"files\":[{\"filename\":\"Logo.jsx\",\"framework\":\"jsx\",\"markup\":\"<img src=\\\"logo.png\\\" />\"}, ...]} — `files` is the only required field (each item needs at least `filename`; include `markup` for it to be checked; `framework` is auto|html|jsx|tsx|vue|angular, or set a top-level default). Optional top-level `level` (A|AA, default AA). No API key; pays a flat $0.10 USDC via x402 on Base per call for the whole batch. The 200 returns per-file verdicts (pass|caution|block) with rule-level findings (rule_id, wcag_sc, severity, element, location, message, remediation) plus a rollup (worst_verdict, file_count, totals by severity). This is deterministic STATIC markup analysis — it does not render the page, so treat results as accessibility indicators, not a compliance certification.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Accessibility Preflight",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-a11y-preflight",
+        "a11y-preflight",
+        "wcag-preflight-check"
+      ],
+      "description": "Static WCAG 2.2 accessibility check of a single UI markup fragment (HTML/JSX/TSX/Vue/Angular you supply): returns a pass/caution/block verdict with per-finding WCAG criterion, element and line, plus a coverage summary.",
+      "tags": [
+        "accessibility",
+        "a11y",
+        "wcag",
+        "testing",
+        "qa",
+        "ui"
+      ],
+      "modality": {
+        "input": [
+          "code"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/a11y/preflight",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "markup": {
+                "type": "string",
+                "description": "The UI markup fragment or component to check."
+              },
+              "framework": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "html",
+                  "jsx",
+                  "tsx",
+                  "vue",
+                  "angular"
+                ],
+                "description": "Source framework (default auto-detect)."
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "AA"
+                ],
+                "description": "WCAG conformance level to check (default AA)."
+              },
+              "palette": {
+                "type": "object",
+                "description": "Optional name-to-colour map for static contrast (e.g. CSS variables / theme tokens)."
+              },
+              "theme": {
+                "type": "object",
+                "description": "Alias of palette."
+              }
+            },
+            "required": [
+              "markup"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "Single-fragment accessibility report.",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "findings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rule_id": {
+                      "type": "string"
+                    },
+                    "wcag_sc": {
+                      "type": "string"
+                    },
+                    "wcag_level": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "element": {
+                      "type": "string"
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "remediation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "findings_truncated": {
+                "type": "boolean"
+              },
+              "summary": {
+                "type": "object"
+              },
+              "coverage": {
+                "type": "object"
+              },
+              "ruleset_version": {
+                "type": "string"
+              },
+              "wcag_version": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/a11y/preflight with JSON body {\"markup\":\"<img src=\\\"logo.png\\\" />\", \"framework\":\"jsx\"}. `markup` is the only required field; optional `framework` (auto|html|jsx|tsx|vue|angular, default auto), `level` (A|AA, default AA) and `palette`/`theme` (name-to-colour map for static contrast). Result is inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "framework": "jsx",
+          "markup": "<img src=\"logo.png\" />"
+        },
+        "outputShape": "JSON object. Top level: object (\"a11y_preflight\"), verdict (pass|caution|block), findings[] (each: rule_id e.g. img-alt, wcag_sc e.g. 1.1.1, wcag_level, severity, category e.g. text-alternatives, element, location e.g. \"line 1\", message, remediation), findings_truncated (bool), summary.{by_severity:{block,caution}, counts:{findings, by_category}}, coverage.{framework_detected, level, rules_run, rules_total, nodes_scanned, skipped_needs_render[]}, ruleset_version (e.g. 2026.07.16), wcag_version (WCAG 2.2), disclaimer. Verified live: '<img src=\"logo.png\" />' -> verdict block, one img-alt finding (WCAG 1.1.1), coverage.rules_run 14/14, framework_detected jsx.",
+        "quirks": [
+          "STATIC analysis only — it parses the markup YOU supply; it does NOT render the page, resolve the full CSS cascade, or run assistive tech, so it can miss real barriers (false negatives). Per its own disclaimer a `pass` is not proof of accessibility and it is NOT a legal compliance guarantee.",
+          "Single fragment per call. To check many files in one request (and one flat fee) use the sibling Agentstools Accessibility Batch Check (POST /a11y/batch, $0.10).",
+          "verdict is the roll-up for the fragment: block > caution > pass.",
+          "Static contrast rules need a colour map — pass CSS variables / theme tokens via `palette` (or its alias `theme`) so colour-contrast rules can run.",
+          "`framework` defaults to auto-detect; the detected value is returned as coverage.framework_detected."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Check the accessibility (WCAG 2.2) of one UI markup fragment you already have. POST https://api.agentstools.dev/a11y/preflight with JSON {\"markup\":\"<img src=\\\"logo.png\\\" />\",\"framework\":\"jsx\"} — `markup` is the only required field; `framework` is auto|html|jsx|tsx|vue|angular (default auto), `level` is A|AA (default AA), and `palette`/`theme` supplies a name-to-colour map so static colour-contrast rules can run. No API key; pays a flat $0.02 USDC via x402 on Base per call. The 200 returns a fragment verdict (pass|caution|block) with rule-level findings (rule_id, wcag_sc, severity, element, location, message, remediation) plus a coverage summary (framework_detected, rules_run/rules_total, nodes_scanned). This is deterministic STATIC markup analysis — it does not render the page, so treat results as accessibility indicators, not a compliance certification. For many files at once use the batch sibling POST /a11y/batch.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools SQL Check",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-sql-check",
+        "sqlscan-check",
+        "sql-preflight",
+        "sql-safety-check",
+        "query-safety-verdict"
+      ],
+      "description": "One keyless x402 call runs a safety & performance preflight on a single SQL query before you execute it — parses the statement (postgres/mysql/sqlite/bigquery/snowflake) and returns a pass/caution/block verdict with per-finding operation, severity, plain-language reason and a suggested fix.",
+      "tags": [
+        "sql",
+        "database",
+        "query-safety",
+        "preflight",
+        "linting",
+        "verdict"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/sql/check",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "20000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "sql": {
+                "type": "string",
+                "description": "The query text to check. Required. JSON body field."
+              },
+              "dialect": {
+                "type": "string",
+                "enum": [
+                  "postgres",
+                  "mysql",
+                  "sqlite",
+                  "bigquery",
+                  "snowflake"
+                ],
+                "description": "Database dialect (default postgres)."
+              },
+              "options": {
+                "type": "object",
+                "description": "Optional hints, e.g. indexed_columns: list of column names to refine performance findings."
+              }
+            },
+            "required": [
+              "sql"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "string",
+                "description": "Constant 'sqlscan_check'."
+              },
+              "dialect": {
+                "type": "string"
+              },
+              "verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "findings": {
+                "type": "array",
+                "description": "Per-finding objects with operation, severity, plain-language reason and a suggested fix. Empty when the query is clean.",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "block_count": {
+                    "type": "integer"
+                  },
+                  "caution_count": {
+                    "type": "integer"
+                  },
+                  "info_count": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "properties": {
+                  "statements_total": {
+                    "type": "integer"
+                  },
+                  "statements_parsed": {
+                    "type": "integer"
+                  },
+                  "parse_partial": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/sql/check with JSON body {\"sql\": \"<query>\", \"dialect\": \"<postgres|mysql|sqlite|bigquery|snowflake>\"} — only 'sql' is required (dialect defaults to postgres); optional 'options' object accepts hints like indexed_columns. Result is inline in the synchronous 200. Pays a flat $0.02 USDC via x402 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "dialect": "postgres",
+          "sql": "SELECT id, name FROM users WHERE id = 1"
+        },
+        "outputShape": "JSON object: object ('sqlscan_check'), dialect, verdict (pass|caution|block), findings[] (per-finding {operation, severity, reason, fix}; empty when clean), summary{block_count, caution_count, info_count}, coverage{statements_total, statements_parsed, parse_partial}, disclaimer. Verified live: dialect=postgres sql='SELECT id, name FROM users WHERE id = 1' -> HTTP 200, $0.02 charged, verdict 'pass', findings [], summary all 0, coverage statements_total 1 / statements_parsed 1 / parse_partial false.",
+        "outputExample": {
+          "object": "sqlscan_check",
+          "dialect": "postgres",
+          "verdict": "pass",
+          "findings": [],
+          "summary": {
+            "block_count": 0,
+            "caution_count": 0,
+            "info_count": 0
+          },
+          "coverage": {
+            "statements_total": 1,
+            "statements_parsed": 1,
+            "parse_partial": false
+          },
+          "disclaimer": "Automated query safety/performance indicators, not a guarantee. Destructive and correctness findings are deterministic from the query text; performance findings are heuristics — without your schema, indexes or an EXPLAIN plan they cannot confirm a slow scan, so treat caution/info as a prompt to review, not a verdict on actual runtime."
+        },
+        "quirks": [
+          "Body field is 'sql' (the query text), NOT 'query' — the discovery callHint's {\"query\":...} is wrong; the live 402 schema requires {\"sql\":...} with 'sql' the only required field.",
+          "'dialect' defaults to postgres; supported values are postgres, mysql, sqlite, bigquery, snowflake. Optional 'options' object takes hints (e.g. indexed_columns) to refine performance findings.",
+          "Destructive and correctness findings are deterministic from the query text, but performance findings are HEURISTICS — without your schema, indexes or an EXPLAIN plan they cannot confirm a slow scan; treat caution/info as a review prompt, not a runtime verdict (per the response disclaimer).",
+          "This is the single-query check; the sibling Agentstools op POST /sql/batch checks multiple queries at once, and /sql/rules just echoes the static rule catalog."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Preflight a SQL statement for safety and performance BEFORE running it, in one keyless paid call. POST https://api.agentstools.dev/sql/check with a JSON body {\"sql\": \"<your query>\", \"dialect\": \"postgres\"} (dialect optional, defaults to postgres; supported: postgres|mysql|sqlite|bigquery|snowflake; optional 'options.indexed_columns' refines performance findings). NOTE the field is 'sql', not 'query'. Pays a flat $0.02 USDC via x402 on Base (eip155:8453); result is inline in the 200. Read 'verdict' (pass|caution|block) for the roll-up, iterate 'findings[]' for each {operation, severity, reason, fix}, and check 'coverage' to confirm the parser understood every statement (parse_partial=true means some statements weren't parsed). Destructive/correctness findings are deterministic; performance findings are heuristics (no schema/indexes/EXPLAIN), so treat caution/info as a review prompt. For checking many queries at once use the sibling POST /sql/batch. Verified 2026-08-07 with dialect=postgres, sql='SELECT id, name FROM users WHERE id = 1' -> verdict 'pass', $0.02 charged.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    }
+  ]
+}

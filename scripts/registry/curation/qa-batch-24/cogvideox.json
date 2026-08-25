@@ -1,0 +1,50 @@
+{
+  "serviceId": "cogvideox",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/zai/api/paas/v4/videos/generations",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/zai/api/paas/v4/videos/generations with JSON body {model, prompt} (model required = \"cogvideox-3\"; prompt or image_url required). Returns 200 with an async job {id, task_status:\"PROCESSING\"}; then GET https://x402.orth.sh/zai/api/paas/v4/async-result/{id} (free, no payment) until task_status=\"SUCCESS\".",
+    "inputExample": {
+      "model": "cogvideox-3",
+      "prompt": "a red circle",
+      "quality": "speed",
+      "duration": 5
+    },
+    "outputShape": "Submit: body.id (job id), body.task_status (\"PROCESSING\"). Poll result: body.task_status (\"SUCCESS\"/\"PROCESSING\"/\"FAIL\"), final video at body.video_result[0].url (mp4), thumbnail at body.video_result[0].cover_image_url.",
+    "quirks": [
+      "Async two-step: the paid POST only QUEUES the job and returns task_status:PROCESSING — it does NOT return the video. You MUST poll to get the result.",
+      "Poll URL is GET {origin}/zai/api/paas/v4/async-result/{id} using the id from the submit response. Polling is FREE (no x402 payment).",
+      "Completion took ~20 polls (roughly 2-3 minutes); poll every ~6-8s, allow up to 40 polls. While pending the poll body is minimal {id, model, task_status:PROCESSING}; on SUCCESS it gains video_result[].",
+      "Read the final video from video_result[0].url (an mp4 on mfile.z.ai). The mp4 URL carries a watermark filename and may be time-limited — download promptly.",
+      "model field is required and must be 'cogvideox-3'. Either prompt or image_url must be supplied (prompt alone works).",
+      "Payment is single-charge at submit only ($0.01 on Base USDC); polling does not charge again."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/zai/api/paas/v4/videos/generations with JSON {\"model\":\"cogvideox-3\",\"prompt\":\"<your scene>\"} (pay $0.01 USDC on Base via x402). You get back a job with an id and task_status:\"PROCESSING\" — this is async, the video is NOT in this response. Then repeatedly GET https://x402.orth.sh/zai/api/paas/v4/async-result/{id} (free) every ~6-8 seconds until task_status becomes \"SUCCESS\" (allow a few minutes / up to 40 polls). When successful, the video mp4 URL is at video_result[0].url and a cover image at video_result[0].cover_image_url. Optional params: quality (\"speed\"|\"quality\"), duration (5|10), fps (30|60), with_audio (bool), size, image_url[] for image-to-video.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cogvideox#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

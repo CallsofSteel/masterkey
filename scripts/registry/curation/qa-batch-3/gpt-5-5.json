@@ -1,0 +1,50 @@
+{
+  "serviceId": "gpt-5-5",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.025925
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[]} (OpenAI chat-completions shape)",
+    "inputExample": {
+      "model": "openai/gpt-5.5",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); token accounting at body.usage",
+    "quirks": [
+      "OpenAI-compatible chat-completions API; pass model slug to pick tier (e.g. openai/gpt-5.5)",
+      "Response 'model' field echoes a dated build (e.g. gpt-5.5-2026-04-23), not the request slug",
+      "Price varies by tokens/model; a tiny 'hello' call cost ~$0.026 USDC on Base"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/chat/completions an OpenAI-style chat body: {\"model\":\"openai/gpt-5.5\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Payment is x402 USDC on Base, charged per call by token usage (no API key needed). Read the assistant reply from body.choices[0].message.content. Swap the model slug to access other GPT-5 tiers (5.4, 5.3, mini/nano, codex).",
+    "costObservedUsd": 0.025925
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-5-5#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

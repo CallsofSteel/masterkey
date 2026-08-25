@@ -1,0 +1,45 @@
+{
+  "serviceId": "x402node-text-statistics",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/text/stats",
+      "method": "GET",
+      "amountUsd": 0.0022
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/text/stats?text=<url-encoded text>",
+    "inputExample": {
+      "text": "Hello world. This is a test."
+    },
+    "outputShape": "body.chars, body.chars_no_spaces, body.words, body.lines, body.paragraphs, body.sentences, body.reading_time_min",
+    "quirks": [
+      "Input text is passed as a URL query param (?text=...), NOT a JSON body — this is a GET endpoint.",
+      "Text must be URL-encoded.",
+      "Response includes a marketing _hint field that can be ignored.",
+      "reading_time_min is 0 for short inputs (rounded down to whole minutes)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/text/stats with the text to analyze URL-encoded into the ?text= query param (e.g. ?text=Hello%20world). Pay via x402 (USDC on Base; this run cost $0.0022). The JSON response returns counts directly at the top level: read body.words, body.chars, body.chars_no_spaces, body.lines, body.paragraphs, body.sentences, and body.reading_time_min. Ignore the _hint marketing field.",
+    "costObservedUsd": 0.0022
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402node-text-statistics#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "serviceId": "wan-2-6",
+  "subcat": "video-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/wan-2.6/t2v",
+      "method": "POST",
+      "amountUsd": 0.5
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/wan-2.6/t2v with JSON body {prompt, duration?, resolution?}. Pay x402 USDC on Base (~$0.50 observed for 5s/720p; registry surface $10 is the cap, not the charge). Returns async job {success, jobId, status:\"pending\", type:\"wan-2.6-t2v\"}. Then poll the result with SIWX auth (free, no payment): GET https://stablestudio.dev/api/jobs/{jobId} every ~15-25s until status=\"complete\".",
+    "inputExample": {
+      "prompt": "a red circle gently pulsing",
+      "duration": "5",
+      "resolution": "720p"
+    },
+    "outputShape": "POST response: body.jobId (string), body.status (\"pending\"), body.success (true), body.type (\"wan-2.6-t2v\"). Poll response (GET /api/jobs/{jobId}, SIWX): body.status (\"loading\"|\"complete\"|\"failed\"), body.progress, body.error, and on success body.result.videoUrl + body.result.thumbnailUrl.",
+    "quirks": [
+      "This is the t2v (TEXT-to-video) route - unlike its i2v sibling it needs NO image, only a prompt. Do not send an 'image' field.",
+      "Two-step async: POST returns {jobId, status:'pending'} only. The finished video is NOT in the POST response. You MUST poll GET /api/jobs/{jobId} until status='complete', then read body.result.videoUrl.",
+      "POLL IS SIWX, NOT PAID: GET /api/jobs/{jobId} requires a SIGN-IN-WITH-X (CAIP-122 wallet signature) header and is free (no USDC). Use --siwx / agentcash fetch handles it. Without a signature it returns 402 with a sign-in-with-x extension.",
+      "DYNAMIC PRICING: registry surface says $10.00 but that is the cap/max; actual charge observed $0.50 for 5s 720p. x402 USDC on Base.",
+      "duration enum '5'|'10'|'15' (string), resolution '720p'|'1080p'. enablePromptExpansion defaults true server-side.",
+      "Test completed fast (~60s) but video models can take 2-5 min; poll every ~15s. Do NOT resubmit while status is 'pending'/'loading' - duplicate submissions create duplicate paid jobs.",
+      "Result videoUrl/thumbnailUrl are Vercel Blob URLs that expire after ~20 minutes - download the video immediately on completion.",
+      "Canonical origin stablestudio.dev works; the .io host serves the same API."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Wan 2.6 text-to-video. STEP 1: POST https://stablestudio.dev/api/generate/wan-2.6/t2v with JSON {prompt, duration?, resolution?} (no image needed - this is the t2v route); pay USDC on Base (~$0.50, not the $10 surface). You get back {jobId, status:'pending'}. STEP 2: poll GET https://stablestudio.dev/api/jobs/{jobId} with a SIGN-IN-WITH-X (SIWX) signature header (free, not a payment) every ~15s until status='complete', then read the video at body.result.videoUrl and download it within ~20 min before the URL expires. Never resubmit while pending/loading.",
+    "costObservedUsd": 0.5
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "wan-2-6#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.5
+    }
+  ]
+}

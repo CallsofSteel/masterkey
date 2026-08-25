@@ -1,0 +1,53 @@
+{
+  "serviceId": "gpt-image-1-5",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/gpt-image-1.5/edit",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/gpt-image-1.5/edit with JSON body {prompt, images:[imageUrl,...]} (optional: size, quality, background, output_format, output_compression, moderation, input_fidelity). Returns {success, jobId, status:\"pending\", type}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (same wallet that paid) until status=complete; image at body.result.imageUrl.",
+    "inputExample": {
+      "prompt": "add a red circle in the center",
+      "images": [
+        "https://placehold.co/512x512.png"
+      ],
+      "size": "1024x1024",
+      "quality": "low"
+    },
+    "outputShape": "POST returns body.jobId + body.status=\"pending\" + body.type=\"gpt-image-1.5-edit\" (image NOT in POST response). Poll GET /api/jobs/{jobId}: body.status (pending|loading|complete), body.progress (0-100), final edited image at body.result.imageUrl.",
+    "quirks": [
+      "This is the EDIT endpoint (not generate): body requires both prompt AND images (array of >=1 image URLs to edit). Without images it 400s.",
+      "Image URLs are validated pre-payment: must return HTTP 200 with an image content-type and NO redirect. Wikipedia upload URLs (UA-gated -> 400) and picsum.photos (302 redirect) were rejected with 'Invalid image URL(s)' (no charge). A direct PNG like https://placehold.co/512x512.png works.",
+      "Registry surface price is $0.0090; actual x402 charge was $0.01 USDC on Base for a low-quality 1024x1024 edit (quality/size affect cost).",
+      "Async two-step: POST returns {success, jobId, status:'pending'} and does NOT contain the image.",
+      "Poll GET https://stablestudio.dev/api/jobs/{jobId} (NOT /api/generate/.../status) with SIWX wallet auth (free, no payment).",
+      "The poll/job endpoint is identity-gated to the wallet that PAID the POST: polling with a different SIWX identity returns 403 Unauthorized. Use the same wallet for POST and poll.",
+      "Final edited image at body.result.imageUrl (Vercel blob URL)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://stablestudio.dev/api/generate/gpt-image-1.5/edit with JSON {\"prompt\":\"...\",\"images\":[\"<direct image URL>\"]} and pay x402 USDC on Base (~$0.01 for low quality). The image URL(s) must resolve to a real image with HTTP 200 and no redirect (placehold.co/512x512.png works; Wikipedia/picsum get rejected pre-payment). You receive {success, jobId, status:\"pending\"}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth from the SAME wallet that paid (polling is free) until body.status === \"complete\", reading body.progress (0-100) along the way. Read the edited image from body.result.imageUrl.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-image-1-5#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "describe-image-vision-llm",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/describe-image",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/describe-image with JSON body {image_url, mode} (x402 USDC on Base, $0.02/call)",
+    "inputExample": {
+      "image_url": "https://example.com/photo.jpg",
+      "mode": "caption"
+    },
+    "outputShape": "On success: body holds the vision-LLM analysis text (description/alt-text/OCR/tags/caption per mode). On failure: body.error (string). Errors deep-reference messages[0].content[1].image_url.url, confirming an OpenAI-style vision payload internally.",
+    "quirks": [
+      "Body is {image_url, mode}; mode selects the analysis type (full description, accessibility alt-text, OCR text extraction, keyword tags, single-sentence caption).",
+      "image_url MUST be a direct, static, publicly-reachable image (image/jpeg, image/png, image/webp, or image/gif). The worker downloads it server-side.",
+      "Redirect-based or generated image URLs (e.g. picsum.photos/*.jpg) get rejected with 'Supplied image did not pass validation checks'; Wikipedia thumbnail URLs returned 'Failed to download one or more images'. Use a plain hosted .jpg/.png.",
+      "On image-download/validation failure the endpoint returns HTTP 502 with body.error 'Both models failed...' AFTER charging $0.02 — payment is NOT refunded, so validate your image URL is fetchable first.",
+      "Endpoint reaches the upstream model pipeline correctly; failures are image-source issues, not a dead route."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/describe-image with JSON {\"image_url\":\"<direct static image URL>\",\"mode\":\"caption\"}. Pay $0.02 USDC via x402 on Base; no API key. mode selects: description, alt-text, OCR, tags, or caption. Provide a directly-fetchable image (jpeg/png/webp/gif); redirecting/generated URLs are rejected upstream. Read analysis text from the JSON body; a 502 with body.error 'Both models failed' means the image was unreachable/invalid and you were still charged.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "describe-image-vision-llm#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

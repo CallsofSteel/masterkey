@@ -1,0 +1,80 @@
+{
+  "serviceId": "scrape-creators",
+  "subcat": "social-media-data",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/scrapecreators/v1/truthsocial/user/posts",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapecreators/v1/truthsocial/profile",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapecreators/v1/truthsocial/post",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://x402.orth.sh/scrapecreators/v2/tiktok/video",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/scrapecreators/v1/truthsocial/user/posts?user_id=107780257626128497&trim=true (no body; pass handle OR user_id as query param)",
+    "inputExample": {
+      "user_id": "107780257626128497",
+      "trim": "true"
+    },
+    "outputShape": "body.success (bool), body.posts[] (each with .id, .text, .created_at, .url, .replies_count, .reblogs_count, .favourites_count, .media_attachments[]), body.next_max_id (pagination cursor), body.credits_remaining",
+    "quirks": [
+      "GET endpoint, NO request body. Identity must be passed as a query param.",
+      "You MUST supply handle (Truth Social username) OR user_id (numeric, faster) — neither is strictly 'required' in schema but you get nothing useful without one. Trump's user_id is 107780257626128497; his handle is realDonaldTrump.",
+      "user_id comes from the 'id' field of the profile endpoint and is faster than handle.",
+      "Add &trim=true to get a smaller response. Paginate with next_max_id from the previous response.",
+      "Price is fixed 0.02 USDC on Base despite registry showing 'Varies'."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.orth.sh/scrapecreators/v1/truthsocial/user/posts with a query string identifying the account: either ?handle=<username> or ?user_id=<numeric id> (user_id is faster; it's the 'id' from the profile endpoint). No request body. Pay 0.02 USDC via x402 on Base. Read posts from body.posts[] (each has text, created_at, url, and engagement counts). To page further, pass ?next_max_id=<value> taken from the previous response's body.next_max_id. Add &trim=true for a lighter payload.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "scrape-creators#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "scrape-creators#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "scrape-creators#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "scrape-creators#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

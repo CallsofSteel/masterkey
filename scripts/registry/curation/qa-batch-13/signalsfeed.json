@@ -1,0 +1,49 @@
+{
+  "serviceId": "signalsfeed",
+  "subcat": "news-media",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://signalsfeed.com/api/v1/sentiment",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://signalsfeed.com/api/v1/sentiment?ids=<uuid1>,<uuid2> (x402, ~$0.01/call, up to 20 signals). Free discovery first: GET https://signalsfeed.com/api/v1/sentiment?quality_status=premium&limit=20 (no payment) to obtain purchasable signal UUIDs.",
+    "inputExample": {
+      "_method": "GET",
+      "_query": {
+        "ids": "bab16deb-7158-4156-8cd1-7865a92d80e2,a7796df4-3fc8-4ba3-a636-bb4a549c169e"
+      }
+    },
+    "outputShape": "body.signals[] — each has claim, canonical_claim, subject/predicate/object, confidence (0-1), credibility_score (0-1), entities[], keywords[], numeric_value/numeric_unit, evidence[] (source_url, publisher, excerpt), supporting_articles[]. Also body.count and body.format=\"full\".",
+    "quirks": [
+      "Paying with NO ids= (or other free-discovery params) returns only teaser metadata, not full signals — to actually unlock content you MUST pass ids=<comma-separated UUIDs>.",
+      "Get the UUIDs FIRST from the free discovery surface: GET ...?quality_status=premium&limit=20 returns signals[].id of purchasable records at no cost (no x402).",
+      "Only quality_status=premium IDs are purchasable; paid call caps at 20 signals regardless of limit.",
+      "Single endpoint serves both free discovery (teasers, top_topics, preview) and the paid full-signal unlock; behavior depends entirely on query params.",
+      "Domains are limited to ai / semiconductor / macro."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Two-step flow. First call the free discovery surface GET https://signalsfeed.com/api/v1/sentiment?quality_status=premium&limit=20 (no payment) and collect the signals[].id UUIDs you want. Then make the paid x402 call GET https://signalsfeed.com/api/v1/sentiment?ids=<comma-separated UUIDs> which costs ~$0.01 USDC on Base and returns up to 20 full signals. Read results from body.signals[]: use claim/canonical_claim for the headline, confidence and credibility_score for trust, and evidence[].source_url for citations. Paying without ids= only returns teasers, so always supply ids.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "signalsfeed#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

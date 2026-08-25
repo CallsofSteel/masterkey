@@ -1,0 +1,56 @@
+{
+  "serviceId": "dome-price-oracle",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/dome/crypto-prices/binance",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402.orth.sh/dome/crypto-prices/chainlink",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/dome/crypto-prices/binance?currency=btcusdt (required query param: currency; optional: start_time, end_time, limit, pagination_key)",
+    "inputExample": {
+      "currency": "btcusdt"
+    },
+    "outputShape": "body.prices[] (array of {symbol, value, timestamp}); body.total. Latest price = body.prices[0].value",
+    "quirks": [
+      "currency must be lowercase alphanumeric with no separator, e.g. btcusdt / ethusdt / solusdt (NOT BTC-USDT or btc/usdt)",
+      "With no start_time/end_time provided, limit is forced to 1 and you get only the most recent price",
+      "timestamp is Unix milliseconds",
+      "currency query param is required; omitting it will likely 4xx"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.orth.sh/dome/crypto-prices/binance with a required `currency` query param (lowercase, no separator, e.g. btcusdt). Pay $0.01 USDC via x402 on Base. For just the latest price, omit time params and read body.prices[0].value. For a series, pass start_time and end_time as Unix-ms timestamps plus optional limit (max 100); paginate with the returned pagination_key.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "dome-price-oracle#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "dome-price-oracle#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

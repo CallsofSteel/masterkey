@@ -1,0 +1,73 @@
+{
+  "serviceId": "blockrun",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun-web-vbsbhh7lea-uc.a.run.app/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://sol.blockrun.ai/api/v1/chat/completions",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001727
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun-web-vbsbhh7lea-uc.a.run.app/api/v1/chat/completions with JSON body {model, messages, max_tokens?, temperature?, stream?}",
+    "inputExample": {
+      "model": "openai/gpt-4o-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); token usage at body.usage.total_tokens; OpenAI chat.completion shape",
+    "quirks": [
+      "Registry surface lists method GET, but the endpoint actually requires POST with a JSON body — GET will not work; call it as POST.",
+      "OpenAI-compatible: required fields are 'model' and 'messages'. 'model' must be one of the enum IDs (e.g. openai/gpt-4o-mini, anthropic/claude-haiku-4.5).",
+      "Pricing is token-based/dynamic; the $0.0010 surface price is a floor. Larger prompts/completions cost more, so a cheap model + small max_tokens keeps cost low.",
+      "x402 USDC on Base, no API key. Response model field echoes the resolved upstream model (e.g. gpt-4o-mini-2024-07-18)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST (not GET) to https://blockrun-web-vbsbhh7lea-uc.a.run.app/api/v1/chat/completions with a JSON body {\"model\": \"<one of the enum model IDs>\", \"messages\": [{\"role\":\"user\",\"content\":\"...\"}]}, optionally max_tokens/temperature/stream. Pay via x402 USDC on Base; no API key. Read the assistant reply at body.choices[0].message.content and token usage at body.usage. Cost is token-based and dynamic (min ~$0.001), so use a cheap model and small max_tokens to control spend.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "blockrun#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "blockrun#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001727
+    }
+  ]
+}

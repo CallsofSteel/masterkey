@@ -1,0 +1,43 @@
+{
+  "serviceId": "agentphone",
+  "subcat": "sms-phone",
+  "action": "add-usage",
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.agentphone.ai/x402/v1/messages with JSON body {agent_id, to_number, body} to send SMS/iMessage ($0.02); POST /x402/v1/numbers with {agentId?, country?, areaCode?} to provision a number ($0.01); POST /x402/v1/calls with {toNumber, fromNumberId, systemPrompt, initialGreeting, voice?} for AI outbound call ($0.50 max upto permit2); POST /x402/v1/calls/web with {agentId?, metadata?, variables?} for in-browser call ($0.50 max upto permit2)",
+    "inputExample": {
+      "agent_id": "agt_test123",
+      "to_number": "+15551234567",
+      "body": {
+        "_note": "SCHEMA UNKNOWN — body must be a dict/object, not a plain string. Phase B test found 422 VALIDATION_ERROR: 'Input should be a valid dictionary or object'. Exact sub-schema not published. Possible shape: {text: string} or {content: string} — verify before use."
+      }
+    },
+    "outputShape": "JSON body with result fields (exact output schema not published; output.example is {} in all 402 headers — likely returns message/call id and status)",
+    "quirks": [
+      "Stateful prerequisite: must register an agent on the AgentPhone web dashboard (free, outside x402) to obtain an agent_id before calling /messages or /numbers",
+      "SCHEMA BUG: the 'body' request field must be a dict/object, NOT a plain string. The service returns 422 VALIDATION_ERROR after taking payment if body is a string. Exact sub-schema not published anywhere — callers must discover the correct shape before use.",
+      "Provision a phone number first (POST /x402/v1/numbers, $0.01) to get a number_id for dedicated caller ID; number_id is optional on /messages but without it the caller ID is uncontrolled",
+      "The /calls and /calls/web endpoints use the x402 'upto' permit2 scheme (max $0.50, dynamic billing) requiring an ERC-20 permit2 approval setup before calling — cannot use standard 'exact' x402 flow",
+      "send_style field on /messages enables iMessage expressive animations (celebration, confetti, balloons, etc.) — only valid on iMessage-capable provisioned numbers; silently ignored otherwise",
+      "Real backend URL in 402 payment-required header is api.paysponge.com (transparent proxy) — the registry URL api.agentphone.ai/x402/v1 is the gateway entry point",
+      "GET read endpoints (/numbers/{id}/messages, /calls/{id}/recording, /calls/{id}/transcript) are wallet-scoped and require resource IDs from prior provisioning or call operations; their payment schema has empty accepts[] (status: needs-review)"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "AgentPhone provides x402-gated phone infrastructure (SMS, iMessage, AI voice calls) for agents on Base or Solana. Before calling any endpoint, register an agent via the AgentPhone web dashboard (free, not x402) to receive an agent_id. Provision a dedicated phone number via POST /x402/v1/numbers ($0.01; optional body: {agentId, country, areaCode}) to get a number_id. Send SMS or iMessage via POST /x402/v1/messages ($0.02; required: agent_id, to_number, body as an OBJECT not string; optional: number_id for dedicated caller ID, send_style for iMessage animations). The exact schema for the 'body' field is unknown — probe the API or check docs before sending. Place an AI-driven outbound voice call via POST /x402/v1/calls ($0.50 max, dynamic upto permit2 scheme — requires permit2 ERC-20 approval before calling; body: {toNumber, fromNumberId, systemPrompt, initialGreeting}). Inbound messages, call recordings, and transcripts can be retrieved via wallet-scoped GET endpoints using the IDs obtained from prior provisioning and call operations.",
+    "costObservedUsd": 0,
+    "phaseB": {
+      "pass": false,
+      "failReason": "422 VALIDATION_ERROR on 'body' field — must be a dict not a string. Payment of $0.02 was charged before 422 returned.",
+      "missingFromDoc": [
+        "Correct type/schema for the 'body' request field — inputExample shows string but API requires dict/object (sub-schema not published)",
+        "Working inputExample — agent_id 'agt_test123' is a non-functional placeholder"
+      ]
+    }
+  },
+  "drop": false,
+  "droppedReason": null
+}

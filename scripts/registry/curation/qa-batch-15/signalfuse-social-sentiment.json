@@ -1,0 +1,45 @@
+{
+  "serviceId": "signalfuse-social-sentiment",
+  "subcat": "trends-sentiment",
+  "batchId": "batch-15",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://api.signalfuse.co/v1/sentiment/BTC",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.signalfuse.co/v1/sentiment/{symbol} (x402, $0.002 USDC on Base). Registered URL is /sentiment/BTC.",
+    "inputExample": {
+      "symbol": "BTC"
+    },
+    "outputShape": "On success (per advertised example only): body.symbol, body.label, body.confidence, body.score, body.updated_at. NOT OBSERVED — the registered BTC call returns body.detail (error string) with HTTP 400.",
+    "quirks": [
+      "CHARGE-THEN-ERROR: pays $0.002 USDC then returns HTTP 400 for the registered /BTC URL — money lost with no result.",
+      "Registry schema and description are WRONG: they advertise crypto symbols (BTC/ETH/SOL/DOGE/PEPE/WIF/BONK/ARB/OP/AVAX) and call it 'BTC/crypto social sentiment', but the LIVE API only supports US STOCK tickers.",
+      "Live API supported symbols (from the 400 error): TSLA, PLTR, BABA, HOOD, NVDA, AMZN, META, GOOGL.",
+      "The registered call path (/sentiment/BTC) is the broken one; a valid call would need a stock ticker like /sentiment/NVDA (untested — second payment was blocked by money-safety scope)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do NOT call the registered URL https://api.signalfuse.co/v1/sentiment/BTC — it charges $0.002 USDC and then returns HTTP 400 'Unknown symbol: BTC' because the live API does not support crypto symbols at all. The registry/service metadata is incorrect: this endpoint actually serves US-stock social sentiment, supporting only TSLA, PLTR, BABA, HOOD, NVDA, AMZN, META, GOOGL. To possibly get a result you would call GET /v1/sentiment/{stock_ticker} (e.g. /sentiment/NVDA), which per the advertised example returns JSON {symbol, label, confidence, score, updated_at}; this success path was NOT verified here. As registered, treat this endpoint as broken/mismatched.",
+    "costObservedUsd": 0.002,
+    "droppedReason": "signalfuse-social-sentiment#0: CHARGE-THEN-ERROR: pays $0.002 USDC then returns HTTP 400 for the registered /BTC URL — money lost with no result."
+  },
+  "droppedReason": "signalfuse-social-sentiment#0: CHARGE-THEN-ERROR: pays $0.002 USDC then returns HTTP 400 for the registered /BTC URL — money lost with no result.",
+  "_backends": [
+    {
+      "key": "signalfuse-social-sentiment#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

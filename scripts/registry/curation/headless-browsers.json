@@ -1,0 +1,604 @@
+{
+  "subcategory": "headless-browsers",
+  "category": "web-automation",
+  "unit": "per session",
+  "_note": "Curated by claude-aiml (v2). First-party providers added per user request: Browserbase (x402.browserbase.com/browser/session/create, duration-priced $0.01-$0.12) and Hyperbrowser (api.hyperbrowser.ai/x402/web/fetch + /web/search, $0.001 each, Base+Solana) — both agentcash-resolved. Recognizable cloud-browser/automation providers kept. DROPPED: orbisapi auto-proxy farm (#4,#21-30,#38,#50,#55-57), x402helper (#1,#17,#18,#53), apify git-preview hosts (#34,#35,#58; api.apify.com first-party kept). Routed away: scraping (#0,#6 x402-deployer scrape, #5 btcnode, #7 strale, #33 stableflare md) -> web-scraping; screenshots (#19,#36 stableflare, screenshot-pdf) -> screenshot-rendering; stableflare cloudflare (#2,#3) -> infrastructure. delx forms #49 -> forms. zuluworksai #8 generic rendering dropped.",
+  "entries": [
+    {
+      "name": "Browserbase",
+      "kind": "api",
+      "provider": "Browserbase",
+      "providerId": "browserbase",
+      "aka": [
+        "browserbase-x402"
+      ],
+      "description": "Browserbase pay-per-use cloud browser sessions — POST to create a prepaid session and receive a WebSocket connection URL for Playwright/Puppeteer/CDP automation. No API key or account; duration-priced ($0.01/5min, $0.03/15min, $0.06/30min, $0.12/hr) in USDC on Base.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "cloud-browser",
+        "playwright",
+        "cdp"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402.browserbase.com/browser/session/create",
+          "method": "POST",
+          "provider": "Browserbase",
+          "amount": 0.002,
+          "min": 0.01,
+          "max": 0.12,
+          "dynamic": true,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDDf25C58EF1a68565E07C790D7Fe1907997aB54D",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-09T21:43:53.787Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402.browserbase.com/browser/session/create with empty JSON body {} (no API key; x402 USDC on Base)",
+        "inputExample": {},
+        "outputShape": "body.connectUrl (wss:// URL for Playwright/Puppeteer/CDP), body.sessionId, body.liveUrl (browser live-view), body.authToken, body.paidMinutes, body.expiresAt, body.pricing.amountPaid",
+        "quirks": [
+          "Empty JSON body {} is sufficient — no required fields. inputSchema is null in the registry.",
+          "One paid POST = one prepaid browser session; default tier is 5 minutes for $0.01. Longer durations cost more ($0.03/15min, $0.06/30min, $0.12/hr) per the description — duration params not tested.",
+          "The real product is the returned connectUrl (a wss:// endpoint). You must then connect a Playwright/Puppeteer/CDP client to that URL to actually use the browser; the session expires at body.expiresAt.",
+          "Session is time-limited: body.paidMinutes=5 and body.expiresAt is ~5min out. Use it immediately.",
+          "qa-pay reported costUsd 0.002 but the response body shows the true charge: pricing.amountPaid=0.01 for paidMinutes=5."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://x402.browserbase.com/browser/session/create with an empty JSON body {} and pay the x402 quote (USDC on Base, ~$0.01 for a 5-minute session, no API key). The 200 response is JSON: read body.connectUrl — a wss:// URL you connect a Playwright/Puppeteer/CDP client to in order to drive a real cloud browser. body.liveUrl gives a human-watchable live view, and body.expiresAt tells you when the session dies (use it promptly). Each call buys a fresh single-use session; longer durations are available but were not tested here.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "Hyperbrowser Fetch",
+      "kind": "api",
+      "provider": "Hyperbrowser",
+      "providerId": "hyperbrowser",
+      "aka": [
+        "hyperbrowser-fetch",
+        "fetch"
+      ],
+      "description": "Fetch a single web page and return its rendered content as markdown plus page metadata. Headless-browser backed so it handles JS-rendered pages.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "fetch",
+        "web-search",
+        "cloud-browser"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.hyperbrowser.ai/x402/web/fetch",
+          "method": "POST",
+          "provider": "Hyperbrowser",
+          "providerId": "hyperbrowser",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xd685EFA22e80262db5b5E2A5D0B9d7565b36334b",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9hBChyb1y2VjG8WeJ31M26ZZBaWR6ok6R6QVK1ptzYhL",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "firstParty": true
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.hyperbrowser.ai/x402/web/fetch with JSON body {url}",
+        "inputExample": {
+          "url": "https://example.com"
+        },
+        "outputShape": "status; data.metadata.{sourceURL,title,url,viewport}; data.markdown",
+        "quirks": [
+          "Input key is 'url' (single page fetch, not search).",
+          "Returns markdown of the page under data.markdown; top-level status='completed' on success.",
+          "402 challenge carries no input schema; shape inferred. Both Base (eip155:8453) and Solana payment rails accepted, USDC.",
+          "Price is $0.001 (cheaper than the search backend)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Fetch a single web page and return its rendered content as markdown plus page metadata. Headless-browser backed so it handles JS-rendered pages. POST https://api.hyperbrowser.ai/x402/web/fetch with JSON body {url} Output: status; data.metadata.{sourceURL,title,url,viewport}; data.markdown",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Hyperbrowser Search",
+      "kind": "api",
+      "provider": "Hyperbrowser",
+      "providerId": "hyperbrowser",
+      "aka": [
+        "hyperbrowser-search",
+        "search"
+      ],
+      "description": "Run a web search for a query and return a list of organic results (title, url, description).",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "fetch",
+        "web-search",
+        "cloud-browser"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.hyperbrowser.ai/x402/web/search",
+          "method": "POST",
+          "provider": "Hyperbrowser",
+          "providerId": "hyperbrowser",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xd685EFA22e80262db5b5E2A5D0B9d7565b36334b",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9hBChyb1y2VjG8WeJ31M26ZZBaWR6ok6R6QVK1ptzYhL",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "firstParty": true
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.hyperbrowser.ai/x402/web/search with JSON body {query}",
+        "inputExample": {
+          "query": "openai"
+        },
+        "outputShape": "status (string, 'completed'); data.query (string, echo of query); data.results[] each {title, url, description}",
+        "quirks": [
+          "Input key is 'query' (NOT 'url' as the original generic usage stated).",
+          "Returns ~10 results under data.results[]; each result has title, url, description.",
+          "402 challenge carries no input schema; shape inferred. Both Base (eip155:8453) and Solana payment rails accepted, USDC.",
+          "Price is $0.005 — 5x the fetch op."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Run a web search for a query and return a list of organic results (title, url, description). POST https://api.hyperbrowser.ai/x402/web/search with JSON body {query} Output: status (string, 'completed'); data.query (string, echo of query); data.results[] each {title, url, description}",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "StableBrowser Session (browser automation)",
+      "kind": "api",
+      "provider": "stablebrowser.dev",
+      "providerId": "www-stablebrowser",
+      "aka": [
+        "stablebrowser-session-browser-automation",
+        "browser-session"
+      ],
+      "description": "Pay-per-session cloud browser automation (Browserbase + Stagehand). Create a real Chromium session for $0.10, then drive it with free SIWX-authenticated actions: navigate, get-url, screenshot, AI act, AI extract, AI observe, get-details, close. The single paid op is session creation; all subsequent actions are free wallet-signed (SIWX) calls scoped to the session.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "agentic",
+        "stagehand"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablebrowser.dev/api/sessions",
+          "method": "POST",
+          "provider": "stablebrowser.dev",
+          "providerId": "stablebrowser-dev",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xcB79b3c5A7dADcD7C30E3bE252c0CA44a06C6f78",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-18T21:07:42.421Z"
+          }
+        },
+        {
+          "url": "https://www.stablebrowser.dev/api/sessions",
+          "method": "POST",
+          "provider": "www.stablebrowser.dev",
+          "providerId": "www-stablebrowser",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xcB79b3c5A7dADcD7C30E3bE252c0CA44a06C6f78",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://stablebrowser.vercel.app/api/sessions",
+          "method": "POST",
+          "provider": "stablebrowser.vercel.app",
+          "providerId": "stablebrowser-vercel",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xcB79b3c5A7dADcD7C30E3bE252c0CA44a06C6f78",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "STEP 1 (PAID, x402 $0.10 on Base): POST https://stablebrowser.dev/api/sessions with JSON body {} for a fresh session, or {\"sessionId\":\"<id>\"} to resume a live Browserbase session. Returns sessionId. STEP 2+ (FREE, SIWX eip191 on eip155:8453, SAME wallet as the payer): POST the action endpoints with sessionId in the body — /api/sessions/navigate {sessionId,url}; /api/sessions/url {sessionId}; /api/sessions/screenshot {sessionId} (-> base64 PNG; registry input 'name' is NOT required); /api/sessions/act {sessionId,action,variables?}; /api/sessions/extract {sessionId,instruction}; /api/sessions/observe {sessionId,instruction}; GET /api/sessions/:sessionId; /api/sessions/close {sessionId}. Use agentcash for the whole flow (it does the x402 pay on create AND the SIWX signing on actions with the same wallet identity automatically).",
+        "inputExample": {},
+        "outputShape": "create: sessionId, debugUrl, viewerUrl, createdAt. navigate: url, title. url: url. extract: data.data.<your-fields> (DOUBLE-nested under data.data). act/observe: stagehand action/element results. screenshot: base64 PNG. close: sessionId, status, closedAt.",
+        "quirks": [
+          "ONLY POST /api/sessions is paid ($0.10 x402 on Base). ALL other endpoints (navigate/url/screenshot/act/extract/observe/GET :sessionId/close) are FREE SIWX-only: they return HTTP 402 with x402Version:2 and accepts:[] which is a SIWX challenge, NOT a payment challenge. A raw paid_fetch errors 'No payment requirements found' on them — they need wallet-signed (eip191) auth, not payment.",
+          "WALLET IDENTITY LOCK: the wallet that pays the $0.10 create becomes the session owner. Every SIWX action MUST come from the EXACT same wallet or you get 403 'Session belongs to a different wallet'. Do not mix the x402 payment wallet with a different SIWX wallet. agentcash uses one wallet for both, so it just works.",
+          "extract output is DOUBLE-nested: response is {data:{data:{<fields>}}}, not {data:{<fields>}}. Read result.data.data.",
+          "create with empty body {} starts a fresh session; pass {sessionId} to reconnect to a still-live Browserbase session (does not avoid the $0.10 charge — create is always paid).",
+          "ALWAYS POST /api/sessions/close when done or you leave an orphaned cloud browser running.",
+          "screenshot does NOT need a 'name' field (the old registry inputSchema listing 'name' was wrong); {sessionId} alone returns the base64 PNG.",
+          "www.stablebrowser.dev and stablebrowser.vercel.app are the same app as stablebrowser.dev (same Browserbase backend); use stablebrowser.dev as canonical.",
+          "act supports safe interpolation via variables: e.g. action 'Type %email% into the search box' with variables:{email:'...'}.",
+          "navigate/url/screenshot use Playwright (fast); act/extract/observe use Stagehand AI (a few seconds).",
+          "observe instructions must be very specific (location/text/visual traits); generic instructions give poor results.",
+          "debugUrl is a live fullscreen Browserbase devtools inspector; viewerUrl is the in-app live viewer."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Pay-per-session cloud browser automation (Browserbase + Stagehand). Create a real Chromium session for $0.10, then drive it with free SIWX-authenticated actions: navigate, get-url, screenshot, AI act, AI extract, AI observe, get-details, close. The single paid op is session creation; all subsequent actions are free wallet-signed (SIWX) calls scoped to the session. STEP 1 (PAID, x402 $0.10 on Base): POST https://stablebrowser.dev/api/sessions with JSON body {} for a fresh session, or {\"sessionId\":\"<id>\"} to resume a live Browserbase session. Returns sessionId. STEP 2+ (FREE, SIWX eip191 on eip155:8453, SAME wallet as the payer): POST the action endpoints with sessionId in the body — /api/sessions/navigate {sessionId,url}; /api/sessions/url {sessionId}; /api/sessions/screenshot {sessionId} (-> base64 PNG; registry input 'name' is NOT required); /api/sessions/act {sessionId,action,variables?}; /api/sessions/extract {sessionId,instruction}; /api/sessions/observe {sessionId,instruction}; GET /api/sessions/:sessionId; /api/sessions/close {sessionId}. Use agentcash for the whole flow (it does the x402 pay on create AND the SIWX signing on actions with the same wallet identity automatically). Output: create: sessionId, debugUrl, viewerUrl, createdAt. navigate: url, title. url: url. extract: data.data.<your-fields> (DOUBLE-nested under data.data). act/observe: stagehand action/element results. screenshot: base64 PNG. close: sessionId, status, closedAt.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Anchor Browser",
+      "kind": "api",
+      "provider": "Anchor Browser",
+      "providerId": "anchor-browser",
+      "description": "Anchor Browser cloud browser session creation for AI agents — provision an automatable browser session over x402.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "cloud-browser"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        32
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://api.anchorbrowser.io/v1/sessions with JSON body {} (session config)",
+        "inputExample": {},
+        "outputShape": "N/A — returned 401 error body {message}",
+        "quirks": [
+          "Endpoint returned HTTP 401 'Unauthorized, please log in.' with NO x402 402 payment challenge — it is NOT an x402-payable endpoint.",
+          "Requires Anchor Browser's own login/API-key auth, which violates the keyless x402 registry model.",
+          "Prior probe already showed status 401, payable:false, blocked:true — consistent.",
+          "Nothing was paid (paid:false, costUsd:0)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use via the x402 registry. POST https://api.anchorbrowser.io/v1/sessions returns HTTP 401 'Unauthorized, please log in.' and never issues an x402 402 payment challenge, so the keyless wallet cannot pay for it. It requires Anchor Browser's own API key / login, which the no-API-key policy excludes. This endpoint should be dropped or pruned from the registry.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "32": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Notte",
+      "kind": "api",
+      "provider": "Notte",
+      "providerId": "notte",
+      "description": "Notte browser-automation sessions — start/stop a managed browser, scrape rendered pages and extract from HTML, via Orthogonal x402.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "scraping"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        12,
+        11,
+        63
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402.orth.sh/notte/sessions/start with JSON body {headless?, browser_type?, proxies?, solve_captchas?, idle_timeout_minutes?, max_duration_minutes?, viewport_width?, viewport_height?, user_agent?} (all fields optional; minimal call is {} or {\"headless\": true})",
+        "inputExample": {
+          "headless": true
+        },
+        "outputShape": "unknown (untested) — likely body.session_id / body with a managed browser session handle to feed subsequent scrape/stop calls",
+        "quirks": [
+          "Could NOT complete a paid call: qa-pay returned reproducible Sponge SDK error 'Sponge payment failed: Body already used' on both POST attempts that sent a JSON body. paid:false both times so NO USDC was spent.",
+          "Likely a tooling bug: the Sponge x402 payment flow consumes/reuses the request body stream when a body is present, throwing before settlement. A retry with NO body (empty POST) was blocked by the <=2-paid-attempt safety boundary, so the no-body path is unconfirmed.",
+          "Body schema is entirely optional, so the correct minimal call is {} or {\"headless\": true}; an empty POST should be valid.",
+          "This is a sessionFlow endpoint (sessions/start) — a successful start returns a session handle that pairs with sessions/stop and scrape/extract calls; treat as managed-resource lifecycle.",
+          "Price is 'Varies' (registry); actual settled cost was never observed because no payment completed."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call POST https://x402.orth.sh/notte/sessions/start with a JSON body (all fields optional) to start a managed headless browser session via Orthogonal x402; minimal body is {} or {\"headless\": true}. The response should return a session handle/id you then pass to Notte's scrape/extract and sessions/stop calls. NOTE: this endpoint is UNTESTED — the QA pay tool failed twice with a Sponge 'Body already used' error before any payment settled (no USDC spent), so it must be re-tested once the payment-body tooling issue is resolved (try a no-body empty POST first to isolate). Since sessions accrue duration cost, remember to stop the session when done.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "11": {
+          "method": "POST"
+        },
+        "12": {
+          "method": "POST"
+        },
+        "63": {
+          "method": "DELETE"
+        }
+      },
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "CamelAI Browser",
+      "provider": "CamelAI",
+      "providerId": "camelai",
+      "description": "CamelAI browser session manager — provision and drive a cloud browser for agent workflows. Pay-per-call x402.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "cloud-browser"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        62
+      ],
+      "resolved": {
+        "62": {
+          "amount": 0.02,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://browser.camelai.io/session with JSON body {} (empty object); pay $0.020 USDC via x402 on Base.",
+        "inputExample": {},
+        "outputShape": "body.session_id (the browser session handle), body.created_at (ISO timestamp), body.ws_endpoint (WebSocket endpoint to drive the browser — observed EMPTY in this test)",
+        "quirks": [
+          "No input schema; send an empty JSON body {} — extra fields are not required.",
+          "Response ws_endpoint came back as an empty string (\"\"). session_id is the usable handle; do NOT rely on ws_endpoint being populated to connect a CDP/WebSocket client.",
+          "This is a session-provisioning endpoint: one paid call creates one browser session (returns session_id). Driving the browser is a separate downstream flow not covered by this endpoint.",
+          "Synchronous 200 response — no polling needed; session is created immediately."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://browser.camelai.io/session with an empty JSON body {} and pay $0.020 USDC via x402 (Base, Polygon, or Solana accepted). You get back a JSON object with session_id, created_at, and ws_endpoint. Use body.session_id as the handle for the provisioned cloud browser session. Note that in testing ws_endpoint returned empty, so don't assume a ready-to-use WebSocket URL — the session_id is what identifies the session for subsequent CamelAI browser-driving calls.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "Browser Use Cloud",
+      "provider": "Browser Use",
+      "providerId": "browser-use",
+      "description": "Browser-Use Cloud — run autonomous browser agents in the cloud (navigate, click, fill, extract) via the QuestFlow x402 gateway.",
+      "tags": [
+        "headless-browser",
+        "browser-automation",
+        "agentic"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        48
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.questflow.ai/x402/agent/qrn:agent:68cbd3ea1eac16d8cffc6041 with JSON body {input}",
+        "inputExample": {
+          "input": "What is the title of example.com?"
+        },
+        "outputShape": "body.response (string) — expected to hold the agent's answer, but currently returns the error string \"X402 Service is currently unavailable.\"",
+        "quirks": [
+          "CHARGE-THEN-FAIL: gateway returns HTTP 201 and DEBITS USDC ($0.10 observed) but body.response is the literal string 'X402 Service is currently unavailable.' — payment is taken with no usable result.",
+          "The HTTP 201 + 402-payable preflight make it look healthy; it is not. Do NOT trust status code — inspect body.response for the unavailable message.",
+          "Do NOT retry: each attempt loses ~$0.10 with no result."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is currently BROKEN. The QuestFlow x402 gateway accepts the payment (HTTP 201, ~$0.10 USDC on Base) but the underlying Browser-Use agent returns body.response = \"X402 Service is currently unavailable.\" — i.e. it charges then fails. Intended call shape is POST with JSON {\"input\":\"<your instruction>\"} and the answer would land in body.response. Do not call it until the upstream agent is restored; calling it now just loses money.",
+        "costObservedUsd": 0.1
+      },
+      "resolved": {
+        "48": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "broken"
+    }
+  ]
+}

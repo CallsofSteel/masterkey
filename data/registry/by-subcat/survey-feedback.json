@@ -1,0 +1,338 @@
+[
+  {
+    "id": "quali-poll-creator",
+    "kind": "model",
+    "name": "Quali Poll Creator",
+    "aka": [],
+    "provider": "Quali",
+    "providerId": "quali",
+    "description": "Create polls/surveys and collect responses programmatically. Pay-per-call x402.",
+    "category": "forms-surveys",
+    "subcategory": "survey-feedback",
+    "tags": [
+      "survey",
+      "poll",
+      "feedback",
+      "forms"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.500",
+      "amount": 0.5,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "www.getquali",
+        "providerId": "www-getquali",
+        "url": "https://www.getquali.com/api/v1/polls",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.5,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.500",
+          "min": 0.5,
+          "max": 0.5,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "500000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x00C4D2d6b2EeC61466a6AcA73927De93861aF274",
+              "maxTimeoutSeconds": 120,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:480",
+              "amount": "500000",
+              "asset": "0x79A02482A880bCE3F13e09Da970dC34db4CD24d1",
+              "payTo": "0x00C4D2d6b2EeC61466a6AcA73927De93861aF274",
+              "maxTimeoutSeconds": 120,
+              "extra": {
+                "name": "USDC",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "question": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "Poll question shown to respondents."
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 1000,
+              "description": "Optional context shown with the poll."
+            },
+            "moreInfoUrl": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 500,
+              "description": "Optional supporting URL."
+            },
+            "options": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 10,
+              "description": "Answer choices for the poll.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "description": "Option label."
+                  },
+                  "mediaUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Optional image or video URL for this option."
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              }
+            },
+            "maxResponses": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 1000000,
+              "description": "Maximum responses to collect. Pricing is $0.005 USDC per response."
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "ISO8601 expiration timestamp, at least five minutes in the future."
+            },
+            "mediaUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "Optional image or video URL for the poll."
+            },
+            "mediaType": {
+              "type": "string",
+              "enum": [
+                "image",
+                "video"
+              ],
+              "description": "Media type when mediaUrl is supplied."
+            },
+            "layoutType": {
+              "type": "string",
+              "enum": [
+                "grid",
+                "list"
+              ],
+              "description": "Display layout for options."
+            },
+            "callbackUrl": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 500,
+              "description": "Optional HTTPS webhook URL for poll.completed callbacks."
+            }
+          },
+          "required": [
+            "question",
+            "options",
+            "maxResponses",
+            "expiresAt"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "readToken": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "payment": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "network": {
+                  "type": "string"
+                },
+                "networkLabel": {
+                  "type": "string"
+                },
+                "txHash": {
+                  "type": "string"
+                },
+                "payer": {
+                  "type": "string"
+                },
+                "amountUsdc": {
+                  "type": "number"
+                },
+                "amountAtomic": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "network",
+                "networkLabel",
+                "txHash",
+                "payer",
+                "amountUsdc",
+                "amountAtomic"
+              ]
+            },
+            "pricing": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "maxResponses": {
+                  "type": "integer"
+                },
+                "rewardPoolUsdc": {
+                  "type": "number"
+                },
+                "qualiFeeUsdc": {
+                  "type": "number"
+                },
+                "costUsdc": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "maxResponses",
+                "rewardPoolUsdc",
+                "qualiFeeUsdc",
+                "costUsdc"
+              ]
+            },
+            "endpoints": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "poll": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "results": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "votes": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              },
+              "required": [
+                "poll",
+                "results",
+                "votes"
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "url",
+            "payment",
+            "pricing",
+            "endpoints"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:00.831Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://www.getquali.com/api/v1/polls with JSON body {question, options:[{text}], maxResponses, expiresAt} (description/mediaUrl/layoutType/callbackUrl optional)",
+      "inputExample": {
+        "question": "QA test poll by John Doe (john.doe@gmail.com) - do you like USDC micropayments?",
+        "description": "Registry QA verification poll created via x402. Contact: John Doe, john.doe@gmail.com.",
+        "options": [
+          {
+            "text": "Yes"
+          },
+          {
+            "text": "No"
+          }
+        ],
+        "maxResponses": 100,
+        "expiresAt": "2026-06-09T12:00:00.000Z"
+      },
+      "outputShape": "body.id (uuid), body.url (public poll page), body.readToken (use to read private results), body.endpoints.poll / body.endpoints.results / body.endpoints.votes (API URLs), body.pricing.costUsdc, body.payment.txHash",
+      "quirks": [
+        "Price is VARIABLE: $0.005 USDC per response. Quote = rewardPool (maxResponses * 0.005) + Quali fee. With minimum maxResponses=100 the quote was $0.50 (pool $0.05 + fee $0.45). Higher maxResponses = higher charge; cap your maxResponses to control cost.",
+        "Required fields: question, options (2-10 items, each {text}), maxResponses (integer >=100, max 1000000), expiresAt (ISO8601, must be at least 5 minutes in the future).",
+        "OUTWARD: creates a REAL public poll page at body.url that anyone can vote on. This is an irreversible publish action.",
+        "Save body.readToken from the 201 response - it is needed to read results from the results endpoint later (not re-fetchable).",
+        "Returns 201 (not 200) on success. Payment txHash is inside body.payment.txHash; qa-pay reported txHash:null but the on-chain hash is in the response body."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "POST a JSON body to https://www.getquali.com/api/v1/polls with question, options array of {text} (2-10), maxResponses (>=100), and a future ISO8601 expiresAt; pays x402 USDC on Base, no API key. Price is variable at $0.005/response so keep maxResponses low. On 201 success you get body.id, public body.url, and body.readToken. Save the readToken and body.endpoints.results to fetch responses later. Publishes a real public poll, so confirm before calling.",
+      "costObservedUsd": 0.5
+    },
+    "source": {
+      "serviceKey": "quali-poll-creator",
+      "discoveredVia": [
+        "survey api",
+        "feedback api"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:00.831Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "serviceId": "surf-onchain-market-data",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/market/price",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/market/ranking",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/market/fear-greed",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/exchange/klines",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/onchain/gas-price",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/onchain/sql",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/wallet/detail",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/social/mindshare",
+      "method": "GET",
+      "amountUsd": 0.0075
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/surf/market/price?symbol=BTC (required query param: symbol)",
+    "inputExample": {
+      "symbol": "BTC"
+    },
+    "outputShape": "body.symbol (string), body.data[] = array of {symbol, metric:\"price\", value (number, USD price), timestamp (unix seconds)} — a price time series. Latest price = last element's .value.",
+    "quirks": [
+      "REQUIRED query param 'symbol' (e.g. ?symbol=BTC). Calling without it returns HTTP 400 {error:'Missing required parameters', missing_params:['symbol']} and the message says 'Payment was NOT charged.'",
+      "Response is a TIME SERIES, not a single price: body.data[] is a large array (~60KB) of hourly {value,timestamp} points. Read the last element of body.data for the most recent price.",
+      "Each data point has metric:'price' and value in USD; timestamp is unix epoch seconds.",
+      "Payment is x402 USDC on Base; observed cost $0.0075 (registry display was $0.0010)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/surf/market/price with a required ?symbol=<TICKER> query param (e.g. symbol=BTC); omitting it returns a 400 with no charge. The x402 wallet pays automatically (~$0.0075 USDC on Base). The 200 response is a price time series at body.data[], an array of {symbol, metric:'price', value, timestamp} hourly points; take the last element's .value for the latest USD price. Use other tickers (ETH, SOL, etc.) by changing the symbol.",
+    "costObservedUsd": 0.0075
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "surf-onchain-market-data#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0075
+    },
+    {
+      "key": "surf-onchain-market-data#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0075
+    },
+    {
+      "key": "surf-onchain-market-data#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0075
+    },
+    {
+      "key": "surf-onchain-market-data#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "surf-onchain-market-data#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0075
+    },
+    {
+      "key": "surf-onchain-market-data#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "surf-onchain-market-data#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "surf-onchain-market-data#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0075
+    }
+  ]
+}

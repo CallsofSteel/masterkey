@@ -1,0 +1,117 @@
+{
+  "syncedAt": "2026-08-09T04:44:03.257Z",
+  "totalServices": 2045,
+  "perSubcategory": {
+    "maps-location": {
+      "address-validation": 8,
+      "ip-geolocation": 14
+    },
+    "ai-ml": {
+      "ai-model-hosting-inference": 7,
+      "content-moderation": 13,
+      "embeddings-vector": 5,
+      "llm-chat-apis": 43,
+      "nlp-text-analysis": 118,
+      "translation": 14,
+      "vision-image-recognition": 9
+    },
+    "search": {
+      "ai-semantic-search": 24,
+      "serp-seo-apis": 15,
+      "web-search-apis": 38
+    },
+    "devtools-observability": {
+      "apm-performance-monitoring": 3,
+      "feature-flags": 1,
+      "testing-qa": 7,
+      "uptime-status-pages": 3
+    },
+    "infrastructure": {
+      "app-hosting-paas": 3,
+      "dns-domain-management": 22,
+      "sandbox-environments": 8,
+      "vm-cloud-providers": 3
+    },
+    "auth-identity": {
+      "authentication-user-management": 3,
+      "identity-verification-kyc": 16
+    },
+    "media": {
+      "avatars-digital-humans": 3,
+      "image-generation": 30,
+      "music-generation": 4,
+      "sound-effects-audio": 1,
+      "speech-to-text": 7,
+      "video-generation": 20,
+      "voice-tts": 12
+    },
+    "image-video-processing": {
+      "background-removal": 1,
+      "image-editing-manipulation": 17,
+      "image-video-cdn": 3,
+      "transcription-subtitles": 2,
+      "video-editing-transcoding": 9
+    },
+    "security": {
+      "captcha-bot-protection": 3,
+      "vulnerability-scanning": 51
+    },
+    "data-intelligence": {
+      "company-people-data": 127,
+      "crypto-blockchain-data": 443,
+      "flight-aviation": 51,
+      "maps-geolocation": 52,
+      "news-media": 42,
+      "seo-keywords": 9,
+      "social-media-data": 121,
+      "stocks-financial-data": 286,
+      "traffic-transportation": 14,
+      "trends-sentiment": 40,
+      "weather": 38
+    },
+    "scheduling-calendars": {
+      "cron-job-scheduling": 7,
+      "scheduling-booking": 27
+    },
+    "payments-billing": {
+      "crypto-web3-payments": 3,
+      "invoicing": 2,
+      "payment-processing": 20
+    },
+    "database-storage": {
+      "decentralized-ipfs": 6,
+      "object-file-storage": 6,
+      "relational-databases": 7
+    },
+    "document-content": {
+      "e-signature": 2,
+      "ocr-document-extraction": 5,
+      "pdf-generation-processing": 5
+    },
+    "communication": {
+      "email": 6,
+      "live-chat-messaging": 3,
+      "push-notifications": 1,
+      "sms-phone": 11,
+      "video-voice-calls": 1
+    },
+    "web-automation": {
+      "headless-browsers": 8,
+      "screenshot-rendering": 7,
+      "web-crawling": 12,
+      "web-scraping": 39
+    },
+    "analytics-bi": {
+      "product-analytics": 9,
+      "web-analytics": 10
+    },
+    "ecommerce": {
+      "shipping-logistics": 8,
+      "storefront-commerce-apis": 51,
+      "tax-compliance": 25
+    },
+    "forms-surveys": {
+      "survey-feedback": 1
+    }
+  }
+}

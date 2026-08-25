@@ -1,0 +1,82 @@
+{
+  "serviceId": "send-sms",
+  "subcat": "sms-phone",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gateway.spraay.app/api/v1/notify/sms",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://httpay.xyz/api/gateway/twilio/%7B*path%7D/*",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/sms-send-api-d65c4e",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/text",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gateway.spraay.app/api/v1/notify/sms with JSON body {to, body}",
+    "inputExample": {
+      "to": "+15555550123",
+      "body": "MasterKey registry QA test SMS. Please disregard. -ash"
+    },
+    "outputShape": "body.id (notification id, e.g. \"ntf_...\"), body.status (\"queued\"), body.type (\"sms\"), body.segments. Mock indicator: body._gateway.live (false on sandbox).",
+    "quirks": [
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: the user (John, +15555550123) actually received the output — an inbound phone call from +15076072903 and two \"MasterKey QA test SMS\" texts — confirming end-to-end real-world delivery, not just a paid 200.",
+      "SANDBOX/MOCK: response says _gateway.live=false and note 'SMS queued. Production integrates with Twilio/Vonage' -> NO real SMS is delivered despite the 200 and status:queued. Do not rely on this for actual delivery.",
+      "Phone must be E.164 format (e.g. +15555550123).",
+      "Pays $0.02 USDC on Base (eip155:8453) via x402, exact scheme; Solana also accepted.",
+      "Response is synchronous; status:queued is final, there is no poll URL."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "POST to https://gateway.spraay.app/api/v1/notify/sms with JSON {\"to\":\"<E.164 phone>\",\"body\":\"<message>\"}; both fields required. Pay $0.02 USDC via x402 (Base or Solana). Read body.id and body.status (\"queued\") for the result. IMPORTANT: check body._gateway.live — it is currently false, meaning this is a mock gateway that does NOT actually send the SMS (Twilio/Vonage integration is described as future/production). Treat a 200 as contract-success only, not proof of delivery.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "send-sms#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "send-sms#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "send-sms#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "send-sms#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ],
+  "humanConfirmed": {
+    "date": "2026-06-09",
+    "signal": "inbound call +15076072903 + 2 test SMS to +15555550123"
+  }
+}

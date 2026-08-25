@@ -1,0 +1,65 @@
+{
+  "serviceId": "openai-whisper",
+  "subcat": "speech-to-text",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/v1/ai/whisper",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402helper.xyz/v1/ai/whisper-large",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.orth.sh/openai/audio/transcriptions",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402helper.xyz/v1/ai/whisper with JSON body {audio_url}",
+    "inputExample": {
+      "audio_url": "https://download.samplelib.com/mp3/sample-3s.mp3"
+    },
+    "outputShape": "body.result (EMPTY {} in test — no transcript returned); body.success=true, body.meta.upstreamPaid=true but no usable text",
+    "quirks": [
+      "Paid $0.009, returned HTTP 200 with success:true and meta.upstreamPaid:true, but body.result was an EMPTY object {} — no transcript text delivered.",
+      "Charge-then-empty: it takes payment and claims upstream success but returns no usable transcription.",
+      "Has an aggressive shared rate limit: 'Maximum 15 requests per 15 minutes' (error mentions 'report generation', suggesting a shared generic proxy backend), returns 429 with retryAfter:900.",
+      "Field name audio_url is accepted (no 4xx) but did not yield output; 'url'+'model' attempt was rate-limited before it could be evaluated.",
+      "Pays on Base (eip155:8453) or Solana; price $0.0090."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not rely on this endpoint for transcription. In testing a paid call (POST with {audio_url: <public mp3>}) returned HTTP 200 and success:true with meta.upstreamPaid:true, but body.result came back as an empty object {} with no transcript text — money charged ($0.009), no usable output. A second attempt with a different body field was blocked by a strict shared rate limit (15 requests / 15 minutes, 429 with retryAfter:900). Treat as broken; if re-checking later, send {audio_url} pointing at a small public audio file and verify body.result actually contains transcript text before trusting it.",
+    "costObservedUsd": 0.009
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-whisper#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.009
+    },
+    {
+      "key": "openai-whisper#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    },
+    {
+      "key": "openai-whisper#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "serviceId": "portal-foundation-video",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gen.portalfoundation.ai/api/generate-video",
+      "method": "POST",
+      "amountUsd": 1
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gen.portalfoundation.ai/api/generate-video with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.url (mp4 video URL); also body.model, body.duration, body.cost, body.success, body.paymentSettlement.transaction",
+    "quirks": [
+      "Body field is `prompt` (text-to-video).",
+      "Synchronous: the paid 200 response directly contains the finished video URL at body.url (a Vercel blob .mp4) — no job id, no polling.",
+      "Flat $1.00 per call (x402 on Base USDC); generates a 5s Google Veo 3 Fast video.",
+      "Response echoes on-chain settlement at body.paymentSettlement.transaction."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://gen.portalfoundation.ai/api/generate-video with JSON body {\"prompt\":\"<your text prompt>\"} and pay the x402 charge ($1.00 USDC on Base). The call is synchronous — the 200 response returns the finished 5-second video at body.url (a public .mp4 blob URL). Read body.url to fetch/download the generated video; body.model (veo3-fast) and body.duration confirm the result. No auth, no polling, no template params.",
+    "costObservedUsd": 1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "portal-foundation-video#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 1
+    }
+  ]
+}

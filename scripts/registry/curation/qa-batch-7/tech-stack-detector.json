@@ -1,0 +1,64 @@
+{
+  "serviceId": "tech-stack-detector",
+  "subcat": "web-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://domain.hugen.tokyo/domain/tech",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/tech-stack-detect",
+      "method": "POST"
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/tech-fingerprint/analyze",
+      "method": "GET",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://domain.hugen.tokyo/domain/tech?domain=example.com (required query param `domain`; x402 payment ~$0.01 USDC on Base)",
+    "inputExample": {
+      "domain": "example.com"
+    },
+    "outputShape": "body.domain, body.url_checked, body.technology_count, body.technologies[] (each: {name, categories[]})",
+    "quirks": [
+      "Input is a query-string parameter, not a JSON body: append ?domain=<host> to the URL.",
+      "Pass a bare hostname (e.g. example.com), not a full URL with scheme/path."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://domain.hugen.tokyo/domain/tech with a required `domain` query parameter set to a bare hostname (e.g. ?domain=example.com). It is an x402 endpoint costing ~$0.01 USDC on Base (or Solana); pay it and read the JSON response synchronously. The detected stack is in body.technologies[], each entry having a name and categories[] (e.g. {\"name\":\"Cloudflare\",\"categories\":[\"CDN\"]}); body.technology_count gives the count.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "tech-stack-detector#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "tech-stack-detector#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "tech-stack-detector#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

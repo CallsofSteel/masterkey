@@ -1,0 +1,41 @@
+{
+  "serviceId": "daytona",
+  "subcat": "sandbox-environments",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://zero-daytona.zclk.cc/v1/x402/sandboxes",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://zero-daytona.zclk.cc/v1/x402/sandboxes (no body)",
+    "inputExample": {},
+    "outputShape": "unknown — endpoint unreachable",
+    "quirks": [
+      "Host zero-daytona.zclk.cc returns NXDOMAIN — it does not resolve in DNS. Parent domain zclk.cc resolves via Cloudflare but this subdomain is dead.",
+      "qa-pay returned wallet-error/'provider request failed: fetch failed' (network-level, not a payment); nothing was paid.",
+      "Do not retry — the host is gone, not transient."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is dead. The host zero-daytona.zclk.cc does not resolve (NXDOMAIN) — connections fail at the network layer before any payment. Do not attempt to call or pay it. The Daytona x402 sandbox service should be re-discovered at a current host or dropped from the registry.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "daytona#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "serviceId": "turso",
+  "subcat": "relational-databases",
+  "batchId": "batch-17",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/turso/v1/organizations",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/turso/v1/organizations with JSON body {name} — but returns 401 after payment; requires an upstream Turso bearer token via X-Upstream-Token header.",
+    "inputExample": {
+      "name": "qa-test-org"
+    },
+    "outputShape": "body.error / body.instructions (401 auth-required error; no usable result returned)",
+    "quirks": [
+      "HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication.",
+      "Requires an upstream Turso API key passed via the X-Upstream-Token header (authType=bearer). Without it every call fails after payment.",
+      "This violates the no-API-key policy — the endpoint cannot be used keylessly. Money is lost on each call.",
+      "The 402 pre-flight probe shows payable:true, which is misleading; the real gate is the missing upstream token."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint. The HTTPay Turso gateway charges the $0.001 x402 fee and then returns HTTP 401 demanding an upstream Turso API key via the X-Upstream-Token header (authType: bearer). It cannot be called keylessly, so every attempt loses money with no result. It should be pruned from the registry under the no-API-key policy unless the caller supplies their own Turso bearer token.",
+    "costObservedUsd": 0.001,
+    "droppedReason": "turso#0: HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication."
+  },
+  "droppedReason": "turso#0: HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication.",
+  "_backends": [
+    {
+      "key": "turso#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

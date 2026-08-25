@@ -1,0 +1,57 @@
+{
+  "serviceId": "apollo-io",
+  "subcat": "company-people-data",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/apollo/org-search",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/apollo/org-enrich",
+      "method": "POST",
+      "amountUsd": 0.0495
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/apollo/org-search with JSON body {q_keywords, per_page} (x402 paid, no API key)",
+    "inputExample": {
+      "q_keywords": "Stripe payments",
+      "per_page": 1
+    },
+    "outputShape": "body.organizations[] (array): .name, .primary_domain, .industry, .estimated_num_employees, .organization_revenue / .annual_revenue, .founded_year, .linkedin_url, .city/.state/.country, .keywords[], .technologies[]; body.pagination.total_entries / .total_pages",
+    "quirks": [
+      "This is org SEARCH (find companies by filters), distinct from org-enrich; results come back under body.organizations[] with body.pagination.",
+      "The q_organization_domains array filter returned EMPTY (organizations:[], total_entries:0) for ['stripe.com'] even though paid 200 — do not rely on domain filtering here; use q_keywords (or other filters like organization_locations, organization_num_employees_ranges) for reliable matches.",
+      "Despite no required fields in schema, an empty/under-specified body wastes the $0.02 charge on zero results — always send at least q_keywords.",
+      "per_page defaults to 25 (max 100); set per_page:1 to minimize payload when probing."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/apollo/org-search with a JSON body to search Apollo's B2B company database by filters. It is an x402 paid endpoint ($0.02 USDC on Base, no API key, no body needed beyond your filters). Use q_keywords (a company-name or industry phrase) as the primary filter — the q_organization_domains array filter was observed returning zero results, so prefer q_keywords plus optional organization_locations[], organization_num_employees_ranges[], or organization_industry_tag_ids[]. Read matches from body.organizations[] (each has .name, .primary_domain, .industry, .estimated_num_employees, .organization_revenue, .founded_year, .linkedin_url) and total count from body.pagination.total_entries. Synchronous; result returns in one call. To enrich a single known company by exact domain instead, use the separate Apollo org-enrich endpoint.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "apollo-io#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "apollo-io#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0495
+    }
+  ]
+}

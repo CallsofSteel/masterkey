@@ -1,0 +1,46 @@
+{
+  "serviceId": "solana-rpc",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/solana/rpc",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/solana/rpc with JSON body {jsonrpc:\"2.0\", id:1, method:\"<solanaRpcMethod>\", params:[...]}",
+    "inputExample": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "getHealth"
+    },
+    "outputShape": "body.result (standard Solana JSON-RPC response shape: {jsonrpc, id, result}); UNVERIFIED — no successful paid call completed",
+    "quirks": [
+      "Price is sub-cent: $0.0005 (500 atomic USDC, 6 decimals) on Base eip155:8453. The qa-pay primitive's payment was rejected by BlockRun's facilitator with invalidReason='amount_too_low' and NOTHING was paid (paid:false, costUsd:0, no txHash). The $0.0005 amount is below what the current pay tooling settles as valid.",
+      "Endpoint itself is alive: returns a well-formed x402 v2 402 with a correct accepts array (scheme=exact, network=eip155:8453, amount=500, asset=USDC 0x833589..., payTo=0xe9030014F5DAe217d0A152f02A043567b16c1aBf).",
+      "It is a Solana JSON-RPC passthrough to public mainnet-beta. Body must include jsonrpc, id, method (params optional). Billed $0.0005 per call or per element of a JSON-RPC batch.",
+      "Did NOT retry after the amount_too_low rejection — re-paying would hit the same sub-cent floor and risk loss with no upside."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a standard Solana JSON-RPC body {jsonrpc:\"2.0\", id:1, method:\"getSlot\"} (or any Solana RPC method, with optional params array) to https://blockrun.ai/api/v1/solana/rpc. The result comes back at body.result in standard JSON-RPC form. Payment is x402 USDC on Base at $0.0005/call (per element for batches). CAUTION: with the current QA pay tooling the payment was rejected as amount_too_low (sub-cent price below the settlement floor) and the call could not be completed — verify with a pay client that can settle 500-atomic-unit ($0.0005) amounts before relying on it.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "solana-rpc#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

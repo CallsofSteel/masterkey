@@ -1,0 +1,44 @@
+{
+  "serviceId": "browserbase",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.browserbase.com/browser/session/create",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.browserbase.com/browser/session/create with empty JSON body {} (no API key; x402 USDC on Base)",
+    "inputExample": {},
+    "outputShape": "body.connectUrl (wss:// URL for Playwright/Puppeteer/CDP), body.sessionId, body.liveUrl (browser live-view), body.authToken, body.paidMinutes, body.expiresAt, body.pricing.amountPaid",
+    "quirks": [
+      "Empty JSON body {} is sufficient — no required fields. inputSchema is null in the registry.",
+      "One paid POST = one prepaid browser session; default tier is 5 minutes for $0.01. Longer durations cost more ($0.03/15min, $0.06/30min, $0.12/hr) per the description — duration params not tested.",
+      "The real product is the returned connectUrl (a wss:// endpoint). You must then connect a Playwright/Puppeteer/CDP client to that URL to actually use the browser; the session expires at body.expiresAt.",
+      "Session is time-limited: body.paidMinutes=5 and body.expiresAt is ~5min out. Use it immediately.",
+      "qa-pay reported costUsd 0.002 but the response body shows the true charge: pricing.amountPaid=0.01 for paidMinutes=5."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.browserbase.com/browser/session/create with an empty JSON body {} and pay the x402 quote (USDC on Base, ~$0.01 for a 5-minute session, no API key). The 200 response is JSON: read body.connectUrl — a wss:// URL you connect a Playwright/Puppeteer/CDP client to in order to drive a real cloud browser. body.liveUrl gives a human-watchable live view, and body.expiresAt tells you when the session dies (use it promptly). Each call buys a fresh single-use session; longer durations are available but were not tested here.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "browserbase#0",
+      "classification": "verified",
+      "phaseB": "PASS",
+      "realCostUsd": 0.002
+    }
+  ]
+}

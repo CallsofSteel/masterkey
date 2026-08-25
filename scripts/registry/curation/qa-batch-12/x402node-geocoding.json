@@ -1,0 +1,58 @@
+{
+  "serviceId": "x402node-geocoding",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/maps/forward",
+      "method": "GET",
+      "amountUsd": 0.008
+    },
+    {
+      "backend": "https://api.x402node.dev/maps/reverse",
+      "method": "GET",
+      "amountUsd": 0.008
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/maps/forward?q=<url-encoded address>&limit=<N> (x402 USDC on Base, ~$0.008/call). NOTE: registry lists POST but POST returns 404 — must use GET.",
+    "inputExample": {
+      "q": "1600 Amphitheatre Parkway Mountain View CA",
+      "limit": 1
+    },
+    "outputShape": "body.results[].lat, body.results[].lng, body.results[].display_name, body.results[].address{house_number,road,city,state,postcode,country,country_code}, body.results[].boundingbox[], body.results[].type, body.results[].place_id; body.count = number of matches; body.query = echoed query",
+    "quirks": [
+      "Registry CALL says POST /maps/forward but POST returns 404 'Cannot POST /maps/forward' — you MUST use GET.",
+      "Address goes in the q= query param (NOT address=, NOT a JSON body). The endpoint reads query string, not request body.",
+      "Real price is fixed $0.008 USDC on Base (8000 atomic units), not 'Varies'.",
+      "Optional limit= query param caps number of results (default returns multiple; limit=1 for single best match).",
+      "Backed by OpenStreetMap Nominatim; result fields mirror Nominatim (display_name, boundingbox as string array, importance, etc.)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Forward geocode an address to coordinates with a paid x402 GET. Call GET https://api.x402node.dev/maps/forward?q=<url-encoded address>&limit=1 — the wallet pays ~$0.008 USDC on Base automatically via the 402 flow. Do NOT POST and do NOT send a JSON body; the address must be in the q= query param. Read the answer from body.results[0].lat and body.results[0].lng (plus body.results[0].address for components and body.results[0].boundingbox for the bbox). body.count tells you how many matches were found.",
+    "costObservedUsd": 0.008
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402node-geocoding#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "x402node-geocoding#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

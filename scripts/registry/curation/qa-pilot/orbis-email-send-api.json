@@ -1,0 +1,35 @@
+{
+  "serviceId": "orbis-email-send-api",
+  "subcat": "email",
+  "action": "drop",
+  "usage": {
+    "status": "dead",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/email-send-api-6d5de4 with JSON body {from, to, subject, html}",
+    "inputExample": {
+      "from": "sender@example.com",
+      "to": [
+        "recipient@example.com"
+      ],
+      "subject": "Test email",
+      "html": "<p>Hello from Orbis</p>"
+    },
+    "outputShape": "HTTP 404 {error:'API_NOT_FOUND', message:'No active API found with slug email-send-api-6d5de4'} — endpoint deactivated",
+    "quirks": [
+      "RECIPIENT NON-DELIVERY CONFIRMED 2026-06-09: the user (john.doe@gmail.com) received NO email from this service during QA — corroborates broken/untested (do not mark verified on a paid 200 alone; this one did not actually deliver).",
+      "DEAD: orbisapi.com proxy gateway accepts x402 payment but returns HTTP 404 with API_NOT_FOUND — the slug 'email-send-api-6d5de4' is not registered or has been deactivated",
+      "Payment of $0.005 USDC was deducted successfully before the 404 was returned — money-safety risk for any agent that calls this endpoint",
+      "inputSchema is empty in registry for all three backends — actual required fields are undocumented; inferred as from/to/subject plus html or text based on service description",
+      "Two endpoint families (email-send-api and email-send-trigger) with no documentation explaining behavioral differences; a /bulk variant exists on send-trigger",
+      "Payment accepts x402 only (no MPP), on Base eip155:8453 and Solana mainnet"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "DO NOT USE — endpoint is dead as of 2026-06-08. The orbisapi.com proxy gateway processes x402 payment and then returns HTTP 404 API_NOT_FOUND. Payment is lost with no service rendered.",
+    "costObservedUsd": 0.005
+  },
+  "drop": true,
+  "droppedReason": "Endpoint dead: orbisapi.com gateway collects x402 payment then returns HTTP 404 API_NOT_FOUND for slug 'email-send-api-6d5de4'. Verified 2026-06-08. Money-safety risk — drop to prevent payment loss."
+}

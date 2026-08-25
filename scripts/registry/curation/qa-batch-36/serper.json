@@ -1,0 +1,78 @@
+{
+  "serviceId": "serper",
+  "subcat": "serp-seo-apis",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/serper/shopping",
+      "method": "POST",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://stableenrich.dev/api/serper/images",
+      "method": "POST",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://stableenrich.dev/api/serper/people-image-search",
+      "method": "POST",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://stableenrich.dev/api/serper/lens",
+      "method": "POST",
+      "amountUsd": 0.2
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/serper/shopping with JSON body {q, gl?, hl?, num?, location?, tbs?, safe?, page?, autocorrect?}",
+    "inputExample": {
+      "q": "running shoes"
+    },
+    "outputShape": "body.shopping[].{title,source,link,price,imageUrl,rating,ratingCount,productId,position}; body.searchParameters.{q,type,num,page,engine}",
+    "quirks": [
+      "Only field q is required; all others (gl, hl, num, location, tbs, safe, page, autocorrect) are optional.",
+      "Results are in body.shopping[] (not body.organic[] which is the /search variant).",
+      "Each shopping item's imageUrl is a large inline base64 data:image/webp URI, bloating the response to ~160KB even for a single query. Strip/ignore imageUrl if you only need product data.",
+      "Registry surface URL https://stableenrich.dev/api/serper/shopping works directly; the x402.orth.sh/serper/shopping mirror is equivalent. x402 payment on Base; observed $0.04/call via the StableEnrich gateway."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/serper/shopping with a JSON body containing at least {\"q\":\"<product query>\"} and pay the x402 prompt on Base ($0.04 USDC via the StableEnrich gateway). Read product results from body.shopping[] — each item has title, source, link, price, rating, ratingCount, productId, position, and a very large base64 imageUrl. Optionally narrow with gl (country), hl (language), num, location, or tbs. Expect a large response (~160KB) due to inline image data; ignore imageUrl if you only need product details.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "serper#11",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.04
+    },
+    {
+      "key": "serper#12",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    },
+    {
+      "key": "serper#13",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    },
+    {
+      "key": "serper#14",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2
+    }
+  ]
+}

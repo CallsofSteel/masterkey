@@ -1,0 +1,286 @@
+{
+  "serviceId": "stablesocial",
+  "subcat": "social-media-data",
+  "batchId": "batch-38",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/post-comments",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/comment-replies",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/following",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/tiktok/search-hashtag",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/posts",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/post-comments",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/comment-replies",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/followers",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/following",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/stories",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/highlights",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/instagram/search-tags",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/profile",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/post-comments",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/comment-replies",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/followers",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/following",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/search",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/search-people",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/search-pages",
+      "method": "POST",
+      "amountUsd": 0.06
+    },
+    {
+      "backend": "https://stablesocial.dev/api/facebook/search-groups",
+      "method": "POST",
+      "amountUsd": 0.06
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablesocial.dev/api/tiktok/following with JSON body {handle, max_page_size?, order_by?, cursor?} (x402-paid ~$0.06). Returns HTTP 202 async job. Then GET the returned pollUrl with SIWX auth from the SAME wallet that paid until body.status===\"finished\".",
+    "inputExample": {
+      "handle": "tiktok",
+      "max_results": 1
+    },
+    "outputShape": "POST -> body.jobId, body.pollUrl, body.token, body.status (pending). Poll (GET pollUrl, SIWX) -> body.status (pending|finished), final following profiles at body.data.items[] (each item: id, username, full_name, avatar_url, follower_count, following_count, heart_count, video_count, is_verified, is_private).",
+    "quirks": [
+      "The required field is 'handle' (the TikTok username), NOT 'profile_id' — sending profile_id returns HTTP 400 'Validation failed: expected string at path handle'.",
+      "POST returns HTTP 202 with an async job (jobId+pollUrl+token, status=pending) — the following list is NOT in the POST response.",
+      "The pollUrl REQUIRES SIWX wallet auth from the SAME wallet that paid for the job; an unauthenticated GET returns 402 'SIWX authentication required'.",
+      "Poll with SIWX (e.g. qa-pay --siwx GET pollUrl) — polling is free (no extra charge). Loop until body.status==='finished'; provider is data365 and the job took ~50s (8 polls at 6-8s) in this test.",
+      "Result data lives at body.data.items[] on the finished poll response, not in the POST body. Some items have null engagement fields (private/uncrawlable profiles).",
+      "Server normalizes input to {handle, max_page_size:100} internally; max_results in the body was accepted but the effective cap shows as max_page_size:100."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablesocial.dev/api/tiktok/following with JSON {\"handle\":\"<tiktok username>\",\"max_page_size\":N}; this is x402-paid (~$0.06) and returns a 202 async job with jobId, pollUrl, token, status:pending. Then GET the returned pollUrl using SIWX authentication signed by the SAME wallet that paid (an unauthenticated poll fails with 'SIWX authentication required'); polling is free. Repeat the poll every ~5s until body.status === \"finished\", then read the followed accounts from body.data.items[] (each has id, username, full_name, follower_count, following_count, heart_count, video_count, is_verified). Note the field is 'handle', not 'profile_id'.",
+    "costObservedUsd": 0.06
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablesocial#10",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#11",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablesocial#12",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#13",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#14",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#15",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#16",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#17",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablesocial#18",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#19",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#20",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#21",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#22",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#23",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#24",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#25",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#26",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablesocial#27",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#28",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#29",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#30",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#31",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    },
+    {
+      "key": "stablesocial#32",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.06
+    }
+  ]
+}

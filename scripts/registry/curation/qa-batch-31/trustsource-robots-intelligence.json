@@ -1,0 +1,43 @@
+{
+  "serviceId": "trustsource-robots-intelligence",
+  "subcat": "web-crawling",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.trustsource.cc/robots",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.trustsource.cc/robots?domain=example.com (required query param: domain). x402 USDC on Base (eip155:8453), $0.0020.",
+    "inputExample": {
+      "domain": "example.com"
+    },
+    "outputShape": "body.domain, body.exists, body.tier (OPEN|SELECTIVE|BLOCKED_AI|BLOCKED_ALL|NO_ROBOTS_TXT), body.aiFriendly, body.ai.policies[] (per-bot {userAgent, blocked, partial, disallow[], allow[]}), body.ai.knownBotsBlocked, body.sitemaps[], body.userAgents[], body.meta.checkedAt",
+    "quirks": [
+      "domain is a required QUERY param, not a body field — call as ?domain=example.com (GET has no body)",
+      "Host is on Railway (api.trustsource.cc -> e2rpf2cp.up.railway.app -> 69.46.46.12); could not be PAID from the QA sandbox because the sandbox has no working DNS resolver (qa-pay/curl/nslookup all time out with 'fetch failed'). It resolved only via DoH and an --resolve IP override.",
+      "Endpoint is confirmed ALIVE: --resolve probe returned a valid HTTP/2 402 x402 v2 challenge (server: railway-hikari, exact/eip155:8453/2000 USDC, payTo 0xC1FE5Ce97fB6038527D9660cF290b716a264e874) matching the registry surface exactly. Retest from a network with working DNS to complete a real paid call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.trustsource.cc/robots?domain=<domain> with the domain you want to analyze as a query param (no request body). Payment is x402 USDC on Base, ~$0.002 per call, no API key. The JSON response classifies the domain's robots.txt crawl policy: read body.tier for the overall classification, body.aiFriendly for whether AI training bots are broadly allowed, and body.ai.policies[] for per-bot (GPTBot, ClaudeBot, etc.) allow/disallow rules. body.sitemaps[] lists sitemap URLs. NOTE: this endpoint could not actually be paid in the current QA sandbox due to a DNS limitation; it was only verified to return a healthy 402 challenge.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "trustsource-robots-intelligence#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

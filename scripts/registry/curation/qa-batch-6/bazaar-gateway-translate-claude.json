@@ -1,0 +1,41 @@
+{
+  "serviceId": "bazaar-gateway-translate-claude",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://bazaar-gateway.vercel.app/api/translate",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://bazaar-gateway.vercel.app/api/translate with JSON body {text, target_language}",
+    "inputExample": {
+      "text": "hello how are you?",
+      "target_language": "french"
+    },
+    "outputShape": "body.translated_text (the translation); also body.source_language, body.target_language, body.formality, body.confidence, body.model; body._meta.call_id for audit",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://bazaar-gateway.vercel.app/api/translate with a JSON body containing two required fields: text (the string to translate) and target_language (a plain language name like \"french\", \"spanish\", \"arabic\", \"japanese\"). Payment is x402 USDC on Base, ~$0.005 per call, no API key needed. The response is synchronous JSON; read the translation from body.translated_text. Source language is auto-detected and returned in body.source_language.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "bazaar-gateway-translate-claude#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

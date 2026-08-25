@@ -1,0 +1,46 @@
+{
+  "serviceId": "image-optimizer",
+  "subcat": "image-video-cdn",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/image-optimizer-api-38f5e2",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/image-optimizer-api-38f5e2 with JSON body {image, format, quality}",
+    "inputExample": {
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/240px-Cat03.jpg",
+      "format": "webp",
+      "quality": 80
+    },
+    "outputShape": "none (endpoint dead; returns body.error=API_NOT_FOUND, body.message)",
+    "quirks": [
+      "Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}.",
+      "Money is lost on call: paid $0.005 USDC on Base and got nothing back.",
+      "DO NOT CALL this endpoint — the Orbis route image-optimizer-api-38f5e2 no longer exists."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint. It is a dead Orbis proxy slug (image-optimizer-api-38f5e2). The pre-payment probe returns a 402 payment-required so it appears live, but after paying $0.005 USDC the response is HTTP 404 with {error:'API_NOT_FOUND'} and the money is lost. Treat as broken and remove from the registry until Orbis republishes the slug.",
+    "costObservedUsd": 0.005,
+    "droppedReason": "image-optimizer#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}."
+  },
+  "droppedReason": "image-optimizer#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}.",
+  "_backends": [
+    {
+      "key": "image-optimizer#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

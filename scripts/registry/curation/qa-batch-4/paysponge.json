@@ -1,0 +1,53 @@
+{
+  "serviceId": "paysponge",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d5zgtpg00dvssgj28/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d5zgtpg00dvssgj28/chat/completions with OpenAI-compatible JSON body {model, messages[], max_tokens}; pay $0.01 USDC via x402 on Base (or Solana)",
+    "inputExample": {
+      "model": "gpt-4o-mini",
+      "max_tokens": 50,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (OpenAI chat-completion shape); token/cost info in body.usage",
+    "quirks": [
+      "inputSchema is empty but the body is NOT optional: you MUST send a `model` field or it 402-charges then returns 400 {error:'No models provided'}.",
+      "Backend is an OpenRouter proxy. Use OpenRouter-style model names (e.g. 'gpt-4o-mini', returned as 'openai/gpt-4o-mini').",
+      "CRITICAL: you MUST set a low `max_tokens` (e.g. 50-200). With the default (16384) OpenRouter rejects with a 402 'requires more credits, or fewer max_tokens' error — that 402 is an upstream credit error, NOT an x402 payment-required, and (in this gateway) was NOT charged.",
+      "Each successful or pre-flight-valid x402 call costs $0.01 USDC regardless of model/token usage. The first attempt without `model` still charged $0.01 before 400ing.",
+      "Response is verbatim OpenRouter output: includes provider, system_fingerprint, native_finish_reason, and usage.cost (real upstream inference cost, fractions of a cent)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to the URL with an OpenAI-style JSON body that MUST include `model` (use an OpenRouter model id like 'gpt-4o-mini'), `messages`, and a low `max_tokens` (e.g. 50-200) — omitting model 400s after charging, and a high/default max_tokens triggers an upstream OpenRouter credit 402. Each call costs $0.01 USDC paid automatically via x402 on Base. Read the assistant reply at body.choices[0].message.content. The response is raw OpenRouter format including a body.usage block with token counts and real upstream cost.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "paysponge#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

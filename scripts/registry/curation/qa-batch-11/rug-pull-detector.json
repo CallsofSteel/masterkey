@@ -1,0 +1,55 @@
+{
+  "serviceId": "rug-pull-detector",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d6tc4d89rramggb4m/analyze/{token_address}",
+      "method": "GET"
+    },
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d6tc4d89rramggb4m/report/{token_address}",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.paysponge.com/x402/purchase/svc_d6tc4d89rramggb4m/analyze/{token_address} (x402 USDC on Base, ~$0.01/call)",
+    "inputExample": {
+      "token_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+    },
+    "outputShape": "Intended: body.risk_score (0-100), body.flags[], body report with liquidity + top-holder data. Actual: 404 {detail} only — no result produced.",
+    "quirks": [
+      "Charge-then-404: charges $0.01 USDC then returns HTTP 404 even for valid tokens.",
+      "Both USDC (0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) and BRETT (0x532f27101965dd16442E59d40670FaF5eBB142E4) on Base returned 404 {detail: 'No security data found for this token. It may not exist on this chain.'}.",
+      "A major token like USDC should always resolve in any real rug-pull/security dataset — the backend dataset appears empty or broken.",
+      "token_address is a path segment; you must substitute a real ERC-20 address, no body needed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken — it accepts x402 payment then returns HTTP 404 'No security data found for this token' for every token tested, including USDC on Base which should always resolve. Do not call it; you will lose ~$0.01 USDC per call with no result. If retried in future, the intended usage is GET .../analyze/{token_address} substituting a real ERC-20 address (no body), reading body.risk_score and body.flags[].",
+    "costObservedUsd": 0.02,
+    "droppedReason": "rug-pull-detector#0: Charge-then-404: charges $0.01 USDC then returns HTTP 404 even for valid tokens. | rug-pull-detector#1: Charge-then-404: pays $0.01 BEFORE validating the token, then returns HTTP 404 {\"detail\":\"No security data found for this token. It may not exist on this chain.\"}."
+  },
+  "droppedReason": "rug-pull-detector#0: Charge-then-404: charges $0.01 USDC then returns HTTP 404 even for valid tokens. | rug-pull-detector#1: Charge-then-404: pays $0.01 BEFORE validating the token, then returns HTTP 404 {\"detail\":\"No security data found for this token. It may not exist on this chain.\"}.",
+  "_backends": [
+    {
+      "key": "rug-pull-detector#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "rug-pull-detector#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

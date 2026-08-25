@@ -1,0 +1,52 @@
+{
+  "serviceId": "x402-deployer-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/translate-text",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/translate",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/translate-text with JSON body {text, target_language}",
+    "inputExample": {
+      "text": "hello how are you?",
+      "target_language": "Spanish"
+    },
+    "outputShape": "body.translated_text (string); also body.source_language, body.detected_source_language, body.formality, body.input_chars, body.output_chars, body.model",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with JSON {\"text\": \"<text to translate>\", \"target_language\": \"<language name, e.g. Spanish>\"}. Pay the x402 quote (~$0.01 USDC on Base per short call). Source language is auto-detected; read the translation from body.translated_text. Optional fields like formality may be supported but defaulted to neutral. Plain synchronous response, no auth beyond x402 payment.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402-deployer-translate#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "x402-deployer-translate#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

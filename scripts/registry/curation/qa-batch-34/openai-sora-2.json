@@ -1,0 +1,47 @@
+{
+  "serviceId": "openai-sora-2",
+  "subcat": "video-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.ottoai.services/video-gen",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.ottoai.services/video-gen with JSON body {prompt, model:\"sora-2\"} and an x402 payment (~$1.75 USDC on Base/Polygon/Solana)",
+    "inputExample": {
+      "prompt": "a red circle",
+      "model": "sora-2"
+    },
+    "outputShape": "untested — could not pay (no successful response captured). Per prior verification of the sibling backend, video-gen jobs return a job id + status + poll_url and require polling for the finished video URL.",
+    "quirks": [
+      "NOT TESTED — nothing was paid. qa-pay/Sponge facilitator returned 'No compatible payment options found' on 2 attempts despite the wallet holding $26.61 USDC on Base.",
+      "ROOT CAUSE: the endpoint's v2 402 accepts entries omit an explicit 'asset' (token contract) field on the Base options, so the Sponge payment matcher cannot resolve a compatible payment option. Needs a payer that defaults the asset to USDC for asset-less eip155 accepts (or use the permit2 variant explicitly).",
+      "PRICE MISMATCH: actual 402 quote is $1.75, not the $0.500 registry surface. accepts offer eip155:8453 (Base), eip155:137 (Polygon), and Solana, all at $1.75, payTo 0x0E84dDEdAaE6A779c462C22a59F301EC31B6b808 (EVM).",
+      "Body field is 'prompt' (text-to-video); model param value is 'sora-2' per registry modelParam.",
+      "existingUsage in the registry points at a DIFFERENT backend URL (https://blockrun.ai/api/v1/videos/generations with model 'azure/sora-2') that was previously verified — that is NOT this x402.ottoai.services/video-gen endpoint.",
+      "Likely async: budget for a paid POST plus paid polls once a compatible payer can complete the POST."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST https://x402.ottoai.services/video-gen with JSON {\"prompt\":\"<your prompt>\",\"model\":\"sora-2\"} and an x402 payment. The live 402 quote is $1.75 USDC (Base, Polygon, or Solana) — not the $0.500 listed. COULD NOT BE TESTED in this run: the Sponge payer rejected all payment options as incompatible because the endpoint's Base accepts omit an explicit asset (token) field, even though the wallet held $26.61 USDC on Base. To test, use a payer that defaults asset-less eip155 accepts to USDC or explicitly selects the permit2 Base accepts variant. Once payment goes through, expect an async video-generation job that must be polled for the finished video URL.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-sora-2#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

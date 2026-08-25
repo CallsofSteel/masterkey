@@ -1,0 +1,44 @@
+{
+  "serviceId": "video-metadata-extract",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-metadata-extract-api-ea5352",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-metadata-extract-api-ea5352 with JSON body {video_url}",
+    "inputExample": {
+      "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+    },
+    "outputShape": "N/A — endpoint dead, returns {error:\"API_NOT_FOUND\", message:\"...\"}",
+    "quirks": [
+      "Orbis proxy slug is DEAD: returns HTTP 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-metadata-extract-api-ea5352'.\"}",
+      "Registry probe showed 402 (payable) on 2026-06-01 but the route is now gone — do not trust the probe",
+      "No payment was made (request 404'd before settlement); no USDC lost"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint — it is dead. The Orbis proxy slug 'video-metadata-extract-api-ea5352' returns HTTP 404 with {error:\"API_NOT_FOUND\"}. No payment is taken because the route 404s before settlement, but the service does not exist. Remove or mark this endpoint broken in the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "video-metadata-extract#0: Orbis proxy slug is DEAD: returns HTTP 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-metadata-extract-api-ea5352'.\"}"
+  },
+  "droppedReason": "video-metadata-extract#0: Orbis proxy slug is DEAD: returns HTTP 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-metadata-extract-api-ea5352'.\"}",
+  "_backends": [
+    {
+      "key": "video-metadata-extract#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

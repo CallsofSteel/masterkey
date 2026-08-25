@@ -1,0 +1,71 @@
+{
+  "serviceId": "openai-gpt-4o-o-series",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/openai/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.03
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/gpt-5.1",
+      "method": "POST",
+      "amountUsd": 0.035
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/gpt-5.1 with JSON body {\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (assistant text, plain string); body.model (resolved model slug); body.usage.* (token counts + upstream cost)",
+    "quirks": [
+      "Response is NOT standard OpenAI shape: the assistant text is at body.content (a plain string), NOT body.choices[0].message.content. There is no choices[] array in the response.",
+      "Despite the registry name 'OpenAI GPT-4o / o-series', the URL path is /api/llm/gpt-5.1 and the returned model is 'openai/gpt-5.1-20251113'. The endpoint serves gpt-5.1, not GPT-4o/o-series. Sending a 'model' param to override was not tested.",
+      "x402 paid $0.035 USDC on Base (eip155:8453); also advertises USDm (eip155:4326) and Solana payment rails."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402-gateway-production.up.railway.app/api/llm/gpt-5.1 with an OpenAI-style chat body: {\"messages\":[{\"role\":\"user\",\"content\":\"your prompt\"}]}. Pay the $0.035 USDC x402 charge on Base. Read the assistant's reply from body.content (a plain string) — this endpoint does NOT return the standard OpenAI choices[] array. Token usage and upstream cost are in body.usage. The served model is gpt-5.1 (body.model) despite the registry label saying GPT-4o/o-series.",
+    "costObservedUsd": 0.035
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "openai-gpt-4o-o-series#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.03
+    },
+    {
+      "key": "openai-gpt-4o-o-series#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.035
+    },
+    {
+      "key": "openai-gpt-4o-o-series#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

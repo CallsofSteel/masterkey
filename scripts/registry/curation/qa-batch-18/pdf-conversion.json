@@ -1,0 +1,75 @@
+{
+  "serviceId": "pdf-conversion",
+  "subcat": "pdf-generation-processing",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-to-html-api-893899",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/pdf-to-markdown",
+      "method": "POST",
+      "amountUsd": 0.2
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-to-jpg-api-701cca",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-to-json-03ff97",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/pdf-to-markdown with JSON body {\"pdf_url\":\"<public-pdf-url>\"}",
+    "inputExample": {
+      "pdf_url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    },
+    "outputShape": "On success (200): body contains the converted output (markdown/html/json/jpg). Exact key not confirmed because the test PDF host blocked the worker; on error returns body.error (string).",
+    "quirks": [
+      "Input field MUST be named 'pdf_url' (NOT 'url') — wrong name returns 400 {error:\"Missing or invalid 'pdf_url' field\"} and STILL charges $0.20.",
+      "Endpoint server-side fetches the PDF; the PDF host must allow the Cloudflare worker's fetch. W3C/bot-blocked hosts return 403 to the worker -> body.error 'Could not fetch PDF from <url> (403)' and you are charged. Use a PDF on a host that does not bot-block (public S3/GCS bucket, arweave, ipfs gateway).",
+      "Endpoint named /pdf-to-markdown but description says it can output Markdown/HTML/JSON/JPG — output format may be selectable via an additional param (not confirmed).",
+      "Every call is charged even on 4xx input errors — get the body exactly right before paying."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/pdf-to-markdown with JSON body {\"pdf_url\":\"<url-to-a-publicly-fetchable-pdf>\"} and pay $0.20 USDC on Base via x402. The field MUST be 'pdf_url' (using 'url' returns a 400 but still charges). The server fetches the PDF itself, so the URL must point to a host that allows automated/worker fetches (avoid bot-blocked hosts like w3.org, which return 403). Read the converted markdown from the 2xx response body; on failure read body.error.",
+    "costObservedUsd": 0.4
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "pdf-conversion#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "pdf-conversion#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2
+    },
+    {
+      "key": "pdf-conversion#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "pdf-conversion#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

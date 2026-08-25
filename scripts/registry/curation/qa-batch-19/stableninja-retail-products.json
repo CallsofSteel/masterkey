@@ -1,0 +1,57 @@
+{
+  "serviceId": "stableninja-retail-products",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableninja.dev/api/wayfair/product-details",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stableninja.dev/api/walmart/product-details",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stableninja.dev/api/walmart/product-details?product_id=<walmartItemId>&domain=us (x402, USDC on Base, $0.01)",
+    "inputExample": {
+      "product_id": "10450114",
+      "domain": "us"
+    },
+    "outputShape": "body.status (\"OK\"), body.data.{title,brand,price,price_display,currency,availability,rating,review_count,image,images[],url,categories[],specifications[]}, body.parameters echoes the request",
+    "quirks": [
+      "Input is via query string, NOT a JSON body. Required: product_id (Walmart item id, e.g. 10450114). Optional: domain (us|ca, default us).",
+      "The registry inputSchema is null; the real schema is only discoverable by base64-decoding the 402 payment-required response header (bazaar extension contains the queryParams JSON schema).",
+      "Price is $0.01 USDC on Base (eip155:8453) despite registry priceDisplay 'Varies'.",
+      "Endpoint also accepts HEAD/DELETE per schema but GET is the read call.",
+      "Use the Walmart us_item_id (the numeric id in a walmart.com/ip/.../<id> URL), not the SKU/UPC."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stableninja.dev/api/walmart/product-details with query params product_id (a Walmart numeric item id, e.g. the id at the end of a walmart.com/ip/... URL) and optional domain=us|ca. Pay via x402 (USDC on Base, ~$0.01). The product data is a plain synchronous JSON response at body.data — title, brand, price/price_display, availability, rating, review_count, images[], categories[], and specifications[]. body.status will be \"OK\" on success and body.parameters echoes your request. No auth/sign-in needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableninja-retail-products#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stableninja-retail-products#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "note": "Manually-confirmed first-party providers NOT present (or not yet present) in the agentic-market services.json. Merged into first-party.json by gen-first-party.mjs. Only add a provider here when the human has confirmed it is genuinely first-party (the service owner's own endpoint), e.g. ash confirmed AgentPhone (api.agentphone.ai) is 1P on 2026-06-10.",
+  "entries": [
+    {
+      "id": "agentphone",
+      "aliases": [
+        "agentphone"
+      ],
+      "hosts": [
+        "api.agentphone.ai"
+      ]
+    },
+    {
+      "id": "arkham",
+      "aliases": [
+        "arkham",
+        "arkm"
+      ],
+      "hosts": [
+        "api.arkm.com"
+      ]
+    },
+    {
+      "id": "coinstats",
+      "aliases": [
+        "coinstats"
+      ],
+      "hosts": [
+        "x402.coinstats.app",
+        "openapiv1.coinstats.app"
+      ]
+    }
+  ]
+}

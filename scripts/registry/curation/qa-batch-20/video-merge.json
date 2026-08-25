@@ -1,0 +1,47 @@
+{
+  "serviceId": "video-merge",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-merge-api-5634aa",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-merge-api-5634aa with JSON body {videos:[url,url]}",
+    "inputExample": {
+      "videos": [
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+      ]
+    },
+    "outputShape": "n/a - endpoint dead (404 API_NOT_FOUND)",
+    "quirks": [
+      "Orbis proxy slug is DEAD: returns 404 {error:API_NOT_FOUND, message:No active API found with slug video-merge-api-5634aa}.",
+      "404 returned pre-payment (paid:false, costUsd:0) - no USDC lost.",
+      "Do NOT retry with alternate bodies/paths - the slug/route does not exist."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'video-merge-api-5634aa' no longer exists - any call returns HTTP 404 {error:API_NOT_FOUND}. Do not attempt to call it. No payment is taken because the 404 fires before the x402 settlement step.",
+    "costObservedUsd": 0,
+    "droppedReason": "video-merge#0: Orbis proxy slug is DEAD: returns 404 {error:API_NOT_FOUND, message:No active API found with slug video-merge-api-5634aa}."
+  },
+  "droppedReason": "video-merge#0: Orbis proxy slug is DEAD: returns 404 {error:API_NOT_FOUND, message:No active API found with slug video-merge-api-5634aa}.",
+  "_backends": [
+    {
+      "key": "video-merge#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

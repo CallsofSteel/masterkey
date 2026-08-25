@@ -1,0 +1,195 @@
+{
+  "subcategory": "captcha-bot-protection",
+  "category": "security",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Genuine captcha-solving / bot-bypass / bot-detection services. DROPPED/routed: orbisapi/x402helper farms, jega markdown #22 -> document, Didit AML #24 -> identity, chainray MEV #32 + defi-shield MEV #33 + emc2 token-sniping #36 -> crypto, trustsource/netintel robots.txt #35/#37 -> web-crawling.",
+  "entries": [
+    {
+      "name": "2Captcha",
+      "provider": "2Captcha",
+      "providerId": "2captcha",
+      "description": "CAPTCHA solving service — submit a CAPTCHA (reCAPTCHA, hCaptcha, image, etc.) and receive the solution. Pay-per-call x402 via the PaySponge gateway.",
+      "tags": [
+        "captcha",
+        "captcha-solving",
+        "bot",
+        "automation"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        1
+      ],
+      "resolved": {
+        "1": {
+          "amount": 0.01,
+          "method": "POST",
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "errorId",
+            "submitPendingValues": [],
+            "jobIdPath": "taskId",
+            "pollUrlTemplate": "{origin}/getTaskResult",
+            "poll": {
+              "cost": "per-poll",
+              "method": "POST",
+              "body": {
+                "taskId": "{id}"
+              },
+              "statusField": "status",
+              "completeValues": [
+                "ready"
+              ],
+              "failedValues": [],
+              "resultPath": "solution"
+            }
+          }
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-23",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://2captcha.x402.paysponge.com/createTask with JSON body {\"task\":{\"type\":\"ImageToTextTask\",\"body\":\"<base64 image, >=100 bytes>\"}} (or any 2Captcha task type, e.g. RecaptchaV2TaskProxyless with websiteURL+websiteKey). No clientKey needed — the gateway injects it.",
+        "inputExample": {
+          "task": {
+            "type": "ImageToTextTask",
+            "body": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+          }
+        },
+        "outputShape": "On success: body.taskId (number) + body.errorId=0 + body.status. On error: body.errorId (non-zero), body.errorCode (string), body.errorDescription. The actual CAPTCHA solution is NOT in this response — createTask only returns a taskId; you must poll a getTaskResult endpoint with that taskId to retrieve body.solution.",
+        "quirks": [
+          "This is the standard 2Captcha createTask API, which is ASYNC: it returns only a taskId, NOT the solution. You must then poll a getTaskResult call with {taskId} (wait ~5-20s, retry until status='ready') to get the solution.",
+          "Do NOT send a clientKey — the PaySponge gateway injects the 2Captcha account key; the body is just {task:{...}}.",
+          "Image tasks require the base64 image to be >=100 bytes or you get errorCode ERROR_ZERO_CAPTCHA_FILESIZE (errorId 3). Send a real CAPTCHA image, not a tiny test PNG.",
+          "Errors come back with HTTP 200 + body.errorId!=0 (2Captcha convention), not via an HTTP error status. Always check body.errorId, not just the status code.",
+          "Each createTask call costs $0.010; the follow-up getTaskResult poll(s) may be free or separately priced — verify the result endpoint's pricing/path before integrating.",
+          "Async via POST polling: createTask returns {errorId:0, taskId(number)}; poll POST {origin}/getTaskResult with body {taskId} (x402 handshake, settles $0) until status=\"ready\", solution at body.solution. Verified 2026-06-23. (Engine added POST-poll support for this.)"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://2captcha.x402.paysponge.com/createTask with a JSON body of the form {\"task\":{\"type\":\"<TaskType>\", ...params}} — no clientKey, the gateway adds it. Use ImageToTextTask with a base64 \"body\" (image >=100 bytes) for image CAPTCHAs, or RecaptchaV2TaskProxyless with websiteURL+websiteKey for reCAPTCHA. The response is HTTP 200 with {errorId, taskId} on success or {errorId, errorCode, errorDescription} on failure — always check errorId (0 = ok). createTask is async: take the returned taskId and poll the 2Captcha getTaskResult endpoint until status='ready', then read body.solution. Each createTask call costs $0.010 USDC on Base.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "200ok Web Unlocker",
+      "provider": "200ok",
+      "providerId": "200ok",
+      "description": "Web unlocker — fetch pages behind anti-bot protection (Cloudflare, etc.) with automatic CAPTCHA/JS challenge handling. Pay-per-call x402.",
+      "tags": [
+        "bot-bypass",
+        "web-unlocker",
+        "anti-bot",
+        "scraping"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        5
+      ],
+      "resolved": {
+        "5": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://web-unlocker.200ok.xyz/unlock with JSON body {url, type?} — x402 USDC $0.01 on Base (eip155:8453)",
+        "inputExample": {
+          "url": "https://example.com",
+          "type": "html"
+        },
+        "outputShape": "Envelope at body.success / body.url / body.timestamp / body.html. Per outputSchema, real content should be in body.html (HTML string) or body.screenshot (base64 PNG). BUT in practice body.html contained a nested upstream error JSON string instead of page content.",
+        "quirks": [
+          "authMode is apiKey+paid: the x402 micropayment settles and the endpoint returns HTTP 200 with envelope success:true, but the real content field body.html contained an upstream error string {\"code\":401,\"data\":\"User balance is insufficient!\"} — the provider requires its OWN internal account balance / API key on top of the x402 payment, which we do not have.",
+          "CHARGE-THEN-FAIL: paid $0.01 and got NO usable page content. Do not call this endpoint.",
+          "Envelope-level success:true and HTTP 200 are misleading — you MUST inspect body.html for a nested error JSON before trusting the result.",
+          "Violates MasterKey no-API-key policy (apiKey+paid) — should be pruned from the registry."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do NOT use this endpoint. Although it advertises pay-per-call x402 web unlocking ($0.01 USDC on Base) and accepts an x402 payment returning HTTP 200 with success:true, the actual content field (body.html) returned an upstream error: {\"code\":401,\"data\":\"User balance is insufficient!\"}. The service is authMode apiKey+paid — it requires the provider's own account balance/API key in addition to the x402 payment, which is not satisfied by wallet payment alone. Money is charged but no page content is returned. This is a charge-then-fail / no-API-key-policy violation and should be removed from the registry.",
+        "costObservedUsd": 0.01
+      },
+      "status": "hidden",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "ShieldForm Bot Protection",
+      "provider": "ShieldForm",
+      "providerId": "shieldform",
+      "description": "Bot-protection scorer — score an incoming request/form submission for bot-likelihood to protect endpoints. Pay-per-call x402.",
+      "tags": [
+        "bot-protection",
+        "bot-detection",
+        "fraud",
+        "scoring"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        20
+      ],
+      "resolved": {
+        "20": {
+          "amount": 0.005,
+          "method": "POST"
+        }
+      },
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://shieldform.waltsoft.net/verify with JSON body (form-submission signals); x402 payment via Base USDC ($0.005)",
+        "inputExample": {
+          "ip": "203.0.113.42",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "fields": {
+            "email": "test@example.com",
+            "name": "Jane Doe"
+          }
+        },
+        "outputShape": "body.score (0-100 int), body.decision (string, e.g. \"allow\"), body.requestId (string)",
+        "quirks": [
+          "BROKEN: server-side x402 payment verification is non-functional. The unpaid 402 challenge is well-formed (x402 v2, exact scheme, Base USDC 5000 units = $0.005, valid payTo 0x318A...FD57), but after submitting a payment the server responds 402 {\"error\":\"Payment verification failed\"} on every attempt.",
+          "No USDC is actually spent — costUsd 0, no txHash, no settlement on both attempts. Safe to attempt but it will never succeed.",
+          "Body shape is irrelevant to the failure — both a populated body and an empty {} body produced identical 'Payment verification failed' responses; the rejection happens at the payment-verification layer, not input validation.",
+          "Do NOT retry repeatedly: it consistently fails verification."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not rely on this endpoint — it is broken. The x402 challenge looks valid (POST https://shieldform.waltsoft.net/verify, Base USDC $0.005), but the server's payment verification step rejects all payments with 402 {\"error\":\"Payment verification failed\"} and never settles a charge or returns a score. If the provider fixes verification, the intended call is POST with form-submission signals and the response would contain body.score (0-100), body.decision, and body.requestId. Until then it cannot be used.",
+        "costObservedUsd": 0
+      },
+      "hiddenReason": "broken"
+    }
+  ]
+}

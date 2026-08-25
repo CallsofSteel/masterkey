@@ -1,0 +1,88 @@
+{
+  "serviceId": "prediction-markets-data",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/pm/markets/search",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/pm/polymarket/markets",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/pm/polymarket/events",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/pm/polymarket/trades",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/pm/kalshi/markets",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/pm/markets/search?q=<search_term> (e.g. ?q=bitcoin)",
+    "inputExample": {
+      "q": "bitcoin"
+    },
+    "outputShape": "body.markets[] (each: {venue, title, status, market_id|condition_id, market_slug, price?, volume?, end_time?}); body.query, body.count, body.venues_searched[]",
+    "quirks": [
+      "inputSchema is empty in the registry but the endpoint REQUIRES a query string param ?q=<term>; pass the search term via ?q=, not a JSON body (it's GET).",
+      "Searches across multiple venues at once: kalshi, limitless, opinion, polymarket, predict. Each market's identifier field differs by venue (kalshi uses market_id string, polymarket/limitless/predict use condition_id hex, opinion uses numeric market_id).",
+      "price/volume/end_time fields are only present on some venues' markets."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/pm/markets/search with a ?q= query param holding your search term (e.g. ?q=bitcoin); payment is x402 USDC on Base, ~$0.005/call, no API key. The response is a single JSON object: read body.markets[] for the matched prediction markets across kalshi, limitless, opinion, polymarket and predict.fun. Each market has venue, title, status, a slug/id, and optionally price, volume, and end_time. body.count and body.venues_searched[] summarize the result set. Use the per-market market_id/condition_id/market_slug to drill into other /pm/ endpoints for that venue.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "prediction-markets-data#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "prediction-markets-data#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "prediction-markets-data#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "prediction-markets-data#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "prediction-markets-data#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

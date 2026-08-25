@@ -1,0 +1,44 @@
+{
+  "serviceId": "kasandell-transcribe",
+  "subcat": "speech-to-text",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://convert.kasandell.workers.dev/convert/audio",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://convert.kasandell.workers.dev/convert/audio with a RAW BINARY audio body (the audio file bytes themselves, NOT JSON), Content-Type: audio/mpeg (or matching the file format). Pay via x402 (USDC on Base, eip155:8453, $0.003).",
+    "inputExample": {
+      "_note": "Body is NOT JSON. Send raw audio file bytes (e.g. an MP3) as the POST body with Content-Type: audio/mpeg. Supported: MP3, WAV, M4A, OGG, FLAC, WebM."
+    },
+    "outputShape": "body.text (JSON object {\"text\": \"<transcription>\"})",
+    "quirks": [
+      "Body must be RAW BINARY audio bytes, NOT JSON. Empty inputSchema in registry is misleading — the real input is the audio file itself in the request body.",
+      "Content-Type must be audio/* (decoded payment-required bazaar extension specifies audio/mpeg, bodyType=binary). Supported formats: MP3, WAV, M4A, OGG, FLAC, WebM.",
+      "COULD NOT VERIFY via the money-safe qa-pay tool: that tool reads --body=@file as UTF-8 text and forwards a string to wallet.paidFetch, which irreversibly corrupts binary audio. A pay primitive with binary-body support is required to test this endpoint.",
+      "Endpoint appears live and well-formed: probe returns 402 with valid x402 accepts (USDC/Base, payTo 0x043b8aa7e75068F92696c8831801587Fc105A8d8, amount 3000 = $0.003) and a clear {text} output schema."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Transcribe audio to text. POST the raw bytes of an audio file (MP3, WAV, M4A, OGG, FLAC, or WebM) directly as the request body to https://convert.kasandell.workers.dev/convert/audio with Content-Type set to the audio type (e.g. audio/mpeg) — do NOT wrap it in JSON. Pay $0.003 USDC on Base via x402. The response is JSON; read the transcription from body.text. NOTE: this was not paid-verified because the QA pay tool cannot transmit a binary body without UTF-8 corruption.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "kasandell-transcribe#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

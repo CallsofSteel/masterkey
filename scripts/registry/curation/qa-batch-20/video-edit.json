@@ -1,0 +1,45 @@
+{
+  "serviceId": "video-edit",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/video_edit",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/video_edit with JSON body {video_url, video_description}",
+    "inputExample": {
+      "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+      "video_description": "trim the video to the first 3 seconds"
+    },
+    "outputShape": "No usable output. On error: body.status=\"ERROR\", body.error.message, body.error.code. (Successful output shape unknown — backend never reached a success state.)",
+    "quirks": [
+      "Required input field is 'video_description' (string), NOT 'prompt' — sending 'prompt' returns 400 'Invalid input: expected string, received undefined' for field video_description.",
+      "After fixing the field name, the backend returns HTTP 500 with an internal JSON parse error: 'Expected , or } after property value in JSON at position 1303 (line 37 column 2)'. Position 1303 is far beyond our ~150-byte request body, so this is a server-side processing failure (likely parsing an upstream/LLM response), not a client body issue.",
+      "Payment is taken on every request including the ones that fail validation/processing (charged $0.01 on both the 400 and the 500). No refund. Total $0.02 lost across 2 attempts with no result produced.",
+      "No txHash returned by the facilitator on either paid call (confirmed:false)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint — it is broken. It payment-gates ($0.01 USDC on Base) and validates input (it requires a 'video_url' and a 'video_description' string), but after passing validation the backend fails with an internal HTTP 500 JSON-parse error and never returns an edited video. Payment is charged even on failures with no refund, so calling it just loses money. Revisit only if the provider fixes the server-side 500.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "video-edit#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

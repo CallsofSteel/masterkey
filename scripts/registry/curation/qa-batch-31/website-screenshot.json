@@ -1,0 +1,56 @@
+{
+  "serviceId": "website-screenshot",
+  "subcat": "screenshot-rendering",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/website-screenshot",
+      "method": "POST",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/screenshot",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/website-screenshot with JSON body {url}",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.image_url (signed PNG download URL), body.format, body.file_size_bytes, body.source_url, body.job_id",
+    "quirks": [
+      "inputSchema was null in the registry — the correct body field is {url} (full URL incl. https://); inferred and verified working",
+      "Response is synchronous (200) even though it returns a job_id — no polling needed; the screenshot is already rendered",
+      "body.image_url is a TEMPORARY signed CloudConvert S3 URL (X-Amz-Expires=86400, ~24h). Download/re-host the PNG immediately; the link expires.",
+      "Image is NOT returned inline; you must fetch body.image_url separately to get the PNG bytes"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/website-screenshot with JSON body {\"url\":\"https://example.com\"} (full URL including scheme). Pay $0.04 USDC on Base via x402. The response is synchronous JSON 200 — read body.image_url to get a signed PNG download link, then fetch that URL to obtain the actual screenshot bytes. The signed link expires in ~24h, so download or re-host it promptly. Despite a job_id field in the response, no polling is required.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "website-screenshot#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.04
+    },
+    {
+      "key": "website-screenshot#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    }
+  ]
+}

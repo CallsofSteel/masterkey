@@ -1,0 +1,82 @@
+{
+  "serviceId": "agentphone",
+  "subcat": "sms-phone",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/numbers",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/calls",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/calls/web",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.agentphone.ai/x402/v1/numbers/{number_id}/messages",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.agentphone.ai/x402/v1/numbers with JSON body {country?, areaCode?, agentId?} (all optional; e.g. {\"country\":\"US\"}) to provision a real, active phone number ($0.01)",
+    "inputExample": {
+      "country": "US"
+    },
+    "outputShape": "body.id (the number_id used later as number_id/fromNumberId), body.phoneNumber (E.164), body.status (\"active\"), body.type (\"sms\"), body.country, body.agentId, body.createdAt",
+    "quirks": [
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: the user (John, +15555550123) actually received the output — an inbound phone call from +15076072903 and two \"MasterKey QA test SMS\" texts — confirming end-to-end real-world delivery, not just a paid 200.",
+      "Body fields are ALL optional — {\"country\":\"US\"} works; an empty {} likely also works. No agent_id needed to provision a number (returned agentId was null).",
+      "Returns 200 synchronously with a real, ACTIVE phone number immediately — no async/polling. The number is a live billable resource (outward/irreversible).",
+      "Save body.id — it is the number_id (a.k.a. fromNumberId) you must pass to POST /x402/v1/messages and /x402/v1/calls for dedicated caller ID.",
+      "Returned type was 'sms' (not iMessage). send_style iMessage animations on /messages only work on iMessage-capable numbers.",
+      "Real backend in the 402 header is api.paysponge.com (transparent proxy); api.agentphone.ai/x402/v1 is the gateway entry point.",
+      "Paid on Base, x402 'exact' scheme, $0.01. (Note: /calls endpoints instead use 'upto' permit2 up to $0.50 — different flow, not this endpoint.)"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Provision a real phone number for an AI agent by POSTing to https://api.agentphone.ai/x402/v1/numbers with a small JSON body like {\"country\":\"US\"} (areaCode and agentId are optional). It pays $0.01 USDC on Base via x402 and returns 200 synchronously with the new number. Read body.phoneNumber for the E.164 number and body.id for the number_id you'll pass as number_id/fromNumberId to the /messages and /calls endpoints. The number comes back status:\"active\" immediately — no polling. This creates a live billable resource, so only provision when actually needed.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentphone#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "agentphone#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentphone#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentphone#4",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ],
+  "humanConfirmed": {
+    "date": "2026-06-09",
+    "signal": "inbound call +15076072903 + 2 test SMS to +15555550123"
+  }
+}

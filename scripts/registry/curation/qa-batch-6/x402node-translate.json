@@ -1,0 +1,58 @@
+{
+  "serviceId": "x402node-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/text/translate",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://api.x402node.dev/nlp/translate",
+      "method": "GET",
+      "amountUsd": 0.008
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/text/translate?text=<text>&to=<langcode> (x402 paid, ~$0.005/call on Base). NOT POST — POST returns 404.",
+    "inputExample": {
+      "text": "hello",
+      "to": "zh"
+    },
+    "outputShape": "body.text_out (translated text), body.text_in, body.source_lang (auto-detected), body.target_lang, body.processing_ms",
+    "quirks": [
+      "Registry lists method POST and price Free — BOTH WRONG. Real method is GET and it costs ~$0.005 USDC per call via x402 on Base.",
+      "POST to /text/translate returns 404 'Cannot POST /text/translate'. Must use GET.",
+      "Params go in the query string, NOT a JSON body: ?text=...&to=... . 'text' is required, 'to' is optional (target language code like zh, es, fr).",
+      "Param names are 'text' and 'to' — NOT MyMemory's q/langpair. Using q/langpair returns 400 with hint '?text=... required, optional &to=lang'.",
+      "Source language is auto-detected (no 'from' param needed); returned as body.source_lang."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/text/translate with query params text (the string to translate, required) and to (target language code such as zh, es, fr; optional, defaults applied server-side). It is an x402 paid endpoint (~$0.005 USDC on Base per call) despite the registry saying Free. Do NOT POST and do NOT send a JSON body — POST returns 404 and JSON bodies are ignored; everything goes in the query string. Read the translated text from body.text_out; source language is auto-detected and returned as body.source_lang.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402node-translate#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "x402node-translate#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

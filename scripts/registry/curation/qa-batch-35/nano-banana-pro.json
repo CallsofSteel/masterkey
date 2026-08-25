@@ -1,0 +1,58 @@
+{
+  "serviceId": "nano-banana-pro",
+  "subcat": "image-generation",
+  "batchId": "batch-35",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/nano-banana-pro/generate",
+      "method": "POST",
+      "amountUsd": 0.13
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/nano-banana-pro/edit",
+      "method": "POST",
+      "amountUsd": 0.13
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/nano-banana-pro/generate with JSON body {prompt}; then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX-authenticated, free) until status==\"complete\"",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST returns body.jobId (+ body.status==\"pending\"). Final image is on the status poll: body.result.imageUrl (hosted PNG on Vercel Blob storage), with body.status, body.progress, body.input.{model,imageSize,aspectRatio}, body.error.",
+    "quirks": [
+      "This is an ASYNC job endpoint — the paid POST does NOT return the image. It returns {success:true, jobId, status:'pending', type:'nano-banana-pro-generate'}. You must poll for the result.",
+      "Status/result endpoint is GET https://stablestudio.dev/api/jobs/{jobId} — it is SIWX-gated: returns 402 'SIWX authentication required' without SIWX, and 200 (FREE, no payment) with a SIWX signature. Poll it with SIWX until body.status=='complete' (~20s here).",
+      "Body shape is {\"prompt\":\"...\"} — NOT the Google Gemini contents/parts shape. Optional fields observed in echoed input: imageSize ('1K' default), aspectRatio ('1:1' default), model.",
+      "Final image is a hosted URL at body.result.imageUrl (PNG on *.public.blob.vercel-storage.com), NOT inline base64 — download it from there.",
+      "This stablestudio.dev backend (backendIndex 3) is a DIFFERENT proxy than the verified xona-agent.com sibling backend, which was SYNCHRONOUS and returned body.image_url directly. Do not assume sync behavior here.",
+      "Payment settled on Base (not Solana). $0.13/call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablestudio.dev/api/generate/nano-banana-pro/generate with a JSON body {\"prompt\":\"<your image prompt>\"} (optionally imageSize, aspectRatio). Payment is x402 USDC (~$0.13 on Base). This endpoint is ASYNC: the 200 response gives you body.jobId and status:'pending', not the image. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIWX authentication (free, no extra payment; returns 402 without SIWX) every few seconds until body.status=='complete'. Read the finished image from body.result.imageUrl (a hosted PNG) and download it from there.",
+    "costObservedUsd": 0.13
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-pro#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.13
+    },
+    {
+      "key": "nano-banana-pro#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.13
+    }
+  ]
+}

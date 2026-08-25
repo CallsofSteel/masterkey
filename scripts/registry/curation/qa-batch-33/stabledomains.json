@@ -1,0 +1,47 @@
+{
+  "serviceId": "stabledomains",
+  "subcat": "dns-domain-management",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabledomains.dev/api/register",
+      "method": "POST",
+      "amountUsd": 20
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stabledomains.dev/api/register with JSON body {domain} (x402 USDC on Base, price $20-$150 varies by TLD/availability)",
+    "inputExample": {
+      "domain": "masterkey-qa-test-20260608.com"
+    },
+    "outputShape": "body.status (\"active\"), body.domain, body.nameservers[] (Route53 NS records), body.hostedZoneId, body.orderId, body.jobId",
+    "quirks": [
+      "IRREVERSIBLE + EXPENSIVE: this actually registers a real domain on Route53 and charges $20-$150 USDC (price varies by TLD/availability). It is NOT a sandbox. Only call with explicit user approval and a domain they truly want.",
+      "Price exceeds the usual QA $6 cap. The qa-pay --cap was 25 (template default), so it paid $20 and registered masterkey-qa-test-20260608.com. confirmed=false/txHash=null in the qa-pay output but the registration response is a real active domain.",
+      "ALWAYS call POST /api/check {domain} first ($0.01-$0.05) to confirm available:true and read priceUsd/slotsRemaining before registering. Do not register an unavailable domain.",
+      "Body is minimal: just {\"domain\":\"name.tld\"}. No recipient/contact fields needed (Route53-backed, no accounts).",
+      "Post-registration management (status/DNS/transfer) uses separate SIWX-auth endpoints: GET /api/domain/status, POST /api/domain/dns, POST /api/domain/transfer-out (free, SIWX). Renewal is POST /api/domain/renew ($20-$150, x402).",
+      "Registry spec listed outward:false but this IS outward/irreversible — corrected to true."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Registers a real internet domain via Route53, paid per-call with x402 USDC on Base. First call POST /api/check with {\"domain\":\"name.tld\"} ($0.01-$0.05) to confirm available:true and read priceUsd (registration runs $20-$150). Then, only with explicit user approval (this is irreversible and expensive), POST /api/register with the same minimal body {\"domain\":\"name.tld\"}. On success you get HTTP 200 with body.status=\"active\", body.nameservers[] (the Route53 NS records to set at any DNS host), body.hostedZoneId, and body.orderId. Manage the domain afterward via the free SIWX endpoints (/api/domain/status, /api/domain/dns).",
+    "costObservedUsd": 20
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabledomains#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 20
+    }
+  ]
+}

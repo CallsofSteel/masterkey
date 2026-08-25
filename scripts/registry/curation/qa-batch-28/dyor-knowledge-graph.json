@@ -1,0 +1,43 @@
+{
+  "serviceId": "dyor-knowledge-graph",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://kg.dyor.network/api/search",
+      "method": "GET",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://kg.dyor.network/api/search?query={query}&limit={n} (query string params; x402 payment on Base)",
+    "inputExample": {
+      "query": "Ethereum",
+      "limit": 3
+    },
+    "outputShape": "body.results[] (each: .uri, .name, .labels[], .similarity, .description); body.status, body.query, body.total_count",
+    "quirks": [
+      "GET endpoint — params go in the query string, not a JSON body (query is required; optional limit, entity_types)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://kg.dyor.network/api/search with a required `query` query-string param (entity name or semantic search query), optional `limit` (default 10) and `entity_types[]` filter (Token, Protocol, Chain, Organization, Person, Exchange, Pool). Pay $0.05 USDC via x402 on Base. The response is a plain synchronous JSON object; read the matched entities from body.results[], each having uri, name, similarity, and a description.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "dyor-knowledge-graph#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

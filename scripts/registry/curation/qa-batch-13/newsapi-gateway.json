@@ -1,0 +1,56 @@
+{
+  "serviceId": "newsapi-gateway",
+  "subcat": "news-media",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/news",
+      "method": "GET",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://httpay.xyz/api/gateway/newsapi/%7B*path%7D/*",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://httpay.xyz/api/news?topic=tech (x402, ~$0.005 USDC on Base). NOTE: GET-only — POST returns 404 despite registry listing POST.",
+    "inputExample": {
+      "topic": "tech"
+    },
+    "outputShape": "body.headlines[] (each: .title, .url, .source, .pubDate, .snippet, .categories[]); body.count = number of headlines; body.topic = echoed topic; body.availableTopics[] = valid topics",
+    "quirks": [
+      "Registry lists POST but the endpoint is GET-only — POST https://httpay.xyz/api/news returns 404 'Cannot POST /api/news'. Call it as GET.",
+      "Topic is passed as a URL query param (?topic=tech), NOT a JSON body.",
+      "Valid topics: tech, ai, world, science, business, crypto, health, sports. Default is tech if omitted.",
+      "Returns 20 headlines per call.",
+      "Facilitator confirmed flag was false but the call was paid ($0.005) and returned 200 with real data."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://httpay.xyz/api/news with a ?topic= query param (e.g. ?topic=ai). Do NOT use POST — POST returns 404; this is a GET endpoint despite the registry CALL line. Valid topics: tech, ai, world, science, business, crypto, health, sports (default tech). Pay via x402 (~$0.005 USDC on Base). Read results from body.headlines[] — each item has title, url, source, pubDate, snippet, categories[]. body.count tells you how many (20).",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "newsapi-gateway#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "newsapi-gateway#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

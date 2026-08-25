@@ -1,0 +1,48 @@
+{
+  "serviceId": "stableupload",
+  "subcat": "object-file-storage",
+  "batchId": "batch-39",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableupload.dev/api/site",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableupload.dev/api/site with JSON body {filename, tier}",
+    "inputExample": {
+      "filename": "site.zip",
+      "tier": "short-10mb"
+    },
+    "outputShape": "body.uploadId, body.uploadMethod (\"post\"|\"put\"), body.postUrl + body.postFields (S3 multipart fields) for POST, or body.uploadUrl for PUT, body.curlExample (ready-to-run upload command), body.expiresAt, body.maxSize, body.uploadUrlExpiresAt. NOTE: /api/site does NOT return body.publicUrl in the immediate response (unlike /api/upload) — the served site URL is obtained after the zip is uploaded and activated.",
+    "quirks": [
+      "This is the SITE endpoint (zip -> static site hosting), distinct from /api/upload (single file). Body is {filename, tier} with NO contentType field (the API forces Content-Type application/zip for the upload).",
+      "PRICE IS TIER-DEPENDENT. The default x402 quote is $2.00 (= '1gb' tier) but the body's 'tier' field overrides the charge. Site tiers: 10mb=$0.02, 100mb=$0.20, 1gb=$2.00, short-10mb=$0.005, short-100mb=$0.02, short-1gb=$0.10. short-5gb is NOT supported for sites. Pick the smallest that fits to minimize cost (tested short-10mb = $0.005).",
+      "TWO-STEP FLOW: POST /api/site only ISSUES a presigned S3 form — it does NOT accept file bytes. Second step: POST the zip to body.postUrl as multipart/form-data including every key/value in body.postFields PLUS a 'file' part with the zip bytes (body.curlExample is the exact command). Verified the S3 upload returns HTTP 204 on success.",
+      "Unlike /api/upload, the /api/site response does NOT include publicUrl. The static-site URL is resolved after the zip is uploaded (and activated/extracted).",
+      "Presigned form expires fast (uploadUrlExpiresAt ~15 min) — upload promptly. Site retention: expiresAt is 7 days for short-* tiers, 6 months for default tiers.",
+      "txHash field in the qa-pay response was null on this call (paid:true, confirmed:false), but payment settled and the call returned 200."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://stableupload.dev/api/site with JSON {filename, tier} to host a static site from a zip. Use the smallest tier that fits (short-10mb ~ $0.005 for <10MB; the registry's $2 surface is the 1gb tier). The 'tier' field sets the actual charge even though the unpaid quote shows $2.00. The response is a presigned S3 upload ticket, NOT a stored site. Second step: actually upload the zip — POST it as multipart/form-data to body.postUrl, including all body.postFields plus a 'file' part with the zip bytes (body.curlExample is a ready-to-run command); a 204 means success. After upload the bundle is served as a static site (resolve the URL post-activation). No auth/API key; payment is per call via x402.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableupload#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    }
+  ]
+}

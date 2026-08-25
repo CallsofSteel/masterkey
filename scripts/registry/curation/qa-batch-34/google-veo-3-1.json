@@ -1,0 +1,48 @@
+{
+  "serviceId": "google-veo-3-1",
+  "subcat": "video-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.ottoai.services/video-gen",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.ottoai.services/video-gen with JSON body {model:\"veo-3.1\", prompt, durationSeconds, resolution}",
+    "inputExample": {
+      "model": "veo-3.1",
+      "prompt": "a red circle",
+      "durationSeconds": "4",
+      "resolution": "720p"
+    },
+    "outputShape": "unknown (could not pay; ottoai backend response shape not captured). Per prior existingUsage on the stablestudio variant, video-gen is async: response carries a jobId polled separately.",
+    "quirks": [
+      "Could NOT complete paid test: qa-pay returned 'no compatible payment options found' / 'master wallet has insufficient funds' even though the master wallet held $26.61 USDC on Base + $5.05 USDC on Solana at test time. Nothing was paid (paid:false, no money lost).",
+      "The ottoai 402 quote's accepted networks/assets appear to not match the wallet's available holdings, OR the quote exceeded a per-chain compatible balance. Needs wallet funded on the chain/asset this backend's 402 demands before it can be tested.",
+      "Registry surface price is $0.500 but related Veo backends use dynamic pricing ($1.60-$3.20 for 4s/720p, more for 1080p/longer).",
+      "inputSchema is null in the registry; body fields above are inferred from the Veo model (prompt required; durationSeconds/resolution likely strings).",
+      "existingUsage on this serviceId describes a DIFFERENT backend (stablestudio.dev/api/generate/veo-3.1/generate, SIWX async poll) — do not assume the ottoai backend shares that contract; it is unverified."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Could not be verified this run: the payment layer reported no compatible payment option for this ottoai backend despite the wallet holding ample USDC on Base and Solana, so no call completed. To test, ensure the master wallet is funded on the exact chain/asset the endpoint's 402 advertises (capture the 402 accepts array first), then POST https://x402.ottoai.services/video-gen with JSON {\"model\":\"veo-3.1\",\"prompt\":\"a red circle\",\"durationSeconds\":\"4\",\"resolution\":\"720p\"}. Video generation is asynchronous, so expect a job id in the response that must be polled for the finished video URL. Re-run Phase A once the payment-compatibility blocker is resolved.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-veo-3-1#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

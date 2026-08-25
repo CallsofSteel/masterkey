@@ -1,0 +1,46 @@
+{
+  "serviceId": "carbon-cashmere-batch-sentiment",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.carbon-cashmere.de/v1/sentiment-analyze-batch",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.carbon-cashmere.de/v1/sentiment-analyze-batch with JSON body {texts:[...]} — but gated by an upstream API key (Authorization), NOT x402. Registry-listed GET is wrong (405, allow: POST).",
+    "inputExample": {
+      "texts": [
+        "hello"
+      ]
+    },
+    "outputShape": "unknown — never returned a 2xx; blocked at auth (401 {detail})",
+    "quirks": [
+      "Registry CALL lists GET but GET returns 405 with header 'allow: POST' — the real method is POST.",
+      "POST returns 401 {\"detail\":\"API key required. Get one at https://carbon-cashmere.de/dashboard\"} for any body, including {} and empty.",
+      "NO 402 / x402 payment path exists — this endpoint is gated by an upstream API key, not USDC micropayment. It cannot be paid for and violates the MasterKey no-API-key policy.",
+      "Did NOT pay: no payment quote is obtainable (never returns 402)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call or pay for this endpoint via x402. The CALL must be POST (the registry's GET returns 405 allow:POST), but POST always returns 401 demanding an upstream API key obtained at carbon-cashmere.de/dashboard — there is no USDC/x402 payment path. It is broken for the MasterKey registry (API-key gated, no 402). It should be pruned per the no-API-key policy.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "carbon-cashmere-batch-sentiment#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

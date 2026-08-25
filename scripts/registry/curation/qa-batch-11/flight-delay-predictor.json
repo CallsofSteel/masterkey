@@ -1,0 +1,48 @@
+{
+  "serviceId": "flight-delay-predictor",
+  "subcat": "flight-aviation",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/flight_delay_predictor",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/flight_delay_predictor with JSON body {flight_number, departure_date, origin, destination}",
+    "inputExample": {
+      "flight_number": "AA100",
+      "departure_date": "2026-06-15",
+      "origin": "JFK",
+      "destination": "LAX"
+    },
+    "outputShape": "On success, expected at body (status/error envelope observed on validation failures as body.status='ERROR', body.error.{message,code,details[]}); success body shape (delay likelihood/duration) NOT yet captured.",
+    "quirks": [
+      "Registry inputSchema was null. The endpoint uses STRICT validation and requires ALL of: flight_number, departure_date, origin, destination. Sending only a subset returns HTTP 400 status='ERROR' with body.error.details[] naming the missing fields.",
+      "Field names are exact snake_case: flight_number (e.g. 'AA100'), departure_date (YYYY-MM-DD), origin and destination (IATA codes like 'JFK','LAX'). Fields like 'carrier','date','scheduled_departure' are IGNORED/not accepted.",
+      "WARNING: this endpoint CHARGES the $0.01 payment even on a 400 validation error (paid:true, status 400). Send the complete body the first time or you lose money on rejected calls.",
+      "A 200 success response was NOT captured during QA (2-paid-attempt cap hit while reverse-engineering the field set). The known-good body {flight_number,departure_date,origin,destination} should succeed but its exact output shape is unconfirmed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://gg402.vercel.app/flight_delay_predictor with a complete JSON body containing all four required fields: flight_number, departure_date (YYYY-MM-DD), origin and destination (IATA airport codes). Payment is $0.01 USDC on Base (eip155:8453), sync. CRITICAL: the endpoint validates strictly and CHARGES even when it rejects the body with a 400, so include every field on the first call. Read the result from the JSON response body; on validation failure it returns body.status='ERROR' and body.error.details[] listing missing fields.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flight-delay-predictor#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

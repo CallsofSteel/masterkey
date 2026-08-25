@@ -1,0 +1,45 @@
+{
+  "serviceId": "hookfindr-transcribe",
+  "subcat": "speech-to-text",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.hookfindr.com/api/x402/transcribe",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.hookfindr.com/api/x402/transcribe with JSON body {\"url\":\"<public short-form video URL>\"}",
+    "inputExample": {
+      "url": "https://www.tiktok.com/@benxwilliams222/video/7639190773732232478"
+    },
+    "outputShape": "body.text (full transcript string); body.words[] (array of {word, start, end} timestamps in seconds); body.word_count; body.transcript_source (e.g. \"whisper_v3_turbo\"); body.duration_s; body.source/body.cached (cache flags); body.music and body.summary may be null",
+    "quirks": [
+      "MUST send the video URL in a JSON POST body as {\"url\":\"...\"} — the bazaar payment-required header advertises input as type:http with queryParams:{url}, but passing ?url=... as a query param returns HTTP 400 {\"error\":\"invalid json\"} AND STILL CHARGES (lost $0.05 on the query-param attempt).",
+      "Input is a PUBLIC short-form VIDEO URL (TikTok/YouTube/Shorts/Instagram Reels/Twitter-X/Twitch/Facebook, ~1000 platforms via yt-dlp), NOT an audio file URL.",
+      "Uses native platform captions when available (~2s) and falls back to Whisper-large-v3-turbo on extracted audio (~30s); known songs return LRCLIB synced lyrics instead.",
+      "Responses are cached: re-calling the same video URL returns source:\"cache\", cached:true (you still pay $0.05 per call)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://api.hookfindr.com/api/x402/transcribe with a JSON body {\"url\":\"<public video URL>\"} (Content-Type application/json) and pay the $0.05 x402 charge on Base. Do NOT pass the URL as a query parameter — that returns 400 invalid json yet still charges you. The url must be a public short-form video link (TikTok, YouTube, Shorts, Instagram Reels, X, Twitch, Facebook, etc.). Read the transcript from body.text and per-word timestamps from body.words[] ({word,start,end} in seconds); transcript_source tells you whether native captions or Whisper was used. Synchronous — the full result is in the paid response, no polling.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hookfindr-transcribe#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    }
+  ]
+}

@@ -1,0 +1,579 @@
+[
+  {
+    "id": "elevenlabs-music-generate",
+    "kind": "api",
+    "name": "ElevenLabs Music Generate",
+    "aka": [
+      "elevenlabs-music-generate",
+      "music.generate"
+    ],
+    "provider": "Xona",
+    "providerId": "xona",
+    "description": "Generate a complete music track from a text prompt using ElevenLabs Music. Returns a remote MP3 URL on a CDN. Dynamic pricing of ~$1 per 120 seconds (max 3 min) on the Xona gateway; flat $0.50 on the Orthogonal gateway.",
+    "category": "media",
+    "subcategory": "music-generation",
+    "tags": [
+      "text-to-music",
+      "vocals",
+      "instrumental"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.083",
+      "amount": 0.083333,
+      "currency": "USD",
+      "unit": "per track"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Xona",
+        "providerId": "xona",
+        "url": "https://api.xona-agent.com/base-main/audio/elevenlabs-music",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.083333,
+          "currency": "USD",
+          "unit": "per track",
+          "display": "$0.083",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "250000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x515e7Bce44Baa5F6e42D16d4B5f27768E7f2F8cC",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "decimals": 6,
+                "eip712": {
+                  "name": "USD Coin",
+                  "version": "2"
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:12.059Z"
+        },
+        "status": "active",
+        "team": "Xona"
+      },
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/elevenlabs/v1/music",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.5,
+          "currency": "USD",
+          "unit": "per track",
+          "display": "$0.500",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "500000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x89F5baA2CAA63FdC008bAF5C6E713E89A225E84f",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:12.059Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://api.xona-agent.com/base-main/audio/elevenlabs-music with JSON body {prompt (required), music_length_ms?, output_format?, force_instrumental?}. prompt is the only required field.",
+      "inputExample": {
+        "prompt": "a short upbeat acoustic guitar loop",
+        "music_length_ms": 10000,
+        "force_instrumental": true
+      },
+      "outputShape": "body.music_url (remote MP3 URL on DigitalOcean Spaces CDN), body.duration_seconds, body.metadata.model, body.metadata.output_format, body.metadata.music_length_ms, body.metadata.generatedAt, body.metadata.cdn_key",
+      "quirks": [
+        "Same operation via two gateways: Xona (default, dynamic ~$1/120s, max 180000ms) and Orthogonal (flat $0.50). Xona is ~6x cheaper for short clips.",
+        "Dynamic pricing on Xona: real charge scales with music_length_ms (10000ms = $0.0833 observed). Set --cap accordingly for longer tracks; max 180000ms (3 min) would cost ~$1.50.",
+        "Body field is 'prompt' (required, only required field). Optional on Xona: music_length_ms (1000-180000), output_format (e.g. mp3_standard), force_instrumental (bool).",
+        "Output is a remote MP3 URL (body.music_url) on a DigitalOcean Spaces CDN, NOT inline audio bytes — fetch the URL to download the track.",
+        "Xona uses x402 v2 on Base (eip155:8453); maxTimeoutSeconds 1200 (generation can take a while — allow a long client timeout).",
+        "Orthogonal gateway (x402.orth.sh) supports the same op plus extra fields: lyrics_text, composition_plan (object), model_id, seed; output_format is passed as a query param there. Not verified with a paid call (documented from probe).",
+        "x402 settlement can fail transiently on-chain ('settle_exact_failed_onchain') returning a 402 with costUsd 0 (no money lost) — retry once."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Generate a complete music track from a text prompt using ElevenLabs Music. Returns a remote MP3 URL on a CDN. Dynamic pricing of ~$1 per 120 seconds (max 3 min) on the Xona gateway; flat $0.50 on the Orthogonal gateway. POST https://api.xona-agent.com/base-main/audio/elevenlabs-music with JSON body {prompt (required), music_length_ms?, output_format?, force_instrumental?}. prompt is the only required field. Output: body.music_url (remote MP3 URL on DigitalOcean Spaces CDN), body.duration_seconds, body.metadata.model, body.metadata.output_format, body.metadata.music_length_ms, body.metadata.generatedAt, body.metadata.cdn_key",
+      "costObservedUsd": 0.083333
+    },
+    "source": {
+      "serviceKey": "elevenlabs-music-generate",
+      "discoveredVia": [
+        "music generation",
+        "ai music",
+        "text to music",
+        "suno",
+        "song generation",
+        "stable audio",
+        "riffusion"
+      ],
+      "lastSyncedAt": "2026-06-02T02:26:12.059Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "gg402-music-generator",
+    "kind": "model",
+    "name": "gg402 Music Generator",
+    "aka": [],
+    "provider": "gg402",
+    "providerId": "gg402",
+    "description": "gg402 — text-to-music composition.",
+    "category": "media",
+    "subcategory": "music-generation",
+    "tags": [
+      "text-to-music"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per track"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "gg402.vercel",
+        "providerId": "gg402-vercel",
+        "url": "https://gg402.vercel.app/compose_music",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Vercel",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per track",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x9257cD24721e3c06E9F7655b77C283bCD9652132",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:12.059Z"
+        },
+        "status": "needs-review",
+        "team": "gg402"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://gg402.vercel.app/compose_music with JSON body {theme, genre}",
+      "inputExample": {
+        "theme": "sunrise over the ocean",
+        "genre": "ambient"
+      },
+      "outputShape": "body.lyrics[] (array of strings), body.chords (string), body.melody_description (string), body.processedAt",
+      "quirks": [
+        "inputSchema is empty in the registry — required body is {theme, genre}, BOTH plain strings. Do NOT use 'prompt' or 'text' (returns 400 'Validation failed').",
+        "Sending the wrong field names still 400s AFTER payment — you pay even on a validation failure. Send {theme, genre} on the first try.",
+        "Output is a TEXT music composition (lyrics, chord progression, prose melody_description) — NOT an audio file/URL. There is no MP3/WAV.",
+        "Sync response; no job id / polling."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call POST https://gg402.vercel.app/compose_music with a JSON body containing exactly two string fields: theme (the mood/subject) and genre (the musical style). Pay $0.01 USDC on Base via x402. The 200 response is synchronous JSON describing a composition: read body.lyrics (array of lines), body.chords (chord progression string), and body.melody_description (prose). Note this is a textual composition, not playable audio. Avoid 'prompt'/'text' field names — they cause a paid 400.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "gg402-music-generator",
+      "discoveredVia": [
+        "music generation",
+        "ai music",
+        "text to music",
+        "suno",
+        "song generation",
+        "stable audio",
+        "riffusion"
+      ],
+      "lastSyncedAt": "2026-06-02T02:26:12.059Z",
+      "hosting": "platform"
+    },
+    "status": "active"
+  },
+  {
+    "id": "suede-ai",
+    "kind": "model",
+    "name": "Suede AI",
+    "aka": [],
+    "provider": "Suede AI",
+    "providerId": "suede-ai",
+    "description": "Suede AI — generate an original, rights-aware music track from a text prompt (genre, mood, instruments). Supports custom lyrics, instrumental-only, vocal gender, and 5–120s duration; returns a shareable audio URL with on-chain provenance/licensing. Pay-per-call x402 (USDC on Base).",
+    "category": "media",
+    "subcategory": "music-generation",
+    "tags": [
+      "text-to-music",
+      "song",
+      "vocals",
+      "instrumental",
+      "licensing"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.200",
+      "amount": 0.2,
+      "currency": "USD",
+      "unit": "per track"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Suede AI",
+        "providerId": "suede-ai",
+        "url": "https://app.suedeai.xyz/create-music",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.2,
+          "currency": "USD",
+          "unit": "per track",
+          "display": "$0.200",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "200000",
+              "payTo": "0xb5a05466712fd5bcdf2883f43cC6B1799428032d",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "decimals": 6
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "prompt"
+          ],
+          "properties": {
+            "prompt": {
+              "type": "string"
+            },
+            "durationSeconds": {
+              "type": "integer",
+              "minimum": 5,
+              "maximum": 120
+            },
+            "style": {
+              "type": "string"
+            },
+            "custom_mode": {
+              "type": "boolean"
+            },
+            "lyrics": {
+              "type": "string"
+            },
+            "make_instrumental": {
+              "type": "boolean"
+            },
+            "vocal_gender": {
+              "type": "string",
+              "enum": [
+                "m",
+                "f"
+              ]
+            }
+          }
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:12.059Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://app.suedeai.xyz/create-music with JSON body {prompt, durationSeconds?, style?, custom_mode?, lyrics?, make_instrumental?, vocal_gender?}",
+      "inputExample": {
+        "prompt": "a short upbeat acoustic guitar loop",
+        "durationSeconds": 5,
+        "make_instrumental": true
+      },
+      "outputShape": "body.shareUrl (shareable HTML page with playable track), body.songId, body.title, body.imageUrl (cover art), body.duration, body.modelVersion. body.trackUrl is the direct audio URL but is null in the immediate response.",
+      "quirks": [
+        "Sync 200 response but body.trackUrl is null at call time — the direct audio URL is not ready immediately; the track finishes generating async. Use body.shareUrl (an HTML page, returns 200) or re-fetch by body.songId to get the listenable audio.",
+        "shareUrl host is app.suedeai.ai (.ai) while the API call host is app.suedeai.xyz (.xyz) — different TLD.",
+        "durationSeconds is not strictly honored: requesting 5 returned duration 161.",
+        "Only 'prompt' is required; make_instrumental:true skips vocals."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://app.suedeai.xyz/create-music with a JSON body containing at minimum {\"prompt\":\"...\"} (pays $0.20 USDC on Base via x402, no API key). Optional fields: durationSeconds (5-120, loosely honored), style, custom_mode, lyrics, make_instrumental (bool), vocal_gender (\"m\"|\"f\"). The 200 response is JSON with title, cover imageUrl, songId, and shareUrl, but trackUrl is null because the audio finishes rendering asynchronously — give the user body.shareUrl (a 200 HTML player page) or use body.songId to fetch the final track rather than relying on trackUrl.",
+      "costObservedUsd": 0.2
+    },
+    "source": {
+      "serviceKey": "suede-ai",
+      "discoveredVia": [
+        "music generation",
+        "ai music",
+        "text to music",
+        "suno",
+        "song generation",
+        "stable audio",
+        "riffusion"
+      ],
+      "lastSyncedAt": "2026-06-02T02:26:12.059Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "music-generation",
+    "kind": "api",
+    "name": "Music Generation",
+    "aka": [
+      "audio-generations"
+    ],
+    "provider": "BlockRun",
+    "providerId": "blockrun",
+    "description": "Generate music tracks with Minimax Music 2.5 / 2.5+. Provide a text prompt describing the song; optionally supply lyrics or set instrumental=true. Price scales with duration.",
+    "category": "media",
+    "subcategory": "music-generation",
+    "tags": [
+      "music",
+      "audio"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per track"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/audio/generations",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per track",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "157500",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:12.059Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-24",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://blockrun.ai/api/v1/audio/generations with {prompt} (required); optional model/lyrics/instrumental/duration_seconds → returns a generated music track ({url, duration_seconds, lyrics}).",
+      "inputExample": {
+        "model": "minimax/music-2.5+",
+        "prompt": "upbeat electronic instrumental",
+        "instrumental": true,
+        "duration_seconds": 30
+      },
+      "quirks": [
+        "Pay-tested live 2026-06-24 ($0.1575).",
+        "Dynamic pricing: x-payment-info min $0.02 / max $0.84, scales with duration; a 30s instrumental probe was quoted $0.157500 (157500 atomic USDC).",
+        "duration_seconds is only a hint — MiniMax always produces a full-length ~3-min track regardless of the value passed.",
+        "Only one model accepted: 'minimax/music-2.5+'. Passing any other model value returns HTTP 400 'Unknown audio model' (this is a validation 400, not a charge).",
+        "Sync contract per the live note: generation takes ~1-3 minutes and the response carries the track URL directly — no job id to poll (maxTimeoutSeconds 300 covers the wait).",
+        "Payment: USDC on Base (eip155:8453), asset 0x8335...2913, payTo 0xe903...1aBf, scheme exact, x402 v2."
+      ]
+    },
+    "source": {
+      "serviceKey": "music-generation",
+      "discoveredVia": [
+        "music generation",
+        "ai music",
+        "text to music",
+        "suno",
+        "song generation",
+        "stable audio",
+        "riffusion"
+      ],
+      "lastSyncedAt": "2026-06-02T02:26:12.059Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

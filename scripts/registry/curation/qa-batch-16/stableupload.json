@@ -1,0 +1,48 @@
+{
+  "serviceId": "stableupload",
+  "subcat": "object-file-storage",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableupload.dev/api/upload",
+      "method": "POST",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableupload.dev/api/upload with JSON body {filename, contentType, tier}. Returns a presigned S3 upload form; you then upload the actual file bytes to S3 in a separate request.",
+    "inputExample": {
+      "filename": "hello.txt",
+      "contentType": "text/plain",
+      "tier": "short-10mb"
+    },
+    "outputShape": "body.publicUrl (permanent download URL once file is uploaded). Upload mechanics: body.uploadMethod (\"post\"|\"put\"), body.postUrl + body.postFields (S3 multipart fields) for POST, or body.uploadUrl for PUT. body.curlExample is a ready-to-run upload command. body.uploadId, body.expiresAt, body.maxSize, body.uploadUrlExpiresAt also returned.",
+    "quirks": [
+      "TWO-STEP FLOW: this endpoint does NOT accept file bytes. POST /api/upload only ISSUES a presigned S3 form; you must perform a SECOND request to actually upload the file. For uploadMethod=='post', POST the file to body.postUrl as multipart/form-data including every key/value in body.postFields PLUS a 'file' field with the bytes (body.curlExample shows the exact fields). For uploadMethod=='put', PUT the bytes to body.uploadUrl.",
+      "PRICE IS TIER-DEPENDENT, not flat $2. Registry $2 surface = '1gb' tier. Cheaper tiers: 10mb=$0.02, 100mb=$0.20, short-10mb=$0.005, short-100mb=$0.02, short-1gb=$0.10, short-5gb=$0.50. 'tier' is required; pick the smallest that fits your file to minimize cost. (Tested with short-10mb = $0.005.)",
+      "Presigned upload form expires quickly (uploadUrlExpiresAt ~15 min); upload the file promptly. publicUrl/download expires at body.expiresAt (7 days for short-* tiers, 6 months for default tiers).",
+      "publicUrl returns the file only AFTER the second-step S3 upload succeeds; it 404s before that.",
+      "txHash field in the response was null on this call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://stableupload.dev/api/upload with JSON {filename, contentType, tier} where tier is the smallest that fits the file (e.g. short-10mb for <10MB, ~$0.005). The response is a presigned S3 upload ticket, NOT a confirmation that the file is stored. Second step: actually upload the bytes — if uploadMethod is \"post\", send a multipart/form-data POST to postUrl including all postFields plus a \"file\" part (body.curlExample is the exact command); if \"put\", PUT the bytes to uploadUrl. After that succeeds, the file is permanently downloadable at body.publicUrl until body.expiresAt. No auth/API key required; payment is per call via x402.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableupload#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    }
+  ]
+}

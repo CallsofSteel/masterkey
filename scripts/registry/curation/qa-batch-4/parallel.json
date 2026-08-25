@@ -1,0 +1,51 @@
+{
+  "serviceId": "parallel",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/parallel/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/parallel/chat/completions with JSON body {model, messages[]}",
+    "inputExample": {
+      "model": "speed",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); body.basis[] (research citations, may be empty); body.model, body.id",
+    "quirks": [
+      "OpenAI ChatCompletions-compatible response shape.",
+      "Models: 'speed' (low latency) through research-grade 'lite'/'base'/'core'; 'speed' worked. Pick 'base'/'core' for full web-research basis.",
+      "body.usage was null in the response.",
+      "Supports response_format for JSON output and stream:true per inputSchema."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/parallel/chat/completions with a JSON body {\"model\":\"speed\",\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]} and pay the $0.01 x402 charge (USDC on Base). It returns an OpenAI ChatCompletions JSON object; read the answer at body.choices[0].message.content. For web-research-grounded answers use a heavier model (base/core) and inspect body.basis[] for citations. You can request structured output via response_format. Plain synchronous call, no auth beyond x402.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "parallel#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "serviceId": "google-maps-stableenrich",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/text-search/full",
+      "method": "POST",
+      "amountUsd": 0.08
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/text-search/partial",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/solar/building-insights",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/solar/data-layers",
+      "method": "GET",
+      "amountUsd": 0.08
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/aerial-view/lookup-video",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/aerial-view/render-video",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stableenrich.dev/api/google-maps/solar/building-insights?latitude=<lat>&longitude=<lng>&requiredQuality=HIGH (x402, $0.02 USDC on Base)",
+    "inputExample": {
+      "latitude": 37.445,
+      "longitude": -122.139,
+      "requiredQuality": "HIGH"
+    },
+    "outputShape": "JSON object at body root (Google Solar API BuildingInsights): body.name, body.center.{latitude,longitude}, body.imageryDate.{year,month,day}, body.postalCode, body.administrativeArea, body.regionCode, body.solarPotential.{maxArrayPanelsCount, maxArrayAreaMeters2, maxSunshineHoursPerYear, carbonOffsetFactorKgPerMwh, wholeRoofStats, roofSegmentStats[], solarPanelConfigs[]}",
+    "quirks": [
+      "Registry 'url' for this endpoint is /api/google-maps/solar/building-insights (Google Solar API) — NOT place-details; the prior existingUsage describing placeId/place-details is for a different route and does not apply here.",
+      "Required query params: latitude (number -90..90), longitude (number -180..180), and requiredQuality (enum LOW/MEDIUM/HIGH, default HIGH). All passed as query params, not a body.",
+      "requiredQuality controls minimum solar imagery quality; HIGH may 404/empty for locations without high-quality Google Solar coverage — pick a covered urban location (tested Googleplex 37.4450,-122.1390).",
+      "Response is very large (~470KB) because solarPotential.solarPanelConfigs[] and roofSegmentStats[] enumerate every panel arrangement; expect heavy payloads."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stableenrich.dev/api/google-maps/solar/building-insights with query params latitude, longitude, and requiredQuality (use HIGH). Pay via x402 ($0.02 USDC on Base). The 200 JSON response is the Google Solar BuildingInsights object at the root: read body.solarPotential.maxArrayPanelsCount and maxSunshineHoursPerYear for solar capacity, body.solarPotential.wholeRoofStats.areaMeters2 for roof area, body.imageryDate for data freshness, and body.center for the matched building location. The payload is large (~470KB) due to per-config panel arrays. Use coordinates of a real building in an area with Google Solar coverage, or it may return no insights.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-maps-stableenrich#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.08
+    },
+    {
+      "key": "google-maps-stableenrich#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "google-maps-stableenrich#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "google-maps-stableenrich#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "google-maps-stableenrich#8",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "google-maps-stableenrich#9",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

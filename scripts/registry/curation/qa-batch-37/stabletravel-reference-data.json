@@ -1,0 +1,101 @@
+{
+  "serviceId": "stabletravel-reference-data",
+  "subcat": "flight-aviation",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/reference/locations",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/reference/airports",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/reference/airlines",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/reference/airline-routes",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/reference/airport-routes",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/reference/cities",
+      "method": "GET",
+      "amountUsd": 0.0054
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/reference/airport-routes?departureAirportCode=JFK&max=1",
+    "inputExample": {
+      "departureAirportCode": "JFK",
+      "max": 1
+    },
+    "outputShape": "body.data[] (array of destination locations; each .iataCode, .name, .subtype, .geoCode{latitude,longitude}, .address{countryName,countryCode}). body.meta.count = number of results.",
+    "quirks": [
+      "This backend (#4) is the airport-routes route, NOT the locations/keyword search. The registry-level inputExample {keyword,subType} does NOT apply to this URL.",
+      "Required query param is departureAirportCode (a 3-letter IATA airport code like JFK). Without it the call would fail.",
+      "Optional max param caps result count; use max=1 for a cheap minimal probe.",
+      "Returns Amadeus direct-destinations data; meta.links.self exposes the underlying api.amadeus.com URL."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stabletravel.dev/api/reference/airport-routes with query params departureAirportCode (required, IATA airport code e.g. JFK) and optional max (result cap). Pay with x402 USDC on Base (~$0.005 per call, synchronous). Read the result from body.data[] — each item is a reachable destination with iataCode, name, and geoCode. body.meta.count is the total returned.",
+    "costObservedUsd": 0.0054
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-reference-data#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-reference-data#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-reference-data#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-reference-data#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-reference-data#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-reference-data#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

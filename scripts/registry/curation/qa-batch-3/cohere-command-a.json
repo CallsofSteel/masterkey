@@ -1,0 +1,48 @@
+{
+  "serviceId": "cohere-command-a",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/command-a",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/command-a with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (string, the model reply); body.model; body.usage.total_tokens / body.usage.cost",
+    "quirks": [
+      "Reply text is at body.content (top level), NOT body.choices[0].message.content like OpenAI-style responses.",
+      "Model id in response is cohere/command-a-03-2025."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with a JSON body containing a messages array of {role, content} objects (OpenAI chat shape). Payment is x402 USDC on Base, ~$0.04 per call (varies with token usage). The model's reply text is returned directly at body.content as a plain string; token/cost metadata is at body.usage. Synchronous — the answer is in the immediate 200 response, no polling.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cohere-command-a#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.04
+    }
+  ]
+}

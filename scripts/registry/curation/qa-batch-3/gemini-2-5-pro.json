@@ -1,0 +1,50 @@
+{
+  "serviceId": "gemini-2-5-pro",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.008634
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model:\"google/gemini-2.5-pro\", messages:[{role,content}]}",
+    "inputExample": {
+      "model": "google/gemini-2.5-pro",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (string). Usage at body.usage.{prompt_tokens,completion_tokens,total_tokens}.",
+    "quirks": [
+      "Must set model to exactly \"google/gemini-2.5-pro\" (provider/model slug, not just \"gemini-2.5-pro\").",
+      "OpenAI-compatible chat completions schema; supports standard params (temperature, max_tokens, etc.).",
+      "Price varies by token usage; this hello call cost ~$0.0086 USDC on Base."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://blockrun.ai/api/v1/chat/completions over x402 (USDC on Base) with an OpenAI-style JSON body: set model to \"google/gemini-2.5-pro\" and pass a messages array of {role, content} objects. The response is a synchronous OpenAI-format chat.completion; read the assistant reply from body.choices[0].message.content. Cost is per-token (varies); a short prompt runs well under a cent. No API key or sign-in needed — payment alone authorizes the call.",
+    "costObservedUsd": 0.008634
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-2-5-pro#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

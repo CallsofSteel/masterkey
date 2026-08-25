@@ -1,0 +1,55 @@
+{
+  "serviceId": "grok-live-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://sol.blockrun.ai/api/v1/search",
+      "method": "POST",
+      "amountUsd": 0.078751
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/search",
+      "method": "POST",
+      "amountUsd": 0.2625
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/search with JSON body {\"query\":\"<search question string>\"}",
+    "inputExample": {
+      "query": "What is the latest news about AI today?"
+    },
+    "outputShape": "body.summary (markdown answer string with inline [n](url) citation links), body.citations[] (often empty), body.sources_used (int), body.model (e.g. \"xai/grok-3-mini\"), body.query (echo)",
+    "quirks": [
+      "Body field MUST be {\"query\":\"...\"} as a single string — NOT {\"messages\":[...]} or {\"text\":...}. Wrong shape returns a FREE 400 with a zod error 'expected string ... path: query'.",
+      "The actual answer is in body.summary as markdown with inline [n](url) citation links; body.citations[] was returned empty even with sources_used=10 — parse links out of summary if you need source URLs.",
+      "x402 payment on Base; observed cost $0.2625 per call (usage/token-dynamic, varies)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send POST https://blockrun.ai/api/v1/search with JSON body {\"query\":\"<your search question>\"} — payment is automatic via x402 (USDC on Base, ~$0.26/call, varies). Do not use a messages array; the only field is the single string \"query\", otherwise you get a free 400. Read the answer from body.summary (markdown with inline numbered citation links); use body.sources_used and body.model for metadata. body.citations[] may be empty, so extract source URLs from the summary text if needed.",
+    "costObservedUsd": 0.2625
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "grok-live-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.078751
+    },
+    {
+      "key": "grok-live-search#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2625
+    }
+  ]
+}

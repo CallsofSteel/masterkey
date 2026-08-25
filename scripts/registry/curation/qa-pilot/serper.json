@@ -1,0 +1,29 @@
+{
+  "serviceId": "serper",
+  "subcat": "serp-seo-apis",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/serper/search with JSON body {q, num?, gl?, hl?, tbs?, location?, safe?}",
+    "inputExample": {
+      "q": "x402 protocol payment",
+      "num": 3
+    },
+    "outputShape": "body.organic[].{title,link,snippet,position}; body.answerBox.{snippet,title,link}; body.peopleAlsoAsk[].{question,snippet}; body.relatedSearches[].query; body.searchParameters",
+    "quirks": [
+      "Multiple endpoint variants available on x402.orth.sh: /serper/search ($0.002), /serper/news ($0.002), /serper/images ($0.002), /serper/places ($0.002), /serper/autocomplete ($0.002), /serper/patents ($0.002), /serper/videos ($0.002), /serper/shopping ($0.004), /serper/maps ($0.006), /serper/lens ($0.006 — requires url param not q)",
+      "StableEnrich gateway at https://stableenrich.dev/api/serper/news is a separate news-only backend at $0.04/call (also accepts MPP) with defined outputSchema body.news[].{position,title,link,snippet,date,source,imageUrl}",
+      "answerBox and peopleAlsoAsk are present when Google returns them — not guaranteed for every query",
+      "body.credits shows 1 on success"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/serper/search with {q: string} as JSON body and x402 payment on Base; costs $0.002 USDC per call. The response contains body.organic[] for web results plus optional body.answerBox and body.peopleAlsoAsk. Use num (1-100) to control result count. For news results use /serper/news, for image search use /serper/images, for shopping use /serper/shopping ($0.004), for maps/places use /serper/maps ($0.006). The StableEnrich backend (https://stableenrich.dev/api/serper/news) is news-only but costs $0.04 and also accepts MPP.",
+    "costObservedUsd": 0.002
+  },
+  "drop": false,
+  "droppedReason": null
+}

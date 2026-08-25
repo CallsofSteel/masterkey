@@ -1,0 +1,47 @@
+{
+  "serviceId": "stableflare-screenshot",
+  "subcat": "screenshot-rendering",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableflare.dev/api/browser/screenshot",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableflare.dev/api/browser/screenshot with JSON body {url, screenshotOptions?:{type:\"png\"|\"jpeg\"}}",
+    "inputExample": {
+      "url": "https://example.com",
+      "screenshotOptions": {
+        "type": "png"
+      }
+    },
+    "outputShape": "body.data (base64-encoded image string), body.content_type (e.g. \"image/png\")",
+    "quirks": [
+      "Returns JSON (not a raw image): the image is base64 in body.data and the MIME type is in body.content_type. Decode body.data from base64 to get the PNG/JPEG bytes.",
+      "Either url OR html may be provided; url renders a live page, html renders supplied markup.",
+      "Rich Puppeteer-style options available: fullPage/clip via screenshotOptions, viewport, waitForSelector, gotoOptions.waitUntil, selector (element screenshot), cookies, authenticate, setExtraHTTPHeaders."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send POST to https://stableflare.dev/api/browser/screenshot with a JSON body containing at minimum {\"url\":\"<page to capture>\"}; payment is handled via x402 (USDC on Base, ~$0.05/call). Optionally set screenshotOptions.type to \"png\" or \"jpeg\", screenshotOptions.fullPage:true for the whole page, or viewport/waitForSelector to control rendering. The response is JSON: read body.content_type for the MIME type and base64-decode body.data to obtain the image bytes. Verified by capturing https://example.com which returned a valid 22KB PNG.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableflare-screenshot#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

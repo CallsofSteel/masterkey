@@ -1,0 +1,56 @@
+{
+  "serviceId": "ip-geolocation",
+  "subcat": "ip-geolocation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://padelmaps.org/api/x402-tools/ip/lookup",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.x402node.dev/maps/ip",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/maps/ip?ip={ipv4_or_ipv6} (IP as query param, no request body)",
+    "inputExample": {
+      "ip": "8.8.8.8"
+    },
+    "outputShape": "Flat top-level body: body.ip, body.country, body.country_code, body.region, body.region_code, body.city, body.postal, body.lat, body.lng, body.timezone, body.utc_offset, body.org, body.asn, body.currency",
+    "quirks": [
+      "Method is GET, NOT POST — despite the registry CALL surface showing 'POST https://api.x402node.dev/maps/ip', the working call is GET with the IP as a ?ip= query parameter and no request body",
+      "Output is FLAT at top level (body.lat, body.lng, body.postal, body.org, body.asn) — this differs from the ipstack-shaped auor.io backend in prior existingUsage (which used body.country_name/body.latitude). For THIS x402node.dev endpoint read body.country, body.region, body.city, body.lat, body.lng, body.postal directly",
+      "Response includes network metadata: body.org (e.g. 'Google LLC'), body.asn (e.g. 'AS15169'), and body.currency",
+      "Observed cost was $0.005 (not the $0.001 priceAmount in the registry); price 'Varies'"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/maps/ip?ip=8.8.8.8 (substitute any IPv4/IPv6) via x402 on Base, ~$0.005 USDC per call. Pass the IP as the ?ip= query parameter — there is NO request body and do NOT use POST despite what the registry CALL line says. No auth/sign-in. Read the geolocation result directly off the top-level body: body.city, body.region, body.country, body.lat, body.lng, body.postal, plus network info body.org and body.asn. Plain synchronous response, no polling.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ip-geolocation#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "ip-geolocation#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

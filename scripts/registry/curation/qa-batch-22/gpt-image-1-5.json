@@ -1,0 +1,57 @@
+{
+  "serviceId": "gpt-image-1-5",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.imgzen.dev/v1/models/gpt-image-1.5/generate",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablestudio.dev/api/generate/gpt-image-1.5/generate",
+      "method": "POST",
+      "amountUsd": 0.13
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablestudio.dev/api/generate/gpt-image-1.5/generate with JSON body {prompt} (optional: size, quality, background, output_format, output_compression, moderation). Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth until status=complete.",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST returns body.jobId + body.status=\"pending\". Poll body.status (pending|loading|complete) and body.progress; final image URL at body.result.imageUrl.",
+    "quirks": [
+      "Registry surface price is $10.00 but the actual x402 quote/charge was only $0.13 USDC on Base.",
+      "Async two-step: POST /generate returns {success, jobId, status:'pending'} and does NOT return the image.",
+      "Poll the status at GET https://stablestudio.dev/api/jobs/{jobId} — this endpoint is SIWX-gated (returns 402 'SIWX authentication required' without a wallet identity), but polling itself is FREE (no payment).",
+      "Status progresses pending -> loading (progress 10..70) -> complete (progress 100); completed in ~60s in test.",
+      "Final image is at body.result.imageUrl (a Vercel blob storage URL), NOT in the POST response.",
+      "Status URL path is /api/jobs/{jobId}, not /api/generate/.../status."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://stablestudio.dev/api/generate/gpt-image-1.5/generate with JSON {\"prompt\":\"...\"} (pay x402 USDC on Base; observed cost ~$0.13 despite the $10 registry display). You get back {success, jobId, status:\"pending\"}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} using SIWX wallet auth (free) every several seconds until body.status === \"complete\". Read the finished image URL from body.result.imageUrl. Status can be pending/loading along the way with body.progress 0-100.",
+    "costObservedUsd": 0.13
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-image-1-5#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "gpt-image-1-5#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.13
+    }
+  ]
+}

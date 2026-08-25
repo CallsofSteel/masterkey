@@ -1,0 +1,972 @@
+{
+  "subcategory": "product-analytics",
+  "category": "analytics-bi",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Real x402 product/retail-data analytics (CPG price & shelf intelligence). No Mixpanel/Amplitude-style usage analytics exist in x402. DROPPED/routed: orbisapi/x402helper farms, agentwonderland copy/retail-watch #10-15 -> data-enrichment/content, Brand.dev/Context.dev products #8/#16 -> data-enrichment, scout product-hunt #7 -> search, seerium polymarket #32 -> crypto, siliq encrypted-stats #33 -> infra.",
+  "entries": [
+    {
+      "name": "CrushRewards Promo Intelligence",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-promo-intelligence",
+        "promo-intelligence"
+      ],
+      "description": "Analyze promotional activity within a product category, ranking brands (or retailers) by promo frequency and discount depth over a date window.",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/marketing/promo-intelligence",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "6xsVHFpktFPwGx7cZwWvpLRFWXTHrWLEUjhXZgsRBSxh",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "6xsVHFpktFPwGx7cZwWvpLRFWXTHrWLEUjhXZgsRBSxh",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/marketing/promo-intelligence?category=electronics&country=us — params in query string, NOT JSON body. Required: category (fuzzy text, e.g. 'electronics'). Optional: country (us|ca, default us), brand (filter to one brand), aggregate_by (brand|retailer, default brand), from/to (ISO dates, default last 30 days).",
+        "inputExample": {
+          "category": "electronics",
+          "country": "us"
+        },
+        "outputShape": "category, country, currency, brand, aggregate_by, brands[].{brand,total_observations,promo_observations,promo_frequency_pct,avg_promo_depth_pct,max_promo_depth_pct} (when aggregate_by=retailer, key is retailers[] instead)",
+        "quirks": [
+          "GET endpoint: pass inputs as URL query params, NOT a JSON request body (OpenAPI shows a requestBody object but it maps to query params).",
+          "agentcash MCP fetch returns a bare 402 on this GET endpoint (does not complete x402); use qa-pay.mjs or another GET-capable x402 client.",
+          "category is fuzzy-resolved (tier 1-4: id->exact->trigram->embedding kNN). To pin a deterministic category, pass category_id from a prior call's resolved.category_id (not on this endpoint's schema but consistent with sibling endpoints).",
+          "Output can be very large (~75KB for 'electronics') because every distinct brand string is listed, including dirty/duplicate brand variants (e.g. '3dmakerpro','3DMakerpro','3D MakerPro' as separate rows). Filter or set brand= to narrow.",
+          "aggregate_by=retailer pairs with brand= to answer 'which retailers run deepest promos on Brand X'."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Analyze promotional activity within a product category, ranking brands (or retailers) by promo frequency and discount depth over a date window. GET https://api.crushrewards.dev/v1/marketing/promo-intelligence?category=electronics&country=us — params in query string, NOT JSON body. Required: category (fuzzy text, e.g. 'electronics'). Optional: country (us|ca, default us), brand (filter to one brand), aggregate_by (brand|retailer, default brand), from/to (ISO dates, default last 30 days). Output: category, country, currency, brand, aggregate_by, brands[].{brand,total_observations,promo_observations,promo_frequency_pct,avg_promo_depth_pct,max_promo_depth_pct} (when aggregate_by=retailer, key is retailers[] instead)",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "CrushRewards Brand Tracker",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-brand-tracker",
+        "brand-tracker"
+      ],
+      "description": "Daily time-series of a brand's pricing and shelf presence (avg/min/max price, product count, in-stock count, promo count) over a date window.",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/marketing/brand-tracker",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "HH8qXrw4e4WYi575Gun5B66cveCb8rPLPfN12X2HLWkt",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "HH8qXrw4e4WYi575Gun5B66cveCb8rPLPfN12X2HLWkt",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/marketing/brand-tracker?brand=Apple&country=us — params in query string. Required: brand (e.g. 'Apple','Sony','Nike'). Optional: country (us|ca, default us), from/to (ISO dates, default last 30 days).",
+        "inputExample": {
+          "brand": "Apple",
+          "country": "us"
+        },
+        "outputShape": "brand, country, currency, time_series[].{date,avg_price,min_price,max_price,product_count,in_stock_count,promo_count}",
+        "quirks": [
+          "GET endpoint: query-string params, not JSON body.",
+          "agentcash MCP fetch returns bare 402; use qa-pay.mjs.",
+          "Brand matching is loose/substring-ish: querying brand=Apple returned products with min_price as low as $2.75 and $15 — likely non-Apple items matching 'apple' (e.g. 'Apple Barrel' paint). Treat the brand filter as fuzzy, not exact.",
+          "time_series is keyed by date; expect sparse/uneven daily coverage."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Daily time-series of a brand's pricing and shelf presence (avg/min/max price, product count, in-stock count, promo count) over a date window. GET https://api.crushrewards.dev/v1/marketing/brand-tracker?brand=Apple&country=us — params in query string. Required: brand (e.g. 'Apple','Sony','Nike'). Optional: country (us|ca, default us), from/to (ISO dates, default last 30 days). Output: brand, country, currency, time_series[].{date,avg_price,min_price,max_price,product_count,in_stock_count,promo_count}",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "CrushRewards Share of Shelf",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-share-of-shelf",
+        "share-of-shelf"
+      ],
+      "description": "Brand market share within a category by product count — ranks brands and gives each brand's share_pct of total listed products.",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/marketing/share-of-shelf",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "HH8qXrw4e4WYi575Gun5B66cveCb8rPLPfN12X2HLWkt",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "HH8qXrw4e4WYi575Gun5B66cveCb8rPLPfN12X2HLWkt",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/marketing/share-of-shelf?category=electronics&country=us — params in query string. Required: category (fuzzy text). Optional: category_id (integer, bypasses fuzzy resolver), country (us|ca, default us).",
+        "inputExample": {
+          "category": "electronics",
+          "country": "us"
+        },
+        "outputShape": "category, country, currency, total_products, brands[].{brand,product_count,share_pct}",
+        "quirks": [
+          "GET endpoint: query-string params, not JSON body.",
+          "agentcash MCP fetch returns bare 402; use qa-pay.mjs.",
+          "category is fuzzy-resolved; pass category_id (integer) to pin a deterministic category and bypass the resolver cascade.",
+          "Large output (~48KB) — lists every brand with a presence in the category, including dirty brand strings (e.g. 'Apple Barrel','Lukyamzn'). total_products reflects the full category (e.g. 4424 for electronics)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Brand market share within a category by product count — ranks brands and gives each brand's share_pct of total listed products. GET https://api.crushrewards.dev/v1/marketing/share-of-shelf?category=electronics&country=us — params in query string. Required: category (fuzzy text). Optional: category_id (integer, bypasses fuzzy resolver), country (us|ca, default us). Output: category, country, currency, total_products, brands[].{brand,product_count,share_pct}",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "CrushRewards Price History",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-price-history",
+        "price-history"
+      ],
+      "description": "Price history over time for a product matched by free-text search, with period low/high/avg, trend, and per-date observations.",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/shopper/price-history",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "2afMbkcbX8Tk4sqSmVZBQKoj3hKEAiWet5B7nNhX36PC",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "2afMbkcbX8Tk4sqSmVZBQKoj3hKEAiWet5B7nNhX36PC",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/shopper/price-history?q=airpods&country=us — params in query string. Required: q (free-text product/keyword). Optional: country (us|ca, default us), retailer (one of amazon|walmart|costco|homedepot|nordstrom|ikea), from/to (ISO dates, default last 30 days).",
+        "inputExample": {
+          "q": "airpods",
+          "country": "us"
+        },
+        "outputShape": "query, country, currency, product_name, retailer, condition, current_price, period_low, period_high, period_avg, is_good_deal, trend, insufficient_history, observation_count, observations[].{date,price}",
+        "quirks": [
+          "GET endpoint: query-string params, not JSON body. Note the search param is 'q' (free text), unlike the marketing/analyst endpoints which use 'category'/'brand'.",
+          "agentcash MCP fetch returns bare 402; use qa-pay.mjs.",
+          "Returns ONE best-matched product, not a list — q='airpods' resolved to 'Apple - AirPods Max 2 (USB-C) - Midnight' at retailer 'bestbuy' (retailer here can be a value outside the documented retailer enum filter).",
+          "When data is thin, insufficient_history:true and trend/is_good_deal are null with observation_count low (e.g. 1).",
+          "The retailer query-param enum (amazon|walmart|costco|homedepot|nordstrom|ikea) does not include bestbuy even though responses can be served from bestbuy."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Price history over time for a product matched by free-text search, with period low/high/avg, trend, and per-date observations. GET https://api.crushrewards.dev/v1/shopper/price-history?q=airpods&country=us — params in query string. Required: q (free-text product/keyword). Optional: country (us|ca, default us), retailer (one of amazon|walmart|costco|homedepot|nordstrom|ikea), from/to (ISO dates, default last 30 days). Output: query, country, currency, product_name, retailer, condition, current_price, period_low, period_high, period_avg, is_good_deal, trend, insufficient_history, observation_count, observations[].{date,price}",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "CrushRewards Price Dispersion",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-price-dispersion",
+        "price-dispersion"
+      ],
+      "description": "Price spread statistics within a category/department: avg, min, max, std dev, coefficient of variation, and p10-p90 percentiles (outliers excluded).",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/analyst/price-dispersion",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "J39eRx89h6p2KpongeieCN8Yc7jeFs7aRuUjPCY2JuMq",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "J39eRx89h6p2KpongeieCN8Yc7jeFs7aRuUjPCY2JuMq",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/analyst/price-dispersion?category=electronics&country=us — params in query string. All params optional but supply at least one of category or department. Optional: category (fuzzy text), category_id (integer, deterministic), department (depth-1 Title Case label e.g. 'Electronics', exact case-sensitive match), country (us|ca, default us).",
+        "inputExample": {
+          "category": "electronics",
+          "country": "us"
+        },
+        "outputShape": "category, country, currency, avg_price, min_price, max_price, std_dev, coeff_of_variation, percentiles.{p10,p25,p50,p75,p90}, product_count, outliers_excluded, resolved.{category_id,category_path,match_source,match_confidence,alternates[]}, meta.{served_from,freshness_seconds,schema_version}",
+        "quirks": [
+          "GET endpoint: query-string params, not JSON body. Price tier $0.02 (analyst group), higher than the $0.01 marketing/shopper endpoints.",
+          "agentcash MCP fetch returns bare 402; use qa-pay.mjs.",
+          "No single param is strictly required by schema, but you must supply category, category_id, OR department to get meaningful data.",
+          "department is EXACT-match and case-sensitive Title Case (e.g. 'Electronics','Toys & Games') — distinct from the fuzzy 'category'.",
+          "Response includes a 'resolved' block (category_id as a STRING e.g. '3429', match_source, match_confidence) — reuse resolved.category_id as category_id for round-trip stability.",
+          "Served from materialized view (meta.served_from='mv'); freshness_seconds can be large (~1.8M s ≈ 21 days)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Price spread statistics within a category/department: avg, min, max, std dev, coefficient of variation, and p10-p90 percentiles (outliers excluded). GET https://api.crushrewards.dev/v1/analyst/price-dispersion?category=electronics&country=us — params in query string. All params optional but supply at least one of category or department. Optional: category (fuzzy text), category_id (integer, deterministic), department (depth-1 Title Case label e.g. 'Electronics', exact case-sensitive match), country (us|ca, default us). Output: category, country, currency, avg_price, min_price, max_price, std_dev, coeff_of_variation, percentiles.{p10,p25,p50,p75,p90}, product_count, outliers_excluded, resolved.{category_id,category_path,match_source,match_confidence,alternates[]}, meta.{served_from,freshness_seconds,schema_version}",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "CrushRewards Category Summary",
+      "kind": "api",
+      "provider": "crushrewards",
+      "providerId": "crushrewards",
+      "aka": [
+        "crushrewards-category-summary",
+        "category-summary"
+      ],
+      "description": "Snapshot of a category: product/brand/retailer counts, pricing (avg/min/max/median), avg rating, promo rate, in-stock rate, and top brands by product count.",
+      "tags": [
+        "product-analytics",
+        "retail",
+        "cpg",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.crushrewards.dev/v1/analyst/category-summary",
+          "method": "GET",
+          "provider": "crushrewards",
+          "providerId": "crushrewards",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "J39eRx89h6p2KpongeieCN8Yc7jeFs7aRuUjPCY2JuMq",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2hYY7wHhXsoWnskQRzYFUNH7YboXNMEqbGnAFHpRuB2W",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "J39eRx89h6p2KpongeieCN8Yc7jeFs7aRuUjPCY2JuMq",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe2e662cF219025AFC0C9Bf850b6a2B0a0b5517fe",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453,
+                "verifyingContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.crushrewards.dev/v1/analyst/category-summary?category=electronics&country=us — params in query string. All optional but supply at least one of category/category_id/department. Optional: category (fuzzy text), category_id (integer, deterministic), department (depth-1 Title Case exact match), country (us|ca, default us).",
+        "inputExample": {
+          "category": "electronics",
+          "country": "us"
+        },
+        "outputShape": "category, country, currency, product_count, brand_count, retailer_count, pricing.{avg,min,max,median}, avg_rating, promo_rate_pct, in_stock_rate_pct, top_brands[].{brand,product_count}, resolved.{category_id,category_path,match_source,match_confidence,alternates[]}, meta.{served_from,freshness_seconds,schema_version}",
+        "quirks": [
+          "GET endpoint: query-string params, not JSON body. Price tier $0.02 (analyst group).",
+          "agentcash MCP fetch returns bare 402; use qa-pay.mjs.",
+          "No strictly-required param by schema, but supply category, category_id, OR department for useful results.",
+          "department is EXACT-match case-sensitive Title Case; category is fuzzy.",
+          "Includes 'resolved' block (category_id returned as a string) — reuse as category_id to pin. Served from materialized view (meta.served_from='mv') with large freshness_seconds (~21 days)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Snapshot of a category: product/brand/retailer counts, pricing (avg/min/max/median), avg rating, promo rate, in-stock rate, and top brands by product count. GET https://api.crushrewards.dev/v1/analyst/category-summary?category=electronics&country=us — params in query string. All optional but supply at least one of category/category_id/department. Optional: category (fuzzy text), category_id (integer, deterministic), department (depth-1 Title Case exact match), country (us|ca, default us). Output: category, country, currency, product_count, brand_count, retailer_count, pricing.{avg,min,max,median}, avg_rating, promo_rate_pct, in_stock_rate_pct, top_brands[].{brand,product_count}, resolved.{category_id,category_path,match_source,match_confidence,alternates[]}, meta.{served_from,freshness_seconds,schema_version}",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "Syntalic Pricing Intelligence",
+      "provider": "Syntalic",
+      "providerId": "syntalic",
+      "description": "Pricing intelligence API — competitive price tracking and analysis across products. Pay-per-call x402.",
+      "tags": [
+        "product-analytics",
+        "pricing-intelligence",
+        "competitive-intel"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        19
+      ],
+      "resolved": {
+        "19": {
+          "amount": 0.01,
+          "method": "GET"
+        }
+      },
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.syntalic.com/v1/marketing/promo-intelligence?category=electronics (required query param: category; optional: country=us|ca, brand, aggregate_by=brand|retailer, from, to as ISO dates)",
+        "inputExample": {
+          "category": "electronics",
+          "country": "us",
+          "aggregate_by": "brand"
+        },
+        "outputShape": "untested — outputSchema is generic object; per service description, returns competitive promo/pricing analysis aggregated by brand (or retailer) for the category. Response is JSON (declared output type json).",
+        "quirks": [
+          "category is a REQUIRED query-string param (not a body) — GET request; omitting it 402s/422s.",
+          "category is fuzzy human-readable (e.g. electronics, grocery, beauty); resolver maps it to a canonical id via id->exact->trigram->embedding kNN.",
+          "Endpoint is x402-paid ($0.01). It returned a VALID, well-formed 402 challenge (Base eip155:8453 USDC accept with full EIP-712 extra, plus two Solana accepts).",
+          "COULD NOT COMPLETE PAYMENT via the qa-pay money-safe harness on 2 attempts: harness returned classification 'http-error', paid:false, costUsd:0, txHash:null — its payment flow did not engage on this challenge. No money was lost. This is a payer-side settlement gap, NOT a dead endpoint (no 404/5xx/refund).",
+          "Re-test required with a working x402 payer to confirm the paid 2xx body."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://api.syntalic.com/v1/marketing/promo-intelligence with the required query param ?category=<human-readable category like electronics|grocery|beauty>. Optionally add country (us|ca, default us), brand, aggregate_by (brand default, or retailer), and from/to ISO dates. It is an x402-paid endpoint ($0.01 USDC, settles on Base or Solana). On success expect a JSON body of competitive promo/pricing analysis aggregated by brand (or retailer). NOTE: the QA harness received a valid 402 challenge but could not settle payment, so the paid response shape is unverified — a future agent with a working x402 client should be able to pay and read the JSON result directly.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "Channel3 Product Price History",
+      "provider": "Channel3",
+      "providerId": "channel3",
+      "description": "Historical price tracking for products in the Channel3 catalog. Pay-per-call x402.",
+      "tags": [
+        "product-analytics",
+        "pricing-intelligence",
+        "price-history"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        31
+      ],
+      "resolved": {
+        "31": {
+          "amount": 0.01,
+          "method": "GET"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stableproduct.dev/api/channel3/price-tracking/history?canonical_product_id={id}&days={1-30} (x402 paid, $0.01 USDC on Base)",
+        "inputExample": {
+          "canonical_product_id": "VN9WKnq",
+          "days": 30
+        },
+        "outputShape": "body.product_title; body.history[] (timestamp, price, currency); body.statistics (mean, std_dev, min_price, max_price, current_price, current_status, currency)",
+        "quirks": [
+          "Required query param canonical_product_id is an opaque Channel3 catalog id (e.g. 'VN9WKnq'), NOT a name or URL.",
+          "Obtain a valid canonical_product_id from the Channel3 image/product search endpoint (POST https://stableproduct.dev/api/channel3/image-search -> body.products[].id) before calling this.",
+          "The 402 payment gate fires BEFORE param validation: a call with a missing/invalid canonical_product_id still charges then fails, so always supply a real id.",
+          "Optional query params: days (integer 1-30) and include_raw (boolean)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://stableproduct.dev/api/channel3/price-tracking/history with a required canonical_product_id query param set to a real Channel3 catalog product id (get one from POST .../channel3/image-search, field body.products[].id). Optionally add days=1..30 and include_raw=true. It is x402-paid ($0.01 USDC on Base) and returns plain sync JSON. Read the price series from body.history[] (each {timestamp, price, currency}) and the summary from body.statistics.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Experiment Significance",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-experiment-significance",
+        "marketing-experiment",
+        "agentstools-marketing-experiment",
+        "ab-test-significance",
+        "two-proportion-z-test"
+      ],
+      "description": "Runs a pooled two-proportion z-test on A/B experiment data and returns observed lift, z-score, two-sided p-value, a confidence interval on the lift, the minimum detectable effect, required sample size, and a significance verdict — pure computation, not statistical advice.",
+      "tags": [
+        "ab-test",
+        "experiment",
+        "statistics",
+        "p-value",
+        "marketing"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/marketing/experiment",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T22:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "object",
+                "description": "Control arm — object with conversions and visitors. REQUIRED."
+              },
+              "b": {
+                "type": "object",
+                "description": "Variant arm — object with conversions and visitors. REQUIRED."
+              },
+              "alpha": {
+                "type": "number",
+                "description": "Significance level, default 0.05."
+              },
+              "power": {
+                "type": "number",
+                "description": "Target power for the sample-size math, default 0.8."
+              }
+            },
+            "required": [
+              "a",
+              "b"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "control": {
+                "type": "object"
+              },
+              "variant": {
+                "type": "object"
+              },
+              "absolute_lift": {
+                "type": "number"
+              },
+              "relative_lift": {
+                "type": "number"
+              },
+              "z_score": {
+                "type": "number"
+              },
+              "p_value": {
+                "type": "number"
+              },
+              "alpha": {
+                "type": "number"
+              },
+              "significant": {
+                "type": "boolean"
+              },
+              "confidence_level": {
+                "type": "number"
+              },
+              "confidence_interval_abs_lift": {
+                "type": "array"
+              },
+              "minimum_detectable_effect_abs": {
+                "type": "number"
+              },
+              "minimum_detectable_effect_rel": {
+                "type": "number"
+              },
+              "power": {
+                "type": "number"
+              },
+              "required_sample_per_group": {
+                "type": "number"
+              },
+              "sample_size_sufficient": {
+                "type": "boolean"
+              },
+              "winner": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/marketing/experiment with a JSON body: {\"a\":{\"conversions\":<int>,\"visitors\":<int>}, \"b\":{\"conversions\":<int>,\"visitors\":<int>}} plus optional alpha (default 0.05) and power (default 0.8). a=control arm, b=variant arm; both required. x402 v2 on Base USDC, $0.02. Result is inline in the 200 body (synchronous, no poll).",
+        "inputExample": {
+          "a": {
+            "conversions": 100,
+            "visitors": 1000
+          },
+          "b": {
+            "conversions": 140,
+            "visitors": 1000
+          }
+        },
+        "outputShape": "Synchronous JSON: control{conversions,visitors,rate}, variant{conversions,visitors,rate}, absolute_lift, relative_lift, z_score, p_value, alpha, significant (bool), confidence_level, confidence_interval_abs_lift ([lo,hi] on the absolute lift), minimum_detectable_effect_abs, minimum_detectable_effect_rel, power, required_sample_per_group, sample_size_sufficient (bool), winner, disclaimer:\"computation only\".",
+        "quirks": [
+          "The request body uses a/b arms (a=control, b=variant), each an object {conversions, visitors}. The control/variant keys appear only in the RESPONSE — do NOT send them. The pre-filter callHint ({control,variant} with an 'n' key) is WRONG and would buy a 400.",
+          "POST with a JSON body (not query params). alpha and power are optional body fields; omit them for the 0.05 / 0.8 defaults.",
+          "The x402 402 challenge carries an EMPTY JSON body ({}); the payment requirements (accepts, Base USDC $0.02) live in the base64 `payment-required` response header, not the body.",
+          "Pure local computation — every response includes disclaimer \"computation only\". Not statistical/business advice.",
+          "sample_size_sufficient reports whether current per-group visitors meet required_sample_per_group at the requested alpha/power; it can be false even when the result is already 'significant'.",
+          "Verified live: a=100/1000, b=140/1000 -> absolute_lift 0.04, relative_lift 0.4, z_score 2.752409, p_value 0.005916, significant true, winner 'variant', required_sample_per_group 1033, sample_size_sufficient false."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Test whether an A/B experiment result is statistically significant with a single keyless x402 call. POST https://api.agentstools.dev/marketing/experiment with JSON body {\"a\":{\"conversions\":<int>,\"visitors\":<int>}, \"b\":{\"conversions\":<int>,\"visitors\":<int>}} where a is the control arm and b the variant arm; optional alpha (default 0.05) and power (default 0.8) tune the significance level and the sample-size target. Pays $0.02 USDC via x402 v2 on Base (eip155:8453), no API key. Synchronous — the 200 body returns a pooled two-proportion z-test: control/variant rates, absolute_lift, relative_lift, z_score, p_value, a confidence_interval_abs_lift, minimum_detectable_effect (abs/rel), required_sample_per_group, sample_size_sufficient, significant flag and winner, plus a \"computation only\" disclaimer. Verified live: a=100/1000 vs b=140/1000 -> lift 0.04 (relative 0.4), z 2.752, p 0.005916, significant, winner variant.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    }
+  ]
+}

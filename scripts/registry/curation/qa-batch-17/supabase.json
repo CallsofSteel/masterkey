@@ -1,0 +1,46 @@
+{
+  "serviceId": "supabase",
+  "subcat": "relational-databases",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/supabase/rest/v1/",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/supabase/rest/v1/<table> with header X-Upstream-Token: <your Supabase JWT/API key> and JSON body (PostgREST). REQUIRES caller-supplied upstream key — not callable without one.",
+    "inputExample": {
+      "X-Upstream-Token": "<YOUR_SUPABASE_SERVICE_OR_ANON_KEY>",
+      "_note": "plus a PostgREST table path and body; bare /rest/v1/ root is not a valid PostgREST resource"
+    },
+    "outputShape": "untested — gateway never reaches a working Supabase response without a valid upstream key; demo returns body.error / body.message",
+    "quirks": [
+      "HTTPay gateway: surface shows 402 (payable) but the upstream Supabase service REQUIRES a caller-supplied API key — paying does NOT make it work.",
+      "Verified FREE via ?demo=true (10 calls/IP/hr): POST /rest/v1/?demo=true returns 401 {error:'Service supabase requires authentication', instructions:'Pass your upstream API key via the X-Upstream-Token header'}.",
+      "With a fake X-Upstream-Token the upstream replies {message:'JWT could not be decoded'} — confirming a REAL Supabase project JWT is required; there is no shared keyless backend.",
+      "Target URL points at bare PostgREST /rest/v1/ root with no table — even with a key you must append a real table path; root is not a valid PostgREST resource.",
+      "Violates MasterKey no-API-key policy; recommend pruning this endpoint from the registry."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint as a keyless paid service — it is not one. The HTTPay '/api/gateway/supabase' route is a thin proxy to YOUR OWN Supabase project: it demands an X-Upstream-Token header containing a valid Supabase JWT/API key, and forwards to a Supabase REST URL you must also target with a real table path (the registered URL stops at bare /rest/v1/). Without a caller-supplied key it returns 401 'Service supabase requires authentication'; with a bad key the upstream returns 'JWT could not be decoded'. This was confirmed for free via the ?demo=true preview, so no USDC was spent. Because MasterKey's policy excludes endpoints needing a caller-supplied auth key, this should be dropped from the registry rather than tested.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "supabase#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

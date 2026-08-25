@@ -1,0 +1,42 @@
+{
+  "serviceId": "fly-io-machines",
+  "subcat": "vm-cloud-providers",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/flyio/%7B*path%7D/*",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/flyio/{path}/* — the {path} segment must be a real Fly.io Machines API route (e.g. v1/apps/{app_name}/machines)",
+    "inputExample": {},
+    "outputShape": "unknown (untested — Fly.io Machines API JSON proxied through httpay gateway)",
+    "quirks": [
+      "URL is a wildcard-path gateway proxy: %7B*path%7D decodes to {*path}, a placeholder you MUST replace with a real Fly.io Machines API path before calling",
+      "Requires a concrete Fly.io app name and sub-route (e.g. /v1/apps/<app>/machines) — not derivable from the registry spec",
+      "httpay gateway proxy: an unpaid pre-flight returns 402 (looks payable) but that does NOT mean an arbitrary/unfilled path will work; paying an unresolved path risks a charge-then-404",
+      "inputSchema is only {type:http,method:GET,discoverable:true} — no body schema, no instructions, no paymentAccepts in the registry surface"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint is an httpay x402 gateway proxy to the Fly.io Machines API. The CALL URL contains a wildcard placeholder {*path} that an agent MUST replace with a concrete Fly.io Machines API route before calling — for example POST .../api/gateway/flyio/v1/apps/<your-app>/machines with a machine-config JSON body. Provisioning/managing VMs is an outward, billable, stateful action, so it requires a target app name and explicit user approval. It was NOT pay-tested here because the path placeholder is unresolvable from the spec and paying a blank/wrong path would lose money to a 404.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "fly-io-machines#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

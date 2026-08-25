@@ -1,0 +1,55 @@
+{
+  "serviceId": "x402stock",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402stock.xyz/api/v1/snapshot/AAPL",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402stock.xyz/api/v1/quote/AAPL",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402stock.xyz/api/v1/snapshot/{TICKER} (e.g. /AAPL), no body, x402 USDC on Base",
+    "inputExample": {
+      "_pathParam_ticker": "AAPL",
+      "_note": "ticker is a URL path segment, not a JSON body; this is a GET with no request body"
+    },
+    "outputShape": "body.ticker (string), body.data.change, body.data.change_percent, body.data.day{open,high,low,close,volume,vwap}, body.data.previous_day{...}, body.data.last_minute_bar{...,timestamp}, optionally body.data.last_trade{price,size,...} and body.data.last_quote{bid_price,ask_price,...}, body.source=\"x402stock\", body.as_of (ISO timestamp)",
+    "quirks": [
+      "Ticker is a path segment in the URL (e.g. /snapshot/AAPL), not a query param or body. Substitute the desired symbol.",
+      "GET request, no request body."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402stock.xyz/api/v1/snapshot/{TICKER} with the stock symbol as the final path segment (e.g. AAPL, TSLA). No request body; pay $0.01 USDC on Base via x402. The response is JSON: read body.data.last_minute_bar.close (or body.data.day.close) for the latest price, body.data.change / body.data.change_percent for the move, and body.data.day / body.data.previous_day for OHLCV. body.as_of gives the data timestamp.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402stock#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "x402stock#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

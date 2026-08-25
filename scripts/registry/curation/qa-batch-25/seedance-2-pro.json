@@ -1,0 +1,48 @@
+{
+  "serviceId": "seedance-2-pro",
+  "subcat": "video-generation",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/seedance/i2v",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/seedance/i2v with JSON body {prompt, urls[]} (image-to-video; urls is required, 1-12 public image/video reference URLs)",
+    "inputExample": {
+      "prompt": "a red circle gently pulsing",
+      "urls": [
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Solid_red.svg/120px-Solid_red.svg.png"
+      ]
+    },
+    "outputShape": "Async job: body.jobId (poll a status endpoint), body.status (\"pending\"), body.success, body.type. The finished video URL is delivered out-of-band/on poll, not in this initial response.",
+    "quirks": [
+      "Price is $20.00 (payment.accepts amount=20000000 = 20 USDC, 6 decimals on Base eip155:8453) — exceeds the $6 QA cap, so it was NOT paid/tested.",
+      "Task summary CALL url (https://api.xona-agent.com/video/seedance-pro) is WRONG; the real endpoint per spec/probe/payTo is https://stablestudio.dev/api/generate/seedance/i2v.",
+      "This is IMAGE-to-video: 'urls' (>=1 public image/video reference URL) is REQUIRED alongside 'prompt'; a prompt-only call will fail.",
+      "Returns an async job {success, jobId, status:'pending', type} — you must poll for the finished video; the result is not in the initial response.",
+      "Provider is StableStudio (stablestudio.dev) — same origin served by the agentcash/stablestudio MCP, which may be a cheaper/native way to call it."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This is ByteDance Seedance 2 Pro premium image-to-video, served by StableStudio. Call POST https://stablestudio.dev/api/generate/seedance/i2v with a required 'prompt' string and a required 'urls' array of 1-12 public image/video reference URLs; poll the returned jobId for the finished video. Costs $20 USDC; not verified here because it exceeds the QA $6 cap.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-pro#0",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

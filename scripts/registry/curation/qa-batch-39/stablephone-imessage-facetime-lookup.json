@@ -1,0 +1,46 @@
+{
+  "serviceId": "stablephone-imessage-facetime-lookup",
+  "subcat": "sms-phone",
+  "batchId": "batch-39",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablephone.dev/api/lookup",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stablephone.dev/api/lookup with JSON body {phone_number} (E.164) → 202 {token}; then poll GET https://stablephone.dev/api/lookup/status?token=<jwt> with SIWX (paying wallet, free) until body.status==\"complete\"",
+    "inputExample": {
+      "phone_number": "+14155551234"
+    },
+    "outputShape": "Status poll body: body.status (\"complete\"), body.imessage, body.facetime (available|unavailable|unknown), body.carrier, body.country, body.checked_at. (POST response: body.token JWT)",
+    "quirks": [
+      "Two-step async: paid POST /api/lookup returns HTTP 202 with {token} (a JWT), NOT the result. The actual result comes from the status endpoint.",
+      "Poll GET /api/lookup/status?token=<jwt> with SIWX auth (same paying wallet), which is FREE. In this run status was 'complete' on the first poll (~0s), but spec says it can take 30-90s — poll every 3-5s.",
+      "Token (JWT) expires after 60 min; iat/exp embedded. Re-querying the same number within ~1h reuses cached result (no extra charge).",
+      "imessage/facetime values are available|unavailable|unknown (unknown ~ landline/VoIP). For test number +14155551234 both returned 'unavailable' and carrier/country were null.",
+      "Status endpoint requires SIWX sign-in (paying wallet identity), not x402 payment — pass it as the SIWX-authed GET."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Check whether a phone number has iMessage/FaceTime plus carrier/country. POST https://stablephone.dev/api/lookup with {\"phone_number\":\"+1...\"} in E.164 — this pays $0.05 USDC on Base via x402 and returns HTTP 202 {token} (a JWT), not the answer. Then poll GET https://stablephone.dev/api/lookup/status?token=<jwt> using SIWX (the same paying wallet, free) every 3-5s until body.status==\"complete\" (typically 0-90s; the JWT is valid 60 min). Read body.imessage / body.facetime (available|unavailable|unknown) plus body.carrier and body.country.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablephone-imessage-facetime-lookup#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    }
+  ]
+}

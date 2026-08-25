@@ -1,0 +1,77 @@
+{
+  "serviceId": "gloria-ai-news",
+  "subcat": "news-media",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.itsgloria.ai/news",
+      "method": "GET",
+      "amountUsd": 0.03
+    },
+    {
+      "backend": "https://api.itsgloria.ai/news-by-keyword",
+      "method": "GET",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68a6fae188ee7586a198c086",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.questflow.ai/x402/swarm/qrn:swarm:68a701d567a3c4beef361629",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.itsgloria.ai/news?feed_categories=ai (x402 pay-per-call; registry surface mislabels it POST — it is actually GET with query params)",
+    "inputExample": {
+      "feed_categories": "ai"
+    },
+    "outputShape": "Response body is a JSON array of news items. Per item: body[].signal (headline), body[].short_context (summary), body[].long_context (detail), body[].sentiment + body[].sentiment_value, body[].feed_categories[], body[].sources[].uri, body[].tokens[] (tickers), body[].tweet_url, body[].timestamp (unix seconds).",
+    "quirks": [
+      "Registry surface lists method=POST, but the real endpoint is GET — call it as GET with query params (inputSchema.type=http method=GET, and probe confirmed GET 402).",
+      "feed_categories query param is REQUIRED. It is a comma-separated list from a fixed set: ai, ai_agents, base, bitcoin, crypto, dats, defi, ethereum, hyperliquid, machine_learning, macro, perps, rwa, ripple, solana, tech. Omitting it will fail.",
+      "Optional from_date / to_date query params (YYYY-MM-DD) narrow the time window.",
+      "Response is a bare JSON array (not wrapped in an object); iterate items directly.",
+      "Price is x402 'Varies' — observed $0.03 USDC on Base per call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.itsgloria.ai/news with a required feed_categories query param (comma-separated, e.g. feed_categories=ai or feed_categories=crypto,solana) using x402 USDC payment on Base — no API key needed. Despite the registry showing POST, use GET. Optionally add from_date and to_date (YYYY-MM-DD) to bound the window. The response is a JSON array of news items; read each item's .signal for the headline, .short_context / .long_context for the AI summary, .sentiment + .sentiment_value for tone, and .sources[].uri / .tweet_url for links. Cost was ~$0.03 per call.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gloria-ai-news#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "gloria-ai-news#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "gloria-ai-news#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    },
+    {
+      "key": "gloria-ai-news#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.5
+    }
+  ]
+}

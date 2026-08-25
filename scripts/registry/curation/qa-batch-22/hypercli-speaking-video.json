@@ -1,0 +1,44 @@
+{
+  "serviceId": "hypercli-speaking-video",
+  "subcat": "avatars-digital-humans",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.hypercli.com/api/x402/flow/speaking-video",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.hypercli.com/api/x402/flow/speaking-video with JSON body {prompt, image_url?, audio_url?, width?, height?}",
+    "inputExample": {
+      "prompt": "a person saying hello",
+      "image_url": "https://example.com/portrait.jpg"
+    },
+    "outputShape": "unknown — server returns HTTP 500 plain-text \"Internal Server Error\" after payment; no body schema observed",
+    "quirks": [
+      "Charges x402 ($0.25 USDC on Base, payment settles) then returns HTTP 500 'Internal Server Error' (plain text, 21 bytes) — broken server-side render.",
+      "Returns NO job id / async handle on failure, so the documented status/cancel polling cannot be reached.",
+      "Tested twice (minimal {prompt} and {prompt,image_url}); both identical 500. Do not retry — money is lost on each call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do NOT call this endpoint — it is broken.",
+    "costObservedUsd": 0.5
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hypercli-speaking-video#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.25
+    }
+  ]
+}

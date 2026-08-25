@@ -1,0 +1,58 @@
+{
+  "serviceId": "z-ai-cogview",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/zai/api/paas/v4/images/generations",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/images/generations",
+      "method": "POST",
+      "amountUsd": 0.01575
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/images/generations with JSON body {model, prompt, n, size}",
+    "inputExample": {
+      "model": "zai/cogview-4",
+      "prompt": "a red circle",
+      "n": 1,
+      "size": "1024x1024"
+    },
+    "outputShape": "body.data[0].url (BlockRun-hosted PNG); also body.data[0].source_url (original z.ai PNG, watermarked). body.created = unix timestamp.",
+    "quirks": [
+      "Settlement can transiently fail: first paid attempt returned 402 with 'Payment settlement failed: ... unable to estimate gas' and paid:false (no charge). A retry with the identical body succeeded — treat this gas-estimation error as transient and retry once.",
+      "OpenAI-compatible images/generations shape: required fields are model='zai/cogview-4' and prompt. size (e.g. '1024x1024') supported up to 2048px.",
+      "Result is returned synchronously (no async job/polling). Use body.data[0].url for the BlockRun-hosted image; source_url is the original z.ai image and is watermarked.",
+      "x402 paid endpoint, no API key / no SIWX needed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send POST https://blockrun.ai/api/v1/images/generations with JSON {\"model\":\"zai/cogview-4\",\"prompt\":\"<your prompt>\",\"n\":1,\"size\":\"1024x1024\"} and pay the x402 quote (~$0.016) — no API key needed. The response is synchronous; read the generated image from body.data[0].url (BlockRun-hosted PNG). If the first paid call fails at settlement with an 'unable to estimate gas' error (paid:false, status 402), it is a transient base-chain issue — retry the same request once.",
+    "costObservedUsd": 0.01575
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "z-ai-cogview#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "z-ai-cogview#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01575
+    }
+  ]
+}

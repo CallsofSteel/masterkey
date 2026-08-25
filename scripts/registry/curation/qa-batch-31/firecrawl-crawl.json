@@ -1,0 +1,50 @@
+{
+  "serviceId": "firecrawl-crawl",
+  "subcat": "web-crawling",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/firecrawl/scrape",
+      "method": "POST",
+      "amountUsd": 0.0126
+    },
+    {
+      "backend": "https://api.questflow.ai/x402/agent/qrn:agent:68ce5f231eac16d8cffd0aa1",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/firecrawl/scrape with JSON body {url}",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.url (final URL), body.title (page title), body.content (page content as markdown)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/firecrawl/scrape with a JSON body {\"url\": \"<page to scrape>\"}. Payment is x402 USDC on Base (~$0.013/call). The response is a plain synchronous JSON object — read the scraped page content as markdown from body.content, the page title from body.title, and the final (post-redirect) URL from body.url. Despite the \"Crawl\" name, this endpoint scrapes a single page, not a multi-page crawl.",
+    "costObservedUsd": 0.0126
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "firecrawl-crawl#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0126
+    },
+    {
+      "key": "firecrawl-crawl#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

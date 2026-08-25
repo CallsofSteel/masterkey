@@ -1,0 +1,45 @@
+{
+  "serviceId": "video-convert-transcode",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/video-convert-api-9b6300",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/video-convert-api-9b6300 with JSON body {url, format}",
+    "inputExample": {
+      "url": "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4",
+      "format": "mov"
+    },
+    "outputShape": "N/A — endpoint dead. Returns body.error=\"API_NOT_FOUND\", body.message.",
+    "quirks": [
+      "Orbis proxy dead slug: pre-flight probe returns 402 (looks payable) but actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'video-convert-api-9b6300'.\"}",
+      "No payment was taken (paid:false, costUsd:0) — the proxy 404s before settlement here, but other Orbis slugs charge-then-404.",
+      "Do not retry with alternate bodies/paths — the slug/route is dead."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is dead and cannot be used. The Orbis proxy slug 'video-convert-api-9b6300' is not registered — a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"} even though the x402 pre-flight probe advertises a 402 payment requirement. Do not call it; it will not transcode anything. No fresh-agent retry will help (the route is gone).",
+    "costObservedUsd": 0,
+    "droppedReason": "video-convert-transcode#0: Orbis proxy dead slug: pre-flight probe returns 402 (looks payable) but actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'video-convert-api-9b6300'.\"}"
+  },
+  "droppedReason": "video-convert-transcode#0: Orbis proxy dead slug: pre-flight probe returns 402 (looks payable) but actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'video-convert-api-9b6300'.\"}",
+  "_backends": [
+    {
+      "key": "video-convert-transcode#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

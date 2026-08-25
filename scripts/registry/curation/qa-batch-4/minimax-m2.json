@@ -1,0 +1,72 @@
+{
+  "serviceId": "minimax-m2",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/minimax",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/minimax-m2.7",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001039
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[]}",
+    "inputExample": {
+      "model": "minimax/minimax-m2.7",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (string); usage at body.usage",
+    "quirks": [
+      "OpenAI-compatible /v1/chat/completions endpoint. The body MUST include a `model` field set to `minimax/minimax-m2.7` (BlockRun's slug) — omitting it or using a bare name like `minimax-m2` will not route correctly.",
+      "x402 payment on Base; very cheap (~$0.001 per short call). Price scales with token usage (priceDisplay='Varies').",
+      "Response includes completion_tokens_details.reasoning_tokens — this is a reasoning model."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://blockrun.ai/api/v1/chat/completions with an OpenAI-style JSON body containing `model` set to \"minimax/minimax-m2.7\" and a `messages` array (e.g. [{\"role\":\"user\",\"content\":\"...\"}]). Pay via x402 USDC on Base; the call is sync and cheap (~$0.001 for a short prompt, scaling with tokens). Read the assistant reply from body.choices[0].message.content and token counts from body.usage.",
+    "costObservedUsd": 0.001039
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "minimax-m2#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "minimax-m2#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "minimax-m2#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

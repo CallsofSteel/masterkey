@@ -1,0 +1,58 @@
+{
+  "serviceId": "nyc-transit-live",
+  "subcat": "traffic-transportation",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://transit402.dev/subway/nearest",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://transit402.dev/bus/nearest",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "siwx",
+    "callShape": "POST https://transit402.dev/subway/nearest with JSON body {lat, lng, limit?}",
+    "inputExample": {
+      "lat": 40.758,
+      "lng": -73.9855,
+      "limit": 3
+    },
+    "outputShape": "body.results[] — each has .name, .distance_feet, .walk_minutes, .lines[], .arrivals[] (each arrival: .line, .direction (Uptown|Downtown), .minutes), .lat, .lng",
+    "quirks": [
+      "Plain x402 'exact' payment does NOT work: the first 402 returns an application/problem+json body of type https://paymentauth.org/problems/payment-required carrying a challengeId — this is a paymentauth.org challenge flow, not standard x402 exact settlement.",
+      "Must complete the challenge-signing (SIWX-style) flow to pay. With qa-pay this means passing --siwx; a fresh agent must drive the paymentauth.org challenge/sign handshake rather than the plain exact scheme.",
+      "Registry paymentAccepts advertises scheme 'exact' on eip155:8453 ($0.02 USDC) but the live server actually gates via the paymentauth challengeId; do not assume plain exact works.",
+      "No on-chain txHash was returned (confirmed=false) even though paid=true and a valid 200 result came back.",
+      "limit is optional (1-10, default 5); lat/lng are required WGS84 decimal degrees. additionalProperties is false — send only lat/lng/limit."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://transit402.dev/subway/nearest with a JSON body {lat, lng} (optional limit 1-10, default 5). lat/lng are WGS84 decimal degrees of the user's location. Payment is gated by a paymentauth.org challenge flow, not plain x402 exact: the first 402 returns a problem+json with a challengeId that you must complete via the SIWX/challenge-signing path before the call succeeds (with qa-pay, pass --siwx). Read results from body.results[]: each entry is a nearby subway station with .name, .walk_minutes, .lines[], and .arrivals[] (each {line, direction: Uptown|Downtown, minutes}). Fetch a few results and present the nearest stations with their soonest arrivals.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nyc-transit-live#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "nyc-transit-live#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

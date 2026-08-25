@@ -1,0 +1,56 @@
+{
+  "serviceId": "image-hosting",
+  "subcat": "image-video-cdn",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://img402.dev/api/upload",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://img402.dev/api/upload/token",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://img402.dev/api/upload/token with empty JSON body {} (x402 paid, $0.01 USDC on Base)",
+    "inputExample": {},
+    "outputShape": "body.token (single-use upload token), body.expiresAt (ISO 8601, token valid ~10 min)",
+    "quirks": [
+      "This endpoint does NOT return a CDN URL. It mints a single-use upload token only.",
+      "Two-step flow: (1) pay this endpoint to get body.token; (2) upload the actual image bytes in a separate follow-up request using the token as the X-Upload-Token header to receive the public CDN URL.",
+      "Token is valid for only ~10 minutes (body.expiresAt) and is single-use.",
+      "Empty JSON body {} is accepted; no input schema needed for the token step.",
+      "Response includes an img402 metadata block (news/thanks/feedback) that is informational only.",
+      "Provider also offers permanent hosting for $1 via POST /api/upload/token/permanent."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "To host an image with img402, first POST to https://img402.dev/api/upload/token with an empty JSON body {} — this is an x402 paid call ($0.01 USDC on Base) that returns body.token and body.expiresAt. The token is single-use and valid ~10 minutes. Then upload the actual image bytes in a follow-up request, passing the token as the X-Upload-Token header, to receive the permanent/CDN URL, image id, contentType, and sizeBytes. Read body.token from this endpoint's response; do not expect a CDN URL from this step.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-hosting#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "image-hosting#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

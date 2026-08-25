@@ -1,0 +1,44 @@
+{
+  "serviceId": "google-maps-place-search-auor",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.auor.io/google-maps/v1/search/full",
+      "method": "GET",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.auor.io/google-maps/v1/search/full?query=<search text> (query param, url-encoded)",
+    "inputExample": {
+      "query": "coffee shops in San Francisco"
+    },
+    "outputShape": "body.places[] — each item has .id, .name, .types[], .formattedAddress, .location.latitude, .location.longitude, .rating, .googleMapsUri, .nationalPhoneNumber",
+    "quirks": [
+      "inputSchema was null in the registry; the search text goes in the ?query= URL query param (url-encoded), not a JSON body — this endpoint is GET.",
+      "Response is large (~563KB for a broad query) — body.places[] returns many full place records with addressComponents, viewport, etc.",
+      "Some text fields come back localized (e.g. country name 'Verenigde State van Amerika' / languageCode 'af') — don't rely on address strings being English."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.auor.io/google-maps/v1/search/full with your search text url-encoded in the ?query= param (e.g. ?query=coffee%20shops%20in%20San%20Francisco). Pay $0.04 USDC via x402 on Base; no auth/sign-in needed. The response is plain sync JSON — read results from body.places[], where each place has id, name, formattedAddress, location.latitude/longitude, rating, and googleMapsUri. Expect a large payload for broad queries; narrow the query to reduce size.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-maps-place-search-auor#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

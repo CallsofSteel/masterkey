@@ -1,0 +1,110 @@
+{
+  "serviceId": "crushrewards-retail-analytics",
+  "subcat": "product-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.crushrewards.dev/v1/marketing/promo-intelligence",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/marketing/brand-tracker",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/marketing/share-of-shelf",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/shopper/price-history",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/analyst/price-dispersion",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/shopper/price-drop-alert",
+      "method": "GET"
+    },
+    {
+      "backend": "https://api.crushrewards.dev/v1/analyst/category-summary",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.crushrewards.dev/v1/marketing/brand-tracker?brand=Apple&country=us (params in query string, NOT JSON body)",
+    "inputExample": {
+      "brand": "Apple",
+      "country": "us"
+    },
+    "outputShape": "body.time_series[] (array of {date, avg_price, min_price, max_price, product_count, in_stock_count, promo_count}); plus body.brand, body.country, body.currency",
+    "quirks": [
+      "This is a GET endpoint: pass all inputs as URL query string params, NOT a JSON request body. The inputSchema lists a requestBody object but it maps to query params.",
+      "brand is required (e.g. brand=Apple). Optional: country (us|ca, default us), from and to (ISO 8601 dates, default last 30 days).",
+      "Pays via x402 on Base USDC; no API key / no SIWX needed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.crushrewards.dev/v1/marketing/brand-tracker with query params: required brand (e.g. brand=Sony), optional country=us|ca, from=YYYY-MM-DD, to=YYYY-MM-DD. Pay $0.01 USDC via x402 on Base. The response is plain sync JSON: read the daily price/availability time-series from body.time_series[] (each item has date, avg_price, min_price, max_price, product_count, in_stock_count, promo_count), with body.brand/country/currency as context.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "crushrewards-retail-analytics#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#5",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "crushrewards-retail-analytics#6",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

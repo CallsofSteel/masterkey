@@ -1,0 +1,54 @@
+{
+  "serviceId": "wan-2-6",
+  "subcat": "video-generation",
+  "batchId": "batch-27",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.io/api/generate/wan-2.6/i2v",
+      "method": "POST",
+      "amountUsd": 0.5
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.io/api/generate/wan-2.6/i2v with JSON body {image, prompt, resolution?, duration?, negativePrompt?, seed?, enablePromptExpansion?, multiShots?, audioUrl?}. Pay x402/MPP USDC on Base (dynamic price ~$0.50-2.25, registry surface $10 is the cap not the charge). Returns async job {success, jobId, status:\"pending\", type}. Then poll the result with SIWX auth: GET https://stablestudio.io/api/jobs/{jobId} (SIGN-IN-WITH-X header, no payment).",
+    "inputExample": {
+      "image": "https://<vercel-blob-url-from-upload-flow>",
+      "prompt": "a red circle gently pulsing",
+      "duration": "5",
+      "resolution": "720p"
+    },
+    "outputShape": "Generate call: body.jobId (string), body.status (\"pending\"), body.success (true), body.type (\"wan-2.6-i2v\"). Poll call (GET /api/jobs/{jobId}, SIWX): body.status (\"pending\"|\"loading\"|\"complete\"|\"failed\"), body.progress, body.error, and on success body.result.videoUrl + body.result.thumbnailUrl.",
+    "quirks": [
+      "DYNAMIC PRICING: registry surface says $10.00 but that is the cap/max; actual charge is ~$0.50-2.25 (observed $0.50 for 5s 720p). x402/MPP USDC on Base or Solana.",
+      "Two-step async: POST returns {jobId, status:'pending'} only. The finished video is NOT in the POST response. You MUST poll GET /api/jobs/{jobId} until status='complete', then read body.result.videoUrl.",
+      "POLL IS SIWX, NOT PAID: GET /api/jobs/{jobId} requires a SIGN-IN-WITH-X (CAIP-122 wallet signature) header, returns 402 with a sign-in-with-x extension if unsigned. It is free (no USDC). Use --siwx in qa-pay / agentcash fetch handles it.",
+      "IMAGE MUST BE A VERCEL BLOB URL from the File Upload flow (POST /api/upload $0.01 -> PUT to blob -> POST /api/upload/confirm). Arbitrary external image URLs can PASS the cheap synchronous validator and get you charged, but then the upstream Wan backend may 403/fail when it fetches them (Wikimedia hotlink-blocked our test, job ended status='failed'). Do NOT use random web image URLs.",
+      "Pre-charge validator rejects some URLs with 400 'Invalid image URL' before payment (e.g. Wikimedia /thumb/ resized paths) — no money lost on those, but it is not a reliable signal that a passing URL will actually generate.",
+      "Video models take 2-5 min; poll every ~15s. Do NOT resubmit while status is 'pending' or 'loading' — duplicate submissions create duplicate paid jobs.",
+      "Result videoUrl/thumbnailUrl expire after ~20 minutes — download the video immediately on completion.",
+      "i2v requires both 'image' and 'prompt'. duration enum '5'|'10'|'15' (string), resolution '720p'|'1080p'.",
+      "multiShots only takes effect when enablePromptExpansion is true. audioUrl must be HTTPS mp3/wav, 3-30s, <=15MB.",
+      "Canonical/base origin in provider guidance is stablestudio.dev; the registry/working CALL host stablestudio.io also serves the same API and was used successfully."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Wan 2.6 image-to-video. STEP 1: upload your source image via the File Upload flow (POST https://stablestudio.io/api/upload with {filename,contentType} for $0.01, PUT the bytes to the returned Vercel Blob clientToken/pathname, then POST /api/upload/confirm) to get a blobUrl — do not pass an arbitrary external image URL, the backend often 403s on those. STEP 2: POST https://stablestudio.io/api/generate/wan-2.6/i2v with JSON {image: <blobUrl>, prompt, duration?, resolution?}; pay USDC on Base (real cost ~$0.50-2.25, not the $10 surface). You get back {jobId, status:'pending'}. STEP 3: poll GET https://stablestudio.io/api/jobs/{jobId} with a SIGN-IN-WITH-X (SIWX) signature header (free, not a payment) every ~15s until status='complete', then read the video at body.result.videoUrl (download within ~20 min before the URL expires). Never resubmit while pending/loading.",
+    "costObservedUsd": 0.5
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "wan-2-6#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.5
+    }
+  ]
+}

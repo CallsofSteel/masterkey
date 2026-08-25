@@ -1,0 +1,45 @@
+{
+  "serviceId": "coinstats-news",
+  "subcat": "news-media",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.coinstats.app/news/1",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.coinstats.app/news/{id} where {id} is a CoinStats article hash (64-char hex), e.g. https://x402.coinstats.app/news/376f390df50a1d44cb5593c9bff6faafabed18ee90e0d4d737d3b6d3eea50c80",
+    "inputExample": {
+      "id": "376f390df50a1d44cb5593c9bff6faafabed18ee90e0d4d737d3b6d3eea50c80"
+    },
+    "outputShape": "body.title, body.source, body.link, body.description, body.feedDate (ms unix), body.imgUrl, body.relatedCoins[], body.coins[], body.shareURL",
+    "quirks": [
+      "The registry surface URL https://x402.coinstats.app/news/1 is WRONG — id=1 is not a valid article and returns HTTP 400 'News article not found.' (you still get charged $0.001). The {id} path segment must be a real CoinStats article hash, a 64-char hex string, NOT a sequential integer.",
+      "You need a valid article id first (obtain it from a CoinStats news-list endpoint or a shareURL). This single-article lookup endpoint cannot be called blind without a real id.",
+      "feedDate is a Unix timestamp in MILLISECONDS.",
+      "txHash came back null on the x402 settlement but the call succeeded and was paid; confirmed=false from qa-pay."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This is a paid (x402, $0.001 USDC on Base) crypto-news article lookup by ID. Call GET https://x402.coinstats.app/news/{id} where {id} is a real CoinStats article hash (a 64-char hex string), NOT the registry's example /news/1 which returns a 400 'not found' and still charges you. Read the article from the top-level JSON: body.title, body.source, body.link, body.description, body.imgUrl, and body.feedDate (Unix ms). Obtain a valid article id from a CoinStats news-list call or a shareURL before invoking this endpoint, since it cannot be called blind.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "coinstats-news#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

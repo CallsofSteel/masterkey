@@ -1,0 +1,46 @@
+{
+  "serviceId": "reversesandbox-private-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://search.reversesandbox.com/web/search",
+      "method": "GET",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://search.reversesandbox.com/web/search?q=<query>&count=<n>&offset=<n> (only q is required; x402 USDC, ~$0.002)",
+    "inputExample": {
+      "q": "hello",
+      "count": 3
+    },
+    "outputShape": "body.web.results[] each {title, url, description}; body.query.original = the query string; body.web.family_friendly = bool",
+    "quirks": [
+      "Query params only (GET) — q is required; count (1-20) and offset are optional.",
+      "Output does NOT match the declared registry outputSchema. Result snippets are in the 'description' field, NOT 'content'.",
+      "Results are at body.web.results[], and the query echo is an object at body.query.original (not a plain string body.query).",
+      "x402 payment settled (paid:true) but qa-pay reported confirmed:false and txHash:null on Base — payment went through and 200 returned regardless."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://search.reversesandbox.com/web/search with the search query as the ?q= query parameter (URL-encoded); optionally add &count= (1-20) and &offset= for pagination. It is an x402-paid endpoint (~$0.002 USDC on Base) — pay the 402 challenge. Read results from body.web.results[], where each item has title, url, and description (the snippet field is 'description', not 'content'). The original query is echoed at body.query.original.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "reversesandbox-private-search#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

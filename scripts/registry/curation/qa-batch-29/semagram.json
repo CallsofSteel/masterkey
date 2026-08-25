@@ -1,0 +1,46 @@
+{
+  "serviceId": "semagram",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://semagram.io/api/agent/search",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://semagram.io/api/agent/search?q={query}&limit={n} (query params; q required)",
+    "inputExample": {
+      "q": "bitcoin",
+      "limit": 1
+    },
+    "outputShape": "body is a JSON array of objects; each: body[].uuid, body[].username, body[].name, body[].kind, body[].bio, body[].avatar_url, body[].user_count",
+    "quirks": [
+      "Despite the generic 'semantic search' description, this searches a Telegram directory (channels/groups/bots) — results are Telegram entities, not arbitrary web content.",
+      "Price scales with limit: ceil(limit/100) * $0.01. limit<=100 costs the $0.01 base; limit=1000 would cost ~$0.10. Pass a small limit to stay at base price.",
+      "All inputs are URL query params on a GET (q, limit, lang, kind, min_users, max_users) — no JSON body. Only q is required.",
+      "kind filter is restricted to enum: channel | group | bot."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://semagram.io/api/agent/search with query params; only q (the search query string) is required. Optionally add limit (1-1000, default 100; price = ceil(limit/100) * $0.01, so keep limit<=100 for $0.01), lang (ISO 639-1), kind (channel/group/bot), min_users, max_users. Pay $0.01 USDC via x402 on Base. The response is a JSON array of matching Telegram entities; read body[].name, body[].username, body[].user_count, and body[].bio for each result.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "semagram#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

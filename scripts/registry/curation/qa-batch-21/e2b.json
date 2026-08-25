@@ -1,0 +1,50 @@
+{
+  "serviceId": "e2b",
+  "subcat": "sandbox-environments",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.signalfuse.co/v1/gateway/execute/e2b",
+      "method": "POST",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://staging.toolkit.dev/api/tool/e2b/run-code",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.signalfuse.co/v1/gateway/execute/e2b with JSON body {code, language?, timeout?}",
+    "inputExample": {
+      "code": "print(2+2)"
+    },
+    "outputShape": "body.stdout[] (array of stdout lines), body.stderr[], body.results[], body.error (null on success)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Execute sandboxed code in an E2B cloud sandbox. POST to https://api.signalfuse.co/v1/gateway/execute/e2b with a JSON body containing required `code` (string). Optional: `language` (default \"python\") and `timeout` (integer seconds, capped at 60, default 30). Pay $0.005 USDC via x402 on Base. Read the result from `body.stdout` (an array of output lines), `body.stderr` for errors, and `body.error` which is null on success. Plain synchronous response, no polling or auth beyond x402.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "e2b#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "e2b#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

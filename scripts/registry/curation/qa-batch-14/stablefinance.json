@@ -1,0 +1,131 @@
+{
+  "serviceId": "stablefinance",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablefinance.dev/api/prices/snapshot",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/prices",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/macro/interest-rates/snapshot",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/financials/search/screener",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/financials",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stablefinance.dev/api/financial-metrics/snapshot",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/company/facts",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/insider-trades",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/institutional-holdings",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stablefinance.dev/api/financials?ticker=AAPL&period=annual&limit=4 (x402, no body). NOTE: method is GET, not POST as the registry surface states — POST returns 405.",
+    "inputExample": {
+      "ticker": "AAPL",
+      "period": "annual",
+      "limit": 4
+    },
+    "outputShape": "body.financials.income_statements[], body.financials.balance_sheets[], body.financials.cash_flow_statements[] (each array item has ticker, report_period, fiscal_period, period, currency, filing_url + the statement line items, e.g. revenue, net_income, earnings_per_share, total_assets, free_cash_flow)",
+    "quirks": [
+      "Method is GET with query params, NOT POST. The registry/probe surface labels it POST, but POST /api/financials returns 405 Method Not Allowed. Only GET returns the x402 402 + 200 data.",
+      "Query param 'period' is REQUIRED (enum: annual | quarterly | ttm). Omitting it will fail validation.",
+      "Pass inputs as URL query params (ticker, period, limit, plus optional cik, report_period and report_period_gte/lte/gt/lt date filters in YYYY-MM-DD), not a JSON body.",
+      "'limit' is 1-50; the example used 4 to return the last 4 annual periods.",
+      "Result is nested under body.financials, with three parallel arrays (income_statements, balance_sheets, cash_flow_statements) — not a flat list.",
+      "x402 accepts Base USDC (eip155:8453) and Solana USDC; paid $0.02 flat on Base. confirmed=false at return time (settlement not yet on-chain-confirmed by qa-pay) but charge succeeded and data returned.",
+      "ENVIRONMENT-ONLY: the QA host's OS DNS could not resolve stablefinance.dev (public DNS resolves it fine to 216.150.16.193); qa-pay's fetch failed until dns.lookup was patched to that IP. This is a local resolver gap, not an endpoint problem — a normal agent on normal DNS is unaffected."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call this as a GET (not POST) at https://stablefinance.dev/api/financials with query params — at minimum period (annual|quarterly|ttm) and a ticker, e.g. ?ticker=AAPL&period=annual&limit=4. It is an x402 endpoint at a flat $0.02/call on Base (USDC, no API key). The response is JSON; read the data from body.financials.income_statements, body.financials.balance_sheets, and body.financials.cash_flow_statements (each an array of period objects with line items like revenue, net_income, earnings_per_share, total_assets, free_cash_flow). Add report_period date filters (report_period_gte/lte, YYYY-MM-DD) to narrow the range. Do NOT POST — POST returns 405.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablefinance#0",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#1",
+      "classification": "needs-input",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#10",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#11",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#4",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#5",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#6",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

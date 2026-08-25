@@ -1,0 +1,50 @@
+{
+  "serviceId": "openrouter",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/openrouter/v1/chat/completions",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/openrouter/v1/chat/completions with JSON body {model, messages[]}",
+    "inputExample": {
+      "model": "openai/gpt-4o-mini",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (expected on success, but never reached — endpoint returns body.error)",
+    "quirks": [
+      "Charges x402 ($0.003 on Base) BEFORE checking auth, then returns 401 \"Service 'openrouter' requires authentication\" — you lose the payment.",
+      "Requires your own upstream OpenRouter API key passed via X-Upstream-Token header (authType bearer). It is NOT a keyless x402 service despite the 402 paywall.",
+      "Violates the no-API-key policy — do not include as usable; calling it without a key wastes USDC."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint without an upstream OpenRouter API key. The httpay gateway charges the x402 micropayment first and only then validates auth, so a keyless call pays $0.003 and gets a 401 back. To actually use it you must hold your own OpenRouter bearer key and pass it in the X-Upstream-Token header. For a keyless registry, treat this as broken/unusable.",
+    "costObservedUsd": 0.003,
+    "droppedReason": "openrouter#0: Charges x402 ($0.003 on Base) BEFORE checking auth, then returns 401 \"Service 'openrouter' requires authentication\" — you lose the payment."
+  },
+  "droppedReason": "openrouter#0: Charges x402 ($0.003 on Base) BEFORE checking auth, then returns 401 \"Service 'openrouter' requires authentication\" — you lose the payment.",
+  "_backends": [
+    {
+      "key": "openrouter#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    }
+  ]
+}

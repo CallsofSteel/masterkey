@@ -1,0 +1,46 @@
+{
+  "serviceId": "entity-sentiment",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.slinkylayer.ai/api/v1/proxy/52cfaeea-3451-42f7-9f80-24911ae96430/entity-sentiment",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/52cfaeea-3451-42f7-9f80-24911ae96430/entity-sentiment with JSON body {text, requested_service} (x402, ~$0.05 USDC on base)",
+    "inputExample": {
+      "text": "Apple makes great products but their customer service is terrible.",
+      "requested_service": "entity-sentiment"
+    },
+    "outputShape": "untested — POST 402 challenge advertises JSON output ('analyzes the sentiment expressed about entities within the provided text using Google as the provider'); expect entity-level sentiment scores in the JSON body. Exact dot-path unknown until a paid call succeeds.",
+    "quirks": [
+      "Registry lists method=GET but the endpoint is actually POST: GET returns HTTP 405 {\"error\":\"Method not allowed. Use POST for this resource.\"} — MUST use POST.",
+      "Required body fields per the x402 402 outputSchema: text (string) AND requested_service (string). Omitting requested_service will likely 4xx.",
+      "Optional fields: google.key (object {key}) and encoding (string). google.key is optional — the proxy supplies Google credentials, so NO own API key is required.",
+      "Price is 50000 base-units = $0.05 USDC on Base (network=base, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0x4f4BEb658084D7Bd7EA0b6F74DbF6e99f93d422d).",
+      "COULD NOT PAY-TEST in this sandbox: Node getaddrinfo/system DNS returns ENOTFOUND for slinkylayer.ai so qa-pay fetch fails ('provider request failed: fetch failed'); public DNS (8.8.8.8/1.1.1.1) resolves x402.slinkylayer.ai -> 35.207.217.226 and the host is alive. The endpoint is NOT broken — this is an environment DNS limitation. requested_service value 'entity-sentiment' is a guess from the route slug and was not confirmed by a paid call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call it as POST (not GET, despite the registry) to the proxy URL with a JSON body containing text (the document to analyze) and requested_service (use \"entity-sentiment\"). Payment is x402, ~$0.05 USDC on Base; no API key needed (the optional google.key is supplied by the proxy). The response is JSON with entity-level (aspect) sentiment scored per named entity in the text — read the entity/sentiment fields from the JSON body. Note this endpoint could not be paid-verified here due to a sandbox DNS resolution failure for slinkylayer.ai, even though the host is live; a future run from an environment with working DNS should confirm the exact output shape and the requested_service value.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "entity-sentiment#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

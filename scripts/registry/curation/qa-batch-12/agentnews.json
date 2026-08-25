@@ -1,0 +1,64 @@
+{
+  "serviceId": "agentnews",
+  "subcat": "news-media",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://news.memoryapi.org/x402/news/trending",
+      "method": "GET"
+    },
+    {
+      "backend": "https://news.memoryapi.org/x402/news/search",
+      "method": "GET"
+    },
+    {
+      "backend": "https://news.memoryapi.org/x402/news/top",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://news.memoryapi.org/x402/news/trending?topic={ai|crypto|science|politics|tech}&limit={1-30}",
+    "inputExample": {
+      "topic": "tech",
+      "limit": 5
+    },
+    "outputShape": "body.items[] (per schema: success, topic, count, items[], source) — NOT OBSERVED, endpoint returned 502",
+    "quirks": [
+      "Upstream gateway is DOWN — returns 502 Bad Gateway (nginx/1.24.0) on both query-param and bare URL requests as of 2026-06-08",
+      "No 402 challenge served, so x402 payment cannot even be initiated",
+      "Earlier probe on 2026-06-01 showed 402 payable; service has since gone offline"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. GET https://news.memoryapi.org/x402/news/trending (optional ?topic=ai|crypto|science|politics|tech&limit=1-30) returns 502 Bad Gateway from nginx — the upstream service is down and never serves the x402 402 challenge, so no payment can be made. Per the schema, a working response would carry articles in body.items[] with body.success, body.topic, body.count, and body.source. Do not attempt to pay until the gateway is restored.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentnews#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentnews#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentnews#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

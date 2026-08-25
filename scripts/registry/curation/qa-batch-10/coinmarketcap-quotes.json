@@ -1,0 +1,46 @@
+{
+  "serviceId": "coinmarketcap-quotes",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://pro-api.coinmarketcap.com/x402/v3/cryptocurrency/quotes/latest",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://pro-api.coinmarketcap.com/x402/v3/cryptocurrency/quotes/latest?symbol=BTC (or ?slug=bitcoin or ?id=1). Params go in the URL query string; no JSON body. Pays $0.01 USDC via x402 on Base.",
+    "inputExample": {
+      "symbol": "BTC"
+    },
+    "outputShape": "body.data[] is an array of matching coins; price at body.data[i].quote[0].price (USD), with body.data[i].quote[0].percent_change_24h, .market_cap, .volume_24h. Coin identity at body.data[i].id/name/symbol/slug/cmc_rank. body.status.credit_count = credits used.",
+    "quirks": [
+      "Params are query-string on a GET, not a JSON body.",
+      "Querying by symbol returns ALL tokens sharing that ticker (symbol=BTC returned 14 entries; real Bitcoin is the one with id=1 / slug=bitcoin / cmc_rank=1). For a precise single-token result query by slug (e.g. slug=bitcoin) or by CMC id (e.g. id=1) instead.",
+      "Must supply at least one of id / slug / symbol or the call has no target.",
+      "txHash not surfaced by the payment layer (confirmed=false) but the call did settle and return 200 with live data.",
+      "Pricing defaults to USD; pass convert=EUR,JPY etc. for other quote currencies (each adds a quote object under data[].quote)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://pro-api.coinmarketcap.com/x402/v3/cryptocurrency/quotes/latest with the coin selector as a URL query param: prefer slug (e.g. ?slug=bitcoin) or id (e.g. ?id=1) for an unambiguous single result, since ?symbol=BTC returns every token using that ticker. The wallet auto-pays $0.01 USDC via x402 on Base; no API key needed. Read the price from body.data[0].quote[0].price (USD) and 24h change from body.data[0].quote[0].percent_change_24h. To match a coin from a symbol result, pick the entry with the matching slug/id (real Bitcoin = id 1, slug bitcoin, cmc_rank 1). Add convert=EUR (etc.) to get other fiat quotes.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "coinmarketcap-quotes#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

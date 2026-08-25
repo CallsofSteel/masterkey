@@ -1,0 +1,30 @@
+{
+  "serviceId": "makespdf",
+  "subcat": "pdf-generation-processing",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://makespdf.com/api/v1/markdown with JSON body {markdown, options}",
+    "inputExample": {
+      "markdown": "# Hello World\n\nThis is a test document.\n\n## Section 1\n\nSome content here.",
+      "options": {
+        "title": "Test Document"
+      }
+    },
+    "outputShape": "Raw binary PDF (application/pdf); paid_fetch returns it as a base64-prefixed string ('base64:...'). Response headers include x-pages (page count) and content-disposition with the filename derived from options.title.",
+    "quirks": [
+      "Response body is a raw binary PDF, not JSON. paid_fetch surfaces it as a 'base64:...' string — strip the prefix and decode to get the PDF bytes.",
+      "The service has two endpoints: /api/v1/markdown ($0.01, GFM input) and /api/v1/render ($0.02, template/DSL input). Use markdown for simple docs; use render with a templateId from GET /api/v1/templates?owner=library for branded layouts.",
+      "options.title sets the content-disposition filename. x-pages and x-render-ms headers report page count and render latency."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST GitHub-Flavoured Markdown to /api/v1/markdown with optional options object (title, pageSize, fontFamily, fontSize, margins, theme). Payment of $0.01 USDC on Base is handled automatically via x402. The response is a binary PDF returned synchronously — paid_fetch delivers it as a base64-prefixed string; strip the 'base64:' prefix and decode to obtain the raw bytes. For template-based generation (PDF/UA-1 + PDF/A-2A compliant), use /api/v1/render at $0.02 with a templateId from GET /api/v1/templates?owner=library and a data object supplying placeholder values.",
+    "costObservedUsd": 0.01
+  },
+  "drop": false,
+  "droppedReason": null
+}

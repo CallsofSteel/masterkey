@@ -1,0 +1,42 @@
+{
+  "serviceId": "hidream-e1",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/api/proxy/hidream-e1-full-image-editing-2",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://x402helper.xyz/api/proxy/hidream-e1-full-image-editing-2 (x402, Base USDC, advertised $0.013)",
+    "inputExample": {},
+    "outputShape": "body.success (false), body.refunded (true), body.message, body.refundTx — no usable result; payment auto-refunded",
+    "quirks": [
+      "Advertised price $0.013 (13000 units) does NOT match the backend's expected price.",
+      "On payment the proxy returns HTTP 200 with {success:false, refunded:true, message:'Price mismatch, you have been refunded'} and a refundTx — payment is refunded and NO image/result is produced.",
+      "Do NOT retry at the advertised price; the mismatch is a backend config issue and every attempt will refund.",
+      "x402helper.xyz proxy charge-then-refund pattern: 200 status is misleading; the body indicates failure."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint as-is. The registry-advertised x402 price ($0.013 / 13000 units on Base USDC) does not match what the x402helper.xyz proxy expects. A paid GET returns HTTP 200 but with body {success:false, refunded:true, message:'Price mismatch, you have been refunded'} plus a refundTx — you get no image and the USDC is refunded. The endpoint is effectively broken until the correct price is determined; do not retry at the surfaced price.",
+    "costObservedUsd": 0.013
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "hidream-e1#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    }
+  ]
+}

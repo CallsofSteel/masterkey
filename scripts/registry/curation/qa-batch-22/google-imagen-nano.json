@@ -1,0 +1,40 @@
+{
+  "serviceId": "google-imagen-nano",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/image/nano-banana",
+      "method": "POST",
+      "amountUsd": 0.1
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/image/nano-banana with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.images[0].url (PNG, 1024x1024); also body.images[0].width/height, body.seed, body.model, body.inference_time_ms",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {\"prompt\":\"...\"} to the endpoint; pay $0.10 USDC via x402 (Base eip155:8453, also Tempo/Solana accepted). Response is plain sync JSON: read the generated image URL at body.images[0].url (1024x1024 PNG hosted on fal.media). No auth beyond payment, no polling.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-imagen-nano#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

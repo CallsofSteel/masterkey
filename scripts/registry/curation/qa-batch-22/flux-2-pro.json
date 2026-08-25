@@ -1,0 +1,51 @@
+{
+  "serviceId": "flux-2-pro",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/image/flux-2-pro",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/image/quality",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/base-main/image/flux-2-pro with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (hosted JPG on DigitalOcean Spaces CDN); also body.image_description, body.metadata.model, body.metadata.aspect_ratio, body.metadata.replicate_url",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://api.xona-agent.com/base-main/image/flux-2-pro with a JSON body containing a single \"prompt\" string describing the image you want. Payment is x402 USDC on Base (~$0.05/call); no API key or sign-in needed. The response is synchronous JSON — read the generated image from body.image_url (a permanent CDN JPG). Defaults to 1:1 aspect ratio.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-pro#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "flux-2-pro#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    }
+  ]
+}

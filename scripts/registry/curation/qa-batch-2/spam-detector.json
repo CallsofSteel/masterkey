@@ -1,0 +1,43 @@
+{
+  "serviceId": "spam-detector",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.slinkylayer.ai/api/v1/proxy/00e31e91-413d-43f0-833d-56e6b6789aab/content-detect-spam",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/00e31e91-413d-43f0-833d-56e6b6789aab/content-detect-spam with JSON body {text}",
+    "inputExample": {
+      "text": "Congratulations! You won a free iPhone. Click here to claim your prize now!!!"
+    },
+    "outputShape": "unknown (endpoint unreachable; not observed). Likely body.isSpam/body.spam + body.confidence/body.score per the service description \"confidence score with supporting detail\".",
+    "quirks": [
+      "Host x402.slinkylayer.ai did NOT resolve from the QA environment — DNS timed out and both qa-pay attempts failed with 'fetch failed' BEFORE any payment (paid:false, no USDC spent).",
+      "Spec is sparse: inputSchema/outputSchema/instructions all null, paymentAccepts empty, priceDisplay 'Varies'. Body field {text} was inferred from service name + description, not confirmed.",
+      "Re-test required from an environment with working DNS/network access to slinkylayer.ai."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Untested: the host x402.slinkylayer.ai could not be resolved/reached from the QA environment (DNS timeout), so no paid call completed and no money was spent. When reachable, call POST to the proxy URL with a JSON body of the form {\"text\":\"<sample message>\"} for a spam-detection sample. The service is described as returning whether the text is spam plus a confidence score and supporting detail, so expect a JSON body with an is-spam boolean and a confidence/score field. Price is \"Varies\" (x402-gated). Verify the exact body field name and output shape on first successful call.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "spam-detector#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

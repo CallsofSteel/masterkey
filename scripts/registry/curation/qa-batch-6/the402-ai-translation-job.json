@@ -1,0 +1,46 @@
+{
+  "serviceId": "the402-ai-translation-job",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://api.the402.ai/v1/services/svc_4be4787c772647eb/purchase",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.the402.ai/v1/services/svc_4be4787c772647eb/purchase with JSON body (e.g. {text, target_language}) — but endpoint is DEAD (404).",
+    "inputExample": {
+      "text": "hello",
+      "target_language": "es"
+    },
+    "outputShape": "none — returns {\"error\":\"Service not found\"} with HTTP 404",
+    "quirks": [
+      "Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}.",
+      "No x402 402 payment challenge is ever issued, so the endpoint cannot be paid for at all.",
+      "Confirmed across GET base service, POST .../purchase with empty body, and POST with a valid translation body {text,target_language} — all 404.",
+      "Registry probe also showed GET 404/blocked at 2026-06-01."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint — it is dead. The the402.ai service svc_4be4787c772647eb returns HTTP 404 {\"error\":\"Service not found\"} on every request (base GET, purchase POST empty, and purchase POST with a translation body). It never returns an x402 402 challenge, so there is nothing payable. The service was likely delisted from the the402.ai marketplace. It should be pruned from the registry.",
+    "costObservedUsd": 0,
+    "droppedReason": "the402-ai-translation-job#0: Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}."
+  },
+  "droppedReason": "the402-ai-translation-job#0: Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}.",
+  "_backends": [
+    {
+      "key": "the402-ai-translation-job#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "serviceId": "tavily",
+  "subcat": "web-search-apis",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/tavily/search with JSON body {query, max_results}",
+    "inputExample": {
+      "query": "machine learning",
+      "max_results": 3
+    },
+    "outputShape": "body.results[].{url, title, content, score} — ranked web results with relevance scores; body.answer (null unless include_answer:true); body.response_time; body.request_id",
+    "quirks": [
+      "answer and follow_up_questions are null by default — pass include_answer:true to get an AI-synthesized answer",
+      "raw_content is null by default — pass include_raw_content:true to get full page text",
+      "Orthogonal proxy is hosted on Vercel; the direct x402.tavily.com backend is status needs-review and untested"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST {query, max_results} as JSON. Returns body.results[] where each item has url, title, content (cleaned text), and a float score (0–1). Optional: add search_depth ('basic'|'advanced'), topic ('general'|'news'|'finance'), include_answer:true for an AI-synthesized answer, or include_raw_content:true for full page content. Use the Orthogonal backend (x402.orth.sh/tavily/search) at $0.01; alternatively signalfuse (api.signalfuse.co/v1/gateway/search/tavily) works at $0.012 with the same schema.",
+    "costObservedUsd": 0.01
+  },
+  "drop": false,
+  "droppedReason": null
+}

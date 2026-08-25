@@ -1,0 +1,43 @@
+{
+  "serviceId": "market-news-sentiment",
+  "subcat": "trends-sentiment",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://market.memoryapi.org/x402/market/news_sentiment",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://market.memoryapi.org/x402/market/news_sentiment?symbol=AAPL (ticker likely via query param)",
+    "inputExample": {
+      "symbol": "AAPL"
+    },
+    "outputShape": "unknown (backend returned 502 Bad Gateway HTML, never reached x402 challenge or JSON response)",
+    "quirks": [
+      "Backend is dead: nginx returns 502 Bad Gateway on every request, with and without query params. No x402 payment challenge is served.",
+      "No payment was made (no money lost) - server never reached the paywall.",
+      "Earlier probe (2026-06-01) showed status 402/payable, but the upstream app has since gone down."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. GET https://market.memoryapi.org/x402/market/news_sentiment returns a 502 Bad Gateway (nginx) for all requests, both with and without a ?symbol= query param, and never serves an x402 payment challenge. Do not attempt to call or pay it until the upstream backend is restored. When live, it is expected to accept a ticker symbol (likely ?symbol=AAPL) and return aggregated news sentiment for that ticker for $0.005 on Base.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "market-news-sentiment#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "serviceId": "chatterbox",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablevoice.dev/api/speech",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablevoice.dev/api/speech with JSON body {text, output:{publicUrl,uploadUrl|postUrl,postFields}, model?, voice?, language?, format?}",
+    "inputExample": {
+      "text": "hello how are you?",
+      "model": "chatterbox-turbo",
+      "voice": "Lucy",
+      "format": "wav",
+      "output": {
+        "publicUrl": "<StableUpload public URL>",
+        "postUrl": "<StableUpload presigned POST URL>",
+        "postFields": {}
+      }
+    },
+    "outputShape": "body.jobId, body.status (pending|queued|processing) — async; generated audio is delivered to the supplied output.publicUrl (poll that URL / the StableUpload object until ready)",
+    "quirks": [
+      "SPEC URL MISMATCH: the real call url is https://stablevoice.dev/api/speech, NOT the registry summary's https://api.xona-agent.com/base-main/audio/chatterbox-tts. Use the stablevoice.dev url.",
+      "inputSchema requires BOTH `text` AND `output`. `output` is a StableUpload destination object requiring `publicUrl` (and presigned uploadUrl/postUrl/postFields) — you MUST provision a StableUpload output slot first; you cannot fabricate it.",
+      "Async: the response is just {jobId,status:pending|queued|processing,type,price}. The actual audio is written to your StableUpload output.publicUrl, not returned inline. Poll the StableUpload URL until the audio object exists.",
+      "Server returns 402 before validating the body, so a 402 pre-flight does NOT confirm the body is valid.",
+      "chatterbox-multilingual requires `language`. Custom voice cloning uses optional referenceAudioUrl (also a StableUpload URL); reference duration depends on model.",
+      "Not paid in QA: missing the required StableUpload output destination (managedResource/instructions null), so a paid call would risk losing $1 to a post-charge failure or undeliverable result."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "First provision a StableUpload output slot (POST to StableUpload to get publicUrl + presigned upload fields). Then POST https://stablevoice.dev/api/speech with a JSON body {\"text\":\"<short text>\",\"model\":\"chatterbox-turbo\",\"voice\":\"Lucy\",\"format\":\"wav\",\"output\":{\"publicUrl\":...,\"postUrl\":...,\"postFields\":{...}}}, paying $1.00 USDC via x402 (Base eip155:8453 or Solana). The response returns {jobId,status} — it is async, so the generated audio is NOT inline; it lands at your output.publicUrl. Poll that StableUpload URL until the audio object is available, then download it. Use the real stablevoice.dev url, not the registry summary's xona-agent.com url.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "chatterbox#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

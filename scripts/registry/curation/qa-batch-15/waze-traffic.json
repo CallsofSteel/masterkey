@@ -1,0 +1,46 @@
+{
+  "serviceId": "waze-traffic",
+  "subcat": "traffic-transportation",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableninja.dev/api/waze/alerts-and-jams",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stableninja.dev/api/waze/alerts-and-jams?center=LAT,LON&radius=5&radius_units=KM&max_alerts=5&max_jams=5 (all params optional; specify a location via center+radius+radius_units, or via bottom_left+top_right bounding box)",
+    "inputExample": {
+      "center": "37.7749,-122.4194",
+      "radius": "5",
+      "radius_units": "KM",
+      "max_alerts": 5,
+      "max_jams": 5
+    },
+    "outputShape": "body.status (\"OK\"), body.data.alerts[] (each: type, subtype, description, street, city, latitude, longitude, num_thumbs_up, publish_datetime_utc), body.data.jams[] (each: level, speed_kmh, length_meters, street, end_location, line_coordinates[], update_datetime_utc), body.parameters (echo of resolved query incl computed bottom_left/top_right)",
+    "quirks": [
+      "All query params are optional but you must specify a location somehow; center=LAT,LON requires radius and radius_units (KM|MI) alongside it. Coordinates are LAT,LON comma-separated strings matching pattern ^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$. Cap max_alerts/max_jams (0-100) to keep the response small."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a GET to https://stableninja.dev/api/waze/alerts-and-jams with a location in the query string. Simplest: center=LAT,LON plus radius (e.g. 5) and radius_units=KM (or MI); alternatively pass a bounding box via bottom_left and top_right. Optionally cap results with max_alerts and max_jams (0-100). Pays $0.01 USDC via x402 on Base. Read body.data.alerts[] for incidents/hazards/closures and body.data.jams[] for live congestion (level, speed_kmh, length_meters, street). Plain synchronous JSON, no auth beyond payment.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "waze-traffic#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

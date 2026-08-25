@@ -1,0 +1,58 @@
+{
+  "serviceId": "x402-service-monitor",
+  "subcat": "uptime-status-pages",
+  "batchId": "batch-17",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402trustlayer.xyz/api/quality-monitor/probe",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402station.io/api/v1/watch",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402station.io/api/v1/watch with JSON body {url, webhookUrl, signals?}",
+    "inputExample": {
+      "url": "https://x402station.io/api/v1/watch",
+      "webhookUrl": "https://x402station.io/qa/webhook-sink"
+    },
+    "outputShape": "body.watchId (uuid), body.secret (one-time 64-char hex HMAC seed), body.expiresAt, body.signals[], body.alertsPaid, body.alertsRemaining, body.endpointKnown, body.deliveryFormat (HMAC verification + alert payload shape), body.statusUrl, body.unsubscribeUrl",
+    "quirks": [
+      "webhookUrl is REQUIRED and must be a publicly reachable URL — x402station POSTs HMAC-SHA256-signed alert payloads there when signals fire. The registration call itself is synchronous and returns immediately even if the webhook is not yet live.",
+      "body.secret is a 64-char hex HMAC seed returned ONLY ONCE in this response — store it; you need it to verify alert signatures (sha256=<hmac-hex> over raw body, constant-time compare) and to access statusUrl/unsubscribeUrl (?secret=...).",
+      "Optional signals[] defaults to ['dead','zombie','decoy_price_extreme']; must be drawn from the fixed enum (e.g. dead, zombie, slow, suspicious_high_price, proxy_markup, wildcard_402, spa_fallback, etc.) — typos are rejected, not silently ignored.",
+      "endpointKnown:false means the watched URL is not yet in x402station's catalog, so alerts only fire after their ingest picks it up.",
+      "Response includes idempotentReplay flag and alertsPaid/alertsRemaining (100 alerts included per watch). Watch has an expiresAt (~30 days out).",
+      "A request-bin / webhook.site style webhookUrl can be flagged by safety classifiers as exfil-shaped; use a legitimate public endpoint you control."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "POST to https://x402station.io/api/v1/watch with a JSON body containing the x402 endpoint URL to monitor (url) and a publicly reachable webhookUrl where alerts will be delivered; optionally pass signals[] from the documented enum (defaults to dead/zombie/decoy_price_extreme). The call costs $0.01 USDC on Base and returns synchronously with a watchId and a one-time HMAC secret — store the secret immediately, as it is required to verify the HMAC-SHA256 signature on incoming alert webhooks and to call the statusUrl/unsubscribeUrl. When a watched signal fires, x402station POSTs a signed payload to your webhookUrl (up to 5 retries, ~5min apart). 100 alerts are included per watch and it expires in ~30 days.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402-service-monitor#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "x402-service-monitor#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

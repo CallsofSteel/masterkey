@@ -1,0 +1,74 @@
+{
+  "serviceId": "subtitle-caption-generator",
+  "subcat": "transcription-subtitles",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/subtitle-generate-api-3e1477",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/generate-subtitles-from-video-api-339ad3",
+      "method": "POST"
+    },
+    {
+      "backend": "https://gg402.vercel.app/video_caption_generator",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.hookfindr.com/api/x402/caption.srt",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/video_caption_generator with JSON body {video_url}",
+    "inputExample": {
+      "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+    },
+    "outputShape": "body.captions[] (each {text, start_time, end_time}), body.accuracy_score, body.visual_descriptions[], body.processedAt",
+    "quirks": [
+      "inputSchema was null in registry; the correct field is video_url (a public URL to a video file).",
+      "Output is structured JSON captions with timecodes, not an SRT file; build SRT yourself from body.captions[] if needed.",
+      "Response also includes visual_descriptions[] and an accuracy_score."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://gg402.vercel.app/video_caption_generator with a JSON body {\"video_url\": \"<public video URL>\"}, paying $0.010 USDC on Base (x402, no auth/sign-in). It returns 200 synchronously with a JSON object. Read body.captions[] for the timed caption segments (each has text, start_time, end_time in seconds); body.visual_descriptions[] gives scene descriptions and body.accuracy_score gives a confidence value. If you need an SRT file, assemble it from body.captions[] yourself.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "subtitle-caption-generator#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "subtitle-caption-generator#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "subtitle-caption-generator#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "subtitle-caption-generator#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

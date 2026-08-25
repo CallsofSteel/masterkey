@@ -1,0 +1,1024 @@
+{
+  "subcategory": "shipping-logistics",
+  "category": "ecommerce",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Thin x402 supply; the genuine logistics service is maritime vessel (AIS) tracking. DROPPED/routed: orbisapi/x402helper farms, FlightAware flight search #24 -> flight-aviation, PredictLeads #6 -> data-enrichment, agentwonderland AuctionIntel #5 -> finance, OnchainExpat #7 + Strale generic #3/#4 (low-signal), solopreneur supply-chain-agent #21 (non-pay).",
+  "entries": [
+    {
+      "name": "Vessel AIS Position",
+      "kind": "api",
+      "provider": "war-tracker",
+      "providerId": "war-tracker",
+      "aka": [
+        "vessel-ais-position",
+        "vessel-position"
+      ],
+      "description": "Get the latest known AIS position (lat/lon, speed, course, destination) for a vessel by IMO number. Live OSINT maritime data from War-Tracker.",
+      "tags": [
+        "logistics",
+        "shipping",
+        "vessel-tracking",
+        "ais",
+        "maritime"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://war-tracker.com/api/v1/vessels/:imo/position",
+          "method": "GET",
+          "provider": "war-tracker",
+          "providerId": "war-tracker",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x8B7243F652D3641F661619862157686992640b37",
+              "extra": {
+                "name": "USDC"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://war-tracker.com/api/v1/vessels/{imo}/position \u2014 no request body; {imo} is a 7-digit IMO number in the path.",
+        "inputExample": {
+          "_path": "GET /api/v1/vessels/9217981/position",
+          "_note": "No body. Only input is the :imo path segment \u2014 a real 7-digit IMO number."
+        },
+        "outputShape": "{ ship_id, imo (often null), mmsi (often null), captured_utc, age_seconds, lat, lon, sog, cog, destination }",
+        "quirks": [
+          "GET only \u2014 registry's POST returns 405 Method Not Allowed.",
+          "x402 charged per call (~$0.001) even on a 404 'no recent position for vessel' (you pay for the lookup miss).",
+          "404 detail='no recent position for vessel' means that IMO has no current AIS fix, not a broken endpoint \u2014 try a larger/active vessel.",
+          ":imo must be a real 7-digit IMO number.",
+          "TRAP: response.ship_id may NOT equal the requested IMO and response.imo can be null \u2014 the :imo path is a lookup key; the returned ship_id is War-Tracker's internal id. Do not assume they match.",
+          "Charged via x402/mpp USDC on Base (also Polygon/Avalanche/Solana via CDP/PayAI facilitators)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Get the latest known AIS position (lat/lon, speed, course, destination) for a vessel by IMO number. Live OSINT maritime data from War-Tracker. GET https://war-tracker.com/api/v1/vessels/{imo}/position \u2014 no request body; {imo} is a 7-digit IMO number in the path. Output: { ship_id, imo (often null), mmsi (often null), captured_utc, age_seconds, lat, lon, sog, cog, destination }",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Vessel AIS Track",
+      "kind": "api",
+      "provider": "war-tracker",
+      "providerId": "war-tracker",
+      "aka": [
+        "vessel-ais-track",
+        "vessel-track"
+      ],
+      "description": "Get a vessel's recent AIS track \u2014 a downsampled array of timestamped position points over the lookback window (currently clamped to 1 hour) for a vessel by IMO number.",
+      "tags": [
+        "logistics",
+        "shipping",
+        "vessel-tracking",
+        "ais",
+        "maritime"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://war-tracker.com/api/v1/vessels/:imo/track",
+          "method": "GET",
+          "provider": "war-tracker",
+          "providerId": "war-tracker",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "10000",
+              "payTo": "0x8B7243F652D3641F661619862157686992640b37",
+              "extra": {
+                "name": "USDC"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://war-tracker.com/api/v1/vessels/{imo}/track[?hours=1] \u2014 no request body; {imo} is a 7-digit IMO. Optional query param hours (integer, min 1, max 1 \u2014 currently always clamped to 1).",
+        "inputExample": {
+          "_path": "GET /api/v1/vessels/9217981/track",
+          "_note": "No body. :imo path segment (7-digit IMO) is the only required input. Optional ?hours= query param exists but is clamped to max 1."
+        },
+        "outputShape": "{ imo, hours_requested, hours_effective, raw_points_in_window, downsample_step, points:[{ captured_utc, lat, lon, sog, cog }] }",
+        "quirks": [
+          "GET only \u2014 registry's POST returns 405.",
+          "Optional ?hours= query param is documented but CLAMPED to a max of 1 hour (hours_effective will be 1 regardless of larger requests). Field kept for forward-compat only.",
+          "points[] may contain very few entries (1 in test) when AIS coverage is sparse; raw_points_in_window tells you how many fixes existed before downsampling.",
+          "Unlike /position, the track response echoes the requested imo correctly in the top-level 'imo' field.",
+          ":imo must be a real 7-digit IMO number; a vessel with no recent fixes yields empty/short points and you still pay (~$0.01).",
+          "Charged via x402/mpp USDC on Base (also Polygon/Avalanche/Solana via CDP/PayAI facilitators)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Get a vessel's recent AIS track \u2014 a downsampled array of timestamped position points over the lookback window (currently clamped to 1 hour) for a vessel by IMO number. GET https://war-tracker.com/api/v1/vessels/{imo}/track[?hours=1] \u2014 no request body; {imo} is a 7-digit IMO. Optional query param hours (integer, min 1, max 1 \u2014 currently always clamped to 1). Output: { imo, hours_requested, hours_effective, raw_points_in_window, downsample_step, points:[{ captured_utc, lat, lon, sog, cog }] }",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "PostalForm Mail Letter",
+      "kind": "api",
+      "provider": "PostalForm",
+      "providerId": "postalform",
+      "aka": [
+        "postalform-mail-letter"
+      ],
+      "description": "Print and mail a real physical letter/document (US) via PostalForm. Supply a PDF or text; PostalForm prints & mails it.",
+      "tags": [
+        "mail",
+        "postal",
+        "print",
+        "outward"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://postalform.com/api/machine/orders",
+          "method": "POST",
+          "provider": "PostalForm",
+          "providerId": "postalform",
+          "needsApproval": true,
+          "amount": null,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3400000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x95389c432ae7052893d3d8088efc5270b27391f1",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "free": false,
+            "checkedAt": "2026-06-18"
+          },
+          "inputSchema": null,
+          "outputSchema": null,
+          "status": "active",
+          "min": 3.4,
+          "max": 200,
+          "dynamic": true,
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "created",
+              "pending",
+              "processing",
+              "queued",
+              "payment_pending"
+            ],
+            "jobIdPath": "order_id",
+            "pollUrlTemplate": "{origin}/api/machine/orders/{id}",
+            "poll": {
+              "cost": "free",
+              "statusField": "status",
+              "completeValues": [
+                "completed",
+                "mailed",
+                "delivered",
+                "sent",
+                "success",
+                "in_production",
+                "accepted"
+              ],
+              "failedValues": [
+                "failed",
+                "error",
+                "canceled",
+                "cancelled",
+                "returned"
+              ],
+              "resultPath": null
+            }
+          }
+        }
+      ],
+      "docs": "https://postalform.com/agents",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-23",
+        "resultPull": "poll",
+        "auth": "none",
+        "needsApproval": true,
+        "callShape": "POST https://postalform.com/api/machine/orders (x402) \u2014 validate first at https://postalform.com/api/machine/orders/validate to get the exact quote",
+        "inputExample": {},
+        "outputShape": "body (order id; poll https://postalform.com/api/machine/orders/{id} for status)",
+        "quirks": [
+          "OUTWARD/IRREVERSIBLE: prints & mails a real physical item \u2014 needsApproval before sending.",
+          "Dynamic price $3.4-$200; call /validate first for the exact total.",
+          "Confirmed live 402 on Base (not paid \u2014 irreversible). Provide content via the documented body; see postalform.com/agents.",
+          "US recipient addresses ONLY.",
+          "Async: after the paid POST, poll the FREE GET /api/machine/orders/{order_id} (no payment) until status=completed/mailed. Physical mail = irreversible side effect; needsApproval gated.",
+          "Use a stable request_id to avoid duplicate mailings on retry."
+        ],
+        "guide": "Validate to get a quote, then pay the x402 422/402 to create the order; poll the status URL. Requires human approval (mails a physical item). Base USDC.",
+        "costObservedUsd": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "PostalForm Flower Letter",
+      "kind": "api",
+      "provider": "PostalForm",
+      "providerId": "postalform",
+      "aka": [
+        "postalform-flower-letter"
+      ],
+      "description": "Send a physical flower-letter (Florist One) via PostalForm \u2014 flowers + a printed letter delivered to a US address.",
+      "tags": [
+        "mail",
+        "postal",
+        "print",
+        "outward"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://postalform.com/api/machine/flower-letters",
+          "method": "POST",
+          "provider": "PostalForm",
+          "providerId": "postalform",
+          "needsApproval": true,
+          "amount": null,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3400000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x95389c432ae7052893d3d8088efc5270b27391f1",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "free": false,
+            "checkedAt": "2026-06-18"
+          },
+          "inputSchema": null,
+          "outputSchema": null,
+          "status": "active",
+          "min": 1,
+          "max": 250,
+          "dynamic": true,
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "created",
+              "pending",
+              "processing",
+              "queued",
+              "payment_pending"
+            ],
+            "jobIdPath": "order_id",
+            "pollUrlTemplate": "{origin}/api/machine/flower-letters/{id}",
+            "poll": {
+              "cost": "free",
+              "statusField": "status",
+              "completeValues": [
+                "completed",
+                "delivered",
+                "sent",
+                "complete",
+                "success"
+              ],
+              "failedValues": [
+                "failed",
+                "error",
+                "canceled",
+                "cancelled"
+              ],
+              "resultPath": null
+            }
+          }
+        }
+      ],
+      "docs": "https://postalform.com/agents",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-23",
+        "resultPull": "poll",
+        "auth": "none",
+        "needsApproval": true,
+        "callShape": "POST https://postalform.com/api/machine/flower-letters (x402) \u2014 validate first at https://postalform.com/api/machine/flower-letters/validate to get the exact quote",
+        "inputExample": {},
+        "outputShape": "body (order id; poll https://postalform.com/api/machine/flower-letters/{id} for status)",
+        "quirks": [
+          "OUTWARD/IRREVERSIBLE: prints & mails a real physical item \u2014 needsApproval before sending.",
+          "Dynamic price $1-$250; call /validate first for the exact total.",
+          "Empty body returns 422 \u2014 you MUST POST to /flower-letters/validate first (product, ZIP, delivery date) to get a quote, then pay.",
+          "US recipient addresses ONLY.",
+          "Async: poll FREE GET /api/machine/flower-letters/{order_id} until terminal. Irreversible physical send; needsApproval gated."
+        ],
+        "guide": "Validate to get a quote, then pay the x402 422/402 to create the order; poll the status URL. Requires human approval (mails a physical item). Base USDC.",
+        "costObservedUsd": null
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris Container Number Check",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-container-check",
+        "container-check",
+        "iso-6346-check",
+        "eu-verify-container"
+      ],
+      "description": "Offline ISO 6346 validation of an intermodal shipping container number: owner code, equipment category, serial and mod-11 check-digit verification, catching transcription errors before a booking or bill of lading is filed.",
+      "tags": [
+        "logistics",
+        "shipping",
+        "container",
+        "iso6346",
+        "validation",
+        "checksum"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/logistics/container-check",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.002,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "container"
+            ],
+            "properties": {
+              "container": {
+                "type": "string",
+                "description": "11-character container number, e.g. CSQU3054383 (spaces tolerated)",
+                "in": "query"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "container": {
+                    "type": "string"
+                  },
+                  "valid": {
+                    "type": "boolean"
+                  },
+                  "owner_code": {
+                    "type": "string"
+                  },
+                  "category": {
+                    "type": "string"
+                  },
+                  "serial": {
+                    "type": "string"
+                  },
+                  "check_digit": {
+                    "type": "integer"
+                  },
+                  "computed_check_digit": {
+                    "type": "integer"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET https://data.greeneris.io/v1/logistics/container-check?container=<11-char container number> \u2014 no request body; the only input is the `container` query parameter. Pay the 402 quote (~$0.002 USDC on Base) and retry with the X-PAYMENT header.",
+        "inputExample": {
+          "_query": "?container=CSQU3054383",
+          "container": "CSQU3054383"
+        },
+        "outputShape": "{ ok: boolean, data: { container, valid: boolean, owner_code, category (U/J/Z), serial, check_digit, computed_check_digit, source } }",
+        "quirks": [
+          "Deterministic offline validation (ISO 6346 structure + mod-11 checksum) \u2014 no live carrier/booking data; result cached ~1 year.",
+          "GET only; the single input is the `container` query param (spaces in the number are tolerated).",
+          "Returns valid:false with parsed parts for a structurally-wrong or bad-check-digit number rather than an HTTP error.",
+          "x402 charged per call (~$0.002 USDC on Base / eip155:8453); no account or API key \u2014 the payment is the authentication."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate a shipping container number against ISO 6346 (owner code, equipment category, serial, check digit) to catch transcription errors before filing a booking or bill of lading. GET https://data.greeneris.io/v1/logistics/container-check?container=CSQU3054383 \u2014 no body; pay the ~$0.002 USDC (Base) 402 quote and retry. Output: { ok, data: { container, valid, owner_code, category, serial, check_digit, computed_check_digit, source } }.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris GTIN Validation",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-gtin-validation",
+        "gtin-check",
+        "ean-check",
+        "upc-check",
+        "barcode-validation"
+      ],
+      "description": "Offline GS1 mod-10 checksum validation of product barcodes (EAN-8, UPC-A, EAN-13, GTIN-14), returning validity, detected format, GS1 member-org prefix and the computed check digit.",
+      "tags": [
+        "gtin",
+        "ean",
+        "upc",
+        "barcode",
+        "validation",
+        "logistics"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/logistics/gtin-check",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "gtin"
+            ],
+            "properties": {
+              "gtin": {
+                "type": "string",
+                "description": "Barcode number: 8, 12, 13 or 14 digits (spaces/dashes tolerated), passed as the ?gtin= query param"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "gtin": {
+                    "type": "string"
+                  },
+                  "valid": {
+                    "type": "boolean"
+                  },
+                  "format": {
+                    "type": "string"
+                  },
+                  "gs1_prefix": {
+                    "type": "string"
+                  },
+                  "check_digit": {
+                    "type": "integer"
+                  },
+                  "computed_check_digit": {
+                    "type": "integer"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/logistics/gtin-check?gtin=<BARCODE>",
+        "inputExample": {
+          "gtin": "4006381333931"
+        },
+        "outputShape": "ok (bool), data.{gtin, valid (bool), format (EAN-8|UPC-A|EAN-13|GTIN-14), gs1_prefix, check_digit (int), computed_check_digit (int), source}",
+        "quirks": [
+          "gtin is a REQUIRED query param; separators (spaces/dashes) are tolerated and stripped.",
+          "Accepts 8/12/13/14-digit barcodes and auto-detects the format (reported in data.format).",
+          "Pure OFFLINE GS1 mod-10 checksum + structure check \u2014 it does NOT confirm the product exists in any catalog or that the GTIN is registered to a real brand; it only proves the check digit is internally consistent.",
+          "Deterministic; response is 1y-cached; the provider does not charge for empty/failed answers.",
+          "Static price ($0.001); not a dynamic quote."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate a product barcode's GS1 check digit offline before publishing to a marketplace (Amazon/Google reject invalid GTINs). GET https://data.greeneris.io/v1/logistics/gtin-check?gtin=<BARCODE> (8/12/13/14 digits, separators tolerated). Output: ok (bool) + data.{gtin, valid, format, gs1_prefix, check_digit, computed_check_digit, source}. Offline mod-10 checksum only \u2014 structural validity, not catalog existence.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Freight Carrier Lookup",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-freight-lookup",
+        "freight-lookup",
+        "fmcsa-carrier-search",
+        "motor-carrier-lookup"
+      ],
+      "description": "Search US motor carriers by name in the FMCSA Company Census and get ranked candidates, each with its USDOT number, MC docket, legal name, state, carrier status, authority status and operation type \u2014 a cheap first vetting step before booking freight or a carrier.",
+      "tags": [
+        "freight",
+        "logistics",
+        "carrier",
+        "trucking",
+        "fmcsa",
+        "supply-chain"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/freight/lookup",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.008,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "8000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Carrier name to search for, passed as the ?name= query param (e.g. Waccamaw Transport).",
+                "in": "query"
+              },
+              "state": {
+                "type": "string",
+                "description": "Optional 2-letter physical state filter, passed as the ?state= query param (e.g. NC).",
+                "in": "query"
+              },
+              "limit": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 15,
+                "description": "Optional max candidates to return (1-15, default 5), passed as the ?limit= query param.",
+                "in": "query"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              },
+              "count": {
+                "type": "integer"
+              },
+              "candidates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "dot_number": {
+                      "type": "string"
+                    },
+                    "mc_number": {
+                      "type": "string"
+                    },
+                    "legal_name": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "carrier_status": {
+                      "type": "string"
+                    },
+                    "authority_status": {
+                      "type": "string"
+                    },
+                    "operation": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "sources": {
+                "type": "object",
+                "properties": {
+                  "errors": {
+                    "type": "object"
+                  },
+                  "partial": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "attribution": {
+                "type": "array"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET https://api.agentstools.dev/freight/lookup?name=<carrier-name>[&state=<2-letter-state>][&limit=<1-15>]. Required query param `name` (carrier name); optional `state` (2-letter physical-state filter) and `limit` (1-15, default 5). No request body. Result is inline in the 200. Pays $0.008 USDC via x402 on Base (eip155:8453).",
+        "inputExample": {
+          "_query": "?name=Waccamaw%20Transport&state=NC",
+          "name": "Waccamaw Transport",
+          "state": "NC"
+        },
+        "outputShape": "{ query (uppercased echo of name), state, count (int), candidates: [{ dot_number, mc_number (e.g. MC-193481), legal_name, state, carrier_status (e.g. active), authority_status (e.g. active), operation (e.g. interstate) }], sources: { errors: { census? }, partial: boolean }, attribution: [string], disclaimer: string }. Documented example for name=Waccamaw Transport returns count:1 -> WACCAMAW TRANSPORT INC, dot_number 284477, mc_number MC-193481, NC, active/active, interstate.",
+        "quirks": [
+          "At index time the paid HTTP 200 returned count:0 with sources.errors.census='upstream FMCSA/Socrata returned HTTP 403' and sources.partial:true \u2014 the upstream US DOT Socrata data source (data.transportation.gov dataset az4n-8mr2) was rejecting requests. The endpoint itself worked and returned its documented shape; the empty result was an upstream-data outage. The provider's own bazaar output example shows the SAME query returning count:1 (WACCAMAW TRANSPORT INC). Expect populated candidates when the upstream census is healthy; treat sources.partial:true / sources.errors as a data-freshness warning, not an endpoint fault.",
+          "You are charged the flat $0.008 even when count:0 / candidates:[] (whether from a no-match query or an upstream-source error) \u2014 the payment is for the lookup, not for a guaranteed hit.",
+          "`name` is the only required param; `state` (2-letter) narrows by physical state and `limit` (1-15, default 5) caps the candidate count.",
+          "The `query` field in the response echoes the name uppercased (e.g. 'WACCAMAW TRANSPORT'); matching is name-based ranked search, not an exact-id lookup.",
+          "Static price ($0.008 USDC on Base / eip155:8453); no account or API key \u2014 the x402 payment is the authentication.",
+          "Data is public-domain FMCSA registration data; the response carries a disclaimer that these are automated vetting indicators, NOT legal/safety/compliance advice \u2014 verify operating authority, insurance and safety status directly with FMCSA (SAFER / L&I) before dispatching or tendering a load."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search US motor carriers by name in the FMCSA Company Census to vet a trucking carrier before booking freight. GET https://api.agentstools.dev/freight/lookup?name=<carrier-name>[&state=<2-letter>][&limit=<1-15>] \u2014 `name` required; optional `state` filter and `limit` (1-15, default 5). No request body; result inline in the 200. Pays $0.008 USDC via x402 on Base (eip155:8453), keyless. Returns { query, state, count, candidates:[{ dot_number, mc_number, legal_name, state, carrier_status, authority_status, operation }], sources:{errors,partial}, attribution, disclaimer }. NOTE: the underlying US DOT Socrata source can transiently 403 (seen at index time -> count:0, sources.partial:true); you still pay the flat $0.008. When the census is healthy the documented example returns the real carrier (e.g. WACCAMAW TRANSPORT INC, DOT 284477, MC-193481). Public FMCSA data is a vetting indicator only \u2014 confirm authority/insurance/safety with FMCSA SAFER before dispatching.",
+        "costObservedUsd": 0.008
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Freight Carrier Fitness",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-freight-carrier",
+        "freight-carrier-fitness",
+        "fmcsa-carrier-verdict",
+        "carrier-fit-to-haul"
+      ],
+      "description": "One-call carrier vetting: give a US motor carrier's DOT, MC or name and get a deterministic fit-to-haul verdict (fit, caution, unfit or not_found), a 0-100 fit score and per-dimension signals from FMCSA registration data.",
+      "tags": [
+        "freight",
+        "logistics",
+        "carrier",
+        "trucking",
+        "fmcsa",
+        "due-diligence"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/freight/carrier",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "20000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T20:20:59.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [],
+            "properties": {
+              "dot": {
+                "type": "string",
+                "description": "USDOT number of the carrier, passed as the ?dot= query param (e.g. 284477). Supply exactly one of dot, mc or name.",
+                "in": "query"
+              },
+              "mc": {
+                "type": "string",
+                "description": "MC, MX or FF docket number (digits only, no prefix), passed as the ?mc= query param. Supply exactly one of dot, mc or name.",
+                "in": "query"
+              },
+              "name": {
+                "type": "string",
+                "description": "Carrier legal name (best match is used), passed as the ?name= query param. Supply exactly one of dot, mc or name.",
+                "in": "query"
+              },
+              "haul_type": {
+                "type": "string",
+                "enum": [
+                  "general",
+                  "hazmat",
+                  "household_goods",
+                  "passengers",
+                  "oil"
+                ],
+                "description": "Type of haul to check fitness for (default general), passed as the ?haul_type= query param.",
+                "in": "query"
+              },
+              "state": {
+                "type": "string",
+                "description": "Optional 2-letter state hint to disambiguate a name, passed as the ?state= query param.",
+                "in": "query"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "verdict": {
+                "type": "string"
+              },
+              "fit_score": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "category": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "haul_type": {
+                "type": "string"
+              },
+              "carrier": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "dot_number": {
+                    "type": "string"
+                  },
+                  "mc_number": {
+                    "type": "string"
+                  },
+                  "legal_name": {
+                    "type": "string"
+                  },
+                  "carrier_status": {
+                    "type": "string"
+                  },
+                  "authority_status": {
+                    "type": "string"
+                  },
+                  "operation": {
+                    "type": "string"
+                  },
+                  "hazmat": {
+                    "type": "boolean"
+                  },
+                  "safety_rating": {
+                    "type": "string"
+                  },
+                  "fleet": {
+                    "type": "object"
+                  },
+                  "location": {
+                    "type": "object"
+                  }
+                }
+              },
+              "signals": {
+                "type": "array"
+              },
+              "reasons": {
+                "type": "array"
+              },
+              "coverage": {
+                "type": "object"
+              },
+              "sources": {
+                "type": "object"
+              },
+              "attribution": {
+                "type": "array"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET https://api.agentstools.dev/freight/carrier?dot=<usdot>&haul_type=<general|hazmat|household_goods|passengers|oil>. Supply exactly ONE identifier (?dot=, ?mc= digits-only, or ?name=); optional ?haul_type= (default general) and ?state= (2-letter hint to disambiguate a name). No request body. Result inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453).",
+        "inputExample": {
+          "_query": "?dot=284477&haul_type=hazmat",
+          "dot": "284477",
+          "haul_type": "hazmat"
+        },
+        "outputShape": "{ verdict (fit|caution|unfit|not_found), fit_score (0-100 int or null), category (excellent|good|fair|poor or null), haul_type, query (echo of supplied params), carrier: { dot_number, mc_number, legal_name, carrier_status, authority_status, operation, hazmat (bool), safety_rating, fleet:{power_units,drivers}, location:{state} } | null, signals: [{weight, reason}], reasons: [string], dimensions: {}, coverage: { dimensions_evaluated:[authority,operation,hazmat,safety,history,registration_freshness,address,fleet], insurance_tier, tiers:{...} }, sources: { errors:{census?}, partial:bool }, attribution:[string], disclaimer:string }. Provider's documented healthy example for dot=284477&haul_type=hazmat -> verdict:fit, fit_score:100, category:excellent, carrier WACCAMAW TRANSPORT INC (MC-193481, active/active, interstate, hazmat:true, satisfactory, 96 power units / 95 drivers, NC).",
+        "quirks": [
+          "At index time the paid HTTP 200 returned verdict:'not_found', fit_score:null, sources.errors.census='upstream FMCSA/Socrata returned HTTP 403' and sources.partial:true \u2014 the upstream US DOT Socrata census (data.transportation.gov dataset az4n-8mr2) was rejecting requests (same transient outage seen for the sibling /freight/lookup). The endpoint worked and returned its full documented shape; the empty verdict was an upstream-data outage, not an endpoint fault. Provider's own bazaar/openapi example for the SAME query returns verdict:fit / fit_score:100 (WACCAMAW TRANSPORT INC). Treat sources.partial:true / sources.errors.census as a data-freshness warning.",
+          "You are charged the flat $0.02 even when verdict:'not_found' (from a genuine no-match OR an upstream-source 403) \u2014 the payment is for the vetting call, not a guaranteed hit.",
+          "Supply exactly ONE of dot / mc / name; dot is the most precise (dot=284477). mc is digits-only, no 'MC-' prefix. name uses best-match and accepts an optional ?state= hint to disambiguate.",
+          "The insurance-on-file adequacy and CSA/SMS safety-percentile tiers only light up when the provider has an FMCSA webKey configured; otherwise coverage.insurance_tier reads 'unavailable (no FMCSA webKey)' and the verdict is built from the keyless census dimensions (authority, operation, hazmat, safety, history, registration_freshness, address, fleet).",
+          "Deterministic weighted scoring, no LLM \u2014 each fired signal returns its weight + a human-readable reason so an agent can re-rank with its own policy.",
+          "Static price ($0.02 USDC on Base / eip155:8453); no account or API key \u2014 the x402 payment is the authentication. Business/carrier metadata only, never personal data about drivers or officers.",
+          "Data is public-domain FMCSA registration data; response carries a disclaimer that these are automated vetting indicators, NOT legal/safety/compliance advice \u2014 verify authority, insurance and safety directly with FMCSA (SAFER / L&I) before dispatching or tendering a load."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Vet a single US motor carrier before tendering a load: give one identifier and get a deterministic fit-to-haul verdict from FMCSA registration data. GET https://api.agentstools.dev/freight/carrier?dot=<usdot>&haul_type=<general|hazmat|household_goods|passengers|oil> \u2014 supply exactly ONE of ?dot= (most precise), ?mc= (digits only) or ?name= (+ optional ?state= hint); optional ?haul_type= defaults to general. No request body; result inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453), keyless. Returns { verdict (fit|caution|unfit|not_found), fit_score (0-100), category, haul_type, carrier:{dot_number, mc_number, legal_name, carrier_status, authority_status, operation, hazmat, safety_rating, fleet, location}, signals, reasons, coverage, sources, attribution, disclaimer }. Pattern: call /freight/lookup by name first to get a precise dot_number, then call this for the full verdict. NOTE: the underlying US DOT Socrata census can transiently 403 (seen at index time -> verdict:not_found, sources.partial:true); you still pay the flat $0.02. When healthy the documented example (dot=284477, haul_type=hazmat) returns verdict:fit, fit_score:100 for WACCAMAW TRANSPORT INC. Public FMCSA data is a vetting indicator only \u2014 confirm authority/insurance/safety with FMCSA SAFER before dispatching.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    }
+  ]
+}

@@ -1,0 +1,375 @@
+{
+  "generatedAt": "2026-06-10T22:05:09.375Z",
+  "source": "./config/services.json",
+  "note": "1P provider map for curate.mjs (stamps backend.firstParty). A backend is 1P iff its service matches an entry by alias AND its host is in that entry's hosts. Generated from the agentic-market config + first-party-extra.json (manual additions). Regenerate with gen-first-party.mjs.",
+  "entries": [
+    {
+      "id": "agent-camo",
+      "aliases": [
+        "agent-camo",
+        "agent-camo-vpn",
+        "agentcamo"
+      ],
+      "hosts": [
+        "api.agentcamo.xyz"
+      ]
+    },
+    {
+      "id": "agentmail",
+      "aliases": [
+        "agentmail"
+      ],
+      "hosts": [
+        "x402.api.agentmail.to"
+      ]
+    },
+    {
+      "id": "agentphone",
+      "aliases": [
+        "agentphone"
+      ],
+      "hosts": [
+        "api.agentphone.ai"
+      ]
+    },
+    {
+      "id": "alchemy",
+      "aliases": [
+        "alchemy"
+      ],
+      "hosts": [
+        "x402.alchemy.com"
+      ]
+    },
+    {
+      "id": "allium",
+      "aliases": [
+        "allium"
+      ],
+      "hosts": [
+        "agents.allium.so"
+      ]
+    },
+    {
+      "id": "anchor-browser",
+      "aliases": [
+        "anchor-browser",
+        "anchorbrowser"
+      ],
+      "hosts": [
+        "api.anchorbrowser.io"
+      ]
+    },
+    {
+      "id": "bankr",
+      "aliases": [
+        "bankr"
+      ],
+      "hosts": [
+        "llm.bankr.bot",
+        "api.bankr.bot"
+      ]
+    },
+    {
+      "id": "blackswan",
+      "aliases": [
+        "blackswan"
+      ],
+      "hosts": [
+        "x402.blackswan.wtf"
+      ]
+    },
+    {
+      "id": "browserbase",
+      "aliases": [
+        "browserbase"
+      ],
+      "hosts": [
+        "x402.browserbase.com"
+      ]
+    },
+    {
+      "id": "cambrian",
+      "aliases": [
+        "cambrian"
+      ],
+      "hosts": [
+        "x402.cambrian.network"
+      ]
+    },
+    {
+      "id": "capminal",
+      "aliases": [
+        "capminal"
+      ],
+      "hosts": [
+        "www.capminal.ai"
+      ]
+    },
+    {
+      "id": "coingecko",
+      "aliases": [
+        "coingecko"
+      ],
+      "hosts": [
+        "pro-api.coingecko.com"
+      ]
+    },
+    {
+      "id": "coinmarketcap",
+      "aliases": [
+        "coinmarketcap"
+      ],
+      "hosts": [
+        "pro-api.coinmarketcap.com"
+      ]
+    },
+    {
+      "id": "dripstack",
+      "aliases": [
+        "dripstack"
+      ],
+      "hosts": [
+        "dripstack.xyz"
+      ]
+    },
+    {
+      "id": "dtelecom-stt",
+      "aliases": [
+        "dtelecom-stt",
+        "dtelecom"
+      ],
+      "hosts": [
+        "x402stt.dtelecom.org"
+      ]
+    },
+    {
+      "id": "emc2-ai",
+      "aliases": [
+        "emc2-ai",
+        "emc2ai"
+      ],
+      "hosts": [
+        "emc2ai.io"
+      ]
+    },
+    {
+      "id": "exa",
+      "aliases": [
+        "exa"
+      ],
+      "hosts": [
+        "api.exa.ai"
+      ]
+    },
+    {
+      "id": "firecrawl",
+      "aliases": [
+        "firecrawl",
+        "heurist"
+      ],
+      "hosts": [
+        "mesh.heurist.xyz"
+      ]
+    },
+    {
+      "id": "heurist-mesh",
+      "aliases": [
+        "heurist-mesh",
+        "heurist"
+      ],
+      "hosts": [
+        "mesh.heurist.xyz"
+      ]
+    },
+    {
+      "id": "hyperbolic",
+      "aliases": [
+        "hyperbolic",
+        "vercel"
+      ],
+      "hosts": [
+        "hyperbolic-x402.vercel.app"
+      ]
+    },
+    {
+      "id": "hyperbrowser",
+      "aliases": [
+        "hyperbrowser"
+      ],
+      "hosts": [
+        "api.hyperbrowser.ai"
+      ]
+    },
+    {
+      "id": "jeetscreener",
+      "aliases": [
+        "jeetscreener"
+      ],
+      "hosts": [
+        "jeetscreener.io"
+      ]
+    },
+    {
+      "id": "melis-notify",
+      "aliases": [
+        "melis-notify",
+        "melis"
+      ],
+      "hosts": [
+        "notify.melis.ai"
+      ]
+    },
+    {
+      "id": "messari",
+      "aliases": [
+        "messari"
+      ],
+      "hosts": [
+        "api.messari.io"
+      ]
+    },
+    {
+      "id": "minifetch",
+      "aliases": [
+        "minifetch"
+      ],
+      "hosts": [
+        "minifetch.com"
+      ]
+    },
+    {
+      "id": "mycelia-signal",
+      "aliases": [
+        "mycelia-signal",
+        "myceliasignal"
+      ],
+      "hosts": [
+        "api.myceliasignal.com"
+      ]
+    },
+    {
+      "id": "nansen",
+      "aliases": [
+        "nansen"
+      ],
+      "hosts": [
+        "api.nansen.ai"
+      ]
+    },
+    {
+      "id": "parallel-ai",
+      "aliases": [
+        "parallel-ai",
+        "parallel",
+        "parallelmpp"
+      ],
+      "hosts": [
+        "parallelmpp.dev"
+      ]
+    },
+    {
+      "id": "pinata",
+      "aliases": [
+        "pinata"
+      ],
+      "hosts": [
+        "402.pinata.cloud"
+      ]
+    },
+    {
+      "id": "postalform",
+      "aliases": [
+        "postalform"
+      ],
+      "hosts": [
+        "postalform.com"
+      ]
+    },
+    {
+      "id": "questflow",
+      "aliases": [
+        "questflow"
+      ],
+      "hosts": [
+        "api.questflow.ai"
+      ]
+    },
+    {
+      "id": "run402",
+      "aliases": [
+        "run402"
+      ],
+      "hosts": [
+        "api.run402.com"
+      ]
+    },
+    {
+      "id": "slamai",
+      "aliases": [
+        "slamai"
+      ],
+      "hosts": [
+        "api.slamai.dev"
+      ]
+    },
+    {
+      "id": "surfai",
+      "aliases": [
+        "surfai",
+        "asksurf"
+      ],
+      "hosts": [
+        "x402.asksurf.ai"
+      ]
+    },
+    {
+      "id": "tavily",
+      "aliases": [
+        "tavily"
+      ],
+      "hosts": [
+        "x402.tavily.com"
+      ]
+    },
+    {
+      "id": "thegraph",
+      "aliases": [
+        "thegraph",
+        "the-graph"
+      ],
+      "hosts": [
+        "gateway.thegraph.com"
+      ]
+    },
+    {
+      "id": "zerion",
+      "aliases": [
+        "zerion"
+      ],
+      "hosts": [
+        "api.zerion.io"
+      ]
+    },
+    {
+      "id": "arkham",
+      "aliases": [
+        "arkham",
+        "arkm"
+      ],
+      "hosts": [
+        "api.arkm.com"
+      ]
+    },
+    {
+      "id": "coinstats",
+      "aliases": [
+        "coinstats"
+      ],
+      "hosts": [
+        "x402.coinstats.app",
+        "openapiv1.coinstats.app"
+      ]
+    }
+  ]
+}

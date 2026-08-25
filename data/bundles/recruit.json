@@ -1,0 +1,27 @@
+{
+  "slug": "recruit",
+  "name": "Recruit Outreach",
+  "description": "Find candidates for a role and draft personalized outreach emails (sent only on your approval).",
+  "trigger": "find candidates for a role and email them",
+  "inputs": [{ "name": "role", "prompt": "What role are you hiring for (title, skills, seniority, location)?" }],
+  "steps": [
+    {
+      "label": "Find candidates (broad)",
+      "serviceId": "apollo-people-search",
+      "instruction": "Search for people matching the role. Run several searches with varied criteria (different titles, skills, locations) to build a broad candidate pool — don't rely on a single query."
+    },
+    {
+      "label": "Rank + draft",
+      "instruction": "Dedupe and rank the candidates by fit, then draft a short, personalized outreach email for each of the top few. Reason this out yourself — no service call."
+    },
+    {
+      "label": "Get the sending inbox",
+      "instruction": "Call get_email_inbox to get the user's managed inbox to send FROM. Never create a new inbox."
+    },
+    {
+      "label": "Send (with approval)",
+      "serviceId": "agentmail",
+      "instruction": "Send each outreach email via agentmail. The platform automatically pauses and shows the user each draft for approval BEFORE anything is sent."
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "serviceId": "cross-border-payments",
+  "subcat": "crypto-web3-payments",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://expansion.402box.io/cross_border_payments_banking_setup",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://expansion.402box.io/cross_border_payments_banking_setup",
+    "inputExample": {},
+    "outputShape": "unknown (host unreachable, no response obtained)",
+    "quirks": [
+      "Host expansion.402box.io resolves via DNS to 172.104.233.24 (Linode) but accepts NO TCP connections on port 443 or 80 — every connect times out.",
+      "No 402 payment quote is obtainable; the server is effectively down/unreachable.",
+      "qa-pay returned classification=wallet-error, paid=false, error='provider request failed: fetch failed' — this is a network/host failure, not a wallet problem.",
+      "Endpoint is marked outward/irreversible (banking setup) but cannot be reached to test."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint is currently dead. The host expansion.402box.io resolves in DNS but does not accept connections on 443/80 (all connects time out), so no request — paid or unpaid — completes. No USDC was spent. Do not attempt to call it until the provider host is confirmed back online; if it returns, it is an outward/irreversible 'banking setup' action that needs human approval before any paid call.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cross-border-payments#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

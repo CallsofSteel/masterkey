@@ -1,0 +1,68 @@
+{
+  "serviceId": "stabletravel-hotels-booking",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/hotels/list/by-geocode",
+      "method": "GET",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://stabletravel.dev/api/hotels/autocomplete",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/hotels/ratings",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/hotels/list/by-geocode?latitude={lat}&longitude={lng}",
+    "inputExample": {
+      "latitude": 51.5074,
+      "longitude": -0.1278
+    },
+    "outputShape": "body.data[] (array of hotels near the geocode). Per item: body.data[].{hotelId, name, chainCode, iataCode, geoCode.{latitude,longitude}, address.{countryCode,postalCode,cityName,lines[]}, distance.{value,unit}, lastUpdate}. The hotelId values (e.g. QQLON101) feed the /api/hotels/search offers endpoint.",
+    "quirks": [
+      "latitude AND longitude query params are REQUIRED — this is hotel-list-BY-GEOCODE, not by city name or hotelId.",
+      "This endpoint returns a LIST of hotels (with hotelId, name, distance) near coordinates — it does NOT return bookable offers/prices. Use the returned hotelId values with the sibling /api/hotels/search endpoint to get offers and prices.",
+      "Registry existingUsage block describes /api/hotels/search (offers by hotelId), which is a DIFFERENT endpoint from this key (#6 = by-geocode). by-geocode is the discovery step that yields the hotelIds.",
+      "Results come straight from Amadeus; data[] sorted by distance from the geocode. Empty data[] means no hotels near those coords, not an error.",
+      "402 body is empty on the pre-flight; just pay and you get 200 JSON."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stabletravel.dev/api/hotels/list/by-geocode with required latitude and longitude query params (decimal degrees, e.g. latitude=51.5074&longitude=-0.1278 for central London). This is a sync x402 paid call (~$0.032 USDC on Base, no auth) returning 200 JSON. Read hotels from body.data[]: each item has hotelId, name, geoCode, address, and distance from your point (sorted nearest-first). This endpoint only LISTS hotels near a location — to get bookable offers/prices, take a hotelId from here and call the sibling /api/hotels/search endpoint with hotelIds + checkInDate/checkOutDate.",
+    "costObservedUsd": 0.0324
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-hotels-booking#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-hotels-booking#8",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

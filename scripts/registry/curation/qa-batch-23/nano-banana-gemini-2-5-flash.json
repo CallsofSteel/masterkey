@@ -1,0 +1,69 @@
+{
+  "serviceId": "nano-banana-gemini-2-5-flash",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/nano-banana/v1beta/models/gemini-2.5-flash-image:generateContent",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/images/generations",
+      "method": "POST",
+      "amountUsd": 0.052501
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/nano-banana/v1beta/models/gemini-2.5-flash-image:generateContent with JSON body {contents:[{parts:[{text}]}], generationConfig:{responseModalities:[\"IMAGE\"]}}",
+    "inputExample": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "a red circle"
+            }
+          ]
+        }
+      ],
+      "generationConfig": {
+        "responseModalities": [
+          "IMAGE"
+        ]
+      }
+    },
+    "outputShape": "body.candidates[0].content.parts[0].inlineData.data (base64-encoded image), with body.candidates[0].content.parts[0].inlineData.mimeType (e.g. image/png) for the type",
+    "quirks": [
+      "Uses Google Gemini-native generateContent request shape, NOT a flat {prompt} field. The prompt text goes at contents[0].parts[0].text.",
+      "For image editing/composition add an inlineData part: {parts:[{text:'add a hat'},{inlineData:{mimeType:'image/jpeg',data:'<base64>'}}]} (up to 3 input images).",
+      "Set generationConfig.responseModalities to ['IMAGE'] for image-only or ['TEXT','IMAGE'] for both; optional generationConfig.imageConfig.aspectRatio supports 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9.",
+      "Output image is returned as base64 inside the JSON body (not a URL); decode parts[].inlineData.data to get the PNG. Response is ~2 MB for a single image."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Text-to-image (and image editing) via Google Gemini 2.5 Flash Image. POST a JSON body shaped {contents:[{parts:[{text:\"your prompt\"}]}], generationConfig:{responseModalities:[\"IMAGE\"]}} to the URL; pay $0.05 USDC on Base via x402 (no API key). Read the result from body.candidates[0].content.parts[0].inlineData.data, which is a base64-encoded image (check inlineData.mimeType, e.g. image/png) — decode and save it. To edit or compose, add an inlineData part containing a base64 source image (up to 3). Synchronous, returns a 200 with the image inline.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-gemini-2-5-flash#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "nano-banana-gemini-2-5-flash#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01575
+    }
+  ]
+}

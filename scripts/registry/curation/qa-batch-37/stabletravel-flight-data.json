@@ -1,0 +1,215 @@
+{
+  "serviceId": "stabletravel-flight-data",
+  "subcat": "flight-aviation",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/flights/availability",
+      "method": "POST",
+      "amountUsd": 0.0324
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/checkin-links",
+      "method": "GET",
+      "amountUsd": 0.0054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/search/positions",
+      "method": "GET",
+      "amountUsd": 0.1
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/search/count",
+      "method": "GET",
+      "amountUsd": 0.04
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/search/advanced",
+      "method": "GET",
+      "amountUsd": 0.1
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/nearby",
+      "method": "GET",
+      "amountUsd": 0.008
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/delays",
+      "method": "GET",
+      "amountUsd": 0.1
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KJFK/delays",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KJFK/weather/observations",
+      "method": "GET",
+      "amountUsd": 0.004
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KJFK/weather/forecast",
+      "method": "GET",
+      "amountUsd": 0.004
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KJFK/flights/scheduled-departures",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KJFK/flights/scheduled-arrivals",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/disruption-counts/airline",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/seatmap",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stabletravel.dev/api/flights/availability with JSON body {originDestinations:[{id,originLocationCode,destinationLocationCode,departureDateTimeRange:{date}}], travelers:[{id,travelerType:\"ADULT\"}], sources:[\"GDS\"]}",
+    "inputExample": {
+      "originDestinations": [
+        {
+          "id": "1",
+          "originLocationCode": "SFO",
+          "destinationLocationCode": "JFK",
+          "departureDateTimeRange": {
+            "date": "2026-07-15"
+          }
+        }
+      ],
+      "travelers": [
+        {
+          "id": "1",
+          "travelerType": "ADULT"
+        }
+      ],
+      "sources": [
+        "GDS"
+      ]
+    },
+    "outputShape": "On success: body with Amadeus Flight Offers Search results (offers/itineraries/pricing). On failure: body.success=false + body.error (e.g. \"Amadeus API error: ...\" or zod validation issues in body.issues[]).",
+    "quirks": [
+      "Body is the Amadeus Flight Offers Search v2 shape, NOT a flat {origin,destination,date}. Required arrays: originDestinations[] (with originLocationCode/destinationLocationCode/departureDateTimeRange.date), travelers[] (with id + travelerType:'ADULT'), and sources:['GDS']. A flat body 400s with body.issues[] naming the missing arrays.",
+      "Charge-on-error: you are billed (~$0.032) even when the upstream Amadeus call fails (HTTP 400 with body.success=false). Same pattern as sibling flightaware endpoints.",
+      "Test query (SFO->JFK 2026-07-15) returned 'Amadeus API error: Unknown error' despite a schema-valid body — route forwards correctly but upstream Amadeus availability may error; try a different/near-term date or route."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Pay-per-call x402 (~$0.03 on Base USDC, no API key). POST a full Amadeus Flight Offers Search v2 body to https://stabletravel.dev/api/flights/availability: send originDestinations:[{id:'1',originLocationCode,destinationLocationCode,departureDateTimeRange:{date:'YYYY-MM-DD'}}], travelers:[{id:'1',travelerType:'ADULT'}], and sources:['GDS']. Read offers from the JSON body on success; on failure check body.success===false and body.error (or body.issues[] for schema problems). Note you are charged even when Amadeus returns an error, so use a valid near-term route/date.",
+    "costObservedUsd": 0.0324
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-flight-data#11",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.0324
+    },
+    {
+      "key": "stabletravel-flight-data#12",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#14",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#15",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#16",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#17",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#18",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#19",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    },
+    {
+      "key": "stabletravel-flight-data#20",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "stabletravel-flight-data#21",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.004
+    },
+    {
+      "key": "stabletravel-flight-data#22",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.004
+    },
+    {
+      "key": "stabletravel-flight-data#23",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#24",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#25",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#9",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

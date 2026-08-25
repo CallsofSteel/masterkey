@@ -1,0 +1,49 @@
+{
+  "serviceId": "slack",
+  "subcat": "live-chat-messaging",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/gateway/slack/api/chat.postMessage",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://httpay.xyz/api/gateway/slack/api/chat.postMessage with JSON body {channel, text} AND header X-Upstream-Token: <your Slack bot token>",
+    "inputExample": {
+      "channel": "C0123456789",
+      "text": "hello from MasterKey"
+    },
+    "outputShape": "Slack Web API response: body.ok (bool), body.ts, body.channel, body.message; on failure body.error",
+    "quirks": [
+      "NOT keyless: the gateway 402s on the unpaid preflight but then requires YOUR OWN Slack bot token passed via the X-Upstream-Token header (authType=bearer). Without it the proxy returns {\"error\":\"Service 'slack' requires authentication\"} even after you pay.",
+      "Free demo mode exists: append ?demo=true (10 calls/IP/hour, no payment) to test before paying. Use it to confirm auth/destination before spending.",
+      "chat.postMessage also needs a real Slack channel ID (e.g. C0123456789) or @user; there is no default channel.",
+      "Outward/irreversible: posts a real Slack message.",
+      "MPP alt payment available (Tempo pathUSD) in addition to x402 on Base; payTo 0x5f5d6FcB315871c26F720dc6fEf17052dD984359."
+    ],
+    "needs": [
+      "Slack bot/upstream token for X-Upstream-Token header",
+      "Slack channel ID destination"
+    ],
+    "needsApproval": true,
+    "guide": "This HTTPay gateway proxies the Slack Web API but is NOT keyless: you must supply your own Slack bot token in the X-Upstream-Token header and target a real channel ID, plus pay $0.001 via x402. POST {\"channel\":\"C...\",\"text\":\"...\"} with X-Upstream-Token set; read body.ok and body.ts on success or body.error on failure. Test safely first with ?demo=true (free, 10/IP/hr). MasterKey has no Slack token/channel, so classify needs-input.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "slack#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

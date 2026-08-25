@@ -1,0 +1,281 @@
+[
+  {
+    "id": "ai-phone-call",
+    "kind": "api",
+    "name": "AI Phone Call",
+    "aka": [
+      "ai-phone-call",
+      "place-call"
+    ],
+    "provider": "StablePhone",
+    "providerId": "stablephone",
+    "description": "Place an outbound AI voice phone call. You provide the destination number and a natural-language task describing what the AI agent should accomplish; the call is queued and a call_id is returned to track status/transcript. Offered via two gateways (StablePhone and BlockRun) for the same underlying capability.",
+    "category": "communication",
+    "subcategory": "video-voice-calls",
+    "tags": [
+      "phone-call",
+      "voice",
+      "ai-agent",
+      "telephony"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.540",
+      "amount": 0.54,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "StablePhone",
+        "providerId": "stablephone",
+        "url": "https://stablephone.dev/api/call",
+        "method": "POST",
+        "needsApproval": true,
+        "async": {
+          "isAsync": true,
+          "submitStatusField": "status",
+          "submitPendingValues": [
+            "queued",
+            "in-progress",
+            "in_progress",
+            "created"
+          ],
+          "jobIdPath": "call_id",
+          "pollUrlTemplate": "{origin}/api/call/{id}",
+          "poll": {
+            "cost": "siwx",
+            "statusField": "status",
+            "completeValues": [
+              "completed",
+              "complete",
+              "ended"
+            ],
+            "failedValues": [
+              "failed",
+              "no-answer",
+              "busy",
+              "error",
+              "canceled"
+            ],
+            "resultPath": null
+          }
+        },
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.54,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.540",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "540000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xD219dB8179Bb9C1899eF87f39eebA9D1070c6801",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "540000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "CvJc3pWFbx84XHiy18uZUNW1y9zdGMy1muHozCYiBsxj",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "tYF1GpPX9LkqdaMW3owH7hicCrCk3trhYMkEMSaMDWV",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:07:38.696Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      },
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://blockrun.ai/api/v1/voice/call",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.54,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.540",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "540000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:07:38.696Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      },
+      {
+        "provider": "BlockRun",
+        "providerId": "blockrun",
+        "url": "https://sol.blockrun.ai/api/v1/voice/call",
+        "method": "POST",
+        "needsApproval": true,
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.54,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.540",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "540000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "AQqnMFBwGZEoti85aTVRy8XYpKrho7GaMDx9ZB3CEeKA",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4",
+                "description": "AI model inference",
+                "mimeType": "application/json",
+                "resource": "https://sol.blockrun.ai/api/v1/voice/call"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:07:38.696Z"
+        },
+        "status": "active",
+        "team": "BlockRun"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-23",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "POST https://stablephone.dev/api/call with JSON {phone_number, task, first_sentence?}",
+      "inputExample": {
+        "phone_number": "+15555550123",
+        "task": "This is an automated verification call from MasterKey. Briefly greet the recipient, state this is an automated test call, then say goodbye and hang up.",
+        "first_sentence": "Hi, this is an automated call from MasterKey.",
+        "max_duration": 2,
+        "voicemail_action": "hangup"
+      },
+      "outputShape": "body.success, body.call_id, body.message (\"Call successfully queued\"). Async: the call is placed after queueing.",
+      "quirks": [
+        "REGISTRY FIX: the BlockRun backend was stored as GET http://blockrun.ai/api/v1/voice/call — the real endpoint is POST https://blockrun.ai/api/v1/voice/call (per BlockRun OpenAPI). The GET-with-query-params shape (to/task/from/voice/...) was wrong.",
+        "FIELD-NAME TRAP: StablePhone uses phone_number; BlockRun uses to. They are NOT interchangeable across gateways.",
+        "StablePhone phone_number must match ^\\+1\\d{10}$ (US/Canada only, +1 then 10 digits). task is 1-4000 chars. from is OPTIONAL.",
+        "BlockRun requires from (caller ID) — you must FIRST buy a wallet-owned number via POST /api/v1/phone/numbers/buy ($5, 30-day lease). task min length is 10 (vs 1 for StablePhone). to accepts any-country E.164.",
+        "BlockRun model enum is base|enhanced|turbo; StablePhone model enum is base|turbo (no enhanced). StablePhone adds record, transfer_phone_number, voicemail_action(hangup|leave_message|ignore), voicemail_message, metadata. BlockRun adds language, interruption_threshold(50-500ms).",
+        "StablePhone returns 403 if number is on the Do-Not-Call (DNC) list — do NOT retry DNC numbers.",
+        "Async: success is a QUEUED ack, not call completion. Status/transcript via GET /api/call/:id (StablePhone) is SIWX-gated to the paying wallet; the pay call itself needs no auth.",
+        "StablePhone accepts x402 (Base) AND MPP; BlockRun is x402-only. sol.blockrun.ai is the Solana payment mirror of the same BlockRun endpoint.",
+        "Prior human-confirmed delivery on StablePhone (2026-06-09): recipient received a real inbound call + SMS, confirming end-to-end delivery (not just a 200).",
+        "DELIVERY CONFIRMED 2026-06-11: real AI phone call received ($0.54, 200, call queued then placed).",
+        "task = natural-language instructions for what the AI should say; first_sentence = opening line. Default provider StablePhone.",
+        "Async: submit returns {call_id}; poll SIWX GET /api/call/{call_id} until status=completed; transcript/recording_url in body. Verified live call 2026-06-23. Outward → needsApproval gated."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "Place an outbound AI voice phone call. You provide the destination number and a natural-language task describing what the AI agent should accomplish; the call is queued and a call_id is returned to track status/transcript. Offered via two gateways (StablePhone and BlockRun) for the same underlying capability. DEFAULT (StablePhone): POST https://stablephone.dev/api/call with JSON {phone_number, task, ...optional}. Pays $0.54 USDC via x402 (Base) or MPP. ALT (BlockRun): POST https://blockrun.ai/api/v1/voice/call with JSON {to, task, from} where from MUST be a wallet-owned number (buy via /api/v1/phone/numbers/buy first); x402 only. Output: StablePhone 2xx: .success (true), .call_id, .message ('Call successfully queued.'). Call is QUEUED not completed synchronously — track via SIWX-gated GET /api/call/:id (only paying wallet can poll).",
+      "costObservedUsd": 0.54
+    },
+    "source": {
+      "serviceKey": "ai-phone-call",
+      "discoveredVia": [
+        "video call api",
+        "voice call api"
+      ],
+      "lastSyncedAt": "2026-06-02T00:07:38.696Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

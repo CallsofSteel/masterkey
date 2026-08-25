@@ -1,0 +1,65 @@
+{
+  "serviceId": "orbis-ai-text-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/ai-text-translate-api-c9bc70",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/text-translation-api-41d31c",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-text-translate-api-c9bc70/:endpoint",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/ai-text-translate-api-c9bc70 with JSON body {text, target_language}",
+    "inputExample": {
+      "text": "hello how are you?",
+      "target_language": "Spanish"
+    },
+    "outputShape": "none — endpoint returns 404 {error:\"API_NOT_FOUND\", message}; no usable output",
+    "quirks": [
+      "Orbis proxy slug is DEAD: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-text-translate-api-c9bc70'.\"}",
+      "The pre-flight probe shows 402/payable, but the route is dead — payable status is misleading for this Orbis proxy.",
+      "404 was returned BEFORE payment, so no USDC was actually spent (paid:false, costUsd:0) despite registry surface price of $0.005.",
+      "Do not retry with alternate bodies or paths — the slug/route does not exist."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-text-translate-api-c9bc70' is no longer active: a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"}. No translation result is ever produced. Drop or prune this entry from the registry.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "orbis-ai-text-translate#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-ai-text-translate#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "orbis-ai-text-translate#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

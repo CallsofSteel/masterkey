@@ -1,0 +1,976 @@
+{
+  "subcategory": "translation",
+  "category": "ai-ml",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml workflow. backends = candidate indices from candidates/translation.json. resolved = agentcash check_endpoint_schema exact prices (USDC Base, 6dp). Same service across gateways merged (cheapest surfaced). Contamination routed away: language-detection -> nlp-text-analysis (#35,#36,#38,#40,#41,#42); text-to-speech -> text-to-speech (#25,#26,#27,#28,#29,#30,#39); content/copy generation -> nlp-text-analysis (#22,#23); SMS messaging -> sms-messaging (#24,#43). Dropped junk: x402helper.xyz test brand (#7,#15,#18); railway translate 404 with no payment evidence (#5). Note: #14 (orth.sh) is audio->English speech translation (Whisper) kept here as speech translation. #11 (orbis translate-picture) is OCR image translation kept here. Platform-hosted-only entries flagged needs-review (gg402.vercel.app, bazaar-gateway.vercel.app, x402-deployer workers). | 2026-07-26: corrected live-verified price drift (re-quoted twice with the registry's own usage.inputExample so the quote reflects the real call, not a worst-case empty-body ceiling).",
+  "entries": [
+    {
+      "name": "LibreTranslate",
+      "provider": "LibreTranslate",
+      "providerId": "libretranslate",
+      "aka": [
+        "libretranslate",
+        "memoryapi-translate",
+        "httpay-translate"
+      ],
+      "description": "Open-source LibreTranslate engine translating text between supported languages, served pay-per-call over x402 (available via the MemoryAPI and HTTPay gateways).",
+      "tags": [
+        "translation",
+        "open-source",
+        "libretranslate",
+        "multilingual"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        1,
+        0
+      ],
+      "resolved": {
+        "0": {
+          "amount": 0.003,
+          "method": "GET"
+        },
+        "1": {
+          "amount": 0,
+          "method": "GET"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://httpay.xyz/api/translate?text=<text>&source=<lang>&target=<lang> (NOT POST — POST returns 404). x402 on Base, quote $0.003.",
+        "inputExample": {
+          "text": "hello",
+          "source": "en",
+          "target": "es"
+        },
+        "outputShape": "BROKEN: response is 200 but body is {error, detail, meta} — never returns a translation. Working shape would be body.translatedText but it is never produced.",
+        "quirks": [
+          "Registry CALL method (POST) is WRONG: POST /api/translate returns 404 'Cannot POST /api/translate' (no charge).",
+          "The x402 402 schema declares input.method enum [GET,HEAD,DELETE]; correct method is GET with query params.",
+          "Param name is ?text= NOT ?q= (paying with ?q= returns 200 {error:'Missing ?text= parameter'} and STILL charges $0.003).",
+          "priceDisplay 'Free' is wrong — endpoint quotes $0.003 USDC on Base (3000 atomic units).",
+          "BACKEND DEAD: gateway forwards to upstream LibreTranslate which returns HTTP 400 'Visit https://portal.libretranslate.com to get an API key'. The gateway has no upstream key, so it charges but can never translate.",
+          "Returns HTTP 200 even on failure — the real error is inside body.error/body.detail, so status code is not a reliable success signal."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do NOT use this endpoint — it is broken and will charge you ($0.003 USDC on Base) without translating. The correct call is GET https://httpay.xyz/api/translate?text=hello&source=en&target=es (POST 404s; param is text not q), but the upstream LibreTranslate instance behind the gateway demands its own API key the gateway does not supply, so every paid call returns HTTP 200 with body {error:'LibreTranslate returned HTTP 400', detail:'...get an API key'} and no translation. Skip it.",
+        "costObservedUsd": 0.006
+      },
+      "status": "hidden",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "x402node Translate (text)",
+      "kind": "api",
+      "provider": "x402node",
+      "providerId": "x402node",
+      "aka": [
+        "x402node-translate-text",
+        "translate-text"
+      ],
+      "description": "Translate text between languages via x402node's own translation API. Auto-detects source language if not specified. Supports 100+ languages (English, Chinese, Japanese, Korean, German, French, Spanish, Russian, Arabic, Portuguese, etc.).",
+      "tags": [
+        "translation",
+        "mymemory",
+        "multilingual"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.x402node.dev/text/translate",
+          "method": "GET",
+          "provider": "x402node",
+          "providerId": "x402node",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-11T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.x402node.dev/text/translate?text=<text>&to=<langcode> (x402 paid on Base, ~$0.005/call). Params in query string, NOT a JSON body. 'text' required, 'to' optional target lang code.",
+        "inputExample": {
+          "text": "hello",
+          "to": "zh"
+        },
+        "outputShape": "text_in (string echo), text_out (translated string), source_lang (auto-detected code), target_lang (code), processing_ms (number), _hint (string promo)",
+        "quirks": [
+          "Method is GET, NOT POST — POST to /text/translate returns 404 'Cannot POST /text/translate'.",
+          "Costs ~$0.005 USDC via x402 on Base (registry previously listed POST + Free — both WRONG).",
+          "Param names are 'text' and 'to' — NOT MyMemory's q/langpair, and NOT this sibling /nlp/translate's q/source/target. Wrong names return 400 with hint '?text=... required, optional &to=lang'.",
+          "Source language is auto-detected (no 'from' param); returned as source_lang.",
+          "Output field names are text_in/text_out/source_lang/target_lang — different from the /nlp/translate sibling.",
+          "Payment verified via live 402 probe 2026-06-11 (Base USDC)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Translate text between languages via x402node's own translation API. Auto-detects source language if not specified. Supports 100+ languages (English, Chinese, Japanese, Korean, German, French, Spanish, Russian, Arabic, Portuguese, etc.). GET https://api.x402node.dev/text/translate?text=<text>&to=<langcode> (x402 paid on Base, ~$0.005/call). Params in query string, NOT a JSON body. 'text' required, 'to' optional target lang code. Output: text_in (string echo), text_out (translated string), source_lang (auto-detected code), target_lang (code), processing_ms (number), _hint (string promo)",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "x402node Translate (NLP / MyMemory)",
+      "kind": "api",
+      "provider": "x402node",
+      "providerId": "x402node",
+      "aka": [
+        "x402node-translate-nlp-mymemory",
+        "translate-nlp"
+      ],
+      "description": "Translate text between languages via MyMemory (free upstream, 50+ languages). Returns the translation, a match-quality score, and alternative candidate translations. Distinct endpoint from /text/translate with different param and output conventions.",
+      "tags": [
+        "translation",
+        "mymemory",
+        "multilingual"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.x402node.dev/nlp/translate",
+          "method": "GET",
+          "provider": "x402node",
+          "providerId": "x402node",
+          "amount": 0.008,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "8000",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.x402node.dev/nlp/translate?q=<text>&source=<src-or-auto>&target=<langcode> (x402 paid on Base, ~$0.008/call). Params in query string.",
+        "inputExample": {
+          "q": "hello",
+          "source": "auto",
+          "target": "zh"
+        },
+        "outputShape": "source (code), target (code), original (string echo), translated (string), match_quality (number 0-1), alternatives[] (each: text, quality, segment), _hint (string promo)",
+        "quirks": [
+          "Method is GET, NOT POST (registry previously listed POST + Free — both WRONG). Costs ~$0.008 USDC via x402 on Base.",
+          "Param names are 'q', 'source', 'target' — DIFFERENT from sibling /text/translate which uses 'text'/'to'. Use source=auto for auto-detect.",
+          "MyMemory-backed: returns an 'alternatives' array of candidate translations with per-candidate quality scores (0-100) and the matched segment.",
+          "Output field names are original/translated/match_quality/alternatives — different from the /text/translate sibling (text_in/text_out).",
+          "More expensive than /text/translate ($0.008 vs $0.005) for arguably the same task; choose /text/translate unless you need MyMemory alternatives/match quality."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Translate text between languages via MyMemory (free upstream, 50+ languages). Returns the translation, a match-quality score, and alternative candidate translations. Distinct endpoint from /text/translate with different param and output conventions. GET https://api.x402node.dev/nlp/translate?q=<text>&source=<src-or-auto>&target=<langcode> (x402 paid on Base, ~$0.008/call). Params in query string. Output: source (code), target (code), original (string echo), translated (string), match_quality (number 0-1), alternatives[] (each: text, quality, segment), _hint (string promo)",
+        "costObservedUsd": 0.008
+      },
+      "status": "active"
+    },
+    {
+      "name": "Orbis AI Text Translate",
+      "kind": "api",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "orbis-translate"
+      ],
+      "description": "AI text translation across 100+ languages with source auto-detection and bulk support, billed per call via x402 on Base and Solana.",
+      "tags": [
+        "translation",
+        "multilingual",
+        "auto-detect"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        8,
+        9,
+        10
+      ],
+      "resolved": {
+        "8": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "9": {
+          "method": "POST",
+          "status": "hidden"
+        },
+        "10": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/ai-text-translate-api-c9bc70 with JSON body {text, target_language}",
+        "inputExample": {
+          "text": "hello how are you?",
+          "target_language": "Spanish"
+        },
+        "outputShape": "none — endpoint returns 404 {error:\"API_NOT_FOUND\", message}; no usable output",
+        "quirks": [
+          "Orbis proxy slug is DEAD: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-text-translate-api-c9bc70'.\"}",
+          "The pre-flight probe shows 402/payable, but the route is dead — payable status is misleading for this Orbis proxy.",
+          "404 was returned BEFORE payment, so no USDC was actually spent (paid:false, costUsd:0) despite registry surface price of $0.005.",
+          "Do not retry with alternate bodies or paths — the slug/route does not exist."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-text-translate-api-c9bc70' is no longer active: a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"}. No translation result is ever produced. Drop or prune this entry from the registry.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Orbis Image Translate (OCR)",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "translate-picture",
+        "orbis-image-translate"
+      ],
+      "description": "Extract and translate text from images using OCR plus AI translation, billed per call via x402 on Base and Solana.",
+      "tags": [
+        "translation",
+        "ocr",
+        "image"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        11
+      ],
+      "resolved": {
+        "11": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/translate-picture-api-0ba223 with JSON body {image_url, target_language}",
+        "inputExample": {
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Stop_sign_MUTCD.svg/240px-Stop_sign_MUTCD.svg.png",
+          "target_language": "es"
+        },
+        "outputShape": "n/a — endpoint returns 404 {error:\"API_NOT_FOUND\", message}",
+        "quirks": [
+          "DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}",
+          "Orbis proxy charge-then-404 pattern: unpaid pre-flight shows 402 (looks payable) but the real call 404s. Do NOT pay — the slug/route is dead.",
+          "In this test the qa-pay tool reported paid:false / costUsd:0, so no USDC was lost; a naive x402 client could still attempt payment against the 402 pre-flight."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint — it is broken. POST to https://orbisapi.com/proxy/translate-picture-api-0ba223 returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\"} because the Orbis proxy slug 'translate-picture-api-0ba223' is no longer active. The unpaid pre-flight returns a 402 that makes it look payable, but any real request 404s; do not pay against it. This service should be pruned from the registry.",
+        "costObservedUsd": 0,
+        "droppedReason": "orbis-image-translate-ocr#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "orbis-image-translate-ocr#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'translate-picture-api-0ba223'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Orbis Document Translate",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "pdf-translate",
+        "doc-translate"
+      ],
+      "description": "Translate document and PDF content into another language while preserving original formatting, billed per call via x402 on Base and Solana.",
+      "tags": [
+        "translation",
+        "document",
+        "pdf",
+        "formatting"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        31,
+        32
+      ],
+      "resolved": {
+        "31": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "32": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/pdf-translate-api-22e8e8 with JSON body {text, target_language}",
+        "inputExample": {
+          "text": "Hello, how are you?",
+          "target_language": "Spanish"
+        },
+        "outputShape": "N/A — endpoint dead, returns {error, message}",
+        "quirks": [
+          "DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead.",
+          "No payment was taken on the broken call (paid:false, costUsd:0) — Orbis returns 404 before charging in this case.",
+          "Do NOT retry or try alternate bodies/paths; the slug is gone."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint. The Orbis proxy slug 'pdf-translate-api-22e8e8' is dead and returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"}. Although the x402 pre-flight advertises a $0.005 payment requirement, the route no longer exists and the POST fails with no useful result. No payment was captured in this test.",
+        "costObservedUsd": 0,
+        "droppedReason": "orbis-document-translate#0: DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead. | orbis-document-translate#1: Orbis proxy dead-route: slug 'doc-translate-api-9100d6' is not active. POST returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'doc-translate-api-9100d6'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "orbis-document-translate#0: DEAD ENDPOINT: Orbis proxy slug 'pdf-translate-api-22e8e8' returns 404 API_NOT_FOUND. The unpaid pre-flight shows 402 (looks payable) but the route is dead. | orbis-document-translate#1: Orbis proxy dead-route: slug 'doc-translate-api-9100d6' is not active. POST returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'doc-translate-api-9100d6'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Temponaut Translate",
+      "provider": "Temponaut",
+      "providerId": "temponaut",
+      "aka": [
+        "temponaut-translate"
+      ],
+      "description": "AI text translation to any target language with no account or API key required, billed per call (MPP).",
+      "tags": [
+        "translation",
+        "multilingual",
+        "ai"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        6
+      ],
+      "resolved": {
+        "6": {
+          "amount": 0.005
+        }
+      }
+    },
+    {
+      "name": "Strale Translate",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-translate"
+      ],
+      "description": "Translate text between languages with automatic source-language detection, returning the translation and a confidence score, billed per call via x402.",
+      "tags": [
+        "translation",
+        "auto-detect",
+        "multilingual"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        12
+      ],
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/translate?text=<text>&target_language=<lang>&source_language=<optional>",
+        "inputExample": {
+          "text": "hello how are you",
+          "target_language": "Swedish"
+        },
+        "outputShape": "body.translated_text (string); body.source_language (auto-detected), body.target_language, body.confidence; meta under body._meta",
+        "quirks": [
+          "Params go in the query string, not a JSON body (GET request).",
+          "target_language and text are required; source_language is optional and auto-detected.",
+          "target_language accepts language names like 'Swedish', 'English', 'French' (not just ISO codes)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://api.strale.io/x402/translate with query params text (the text to translate) and target_language (a language name like 'Swedish' or 'French'); source_language is optional and auto-detected. Pay via x402 (USDC on Base, ~$0.054/call). Read the result from body.translated_text; body.source_language reports the detected source and body.confidence the quality. Plain synchronous response, no auth or polling needed.",
+        "costObservedUsd": 0.054001
+      },
+      "resolved": {
+        "12": {
+          "method": "GET",
+          "amount": 0.054001
+        }
+      }
+    },
+    {
+      "name": "Bazaar Gateway Translate (Claude)",
+      "provider": "Bazaar Gateway",
+      "providerId": "bazaar-gateway",
+      "aka": [
+        "bazaar-translate"
+      ],
+      "description": "Context-aware text translation into a target language powered by Claude, billed per call via x402 on Base.",
+      "tags": [
+        "translation",
+        "claude",
+        "context-aware"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        13
+      ],
+      "resolved": {
+        "13": {
+          "amount": 0.004,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://bazaar-gateway.vercel.app/api/translate with JSON body {text, target_language}",
+        "inputExample": {
+          "text": "hello how are you?",
+          "target_language": "french"
+        },
+        "outputShape": "body.translated_text (the translation); also body.source_language, body.target_language, body.formality, body.confidence, body.model; body._meta.call_id for audit",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Send a POST to https://bazaar-gateway.vercel.app/api/translate with a JSON body containing two required fields: text (the string to translate) and target_language (a plain language name like \"french\", \"spanish\", \"arabic\", \"japanese\"). Payment is x402 USDC on Base, ~$0.005 per call, no API key needed. The response is synchronous JSON; read the translation from body.translated_text. Source language is auto-detected and returned in body.source_language.",
+        "costObservedUsd": 0.005
+      }
+    },
+    {
+      "name": "AI Translate",
+      "kind": "api",
+      "provider": "gg402",
+      "providerId": "gg402",
+      "aka": [
+        "gg402-translate",
+        "language-translator"
+      ],
+      "description": "AI text translation between language pairs with context-aware and culturally-adapted output, no API key required, billed per call via x402 on Base.",
+      "tags": [
+        "translation",
+        "context-aware",
+        "multilingual"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        3,
+        4,
+        16,
+        17
+      ],
+      "resolved": {
+        "3": {
+          "amount": 0.01,
+          "method": "POST"
+        },
+        "4": {
+          "method": "POST"
+        },
+        "16": {
+          "method": "POST"
+        },
+        "17": {
+          "method": "POST"
+        }
+      },
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://gg402.vercel.app/language_translator with JSON body {text, source_lang, target_lang}",
+        "inputExample": {
+          "text": "hello",
+          "source_lang": "en",
+          "target_lang": "es"
+        },
+        "outputShape": "Expected translated text but endpoint returns body.status=\\\"ERROR\\\" with body.error.message and body.error.code (HTTP 500). No usable result field.",
+        "quirks": [
+          "BROKEN charge-then-fail: charges $0.01 USDC on Base then returns HTTP 500 'GOOGLE_TRANSLATE_API_KEY not configured. Please set GOOGLE_TRANSLATE_API_KEY environment variable.' — backend is missing its upstream Google Translate key.",
+          "Body schema is {text, source_lang, target_lang} (all strings) — NOT the sibling /translate_text shape {text, target_language}. Sending target_language returns HTTP 400 'Validation failed' naming source_lang/target_lang as required.",
+          "Pre-payment probe shows 402 (looks payable) but every call charges and then fails. Money is lost on every call.",
+          "Both validation errors AND the final 500 are returned with body.status='ERROR' and body.error.{message,code}.",
+          "Same root cause as the ai-translate /translate_text route (missing GOOGLE_TRANSLATE_API_KEY). Do NOT call until provider fixes server config."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint. A POST to https://gg402.vercel.app/language_translator with body {text, source_lang, target_lang} debits $0.01 USDC on Base and then returns HTTP 500 with body.error.message 'GOOGLE_TRANSLATE_API_KEY not configured' because the backend is missing its Google Translate upstream key. The correct body shape (verified) is {text, source_lang, target_lang} — sending the sibling shape {text, target_language} returns a 400 validation error — but even with the right fields no translation is ever returned. Treat as dead until the provider fixes their server config.",
+        "costObservedUsd": 0.02
+      },
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "x402-deployer Translate",
+      "kind": "api",
+      "provider": "x402-deployer.x402-deployer.workers",
+      "providerId": "x402-deployer-x402-deployer-workers",
+      "aka": [
+        "x402-deployer-translate",
+        "translate-text"
+      ],
+      "description": "AI text translator covering 100+ languages with auto source-detection. Accepts ISO codes or language names, optional source_language and formality (casual/formal/neutral). Preserves Markdown, code, and URLs. Exposed via two alias endpoints of the same worker at two price points.",
+      "tags": [
+        "translation",
+        "multilingual",
+        "markdown-safe",
+        "auto-detect"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402-deployer.x402-deployer.workers.dev/translate",
+          "method": "POST",
+          "provider": "x402-deployer.x402-deployer.workers",
+          "providerId": "x402-deployer-x402-deployer-workers",
+          "amount": 0.005,
+          "accepts": [],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://x402-deployer.x402-deployer.workers.dev/translate-text",
+          "method": "POST",
+          "provider": "x402-deployer.x402-deployer.workers",
+          "providerId": "x402-deployer-x402-deployer-workers",
+          "amount": 0.01,
+          "accepts": [],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST <endpoint> with JSON body {text, target_language}. Optional: source_language, formality. x402 payment required (Base, CDP facilitator).",
+        "inputExample": {
+          "text": "hello how are you?",
+          "target_language": "Spanish"
+        },
+        "outputShape": "{translated_text} (/translate-text also returns detected_source_language). From documented output_example only — could NOT be confirmed live because POST never responds.",
+        "quirks": [
+          "BROKEN: POST to both /translate and /translate-text hangs indefinitely (curl HTTP 000 / 40s+ timeout; paid call -> 'provider request failed: fetch failed', paid:false, $0 spent). Root and GET on the same worker return HTTP 200 instantly — only the POST handler is dead.",
+          "GET on each endpoint path is FREE and returns a self-describing metadata JSON (name, description, price, input_schema, input_example, output_example, x402_payment_required) — useful for free schema discovery without paying.",
+          "/translate ($0.005) and /translate-text ($0.01) are the SAME translation op (aliases), NOT different operations. Default to the cheaper /translate.",
+          "No OpenAPI spec and no /.well-known/x402; agentcash discover/check_endpoint_schema return nothing. Schema only obtainable via GET on the endpoint path.",
+          "formality enum on /translate-text: casual|formal|neutral. /translate-text additionally returns detected_source_language; /translate returns just translated_text per its output_example.",
+          "This worker hosts 254 endpoints total (endpoint_count:254 at root); pay_to 0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621 on eip155:8453."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "AI text translator covering 100+ languages with auto source-detection. Accepts ISO codes or language names, optional source_language and formality (casual/formal/neutral). Preserves Markdown, code, and URLs. Exposed via two alias endpoints of the same worker at two price points. POST <endpoint> with JSON body {text, target_language}. Optional: source_language, formality. x402 payment required (Base, CDP facilitator). Output: {translated_text} (/translate-text also returns detected_source_language). From documented output_example only — could NOT be confirmed live because POST never responds.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "the402.ai Translation Job",
+      "provider": "the402.ai",
+      "providerId": "the402-ai",
+      "aka": [
+        "the402-translate"
+      ],
+      "description": "Purchase and execute a text-translation job through the402.ai AI agent marketplace, paid $0.005 USDC per call via x402.",
+      "tags": [
+        "translation",
+        "marketplace"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        33
+      ],
+      "resolved": {
+        "33": {
+          "amount": 0.005,
+          "method": "POST"
+        }
+      },
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://api.the402.ai/v1/services/svc_4be4787c772647eb/purchase with JSON body (e.g. {text, target_language}) — but endpoint is DEAD (404).",
+        "inputExample": {
+          "text": "hello",
+          "target_language": "es"
+        },
+        "outputShape": "none — returns {\"error\":\"Service not found\"} with HTTP 404",
+        "quirks": [
+          "Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}.",
+          "No x402 402 payment challenge is ever issued, so the endpoint cannot be paid for at all.",
+          "Confirmed across GET base service, POST .../purchase with empty body, and POST with a valid translation body {text,target_language} — all 404.",
+          "Registry probe also showed GET 404/blocked at 2026-06-01."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint — it is dead. The the402.ai service svc_4be4787c772647eb returns HTTP 404 {\"error\":\"Service not found\"} on every request (base GET, purchase POST empty, and purchase POST with a translation body). It never returns an x402 402 challenge, so there is nothing payable. The service was likely delisted from the the402.ai marketplace. It should be pruned from the registry.",
+        "costObservedUsd": 0,
+        "droppedReason": "the402-ai-translation-job#0: Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}."
+      },
+      "_droppedReason": "the402-ai-translation-job#0: Service slug svc_4be4787c772647eb is dead: every request returns HTTP 404 {\"error\":\"Service not found\"}.",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Whisper Audio Translate (English)",
+      "provider": "OpenAI (via orth.sh)",
+      "providerId": "openai",
+      "aka": [
+        "whisper-1",
+        "audio-translations"
+      ],
+      "description": "Translate spoken audio in any language into English text using OpenAI Whisper, billed per call via x402 on Base.",
+      "tags": [
+        "translation",
+        "speech-translation",
+        "whisper",
+        "audio"
+      ],
+      "modality": {
+        "input": [
+          "audio"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402.orth.sh/openai/audio/translations",
+          "method": "POST",
+          "provider": "Orthogonal",
+          "providerId": "orthogonal",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x7e95ae1C5545b4E5CA45986c4168DA1b1975d6Ce",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-11T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402.orth.sh/openai/audio/translations with multipart/form-data: fields file=@audio.(mp3|wav|m4a|...) and model=whisper-1 (optional: prompt, response_format, temperature). x402 USDC on Base, $0.020/call.",
+        "inputExample": {
+          "file": "<multipart binary audio file, e.g. speech.mp3>",
+          "model": "whisper-1",
+          "response_format": "json"
+        },
+        "outputShape": "body.text (translated English transcript). Mirrors OpenAI /v1/audio/translations response: JSON {text} by default; plain string for response_format=text/srt/vtt.",
+        "quirks": [
+          "REQUIRES multipart/form-data, NOT JSON. Must send an actual audio file in the 'file' field plus model=whisper-1. A JSON body returns HTTP 400 'you must provide a model parameter'.",
+          "This is a direct OpenAI Whisper passthrough; behaves exactly like OpenAI POST /v1/audio/translations (always translates source language -> English).",
+          "qa-pay's --dry-run flag is NOT honored: it still pays. Verified paid $0.02 on Base (tx 0x998017b819edbc07027ba96b85afca1d525660b31c9ea29885da1aebd3bc6953) sending an empty JSON body -> got 400 missing-model.",
+          "Output is English-only translation, not transcription in the source language.",
+          "Payment verified via live 402 probe 2026-06-11 (Base USDC)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call POST https://x402.orth.sh/openai/audio/translations as multipart/form-data (not JSON): attach the audio under field 'file' and set model=whisper-1; optionally add prompt, response_format (json|text|srt|vtt), and temperature. Pay $0.020 USDC via x402 on Base (no API key needed). Read the English translation from body.text (or the raw string for non-json formats). It is a thin OpenAI Whisper translation proxy, so any source language is translated into English.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "cn402 Chinese Converter (Simplified -> Traditional)",
+      "kind": "api",
+      "provider": "cn402",
+      "providerId": "cn402",
+      "aka": [
+        "cn402-chinese-converter-simplified-traditional",
+        "s2t"
+      ],
+      "description": "Convert Simplified Chinese text to Traditional Chinese (Taiwan standard). OpenCC-style GB->BIG5 / mainland->Taiwan Hanzi conversion.",
+      "tags": [
+        "translation",
+        "chinese",
+        "opencc",
+        "transliteration"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.cn402.com/hanzi/s2t",
+          "method": "GET",
+          "provider": "cn402",
+          "providerId": "cn402",
+          "amount": 0.0022,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2200",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.cn402.com/hanzi/s2t?text=<urlencoded simplified chinese> — x402 v1 paid, ~$0.0022 USDC on Base. NO request body; text is a URL query param. NO POST (POST 404s).",
+        "inputExample": {
+          "text": "中国学习"
+        },
+        "outputShape": "body.input (echoed input), body.output (converted traditional text), body.mode = 'simplified->traditional', body._hint (provider marketing string)",
+        "quirks": [
+          "x402 v1 format: the 402 challenge advertises maxAmountRequired 2200 (=$0.0022 USDC) on Base, asset USDC 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e. agentcash MCP fetch CANNOT pay this (errors parse_payment_required 'x402 v1 not supported, only v2 with accepts array'); use an x402 v1-capable payer.",
+          "Method is GET-only. Registry/probe historically said POST, but POST returns 404 'Cannot POST /hanzi/s2t' with NO payment taken.",
+          "Input text is a URL query param ?text=<urlencoded>, NOT a JSON body.",
+          "Some characters are identical across Simplified/Traditional, so output can equal input for such strings; body.mode confirms the direction was applied. Use chars that differ (e.g. 国->國) to see a change.",
+          "Result text is in body.output (not body.result/data)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Convert Simplified Chinese text to Traditional Chinese (Taiwan standard). OpenCC-style GB->BIG5 / mainland->Taiwan Hanzi conversion. GET https://api.cn402.com/hanzi/s2t?text=<urlencoded simplified chinese> — x402 v1 paid, ~$0.0022 USDC on Base. NO request body; text is a URL query param. NO POST (POST 404s). Output: body.input (echoed input), body.output (converted traditional text), body.mode = 'simplified->traditional', body._hint (provider marketing string)",
+        "costObservedUsd": 0.0022
+      },
+      "status": "active"
+    },
+    {
+      "name": "cn402 Chinese Converter (Traditional -> Simplified)",
+      "kind": "api",
+      "provider": "cn402",
+      "providerId": "cn402",
+      "aka": [
+        "cn402-chinese-converter-traditional-simplified",
+        "t2s"
+      ],
+      "description": "Convert Traditional Chinese (Taiwan/HK) text to Simplified Chinese (mainland China). OpenCC-style BIG5->GB / Taiwan->mainland Hanzi conversion.",
+      "tags": [
+        "translation",
+        "chinese",
+        "opencc",
+        "transliteration"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.cn402.com/hanzi/t2s",
+          "method": "GET",
+          "provider": "cn402",
+          "providerId": "cn402",
+          "amount": 0.0022,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2200",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.cn402.com/hanzi/t2s?text=<urlencoded traditional chinese> — x402 v1 paid, ~$0.0022 USDC on Base. NO request body; text is a URL query param. NO POST (POST 404s).",
+        "inputExample": {
+          "text": "國學習"
+        },
+        "outputShape": "body.input (echoed input), body.output (converted simplified text), body.mode = 'traditional->simplified', body._hint (provider marketing string)",
+        "quirks": [
+          "x402 v1 format: the 402 challenge advertises maxAmountRequired 2200 (=$0.0022 USDC) on Base, asset USDC 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e. agentcash MCP fetch CANNOT pay this (errors parse_payment_required 'x402 v1 not supported'); use an x402 v1-capable payer.",
+          "Method is GET-only. POST returns 404 'Cannot POST /hanzi/t2s' with NO payment taken.",
+          "Input text is a URL query param ?text=<urlencoded>, NOT a JSON body.",
+          "Some characters are identical across the two scripts; body.mode confirms direction. Use differing chars (e.g. 國->国) to observe a change.",
+          "Result text is in body.output."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Convert Traditional Chinese (Taiwan/HK) text to Simplified Chinese (mainland China). OpenCC-style BIG5->GB / Taiwan->mainland Hanzi conversion. GET https://api.cn402.com/hanzi/t2s?text=<urlencoded traditional chinese> — x402 v1 paid, ~$0.0022 USDC on Base. NO request body; text is a URL query param. NO POST (POST 404s). Output: body.input (echoed input), body.output (converted simplified text), body.mode = 'traditional->simplified', body._hint (provider marketing string)",
+        "costObservedUsd": 0.0022
+      },
+      "status": "active"
+    }
+  ]
+}

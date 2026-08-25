@@ -1,0 +1,55 @@
+{
+  "serviceId": "blockrun-news-feed",
+  "subcat": "news-media",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/search/news",
+      "method": "GET",
+      "amountUsd": 0.0075
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/surf/news/feed",
+      "method": "GET",
+      "amountUsd": 0.0075
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://blockrun.ai/api/v1/surf/search/news?q=<keyword>",
+    "inputExample": {
+      "q": "bitcoin"
+    },
+    "outputShape": "body.data[] (each item: title, summary, source, url, published_at, project_name, project_id, highlights); body.meta {total, limit, offset, credits_used, cached}",
+    "quirks": [
+      "inputSchema is null in registry but the endpoint expects a ?q=<keyword> query param; calling without it would search nothing useful",
+      "results are AI-curated crypto/blockchain news (Surf feed) — topical to crypto, not general world news",
+      "published_at is a Unix epoch (seconds)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://blockrun.ai/api/v1/surf/search/news with a ?q=<keyword> query parameter (e.g. ?q=bitcoin). Pay $0.005 USDC via x402 on Base — no API key needed. Read the array at body.data[]; each element has title, summary, source, url, published_at (Unix seconds), and highlights with matched snippets. body.meta.total gives the result count. This is a crypto/blockchain news feed, so queries should be crypto-topical.",
+    "costObservedUsd": 0.0075
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun-news-feed#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "blockrun-news-feed#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0075
+    }
+  ]
+}

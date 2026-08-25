@@ -1,0 +1,100 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# trigger.dev (local build cache / temp / dev lock — never commit)
+.trigger
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+.gstack/
+
+# registry sync cache
+scripts/registry/.cache/
+
+# registry curation candidates (intermediate)
+scripts/registry/candidates/
+
+# Registry probe artifacts and discovery scratch responses (endpoint-named response dumps
+# from probing; regenerable, not read by the app or pipeline). Kept locally in .probe-artifacts/;
+# the loose filenames below stay ignored in case the probe tool writes fresh ones to the repo root.
+/.probe-artifacts/
+scripts/registry/**/artifacts/
+arkm_transfers_unenriched
+nansen-historical-token-ohlcv
+nansen_tgm_transfers
+api-agentstools-dev-domain-typosquat
+api-socialfetch-dev-v1-github-trending-repositories
+background-removal-test.png
+cryptyx-ai-api-metrics-preview
+cryptyx-assets
+data-greeneris-io-v1-eu-policy-rates
+netintel-dev-email-auth
+own-amazon-scrape-by-url
+
+# Registry QA test scratch — raw paid-call responses (reproducible; not needed at runtime)
+data/registry/qa-artifacts/
+data/registry/qa-results/
+data/registry/qa-batch-*-results.json
+data/registry/qa-batch-current.json
+data/registry/qa-batch-2-args.json
+data/registry/qa-batch-*-light.json
+
+# additive discovery sweep reports (intermediate, like candidates/)
+data/registry/discovery/
+
+# personal notes — untracked working docs (done/ = implemented, future/ = specs & backlog)
+/docs/
+
+# generated QA verifier briefs (reproducible output of scripts/registry/qa-briefs.mjs)
+/verifier-briefs/
+
+# unreferenced QA wave scratch (raw discovery output; not read by app or pipeline)
+data/registry/qa-wave-*.json
+
+# operational logs — QA spend history + indexing ledger (not read at runtime; kept local)
+data/registry/*.jsonl
+
+# internal registry operational scratch — audit/remediation/sprint output + QA-sweep state.
+# Not read by the app and not required to rebuild the registry (first-party.json IS, so it stays).
+# Regenerable (e.g. qa-checklist via build-checklist.mjs); kept locally, out of the public repo.
+data/registry/_*.json
+data/registry/orbis-sprint-endpoints.json
+data/registry/qa-checklist.json
+data/registry/qa-ledger.json

@@ -1,0 +1,3298 @@
+{
+  "subcategory": "scheduling-booking",
+  "category": "scheduling-calendars",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Reservation/booking services (restaurant + hotel/flight booking). DROPPED/routed: orbisapi/x402helper farms; Tavily #24-28 -> search; Apollo #27/#29/#30 + Tomba #31 + Didit #32 -> data-enrichment/identity; syraa #21 -> crypto; agentwonderland #23 -> finance; Google Flights / flight search #22/#43 + flight-only data -> flight-aviation (StableTravel flight *data* lives there; the booking/hotel ops are kept here). | 2026-07-26: hid 14 dead StableTravel Amadeus services (see hiddenReason; verified by scripts/registry/probe-staleness.mjs + the provider's current openapi.json/llms.txt).",
+  "entries": [
+    {
+      "name": "AgentRes Restaurant Booking",
+      "provider": "AgentRes",
+      "providerId": "agentres",
+      "description": "Search restaurants and create/manage table reservations programmatically. Pay-per-call x402.",
+      "tags": [
+        "booking",
+        "reservations",
+        "restaurants"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        3,
+        1
+      ],
+      "resolved": {
+        "1": {
+          "method": "POST"
+        },
+        "3": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://agentres.dev/api/book with JSON body {venue_id, config_id, party_size, day} — config_id must first be obtained from GET https://agentres.dev/api/availability",
+        "inputExample": {
+          "venue_id": "6194",
+          "config_id": "<slot config token from /api/availability>",
+          "party_size": 2,
+          "day": "2026-07-01"
+        },
+        "outputShape": "body.success (bool), body.kind (\"booked\"), body.resy_token, body.reservation_id",
+        "quirks": [
+          "RESY-OTP-CONFIRMED 2026-06-09: a booking call sent a real Resy OTP email to the user — the endpoint is LIVE and initiates Resy verification; completing a reservation requires the OTP, so it is needs-input (not broken).",
+          "DID NOT PAY — not testable in an automated QA run.",
+          "Required field config_id is an opaque dynamic 'slot config token' that must be fetched live from GET /api/availability?venue_id=&party_size=&day= for a real venue with an open slot on a FUTURE date; it cannot be fabricated. The schema example (venue_id 6194, day 2026-05-01) is a stale placeholder.",
+          "Two-step flow: (1) GET /api/availability to get slots[].config_id, then (2) POST /api/book. /api/availability is itself x402-gated (returns 402 with amount 0).",
+          "authMode=apiKey+paid. The decoded x402 resource description says it books 'for the authenticated user' — requires a Resy account auth/API key context, which is not provided. Booking destination is the authenticated user's Resy account, not a settable recipient.",
+          "OUTWARD/IRREVERSIBLE: creates a real Resy restaurant reservation. Requires human approval and a real authenticated Resy user before calling.",
+          "Payment network is Base USDC (eip155:8453, $0.010); the 402 also advertises a Tempo charge method in www-authenticate.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution.",
+          "DEAD 2026-06-11: Requires a linked Resy account + credit card + OTP completion — not usable via x402 alone. De-scoped (ash 2026-06-11)."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Booking is a two-step flow and creates a real Resy reservation, so confirm with the user first. First call GET https://agentres.dev/api/availability?venue_id=<resy_id>&party_size=<n>&day=<YYYY-MM-DD> (x402-gated) to get slots[].config_id for an open slot on a future date. Then POST https://agentres.dev/api/book with JSON {venue_id, config_id, party_size, day} using that config_id. The endpoint books for the authenticated Resy user, so a Resy account auth/API key context is required (authMode=apiKey+paid) — you cannot set an arbitrary recipient. On success read body.success, body.reservation_id, and body.resy_token.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Agent Restaurant Reservation",
+      "provider": "Agentic Reservations",
+      "providerId": "agentic-reservations",
+      "description": "Restaurant reservation API for AI agents — check availability and book tables. Pay-per-call x402.",
+      "tags": [
+        "booking",
+        "reservations",
+        "restaurants"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        6
+      ],
+      "resolved": {
+        "6": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://agentres.dev/api/book with JSON body {venue_id, config_id, party_size, day} and content-type: application/json. x402 wallet auth on Base (USDC) — booking costs 0.01 USDC; all setup/search/availability endpoints are $0 (wallet signs for identity only). (Registry alias url agentic-reservations.vercel.app also works.)",
+        "inputExample": {
+          "venue_id": "59237",
+          "config_id": "<fresh token from GET /api/availability>",
+          "party_size": 2,
+          "day": "2026-06-20"
+        },
+        "outputShape": "body.success (bool), body.resy_token, body.reservation_id, body.kind",
+        "quirks": [
+          "RESY-OTP-CONFIRMED 2026-06-09: a booking call sent a real Resy OTP email to the user — the endpoint is LIVE and initiates Resy verification; completing a reservation requires the OTP, so it is needs-input (not broken).",
+          "NOT a single-call endpoint: /api/book is the terminal step of a multi-step session flow. Prereqs that cannot be invented: a real venue_id (from GET /api/search?query=&city=), and an ephemeral config_id slot token (from GET /api/availability?venue_id=&party_size=&day=). Docs: 'Config IDs expire — always fetch fresh availability before booking.'",
+          "A LINKED Resy account is mandatory: GET /api/me must return resy_linked:true. Linking is a two-step OTP flow on POST /api/link-resy: step1 {em_address} sends a 6-digit code to the user's real Resy.com email, step2 {em_address, code} completes it. Field is em_address (NOT email). Without a linked Resy account /api/book returns 400 NO_LINKED_ACCOUNT and the 0.01 USDC is lost.",
+          "First-time wallet must POST /api/account {email} (after GET /api/me returns 401) before link-resy. $0 identity call.",
+          "REAL-WORLD IRREVERSIBLE ACTION: books an actual restaurant table on the user's Resy account. Provider warns automated bookings may get the Resy account suspended/banned. Requires explicit human 'yes' confirmation before calling (docs make this a hard rule). Use POST /api/cancel (after GET /api/reservations to get resy_token) to undo.",
+          "Base domain is agentres.dev; full schema at /openapi.json, agent guide at /skill.md. Only /api/book is paid (0.01 USDC); /api/me, /api/account, /api/link-resy, /api/search, /api/availability, /api/reservations, /api/cancel are all $0 identity-only.",
+          "Errors include retryable + next_step fields; 409 ALREADY_BOOKED = user already has a reservation there; 502 BOOKING_FAILED = upstream Resy failure.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution.",
+          "DEAD 2026-06-11: Resy-based: needs a linked Resy account + card + a real OTP relay to complete; /book is the terminal step of a multi-step Resy session. Not usable via x402 alone. De-scoped (ash 2026-06-11)."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "This is a multi-step Resy booking flow, not a one-shot call — do NOT POST /api/book directly. First GET /api/me to check resy_linked; if false, run the one-time setup: POST /api/account {email} then the two-step OTP on POST /api/link-resy ({em_address} to send a code, then {em_address, code} — needs the user's real Resy.com email and the 6-digit code they receive). Then GET /api/search to get a venue_id, GET /api/availability to get a FRESH config_id (they expire), present a full summary and get explicit user 'yes', then POST /api/book {venue_id, config_id, party_size, day}. Read body.success / body.reservation_id / body.resy_token. Booking costs 0.01 USDC via x402 on Base; everything else is free. This books a real table and can get the Resy account banned — always confirm with the user first.",
+        "costObservedUsd": 0
+      },
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "JMPR Luxury Hotels",
+      "kind": "api",
+      "provider": "JMPR",
+      "providerId": "jmpr",
+      "description": "Luxury hotel search and booking API for agents. Pay-per-call x402.",
+      "tags": [
+        "booking",
+        "hotels",
+        "travel",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        7,
+        8
+      ],
+      "status": "needs-review"
+    },
+    {
+      "name": "StableTravel Hotel List by City",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-list-by-city",
+        "hotels.list"
+      ],
+      "description": "List hotels in a city by IATA city code (Amadeus reference data). Returns hotelId values used to fetch offers. This is the discovery step; it does NOT return prices/offers.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/list",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "DHS7dnBd4M2SaB2kjei5BU7Ud61QeCq2CJzhxtYrnLX8",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/list?cityCode=PAR&max=5",
+        "inputExample": {
+          "cityCode": "PAR",
+          "max": 5
+        },
+        "outputShape": "data[].{hotelId,name,chainCode,iataCode,dupeId,geoCode.{latitude,longitude},address.{countryCode,postalCode,cityName,lines[]},lastUpdate}; meta.count",
+        "quirks": [
+          "cityCode is REQUIRED and must be a 3-letter IATA CITY code (PAR, LON, NYC) — not a hotel name or country.",
+          "Returns hotel directory entries only (no prices). Feed hotelId into /api/hotels/search to get bookable offers.",
+          "Optional filters: radius, radiusUnit(KM|MILE), chainCodes, amenities, ratings(1-5 csv), hotelScore(BEDBANK|DIRECTCHAIN|ALL), max(default 100).",
+          "402 pre-flight body is empty; pay and you get 200 JSON.",
+          "meta.count is the total catalog size (e.g. 1694 for PAR), not the number of rows returned."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "List hotels in a city by IATA city code (Amadeus reference data). Returns hotelId values used to fetch offers. This is the discovery step; it does NOT return prices/offers. GET https://stabletravel.dev/api/hotels/list?cityCode=PAR&max=5 Output: data[].{hotelId,name,chainCode,iataCode,dupeId,geoCode.{latitude,longitude},address.{countryCode,postalCode,cityName,lines[]},lastUpdate}; meta.count",
+        "costObservedUsd": 0.0324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Hotel List by Geocode",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-list-by-geocode",
+        "hotels.list.by-geocode"
+      ],
+      "description": "List hotels near a latitude/longitude (Amadeus by-geocode). Returns hotelId values plus distance from the point. Discovery step; no prices/offers.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/list/by-geocode",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "uAeLhastR1nPEcneNvXAdsSdQ1rD8HPLSHEkkfUHLL7",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/list/by-geocode?latitude=48.8757&longitude=2.32553&radius=2&max=5",
+        "inputExample": {
+          "latitude": 48.8757,
+          "longitude": 2.32553,
+          "radius": 2,
+          "max": 5
+        },
+        "outputShape": "data[].{hotelId,name,chainCode,geoCode.{latitude,longitude},distance.{value,unit},address.{countryCode,postalCode,cityName,lines[]}}; meta.count",
+        "quirks": [
+          "latitude AND longitude are BOTH REQUIRED (numbers). This is the by-geocode variant, distinct from /api/hotels/list (by city code).",
+          "Each row adds distance.{value,unit} from the query point; data[] is distance-sorted.",
+          "Returns hotel directory only (no offers/prices) — use returned hotelId with /api/hotels/search for bookable offers.",
+          "Optional: radius, radiusUnit(KM|MILE), chainCodes, amenities, ratings, hotelScore, max(default 100). Empty data[] means no hotels near coords, not an error."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "List hotels near a latitude/longitude (Amadeus by-geocode). Returns hotelId values plus distance from the point. Discovery step; no prices/offers. GET https://stabletravel.dev/api/hotels/list/by-geocode?latitude=48.8757&longitude=2.32553&radius=2&max=5 Output: data[].{hotelId,name,chainCode,geoCode.{latitude,longitude},distance.{value,unit},address.{countryCode,postalCode,cityName,lines[]}}; meta.count",
+        "costObservedUsd": 0.0324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Hotel Offers Search",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-offers-search",
+        "hotels.search"
+      ],
+      "description": "Search bookable hotel offers (prices, rooms, cancellation policy) for one or more Amadeus hotel IDs and a date range. Returns offer.id values needed for booking.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/search",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "2MPicXh3jqu5UKgG8ftBUh3VCMEAvZ8j1CKTNJBCiu8u",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/search?hotelIds=HLPAR266,MDPARMER&adults=1&checkInDate=2026-08-15&checkOutDate=2026-08-16",
+        "inputExample": {
+          "hotelIds": "HLPAR266,MDPARMER",
+          "adults": 1,
+          "checkInDate": "2026-08-15",
+          "checkOutDate": "2026-08-16"
+        },
+        "outputShape": "data[].{type:'hotel-offers',hotel.{hotelId,name,chainCode,cityCode,latitude,longitude},available,offers[].{id,checkInDate,checkOutDate,rateCode,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit,refundable.cancellationRefund},self},self}",
+        "quirks": [
+          "hotelIds is REQUIRED — COMMA-SEPARATED Amadeus hotelId codes (e.g. HLPAR266). Get these from /api/hotels/list or /api/hotels/list/by-geocode first.",
+          "checkInDate/checkOutDate must be FUTURE dates (YYYY-MM-DD); past/today dates yield no offers.",
+          "offers[].id is the offerId used by /api/hotels/offer and /api/hotels/book — capture it.",
+          "Prices come back in the hotel's native currency (e.g. EUR) unless currencyCode is passed (enum of ~33 codes incl USD,EUR,GBP).",
+          "Optional filters: adults(default 1), priceRange(e.g. 100-300), currencyCode, paymentPolicy(GUARANTEE|DEPOSIT|NONE), boardType(ROOM_ONLY|BREAKFAST|HALF_BOARD|FULL_BOARD|ALL_INCLUSIVE), includeClosed, bestRateOnly, lang.",
+          "available:false hotels are omitted/marked; not every hotelId returns offers for a given date."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search bookable hotel offers (prices, rooms, cancellation policy) for one or more Amadeus hotel IDs and a date range. Returns offer.id values needed for booking. GET https://stabletravel.dev/api/hotels/search?hotelIds=HLPAR266,MDPARMER&adults=1&checkInDate=2026-08-15&checkOutDate=2026-08-16 Output: data[].{type:'hotel-offers',hotel.{hotelId,name,chainCode,cityCode,latitude,longitude},available,offers[].{id,checkInDate,checkOutDate,rateCode,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit,refundable.cancellationRefund},self},self}",
+        "costObservedUsd": 0.0324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Hotel Offers by Hotel",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-offers-by-hotel",
+        "hotels.search.by-hotel"
+      ],
+      "description": "Search bookable offers for a SINGLE Amadeus hotel ID and date range. Same shape as hotels/search but scoped to one hotelId.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/search/by-hotel",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "HnQztbjv4fNt5U7b33TE7zzRCwYNwhuvrWcerYKNxpWX",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/search/by-hotel?hotelId=HLPAR266&adults=1&checkInDate=2026-08-15&checkOutDate=2026-08-16",
+        "inputExample": {
+          "hotelId": "HLPAR266",
+          "adults": 1,
+          "checkInDate": "2026-08-15",
+          "checkOutDate": "2026-08-16"
+        },
+        "outputShape": "data[].{hotel.{hotelId,name,chainCode,cityCode},available,offers[].{id,checkInDate,checkOutDate,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit,refundable},self}}",
+        "quirks": [
+          "FIELD-NAME TRAP: this endpoint uses SINGULAR hotelId (one code), whereas /api/hotels/search uses PLURAL hotelIds (comma list). Don't mix them up.",
+          "hotelId is REQUIRED; checkInDate/checkOutDate must be future YYYY-MM-DD.",
+          "offers[].id is the offerId for /api/hotels/offer and /api/hotels/book.",
+          "Same optional filters as hotels/search (adults, currencyCode, priceRange, paymentPolicy, boardType, includeClosed, bestRateOnly, lang)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search bookable offers for a SINGLE Amadeus hotel ID and date range. Same shape as hotels/search but scoped to one hotelId. GET https://stabletravel.dev/api/hotels/search/by-hotel?hotelId=HLPAR266&adults=1&checkInDate=2026-08-15&checkOutDate=2026-08-16 Output: data[].{hotel.{hotelId,name,chainCode,cityCode},available,offers[].{id,checkInDate,checkOutDate,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit,refundable},self}}",
+        "costObservedUsd": 0.0324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Hotel Offer Detail",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-offer-detail",
+        "hotels.offer"
+      ],
+      "description": "Get full details for a single hotel offer by offerId (re-confirms price, room, deposit/cancellation policy, accepted credit cards). Use right before booking.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/offer",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "2MPicXh3jqu5UKgG8ftBUh3VCMEAvZ8j1CKTNJBCiu8u",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/offer?offerId=NINLXLXOQ3",
+        "inputExample": {
+          "offerId": "NINLXLXOQ3"
+        },
+        "outputShape": "data.{type:'hotel-offers',hotel.{hotelId,name,chainCode,cityCode,amenities[]},available,offers[].{id,checkInDate,checkOutDate,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit.acceptedPayments.{creditCards[],methods[],creditCardPolicies[]},refundable.cancellationRefund}}}; meta.lang",
+        "quirks": [
+          "offerId is REQUIRED — the offers[].id value harvested from /api/hotels/search or /api/hotels/search/by-hotel.",
+          "Offer IDs are time-sensitive: a stale/expired offerId returns an Amadeus error. Fetch fresh offers shortly before calling.",
+          "Response data is a single object (not an array) wrapping one hotel + its offers[]; includes deposit.acceptedPayments.creditCardPolicies for booking input prep."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Get full details for a single hotel offer by offerId (re-confirms price, room, deposit/cancellation policy, accepted credit cards). Use right before booking. GET https://stabletravel.dev/api/hotels/offer?offerId=NINLXLXOQ3 Output: data.{type:'hotel-offers',hotel.{hotelId,name,chainCode,cityCode,amenities[]},available,offers[].{id,checkInDate,checkOutDate,room.{type,typeEstimated,description.text},price.{currency,base,total,taxes[]},policies.{cancellations[],deposit.acceptedPayments.{creditCards[],methods[],creditCardPolicies[]},refundable.cancellationRefund}}}; meta.lang",
+        "costObservedUsd": 0.0324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Hotel Autocomplete",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-autocomplete",
+        "hotels.autocomplete"
+      ],
+      "description": "Autocomplete hotel names by keyword; returns matching hotels with their Amadeus hotelIds, city/country, and geocode. Cheap name-to-hotelId resolver.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/autocomplete",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0054,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5vULL8S4YreVBQohDgMeoT1y73zp33jrRP4dgSQEFMqJ",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/hotels/autocomplete?keyword=PARIS&subType=HOTEL_GDS&max=5",
+        "inputExample": {
+          "keyword": "PARIS",
+          "subType": "HOTEL_GDS",
+          "max": 5
+        },
+        "outputShape": "data[].{id,name,iataCode,subType,relevance,type:'location',hotelIds[],address.{cityName,countryCode},geoCode.{latitude,longitude}}",
+        "quirks": [
+          "BOTH keyword AND subType are REQUIRED. subType enum is HOTEL_LEISURE or HOTEL_GDS.",
+          "GOTCHA (observed): subType=HOTEL_LEISURE returned HTTP 500 'Amadeus API error: Unknown error' even for a valid keyword; subType=HOTEL_GDS succeeded. Prefer HOTEL_GDS.",
+          "Returns hotelIds[] per match (note: array) — use those with /api/hotels/search.",
+          "Cheapest hotel endpoint ($0.0054). Optional: countryCode, lang, max.",
+          "Upstream Amadeus errors surface as {success:false,error} with a non-2xx status — treat 5xx as retry-with-HOTEL_GDS or transient."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Autocomplete hotel names by keyword; returns matching hotels with their Amadeus hotelIds, city/country, and geocode. Cheap name-to-hotelId resolver. GET https://stabletravel.dev/api/hotels/autocomplete?keyword=PARIS&subType=HOTEL_GDS&max=5 Output: data[].{id,name,iataCode,subType,relevance,type:'location',hotelIds[],address.{cityName,countryCode},geoCode.{latitude,longitude}}",
+        "costObservedUsd": 0.0054
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Flight Order Lookup",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-flight-order-lookup",
+        "flights.orders.get"
+      ],
+      "description": "Retrieve an existing Amadeus flight order by its order ID. Read-only lookup of a previously created flight booking.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/flights/orders",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0054,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-11T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/flights/orders?id=<orderId>",
+        "inputExample": {
+          "id": "<amadeus-flight-order-id>"
+        },
+        "outputShape": "data.{...flight order...}; dictionaries; warnings[]",
+        "quirks": [
+          "id is REQUIRED — a real Amadeus flight ORDER id created by a prior flight booking flow (NOT part of this hotel-centric service; no booking endpoint here produces it).",
+          "VERIFY LIMITATION: endpoint is live and charges $0.0054, but a sample/non-existent id returns HTTP 404 {success:false,error:'Amadeus API error: Unknown error'}. Convention confirmed; needs a real order id to return data.",
+          "Read-only (safe), but only useful if you already hold an order id from elsewhere.",
+          "Activated 2026-06-11: Requires a flight order ID from a prior booking (path/param)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Retrieve an existing Amadeus flight order by its order ID. Read-only lookup of a previously created flight booking. GET https://stabletravel.dev/api/flights/orders?id=<orderId> Output: data.{...flight order...}; dictionaries; warnings[]",
+        "costObservedUsd": 0.0054
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Flight Price Confirm",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-flight-price-confirm",
+        "flights.price"
+      ],
+      "description": "Confirm final priced fare for one or more flight offers (Amadeus flight-offers-pricing). Validates availability and returns confirmed total price, taxes, fare rules.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/flights/price",
+          "method": "POST",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "32400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "4swgJLig7mAmw65aK3Xc47ZuaQhtqtWvCc3wtJx44i7v",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stabletravel.dev/api/flights/price  body: {data:{type:'flight-offers-pricing',flightOffers:[<offer>]}}",
+        "inputExample": {
+          "data": {
+            "type": "flight-offers-pricing",
+            "flightOffers": [
+              "<full flight-offer object from /api/flights/search>"
+            ]
+          }
+        },
+        "outputShape": "data.{type:'flight-offers-pricing',flightOffers[].price.{grandTotal,total,base,fees[],taxes[]}}; dictionaries; warnings[]",
+        "quirks": [
+          "Body REQUIRED shape: {data:{type:'flight-offers-pricing', flightOffers:[...]}}. The literal type string MUST be 'flight-offers-pricing'.",
+          "flightOffers[] must be FULL flight-offer objects returned verbatim by /api/flights/search (a DIFFERENT StableTravel service) — you cannot hand-build a minimal offer; do search first, pass the offer through unmodified.",
+          "VERIFY LIMITATION: not exercised with a paid call because no flight-offer object is available within this hotel-centric service; documented from OpenAPI schema + provider guidance.",
+          "Optional data.payments / data.travelers arrays supported."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Confirm final priced fare for one or more flight offers (Amadeus flight-offers-pricing). Validates availability and returns confirmed total price, taxes, fare rules. POST https://stabletravel.dev/api/flights/price  body: {data:{type:'flight-offers-pricing',flightOffers:[<offer>]}} Output: data.{type:'flight-offers-pricing',flightOffers[].price.{grandTotal,total,base,fees[],taxes[]}}; dictionaries; warnings[]",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "StableTravel Hotel Booking",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-hotel-booking",
+        "hotels.book"
+      ],
+      "description": "Create a real hotel booking order against an offer (Amadeus hotel-order). OUTWARD/irreversible: provisions an actual reservation. Not auto-called.",
+      "tags": [
+        "booking",
+        "hotels",
+        "flights",
+        "travel",
+        "amadeus",
+        "reservations"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/hotels/book",
+          "method": "POST",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.00216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2160",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2160",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5YTHFxwb9ASMyMnNWyHCVMuhbV8cFuJMMGsXrvLqKHUp",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stabletravel.dev/api/hotels/book  body: {data:{type:'hotel-order',guests[],travelAgent,roomAssociations[],payment}}",
+        "inputExample": {
+          "data": {
+            "type": "hotel-order",
+            "guests": [
+              {
+                "tid": 1,
+                "title": "MR",
+                "firstName": "Jane",
+                "lastName": "Doe",
+                "phone": "+33679278416",
+                "email": "jane@example.com"
+              }
+            ],
+            "travelAgent": {
+              "contact": {
+                "email": "agent@example.com"
+              }
+            },
+            "roomAssociations": [
+              {
+                "guestReferences": [
+                  {
+                    "guestReference": "1"
+                  }
+                ],
+                "hotelOfferId": "<offerId>"
+              }
+            ],
+            "payment": {
+              "method": "CREDIT_CARD",
+              "paymentCard": {
+                "paymentCardInfo": {
+                  "vendorCode": "VI",
+                  "cardNumber": "<card>",
+                  "expiryDate": "2027-08",
+                  "holderName": "JANE DOE"
+                }
+              }
+            }
+          }
+        },
+        "outputShape": "data.{type:'hotel-order',id,hotelBookings[].{id,confirmationNumber,hotelOffer,hotelProviderInformation}}; warnings[]",
+        "quirks": [
+          "Required top-level: data.type MUST be literal 'hotel-order'; data.guests[] (each needs tid number); data.travelAgent.contact.email required.",
+          "guests[].tid is a numeric guest index referenced by roomAssociations; do not confuse with a string id.",
+          "Real booking needs a fresh offerId (from /api/hotels/offer) tied to roomAssociations[].hotelOfferId, plus a real payment.paymentCard. Offer must still be live or Amadeus rejects.",
+          "Cheapest write endpoint ($0.00216) but the x402 fee is separate from the actual hotel charge taken by the property/Amadeus.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Create a real hotel booking order against an offer (Amadeus hotel-order). OUTWARD/irreversible: provisions an actual reservation. Not auto-called. POST https://stabletravel.dev/api/hotels/book  body: {data:{type:'hotel-order',guests[],travelAgent,roomAssociations[],payment}} Output: data.{type:'hotel-order',id,hotelBookings[].{id,confirmationNumber,hotelOffer,hotelProviderInformation}}; warnings[]",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Activities Search",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-activities-search",
+        "activities-search"
+      ],
+      "description": "Search tours and activities near a geographic point (lat/lng + radius) via the Amadeus Tours & Activities backend. Returns bookable activities with name, description, geocode, price, pictures, and a booking link.",
+      "tags": [
+        "activities",
+        "tours",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/activities/search",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.054,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "54000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "54000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5YTHFxwb9ASMyMnNWyHCVMuhbV8cFuJMMGsXrvLqKHUp",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/activities/search?latitude={lat}&longitude={lng}&radius={km}&max={n}  (no body; x402/MPP payment auto-handled)",
+        "inputExample": {
+          "latitude": 48.8566,
+          "longitude": 2.3522,
+          "radius": 1,
+          "max": 2
+        },
+        "outputShape": "data[].id, data[].name, data[].shortDescription?, data[].description (HTML string), data[].geoCode.latitude, data[].geoCode.longitude, data[].price.amount, data[].price.currencyCode, data[].pictures[], data[].bookingLink, data[].minimumDuration, meta.count, meta.links.self",
+        "quirks": [
+          "Required query params: latitude, longitude. Optional: radius (km, default 1), max (default 50). No request body (GET).",
+          "data[].id is the activityId you pass to /api/activities/details.",
+          "price.currencyCode is EUR (not USD) for European activities — do not assume USD.",
+          "data[].description is an HTML string (contains <div>/<p> tags); shortDescription is plain text but not always present.",
+          "meta.count can be large (e.g. 1300) while only up to `max` items are returned."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search tours and activities near a geographic point (lat/lng + radius) via the Amadeus Tours & Activities backend. Returns bookable activities with name, description, geocode, price, pictures, and a booking link. GET https://stabletravel.dev/api/activities/search?latitude={lat}&longitude={lng}&radius={km}&max={n}  (no body; x402/MPP payment auto-handled) Output: data[].id, data[].name, data[].shortDescription?, data[].description (HTML string), data[].geoCode.latitude, data[].geoCode.longitude, data[].price.amount, data[].price.currencyCode, data[].pictures[], data[].bookingLink, data[].minimumDuration, meta.count, meta.links.self",
+        "costObservedUsd": 0.05
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Activities by Square",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-activities-by-square",
+        "activities-by-square"
+      ],
+      "description": "Search tours and activities within a geographic bounding box (north/south latitude, east/west longitude) via the Amadeus Tours & Activities backend. Same activity result shape as /search but scoped to a rectangle instead of a point+radius.",
+      "tags": [
+        "activities",
+        "tours",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/activities/by-square",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.054,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "54000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "54000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5buT1KHL2MKQG51BeVeEeWdFJRm7VTKTRHH48js63p5t",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/activities/by-square?north={n}&south={s}&east={e}&west={w}&max={n}  (no body; x402/MPP payment auto-handled)",
+        "inputExample": {
+          "north": 41.397158,
+          "south": 41.394582,
+          "east": 2.160873,
+          "west": 2.154808,
+          "max": 2
+        },
+        "outputShape": "data[].id, data[].name, data[].shortDescription?, data[].description (HTML string), data[].geoCode.latitude, data[].geoCode.longitude, data[].price.amount, data[].price.currencyCode, data[].pictures[], data[].bookingLink, data[].minimumDuration, meta.count, meta.links.self",
+        "quirks": [
+          "Required query params: north, south, east, west (the bounding box corners — DIFFERENT input from /search which uses latitude/longitude/radius). Optional: max (default 50). No body.",
+          "The four corners must form a valid box (north>south, east>west); a too-large box may be rejected by Amadeus.",
+          "data[].id is the activityId for /api/activities/details.",
+          "price.currencyCode is EUR for European results; descriptions are HTML strings.",
+          "Same operation FAMILY as /search but it is NOT a gateway alias — it is a separate operation with a different input shape."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search tours and activities within a geographic bounding box (north/south latitude, east/west longitude) via the Amadeus Tours & Activities backend. Same activity result shape as /search but scoped to a rectangle instead of a point+radius. GET https://stabletravel.dev/api/activities/by-square?north={n}&south={s}&east={e}&west={w}&max={n}  (no body; x402/MPP payment auto-handled) Output: data[].id, data[].name, data[].shortDescription?, data[].description (HTML string), data[].geoCode.latitude, data[].geoCode.longitude, data[].price.amount, data[].price.currencyCode, data[].pictures[], data[].bookingLink, data[].minimumDuration, meta.count, meta.links.self",
+        "costObservedUsd": 0.05
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Activity Details",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-activity-details",
+        "activities-details"
+      ],
+      "description": "Fetch full details for one tour/activity by its Amadeus activity ID. The activityId comes from data[].id of an /activities/search or /activities/by-square result.",
+      "tags": [
+        "activities",
+        "tours",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/activities/details",
+          "method": "GET",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.054,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "54000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "54000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5buT1KHL2MKQG51BeVeEeWdFJRm7VTKTRHH48js63p5t",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://stabletravel.dev/api/activities/details?activityId={id}  (no body; x402/MPP payment auto-handled)",
+        "inputExample": {
+          "activityId": "139885971"
+        },
+        "outputShape": "data.id, data.name, data.description (HTML string), data.geoCode.latitude, data.geoCode.longitude, data.price.amount, data.price.currencyCode, data.pictures[], data.bookingLink, data.minimumDuration, meta.links.self",
+        "quirks": [
+          "Required query param is `activityId` (singular object under `data`, NOT an array like the search endpoints).",
+          "activityId is a stringified numeric ID sourced from data[].id of a search/by-square call — calling details cold without first searching requires a known ID.",
+          "Response root is a single `data` object (not `data[]`); price.currencyCode EUR; description is HTML.",
+          "Registry previously listed price 0.05; openapi/discover reports 0.054 and observed x402 charge was $0.05."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Fetch full details for one tour/activity by its Amadeus activity ID. The activityId comes from data[].id of an /activities/search or /activities/by-square result. GET https://stabletravel.dev/api/activities/details?activityId={id}  (no body; x402/MPP payment auto-handled) Output: data.id, data.name, data.description (HTML string), data.geoCode.latitude, data.geoCode.longitude, data.price.amount, data.price.currencyCode, data.pictures[], data.bookingLink, data.minimumDuration, meta.links.self",
+        "costObservedUsd": 0.05
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Transfers Search",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-transfers-search",
+        "transfers-search"
+      ],
+      "description": "Search available ground/airport transfer (private car/shuttle) offers between an airport (IATA code) and a drop-off address via Amadeus. Returns priced transfer offers with vehicle, service provider, and a bookable offer ID.",
+      "tags": [
+        "transfers",
+        "ground-transport",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/transfers/search",
+          "method": "POST",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.00324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3240",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "3240",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5buT1KHL2MKQG51BeVeEeWdFJRm7VTKTRHH48js63p5t",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stabletravel.dev/api/transfers/search with JSON body {startLocationCode, endAddressLine, endCityName, endCountryCode, endGeoCode, transferType, startDateTime, passengers}",
+        "inputExample": {
+          "startLocationCode": "CDG",
+          "endAddressLine": "5 Avenue Anatole France",
+          "endCityName": "Paris",
+          "endCountryCode": "FR",
+          "endGeoCode": "48.8584,2.2945",
+          "transferType": "PRIVATE",
+          "startDateTime": "2026-08-15T10:00:00",
+          "passengers": 2
+        },
+        "outputShape": "data[].id, data[].type ('transfer-offer'), data[].transferType, data[].start.{dateTime,locationCode}, data[].end.{dateTime,address.{line,cityName,countryCode,latitude,longitude}}, data[].vehicle.{code,category,description,imageURL,seats[].count,baggages[]}, data[].converted.{monetaryAmount,currencyCode,base.monetaryAmount,totalFees.monetaryAmount}, data[].quotation.{monetaryAmount,currencyCode}, data[].serviceProvider.{code,name,termsUrl,logoUrl,settings[]}, data[].extraServices[].{code,itemId,description,quotation.monetaryAmount,isBookable}",
+        "quirks": [
+          "DROP-OFF REQUIRES BOTH full address (endAddressLine + endCityName + endCountryCode) AND endGeoCode together. Address-only -> 200 with body {errors:[{code:34604,detail:'NEED GEOCODES OF THE ADDRESS'}]}. Geocode-only -> 200 with body {errors:[{code:32803,detail:'MISSING DROP OFF LOCATION INFORMATION'}]}.",
+          "endGeoCode format is 'lat,long' as a single string (e.g. '48.8584,2.2945').",
+          "startLocationCode must be a valid IATA airport code (e.g. CDG).",
+          "You pay ~$0.003 even when the call returns a validation error in the body (HTTP is still 200) — build the body correctly the first time.",
+          "Response is large (~280KB); data[] holds many offers. Read price from data[i].converted.monetaryAmount (currency in data[i].converted.currencyCode, e.g. EUR).",
+          "Each offer's serviceProvider.settings may include 'FLIGHT_NUMBER_REQUIRED' — that flightNumber is needed at /transfers/book time.",
+          "Offer IDs (data[].id) are the offerId you pass to /transfers/book."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Search available ground/airport transfer (private car/shuttle) offers between an airport (IATA code) and a drop-off address via Amadeus. Returns priced transfer offers with vehicle, service provider, and a bookable offer ID. POST https://stabletravel.dev/api/transfers/search with JSON body {startLocationCode, endAddressLine, endCityName, endCountryCode, endGeoCode, transferType, startDateTime, passengers} Output: data[].id, data[].type ('transfer-offer'), data[].transferType, data[].start.{dateTime,locationCode}, data[].end.{dateTime,address.{line,cityName,countryCode,latitude,longitude}}, data[].vehicle.{code,category,description,imageURL,seats[].count,baggages[]}, data[].converted.{monetaryAmount,currencyCode,base.monetaryAmount,totalFees.monetaryAmount}, data[].quotation.{monetaryAmount,currencyCode}, data[].serviceProvider.{code,name,termsUrl,logoUrl,settings[]}, data[].extraServices[].{code,itemId,description,quotation.monetaryAmount,isBookable}",
+        "costObservedUsd": 0.00324
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Transfers Book",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-transfers-book",
+        "transfers-book"
+      ],
+      "description": "Book a transfer order from a transfer offer returned by /transfers/search. Creates a real, billable transfer reservation (Amadeus). OUTWARD/irreversible — places an actual booking; do not call without explicit user approval.",
+      "tags": [
+        "transfers",
+        "ground-transport",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/transfers/book",
+          "method": "POST",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.00216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2160",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2160",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "DpSdigvkNUwX7Df1RMt4dkx5Dy2DjALtfBA31dP3PmiU",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stabletravel.dev/api/transfers/book with JSON body {offerId, data:{passengers[], payment, flightNumber?, note?, extraServices?[], ...}}. offerId + data are required; data.passengers and data.payment are required.",
+        "inputExample": {
+          "offerId": "<offer id from /transfers/search data[].id>",
+          "data": {
+            "passengers": [
+              {
+                "firstName": "Jane",
+                "lastName": "Doe",
+                "title": "MS",
+                "contacts": {
+                  "phoneNumber": "+33123456789",
+                  "email": "jane@example.com"
+                }
+              }
+            ],
+            "payment": {
+              "methodOfPayment": "CREDIT_CARD",
+              "creditCard": {
+                "number": "...",
+                "holderName": "...",
+                "vendorCode": "VI",
+                "expiryDate": "1028"
+              }
+            },
+            "flightNumber": "AF1234"
+          }
+        },
+        "outputShape": "data (booked transfer order object), warnings[] (per OpenAPI; full shape unverified — not paid because outward)",
+        "quirks": [
+          "offerId comes from a prior /transfers/search response (data[].id).",
+          "data.passengers and data.payment are REQUIRED by the OpenAPI schema.",
+          "If the chosen offer's serviceProvider.settings includes 'FLIGHT_NUMBER_REQUIRED', you must supply data.flightNumber.",
+          "Schema source: OpenAPI at https://stabletravel.dev/openapi.json — exact payment sub-object fields not live-verified.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Book a transfer order from a transfer offer returned by /transfers/search. Creates a real, billable transfer reservation (Amadeus). OUTWARD/irreversible — places an actual booking; do not call without explicit user approval. POST https://stabletravel.dev/api/transfers/book with JSON body {offerId, data:{passengers[], payment, flightNumber?, note?, extraServices?[], ...}}. offerId + data are required; data.passengers and data.payment are required. Output: data (booked transfer order object), warnings[] (per OpenAPI; full shape unverified — not paid because outward)",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "StableTravel Transfers Cancel",
+      "kind": "api",
+      "provider": "stabletravel",
+      "providerId": "stabletravel",
+      "aka": [
+        "stabletravel-transfers-cancel",
+        "transfers-cancel"
+      ],
+      "description": "Cancel a previously booked transfer order by orderId + confirmation number (Amadeus). OUTWARD/irreversible state change on a real booking; do not call without explicit user approval.",
+      "tags": [
+        "transfers",
+        "ground-transport",
+        "amadeus",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stabletravel.dev/api/transfers/cancel",
+          "method": "POST",
+          "provider": "stabletravel",
+          "providerId": "stabletravel",
+          "amount": 0.00216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2160",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xDd257723b86B4947483905cdAcBbBC70fACF2ec0",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2160",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "6u5LMGQC2qk9peNibahmRWxGVXrBypk8nhTCcqtiuqMY",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "DpSdigvkNUwX7Df1RMt4dkx5Dy2DjALtfBA31dP3PmiU",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stabletravel.dev/api/transfers/cancel with JSON body {orderId, confirmNbr}. Both required.",
+        "inputExample": {
+          "orderId": "<transfer order id from /transfers/book>",
+          "confirmNbr": "<confirmation number from booking>"
+        },
+        "outputShape": "data (cancellation result object; per OpenAPI — not live-verified because outward)",
+        "quirks": [
+          "Both orderId AND confirmNbr are REQUIRED (note the abbreviated field name 'confirmNbr', not 'confirmationNumber').",
+          "orderId and confirmNbr come from a prior /transfers/book response.",
+          "Schema source: OpenAPI at https://stabletravel.dev/openapi.json.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Cancel a previously booked transfer order by orderId + confirmation number (Amadeus). OUTWARD/irreversible state change on a real booking; do not call without explicit user approval. POST https://stabletravel.dev/api/transfers/cancel with JSON body {orderId, confirmNbr}. Both required. Output: data (cancellation result object; per OpenAPI — not live-verified because outward)",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "dead upstream (404) 2026-07-26 — StableTravel removed the entire Amadeus family (flights/hotels/activities/transfers/reference). Confirmed 3 ways: live 404 with the provider's own {code:'route_not_found'}, absent from its current openapi.json (45 paths: flightaware/seats-aero/google-flights only), and its llms.txt states \"There are no hotel, activity, or ground-transfer endpoints. If a traveler needs those, use a different provider.\""
+    },
+    {
+      "name": "NetIntel Calendar ICS Generator",
+      "kind": "api",
+      "provider": "netintel.dev",
+      "providerId": "netintel-dev",
+      "aka": [
+        "netintel-calendar-ics",
+        "calendar-ics",
+        "ics-generator",
+        "ical-generator",
+        "rfc5545-ics"
+      ],
+      "description": "Turns structured event fields (title, start/end, timezone, location, etc.) into a valid RFC 5545 .ics calendar file with proper escaping, line folding, and a deterministic UID for idempotent re-import — so agents can publish events that import cleanly into Google, Apple, and Outlook calendars.",
+      "tags": [
+        "ics",
+        "calendar",
+        "ical",
+        "events",
+        "scheduling",
+        "rfc5545"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://netintel.dev/calendar/ics",
+          "method": "POST",
+          "provider": "netintel.dev",
+          "providerId": "netintel-dev",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Event summary (e.g. \"Team Offsite\"). Required. -> SUMMARY"
+              },
+              "starts_at": {
+                "type": "string",
+                "description": "ISO-8601 start. Use an offset/timestamp for timed events (e.g. 2026-06-27T09:00:00+02:00) or a bare date (YYYY-MM-DD) for all-day. Required."
+              },
+              "ends_at": {
+                "type": "string",
+                "description": "Optional ISO-8601 end. Defaults: timed -> start + 1 hour; all-day -> start + 1 day (exclusive). For multi-day all-day events pass the inclusive last day."
+              },
+              "all_day": {
+                "type": "boolean",
+                "description": "Optional. Inferred when omitted: a bare-date starts_at is all-day, a timestamp is timed."
+              },
+              "timezone": {
+                "type": "string",
+                "description": "Optional IANA timezone (e.g. Europe/Paris). Timed events are converted to UTC and emitted with a Z suffix (no VTIMEZONE block). Unrecognized values are ignored (falls back to UTC)."
+              },
+              "location": {
+                "type": "string",
+                "description": "Optional venue/address -> LOCATION."
+              },
+              "description": {
+                "type": "string",
+                "description": "Optional -> DESCRIPTION."
+              },
+              "url": {
+                "type": "string",
+                "description": "Optional -> URL."
+              },
+              "organizer": {
+                "type": "string",
+                "description": "Optional organizer name and/or email -> ORGANIZER (CN=...)."
+              }
+            },
+            "required": [
+              "title",
+              "starts_at"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "ics": {
+                    "type": "string",
+                    "description": "The full RFC 5545 .ics document (BEGIN:VCALENDAR ... END:VCALENDAR) with CRLF line endings"
+                  },
+                  "uid": {
+                    "type": "string",
+                    "description": "Deterministic UID (<hash>@netintel.dev) for idempotent re-import"
+                  },
+                  "all_day": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "score": {
+                "type": "number"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "findings": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://netintel.dev/calendar/ics with Content-Type: application/json and a JSON body {title, starts_at, [ends_at], [all_day], [timezone], [location], [description], [url], [organizer]} (x402, USDC on Base eip155:8453 OR Solana; title and starts_at are the only required fields). Add ?download=1 or Accept: text/calendar to receive the raw .ics as a file attachment instead of the JSON envelope.",
+        "inputExample": {
+          "title": "Team Offsite",
+          "starts_at": "2026-06-27T09:00:00",
+          "ends_at": "2026-06-27T17:00:00",
+          "timezone": "Europe/Paris",
+          "location": "Paris HQ"
+        },
+        "outputShape": "data{ics (full RFC 5545 VCALENDAR/VEVENT string with CRLF), uid (deterministic <hash>@netintel.dev), all_day}, score, grade, findings[]",
+        "quirks": [
+          "Input is a JSON POST body (not query params); only title and starts_at are required.",
+          "Timed events are converted to UTC and emitted with a Z suffix and NO VTIMEZONE block (verified: starts_at 2026-06-27T09:00:00 + timezone Europe/Paris -> DTSTART:20260627T070000Z).",
+          "all_day is inferred from starts_at shape (bare date YYYY-MM-DD = all-day; timestamp = timed) unless explicitly set.",
+          "UID is deterministic (same inputs -> same UID) so re-importing the same event is idempotent across Google/Apple/Outlook.",
+          "Pure compute, no LLM. ?download=1 or Accept: text/calendar returns the raw .ics file with a Content-Disposition attachment header instead of the JSON envelope.",
+          "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.005.",
+          "NetIntel does not charge on 4xx/5xx (input-validation, upstream, or server errors) per its agent fair-trade guarantee."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Turns event fields into a valid RFC 5545 .ics calendar file. POST https://netintel.dev/calendar/ics with Content-Type: application/json and a JSON body: title (required, SUMMARY) and starts_at (required, ISO-8601 timestamp for timed or bare YYYY-MM-DD for all-day). Optional: ends_at (defaults timed->+1h, all-day->+1 day exclusive; pass inclusive last day for multi-day), all_day (else inferred), timezone (IANA; timed events converted to UTC with a Z suffix, no VTIMEZONE), location, description, url, organizer. Pay per call via x402 (USDC on Base eip155:8453 or Solana). Returns data{ics, uid (deterministic, idempotent re-import), all_day}, score, grade, findings[]. Add ?download=1 (or Accept: text/calendar) to get the raw .ics file attachment instead of JSON. Use to publish agent-generated events that import cleanly into Google/Apple/Outlook calendars.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "NetIntel Holidays Check",
+      "kind": "api",
+      "provider": "netintel.dev",
+      "providerId": "netintel-dev",
+      "aka": [
+        "netintel-holidays-check",
+        "holidays-check",
+        "public-holidays",
+        "business-day-check"
+      ],
+      "description": "Looks up public holidays for any country and year (ISO 3166-1 alpha-2), optionally checks whether a specific date is a holiday, weekend, or business day, and calculates the next business day — so agents can handle scheduling, SLA, and deadline logic without hardcoding country-specific holiday rules.",
+      "tags": [
+        "holidays",
+        "calendar",
+        "scheduling",
+        "business-days",
+        "public-holidays"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://netintel.dev/holidays/check",
+          "method": "GET",
+          "provider": "netintel.dev",
+          "providerId": "netintel-dev",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "country_code": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code (e.g. US, GB, DE) — required query param"
+              },
+              "year": {
+                "type": "integer",
+                "description": "4-digit year (default: current year, range 2000-2099) — query param"
+              },
+              "date": {
+                "type": "string",
+                "description": "YYYY-MM-DD specific date to check — populates date_check; omitted -> date_check is null — query param"
+              }
+            },
+            "required": [
+              "country_code"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "country_code": {
+                "type": "string"
+              },
+              "year": {
+                "type": "number"
+              },
+              "total_holidays": {
+                "type": "number"
+              },
+              "holidays": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "local_name": {
+                      "type": "string"
+                    },
+                    "is_global": {
+                      "type": "boolean"
+                    },
+                    "types": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "date_check": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "date": {
+                    "type": "string"
+                  },
+                  "is_holiday": {
+                    "type": "boolean"
+                  },
+                  "is_weekend": {
+                    "type": "boolean"
+                  },
+                  "is_business_day": {
+                    "type": "boolean"
+                  },
+                  "holiday_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "next_business_day": {
+                    "type": "string"
+                  }
+                }
+              },
+              "score": {
+                "type": "number"
+              },
+              "grade": {
+                "type": "string"
+              },
+              "findings": {
+                "type": "array"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://netintel.dev/holidays/check?country_code=<ISO2>[&year=<YYYY>][&date=<YYYY-MM-DD>] (x402, USDC on Base eip155:8453 OR Solana; no JSON body; country_code is a required query param, year and date optional)",
+        "inputExample": {
+          "country_code": "US",
+          "year": 2026,
+          "date": "2026-07-03"
+        },
+        "outputShape": "country_code, year, total_holidays, holidays[]{date, name, local_name, is_global, types[]}, date_check{date, is_holiday, is_weekend, is_business_day, holiday_name, next_business_day} (null when no date passed), score, grade, findings[]",
+        "quirks": [
+          "All inputs are QUERY PARAMS on a GET request (no JSON body): ?country_code=US&year=2026&date=2026-07-03",
+          "country_code is required; year defaults to the current year (range 2000-2099); date is optional — when omitted, date_check is null",
+          "date_check gives the actionable business-day answer: is_holiday, is_weekend, is_business_day, holiday_name, and next_business_day (verified: 2026-07-03 US -> Independence Day, next_business_day 2026-07-06)",
+          "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.005",
+          "NetIntel does not charge on 4xx/5xx (input-validation, upstream, or server errors) per its agent fair-trade guarantee",
+          "holidays[] may contain duplicate dates with different type sets (e.g. Good Friday listed as both Public and Optional; Columbus Day as Public and Bank)"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Looks up public holidays for a country/year and optionally answers date-aware scheduling questions (is a given date a holiday/weekend/business day, and what's the next business day). GET https://netintel.dev/holidays/check?country_code=<ISO2>[&year=<YYYY>][&date=<YYYY-MM-DD>] (x402, USDC on Base eip155:8453 OR Solana; no JSON body). country_code (ISO 3166-1 alpha-2) is required; year defaults to current year; date is optional. Output: country_code, year, total_holidays, holidays[]{date,name,local_name,is_global,types[]}, date_check{date,is_holiday,is_weekend,is_business_day,holiday_name,next_business_day} (null if no date given), score, grade, findings[]. Use for SLA/deadline math, scheduling, and date-aware workflows without hardcoding holiday rules.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris Regional Holidays",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-eu-holidays-regional",
+        "greeneris-regional-holidays",
+        "regional-holidays",
+        "school-holidays",
+        "openholidays"
+      ],
+      "description": "Subdivision-level public AND school holidays for ~36 mostly-European countries (German Laender, French academies, Spanish communities...), backed by the OpenHolidays API (data ODbL-1.0). Query by ISO country code and date window, optionally filtered to one ISO 3166-2 subdivision; each entry gives dates, English name, nationwide flag and the affected subdivision codes. Keyless over x402. $0.005.",
+      "tags": [
+        "holidays",
+        "school-holidays",
+        "regional",
+        "calendar",
+        "europe",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/eu/holidays-regional",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "country"
+            ],
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code, e.g. DE, FR, AT (required)"
+              },
+              "from": {
+                "type": "string",
+                "description": "ISO start date, e.g. 2026-10-01 (default: today)"
+              },
+              "to": {
+                "type": "string",
+                "description": "ISO end date (default: from + 6 months, max +366 days)"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "public",
+                  "school"
+                ],
+                "default": "public",
+                "description": "Holiday type: public holidays or school holidays"
+              },
+              "subdivision": {
+                "type": "string",
+                "description": "Optional ISO 3166-2 subdivision filter, e.g. DE-BY"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "{ ok, data: { country, holiday_type, from, to, subdivision, count, holidays: [ { start_date, end_date, name, type, nationwide, subdivisions: [string] } ], source } }"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET /v1/eu/holidays-regional?country=<ISO2>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>&type=public|school&subdivision=<ISO 3166-2>",
+        "inputExample": {
+          "country": "DE",
+          "from": "2026-10-01",
+          "to": "2026-11-05",
+          "type": "public"
+        },
+        "outputShape": "JSON: { ok:true, data:{ country, holiday_type, from, to, subdivision, count, holidays:[{ start_date, end_date, name, type, nationwide, subdivisions:[string] }], source } }",
+        "quirks": [
+          "country (ISO 3166-1 alpha-2) is the only REQUIRED query param; from/to/type/subdivision are optional.",
+          "type=public returns public holidays (default); type=school returns school-holiday periods (which span multiple days: start_date != end_date).",
+          "Date window defaults to today + 6 months and is capped at 366 days.",
+          "nationwide:false holidays list the affected ISO 3166-2 subdivision codes in subdivisions[]; pass ?subdivision=DE-BY to filter to one region.",
+          "Verified: ?country=DE&from=2026-10-01&to=2026-11-05&type=public returned 3 holidays (Day of German Unity nationwide; Reformation Day and All Saints' Day regional).",
+          "Coverage is ~36 mostly-European countries via the OpenHolidays API (openholidaysapi.org); data ODbL-1.0, attribution required. 24h cache."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Regional/subdivision-level holiday calendar. Pass ?country= (ISO 3166-1 alpha-2, required) plus optional from/to date window (default today +6mo, max 366 days), type=public|school (default public), and subdivision= (ISO 3166-2, e.g. DE-BY) to filter to one region. Read data.holidays[] for start_date, end_date, English name, nationwide flag and affected subdivisions[]. No API key; pay the x402 402 (Base USDC, $0.005).",
+        "costObservedUsd": 0.005,
+        "priceText": "$0.005"
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris French Business Days",
+      "kind": "api",
+      "provider": "greeneris.io",
+      "providerId": "greeneris-io",
+      "aka": [
+        "greeneris-french-business-days",
+        "fr-business-days",
+        "jours-ouvres",
+        "jours-ouvrables",
+        "french-deadline-calculator",
+        "eu-verify-business-days-fr"
+      ],
+      "description": "Adds N French business days to a start date, or counts business days over a range, skipping weekends and the 11 French legal public holidays (movable feasts via Butcher-Meeus) — so agents can compute French invoice/payment/SLA deadlines without hardcoding the holiday calendar.",
+      "tags": [
+        "france",
+        "business-days",
+        "holidays",
+        "calendar",
+        "deadlines"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/fr/business-days",
+          "method": "GET",
+          "provider": "greeneris.io",
+          "providerId": "greeneris-io",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "description": "ISO date (YYYY-MM-DD) to add business days to — use with add (add mode)"
+              },
+              "add": {
+                "type": "integer",
+                "description": "Business days to add, 1-366 (default 1) — use with start (add mode)"
+              },
+              "from": {
+                "type": "string",
+                "description": "ISO range start (YYYY-MM-DD) — use with to (counting mode)"
+              },
+              "to": {
+                "type": "string",
+                "description": "ISO range end (YYYY-MM-DD, inclusive) — use with from (counting mode)"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "ouvres",
+                  "ouvrables"
+                ],
+                "default": "ouvres",
+                "description": "ouvres = Mon-Fri (default); ouvrables = Mon-Sat"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "type": "string"
+                  },
+                  "start": {
+                    "type": "string"
+                  },
+                  "business_days_added": {
+                    "type": "integer"
+                  },
+                  "end_date": {
+                    "type": "string"
+                  },
+                  "calendar_days": {
+                    "type": "integer"
+                  },
+                  "holidays_crossed": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/fr/business-days?start=<YYYY-MM-DD>&add=<1-366> (add mode) OR ?from=<YYYY-MM-DD>&to=<YYYY-MM-DD> (counting mode), optional &mode=ouvres|ouvrables (x402, USDC on Base eip155:8453; no JSON body — all inputs are query params)",
+        "inputExample": {
+          "start": "2026-07-13",
+          "add": 30
+        },
+        "outputShape": "{ ok, data:{ mode, start, business_days_added, end_date, calendar_days, holidays_crossed[]{date,name}, source } } — in counting mode data reports the range and the business-day count instead of end_date",
+        "quirks": [
+          "All inputs are QUERY PARAMS on a GET (no JSON body).",
+          "Two mutually-exclusive modes: ADD mode (start + add → end_date) vs COUNTING mode (from + to → business days in range). Verified add mode: start=2026-07-13 & add=30 → end_date 2026-08-25, crossing fete_nationale (07-14) and assomption (08-15).",
+          "mode=ouvres = Mon-Fri (default); mode=ouvrables = Mon-Sat.",
+          "Computed locally from French legal holidays (Code du travail L3133-1), Easter via Butcher-Meeus — deterministic, no external upstream.",
+          "Response is wrapped in { ok, data:{...} }; the 402/bazaar output example omits that wrapper but the live 200 includes it.",
+          "France-specific only — this is the /v1/fr/ dataset; sibling country paths (/v1/eu/holidays-regional, /v1/world/holidays) are separate services.",
+          "Host advertises only Base USDC (eip155:8453) in accepts — no Solana rail (unlike some sibling data hosts). Provider states buyers are never charged for empty or failed answers."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Computes French working-day deadlines. GET https://data.greeneris.io/v1/fr/business-days with query params (no JSON body), x402 USDC on Base. ADD mode: ?start=<YYYY-MM-DD>&add=<N 1-366> returns the date N French business days later. COUNTING mode: ?from=<YYYY-MM-DD>&to=<YYYY-MM-DD> counts business days in the inclusive range. Optional &mode=ouvres (Mon-Fri, default) or ouvrables (Mon-Sat). Skips weekends and the 11 French legal public holidays (movable feasts via Butcher-Meeus). Output: { ok, data:{ mode, start, business_days_added, end_date, calendar_days, holidays_crossed[]{date,name}, source } }. Use for French invoice/payment/SLA/legal deadline math without hardcoding the holiday calendar.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris Space Launches",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "eu-verify space launches",
+        "orbital launch calendar",
+        "space/launches",
+        "rocket launch schedule"
+      ],
+      "description": "Consolidated calendar of upcoming orbital launches worldwide (from Launch Library 2 by The Space Devs) with launch window (NET, window start/end), provider, pad and location, mission name/type/orbit, and go/TBD status, filterable by provider, free text and NET date range.",
+      "tags": [
+        "space",
+        "launches",
+        "rockets",
+        "calendar",
+        "aerospace"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/space/launches",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T18:00:00Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "description": "Number of launches to return (1-25, query param, optional)",
+                "default": 10
+              },
+              "search": {
+                "type": "string",
+                "description": "Free-text filter, e.g. falcon, starlink (query param, optional)"
+              },
+              "provider": {
+                "type": "string",
+                "description": "Launch service provider name, e.g. SpaceX (query param, optional)"
+              },
+              "net_gte": {
+                "type": "string",
+                "description": "Earliest NET, ISO date(-time) (query param, optional)"
+              },
+              "net_lte": {
+                "type": "string",
+                "description": "Latest NET, ISO date(-time) (query param, optional)"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "total_upcoming": {
+                    "type": "integer"
+                  },
+                  "returned": {
+                    "type": "integer"
+                  },
+                  "launches": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "net": {
+                          "type": "string"
+                        },
+                        "window_start": {
+                          "type": "string"
+                        },
+                        "window_end": {
+                          "type": "string"
+                        },
+                        "pad": {
+                          "type": "string"
+                        },
+                        "location": {
+                          "type": "string"
+                        },
+                        "mission": {
+                          "type": "string"
+                        },
+                        "mission_type": {
+                          "type": "string"
+                        },
+                        "orbit": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30T18:00:00Z",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET with optional query params: limit (integer 1-25, default 10), search (free text), provider (launch provider name), net_gte / net_lte (ISO date or date-time bounding the NET). All optional; a bare GET returns the next 10 upcoming launches. No body. Pure x402 pay-per-call on Base USDC; the 402 quote is the auth, no API key or account.",
+        "inputExample": "?limit=5&search=falcon",
+        "outputShape": "JSON object { ok: true, data: { total_upcoming, returned, launches: [{ id, name, provider, status, net, window_start, window_end, pad, location, mission, mission_type, orbit }], source } }. Verified 200 returned 5 upcoming Falcon launches (e.g. 'Falcon 9 Block 5 | Starlink Group 17-52', provider SpaceX, status Go, net 2026-08-01T02:00:00Z, pad Space Launch Complex 4E, Vandenberg SFB), with total_upcoming=127 for the falcon filter.",
+        "quirks": [
+          "All parameters are optional query params (not path/body); a bare GET returns the next 10 launches. limit is capped at 25.",
+          "Result is wrapped in { ok, data } — the launches array lives under data.launches; data.total_upcoming is the full upcoming count matching the filter, data.returned is how many were included.",
+          "'orbit' can be null; 'status' is a human string (e.g. Go, TBD, Success). net is the No-Earlier-Than time; window_start/window_end bound the launch window.",
+          "Served from a 1h cache (upstream Launch Library 2 is rate-limited). Data source: Launch Library 2 by The Space Devs (thespacedevs.com).",
+          "Sibling ops on the same host (/v1/space/kp geomagnetic Kp index, /v1/solar/history) are separate services, not variants of this one."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://data.greeneris.io/v1/space/launches to get the upcoming orbital-launch calendar. Optionally narrow with limit (1-25), search (free text like 'falcon' or 'starlink'), provider (e.g. SpaceX), and net_gte / net_lte (ISO dates bounding the NET launch time). No body, no API key — pay $0.005 USDC on Base via x402. Read data.launches[] for each launch's name, provider, status, net (No-Earlier-Than time), window_start/window_end, pad, location and mission; data.total_upcoming gives the full upcoming count. Use for launch schedules, aerospace event calendars, and planning around upcoming missions.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris Timezone Clock",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-timezone-clock",
+        "eu-verify-time-zone",
+        "iana-timezone-time"
+      ],
+      "description": "Current wall-clock time for any IANA timezone (ISO datetime, date, time, day of week and DST flag), resolved live against the IANA tz database.",
+      "tags": [
+        "time",
+        "timezone",
+        "dst",
+        "clock",
+        "scheduling"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/time/zone",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T17:57:09.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "tz": {
+                "type": "string",
+                "description": "IANA timezone name (query param, required), e.g. Europe/Paris, America/New_York, Asia/Tokyo"
+              }
+            },
+            "required": [
+              "tz"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "timezone": {
+                    "type": "string"
+                  },
+                  "datetime": {
+                    "type": "string"
+                  },
+                  "date": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "type": "string"
+                  },
+                  "day_of_week": {
+                    "type": "string"
+                  },
+                  "dst_active": {
+                    "type": "boolean"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/time/zone?tz=Europe/Paris — single required query param tz (IANA timezone name). No body. x402 USDC on Base, no API key; the payment is the auth.",
+        "inputExample": {
+          "tz": "Europe/Paris"
+        },
+        "outputShape": "{ ok: boolean, data: { timezone, datetime (ISO), date (YYYY-MM-DD), time (HH:MM:SS), day_of_week, dst_active: boolean, source } } — e.g. { ok: true, data: { timezone: 'Europe/Paris', datetime: '2026-07-30T19:42:43.9382711', date: '2026-07-30', time: '19:42:43', day_of_week: 'Thursday', dst_active: true, source: 'timeapi.io (IANA tz database)' } }",
+        "quirks": [
+          "tz is a required query param (not path/body); it must be a valid IANA timezone name like Europe/Paris, America/New_York or Asia/Tokyo.",
+          "Result payload is wrapped in { ok, data } — the fields live under data.",
+          "Backed by timeapi.io / the IANA tz database (includes DST rules) and served with a ~60s cache — not a monotonic high-precision clock.",
+          "Sibling ops on the same host (e.g. /v1/world/holidays, /v1/eu/holidays-regional, /v1/fr/business-days) are separate services, not variants of this one."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Current wall-clock time for any IANA timezone. GET https://data.greeneris.io/v1/time/zone with a single required query param tz (IANA timezone name, e.g. Europe/Paris, America/New_York, Asia/Tokyo). No body, no API key — pay $0.001 USDC on Base via x402. Response: { ok: true, data: { timezone, datetime, date, time, day_of_week, dst_active, source } }. Data comes from the IANA tz database with DST rules and a ~60s cache. Use for scheduling, DST-aware timestamps and cross-timezone coordination.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris World Holidays",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "eu-verify holidays",
+        "public holidays by country",
+        "world/holidays"
+      ],
+      "description": "Returns the full list of official public holidays for one country and year (100+ countries, legally accurate dates from the Nager.Date registry), with English + local name, nationwide flag, regional counties and holiday types per entry.",
+      "tags": [
+        "holidays",
+        "calendar",
+        "planning",
+        "countries",
+        "business-days"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/world/holidays",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T17:56:41Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code, e.g. FR (required)"
+              },
+              "year": {
+                "type": "integer",
+                "description": "Year between 1975 and 2077 (default: current year)"
+              }
+            },
+            "required": [
+              "country"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "country": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "integer"
+                  },
+                  "count": {
+                    "type": "integer"
+                  },
+                  "holidays": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string"
+                        },
+                        "local_name": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "nationwide": {
+                          "type": "boolean"
+                        },
+                        "counties": {
+                          "type": [
+                            "array",
+                            "null"
+                          ]
+                        },
+                        "types": {
+                          "type": "array"
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30T17:56:41Z",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "GET with query params: country (required, ISO 3166-1 alpha-2) and year (optional integer 1975-2077, defaults to current year). Pure x402 pay-per-call on Base USDC; the 402 quote is the auth, no API key or account.",
+        "inputExample": "?country=FR&year=2026",
+        "outputShape": "JSON object { ok: true, data: { country, year, count, holidays: [{ date, local_name, name, nationwide, counties, types[] }], source } }. Verified 200 returned 11 French public holidays for 2026 (e.g. 2026-07-14 Bastille Day).",
+        "quirks": "Live 200 wraps the result in { ok, data: {...} } (the x402 402 outputSchema example omits the ok/data envelope and shows the fields flat — trust the live shape). 'counties' is null for nationwide holidays and lists regional codes for regional ones. Results cached 24h. Data sourced from the open-source MIT Nager.Date project (date.nager.at).",
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Pick a country by ISO 3166-1 alpha-2 code (e.g. FR, DE, US) and optionally a year (1975-2077; omit for current year). Call GET https://data.greeneris.io/v1/world/holidays?country=FR&year=2026. Read data.holidays[] for each holiday's date, English name, local_name, nationwide flag, and types. Use for business-day/planning calculations and cross-border scheduling.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "2s Business Days",
+      "kind": "api",
+      "provider": "2s",
+      "providerId": "2s",
+      "aka": [
+        "2s-business-days",
+        "2s calendar business-days",
+        "business-day calculator",
+        "working-days",
+        "date-add-business-days",
+        "networkdays"
+      ],
+      "description": "Holiday-aware business-day calculator for 200+ countries (ISO 3166-1 alpha-2): shift a date by N business days, count business days between two dates, or check whether a single date is a business day — skipping weekends and country/region holidays, with the skipped holidays itemized.",
+      "tags": [
+        "business-days",
+        "calendar",
+        "scheduling",
+        "working-days",
+        "holidays",
+        "deadlines"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://2s.io/api/calendar/business-days",
+          "method": "GET",
+          "provider": "2s",
+          "providerId": "2s",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1",
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code, e.g. US, DE, JP — required query param"
+              },
+              "start": {
+                "type": "string",
+                "description": "Anchor date, YYYY-MM-DD — required query param"
+              },
+              "addDays": {
+                "type": "string",
+                "description": "Signed integer number of business days to shift the start date by (e.g. 2, -3). XOR with end — provide exactly one of addDays or end; omit both to just check the start date"
+              },
+              "end": {
+                "type": "string",
+                "description": "End date YYYY-MM-DD to count business days to (exclusive of start, inclusive of end). XOR with addDays"
+              },
+              "region": {
+                "type": "string",
+                "description": "Optional subdivision code, e.g. CA (US-California), BY (DE-Bavaria) — query param"
+              },
+              "weekend": {
+                "type": "string",
+                "description": "Optional comma-separated weekend days (default sat,sun; e.g. fri,sat for the Gulf) — query param"
+              },
+              "types": {
+                "type": "string",
+                "description": "Optional comma-separated holiday types treated as closures (default public,bank) — query param"
+              }
+            },
+            "required": [
+              "country",
+              "start"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "ok": {
+                    "type": "boolean"
+                  },
+                  "total": {
+                    "type": "integer"
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "type": "string"
+                        },
+                        "country": {
+                          "type": "string"
+                        },
+                        "region": {},
+                        "start": {
+                          "type": "string"
+                        },
+                        "addDays": {
+                          "type": "integer"
+                        },
+                        "result": {
+                          "type": "string"
+                        },
+                        "calendarDaysSpanned": {
+                          "type": "integer"
+                        },
+                        "holidaysSkipped": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "date": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "provider": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "license": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "meta": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://2s.io/api/calendar/business-days?country=<ISO2>&start=<YYYY-MM-DD>[&addDays=<±N>|&end=<YYYY-MM-DD>][&region=<SUB>][&weekend=<csv>][&types=<csv>] (x402, USDC on Base eip155:8453 OR Solana; no JSON body; country and start are required query params)",
+        "inputExample": {
+          "addDays": "2",
+          "country": "US",
+          "start": "2026-07-02"
+        },
+        "outputShape": "data.ok (bool), data.total (int), data.items[]{mode ('add'|'between'|'check'), country, region, start, addDays, result (YYYY-MM-DD), calendarDaysSpanned (int), holidaysSkipped[]{date,name}}, data.source{provider,url,license}; plus top-level meta.cost.usd and meta.settlement{txHash,network,success}",
+        "quirks": [
+          "All inputs are QUERY PARAMS on a GET request (no JSON body): ?country=US&start=2026-07-02&addDays=2",
+          "country and start are BOTH required",
+          "Three modes selected by which optional param you pass: start+addDays = shift by N business days (addDays is a SIGNED integer, negatives go backward); start+end = count business days between (exclusive of start, inclusive of end); start alone = check whether that one date is a business day",
+          "addDays XOR end — provide exactly one; passing both is ambiguous",
+          "Result payload is nested under data.* (data.items[], data.total, data.source); billing metadata is at top-level meta.cost.usd and meta.settlement — verified live response wraps under data.* even though the bazaar openapi example showed the fields at top level",
+          "Skipped weekend/holiday days that were stepped over are itemized in items[].holidaysSkipped[]{date,name} (e.g. 2026-07-03 'Independence Day (substitute day)')",
+          "Optional weekend overrides the default sat,sun (e.g. weekend=fri,sat for Gulf countries); optional types overrides which holiday types count as closures (default public,bank); optional region narrows to a subdivision (e.g. region=CA)",
+          "Data source is the date-holidays rule set computed locally by 2s.io (ISC code + CC BY 3.0 holiday data) — attribute date-holidays / CC BY 3.0",
+          "Advertises two accepts: Base USDC (eip155:8453) and Solana USDC; paid cleanly on Base at $0.001"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Compute business days across weekends and country/region holidays. GET https://2s.io/api/calendar/business-days with required query params country (ISO 3166-1 alpha-2, 200+ supported) and start (YYYY-MM-DD). Pick one of three modes: add addDays=<signed integer> to shift start by N business days (negatives go backward); add end=<YYYY-MM-DD> to count business days from start (exclusive) to end (inclusive); or pass neither to check whether start itself is a business day. addDays and end are mutually exclusive. Optionally add region=<subdivision> (e.g. CA for US-California), weekend=<comma-separated days> to override the default sat,sun (e.g. fri,sat for the Gulf), and types=<comma-separated> to change which holiday types count as closures (default public,bank). No request body. Pay per call via x402 ($0.001 USDC on Base eip155:8453, also settleable in Solana USDC); no API key. Result is synchronous JSON nested under data.*: read data.items[0].result for the computed date, data.items[0].calendarDaysSpanned for elapsed calendar days, and data.items[0].holidaysSkipped[] for the weekend/holiday days stepped over. Use for payment terms, SLA/deadline math, and delivery-date estimates. Verified 2026-07-30 with addDays=2&country=US&start=2026-07-02 -> HTTP 200, result 2026-07-07 (skipped 2026-07-03 Independence Day substitute day), $0.001 charged (tx 0x611394ec1885438142c9ba2c5cf597d550bada51e2a17a6969f621fea39ff4d5).",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "2s Holidays",
+      "kind": "api",
+      "provider": "2s",
+      "providerId": "2s",
+      "aka": [
+        "2s-holidays",
+        "2s calendar holidays",
+        "public-holidays",
+        "official-holidays",
+        "observed-dates"
+      ],
+      "description": "Lists the official holidays for a country and year (ISO 3166-1 alpha-2, 200+ countries) with exact observed dates including substitute days, optionally filtered by region subdivision, holiday type, and localized language — computed from maintained per-country rules (movable feasts + lunar-calendar holidays).",
+      "tags": [
+        "holidays",
+        "calendar",
+        "scheduling",
+        "public-holidays",
+        "business-days"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://2s.io/api/calendar/holidays",
+          "method": "GET",
+          "provider": "2s",
+          "providerId": "2s",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1",
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:58:44.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "country": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code, e.g. US, DE, JP — required query param"
+              },
+              "year": {
+                "type": "string",
+                "description": "Calendar year, e.g. 2026 — required query param"
+              },
+              "region": {
+                "type": "string",
+                "description": "Optional subdivision code, e.g. CA (US-California), BY (DE-Bavaria) — query param"
+              },
+              "types": {
+                "type": "string",
+                "description": "Optional comma-separated filter: public, bank, school, optional, observance — query param"
+              },
+              "lang": {
+                "type": "string",
+                "description": "Optional ISO 639-1 language for localized holiday names — query param"
+              }
+            },
+            "required": [
+              "country",
+              "year"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "object",
+                "properties": {
+                  "ok": {
+                    "type": "boolean"
+                  },
+                  "total": {
+                    "type": "integer"
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "date": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string"
+                        },
+                        "substitute": {
+                          "type": "boolean"
+                        },
+                        "rule": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "source": {
+                    "type": "object",
+                    "properties": {
+                      "provider": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "license": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "meta": {
+                    "type": "object"
+                  }
+                }
+              },
+              "meta": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://2s.io/api/calendar/holidays?country=<ISO2>&year=<YYYY>[&region=<SUB>][&types=<csv>][&lang=<ISO639-1>] (x402, USDC on Base eip155:8453 OR Solana; no JSON body; country and year are required query params)",
+        "inputExample": {
+          "country": "US",
+          "year": "2026",
+          "types": "public"
+        },
+        "outputShape": "data.ok (bool), data.total (int), data.items[]{date (YYYY-MM-DD), name, type, substitute (bool), rule}, data.source{provider,url,license}, data.meta{country,region,year}; plus top-level meta.cost.usd and meta.settlement{txHash,network,success}",
+        "quirks": [
+          "All inputs are QUERY PARAMS on a GET request (no JSON body): ?country=US&year=2026&types=public",
+          "country and year are BOTH required (unlike NetIntel's holidays check where year defaults) — omitting year still returns but pin it explicitly",
+          "Result payload is nested under data.* (data.items[], data.total, data.source, data.meta); billing metadata is at top-level meta.cost.usd and meta.settlement",
+          "substitute:true rows mark observed/substitute days (e.g. 2026-07-03 'Independence Day (substitute day)' alongside the real 2026-07-04) — expect duplicate-name pairs around weekend holidays",
+          "Each item carries a human-readable rule string (e.g. '3rd monday in January') showing how the date is computed",
+          "Optional region narrows to a subdivision (e.g. region=CA for US-California, region=BY for DE-Bavaria); optional types filters public|bank|school|optional|observance; optional lang localizes names",
+          "Data source is the date-holidays rule set computed locally by 2s.io (ISC code + CC BY 3.0 holiday data) — attribute date-holidays / CC BY 3.0",
+          "Advertises two accepts: Base USDC (eip155:8453) and Solana USDC; paid cleanly on Base at $0.001"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "List a country's official holidays for a year with exact observed dates. GET https://2s.io/api/calendar/holidays?country=<ISO2>&year=<YYYY> — country (ISO 3166-1 alpha-2, 200+ supported) and year are required query params; optionally add region=<subdivision> (e.g. CA for US-California, BY for DE-Bavaria), types=<comma-separated: public,bank,school,optional,observance>, and lang=<ISO 639-1> for localized names. No request body. Pay per call via x402 ($0.001 USDC on Base eip155:8453, also settleable in Solana USDC); no API key. Result is synchronous JSON: read holidays from data.items[] — each is {date (YYYY-MM-DD), name, type, substitute, rule}, with data.total and data.source (date-holidays / CC BY 3.0). Substitute/observed days appear as separate substitute:true rows. Use for scheduling, delivery estimates, payment terms, and SLA/deadline math. Verified 2026-07-31 with country=US&types=public&year=2026 -> HTTP 200, 12 holidays, $0.001 charged (tx 0x0c5df4707fc0fd20c95f7bd53d7d1f1ca0830c25c37c6d5b44eb7936cc3e65dc).",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Holiday Calendar",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-holiday-calendar",
+        "holiday-calendar",
+        "public-holidays",
+        "holidays"
+      ],
+      "description": "Public holidays for a given country (ISO 3166-1 alpha-2) and year across 100+ countries, with holiday names, dates, types (Public/Bank/Optional/Observance/School), local names, and whether they are global or region-specific.",
+      "tags": [
+        "holidays",
+        "public-holidays",
+        "calendar",
+        "scheduling",
+        "country"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/holiday-calendar",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "21600",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T23:45:46.743Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "country_code": {
+                "type": "string",
+                "description": "ISO 3166-1 alpha-2 country code (e.g. US)"
+              },
+              "year": {
+                "type": "integer",
+                "description": "Year (optional; defaults to the current year)"
+              }
+            },
+            "required": [
+              "country_code"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "country_code": {
+                "type": "string"
+              },
+              "year": {
+                "type": "integer"
+              },
+              "total_holidays": {
+                "type": "integer"
+              },
+              "holidays": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "local_name": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "fixed": {
+                      "type": "boolean"
+                    },
+                    "global": {
+                      "type": "boolean"
+                    },
+                    "counties": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/holiday-calendar?country_code=US&year=2026 (query params: country_code = required ISO 3166-1 alpha-2 code; year = optional integer, defaults to current year); x402 USDC on Base",
+        "inputExample": {
+          "country_code": "US",
+          "year": 2026
+        },
+        "outputShape": "{ country_code, year, total_holidays (int), holidays: [{ date (YYYY-MM-DD), name, local_name, type ('Public'|'Bank'|'Optional'|'Observance'|'School'), fixed (bool), global (bool), counties (array of ISO subdivision codes like 'US-CA', or null when global) }] }; provenance/payment under body._meta (capability, latency_ms, provenance.source='nager.date', payment.settlement_id/price_usd). Verified: country_code=US year=2026 -> total_holidays 17 (New Year's Day, MLK Day, Presidents Day, Juneteenth, Independence Day, Thanksgiving, Christmas, etc.).",
+        "quirks": [
+          "`country_code` is required (ISO 3166-1 alpha-2); `year` is optional and defaults to the current year.",
+          "A holiday can appear multiple times for one date with different `type`/`counties` (e.g. 2026 Columbus Day is returned as both a state-level 'Public' entry and a nationwide 'Bank' entry).",
+          "`counties` lists ISO 3166-2 subdivision codes when the holiday is region-specific (global=false); it is null for nationwide holidays.",
+          "Underlying data is from nager.date (see body._meta.provenance.source); provenance and settlement metadata are returned under body._meta.",
+          "Strale exposes a near-duplicate /x402/public-holiday-lookup op on the same host (also nager.date) at a different price/output shape; this service is the /x402/holiday-calendar path."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Get public holidays for a country and year. Make a GET request to https://api.strale.io/x402/holiday-calendar with the required query param country_code (ISO 3166-1 alpha-2, e.g. US) and an optional year (integer, defaults to the current year), e.g. ?country_code=US&year=2026. Pay the fixed $0.0216 x402 quote (USDC on Base, no API key) and retry with the payment header. The 200 returns plain JSON: read body.total_holidays for the count and iterate body.holidays[] for each holiday's date, name, local_name, type, and (for region-specific ones) counties. Payment/provenance are under body._meta.",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    }
+  ]
+}

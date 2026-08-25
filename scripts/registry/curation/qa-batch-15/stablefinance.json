@@ -1,0 +1,67 @@
+{
+  "serviceId": "stablefinance",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablefinance.dev/api/earnings",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/filings",
+      "method": "GET"
+    },
+    {
+      "backend": "https://stablefinance.dev/api/news",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stablefinance.dev/api/earnings?ticker=AAPL&limit=4 (x402, no body). Method is GET with query params, NOT POST.",
+    "inputExample": {
+      "ticker": "AAPL",
+      "limit": 4
+    },
+    "outputShape": "body.earnings[] — each item: ticker, report_period (YYYY-MM-DD), fiscal_period (e.g. FY2025), source_type (e.g. 10-K), filing_date, filing_window (e.g. AFTER_HOURS), filing_url (SEC EDGAR link)",
+    "quirks": [
+      "Method is GET with query params, NOT POST. The registry surface may label it POST; use GET. Inputs go as URL query params, not a JSON body.",
+      "ticker query param is OPTIONAL — omit it for the cross-ticker (most-recent-across-all) earnings feed; include it (e.g. ?ticker=AAPL) for a single company. limit is an integer 1-100. additionalProperties is false (only ticker and limit are accepted).",
+      "x402 flat $0.02/call (amount 20000 @ 6 decimals). Accepts Base USDC (eip155:8453, payTo 0xBD17480bf6ff056f7b91d9AdC9DfDa001eb7283D) and Solana USDC. No API key.",
+      "Output is nested under body.earnings (array of filing objects), not a flat list. filing_url points to the SEC EDGAR filing.",
+      "ENVIRONMENT-ONLY: this QA host's OS DNS cannot resolve stablefinance.dev (ENOTFOUND); public DNS resolves it to 216.150.16.193. The current qa-pay.mjs dist lacks the dns.lookup patch, so the money-safe pay tool's fetch failed pre-payment (no money lost). A normal agent on normal DNS is unaffected. NO fresh paid call was executed in this environment; payability + exact schema were confirmed via a direct 402 probe to the known IP and the server's own x402 bazaar extension.",
+      "Same x402 backend (StableFinance / Financial Datasets AI) as the /api/financials route which was previously paid+verified."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call as a GET (not POST) at https://stablefinance.dev/api/earnings with optional query params: ticker (a US-equity symbol like AAPL) and limit (1-100). Include ?ticker=AAPL for one company's most-recent earnings filings, or omit ticker for the cross-ticker feed. It is an x402 endpoint, flat $0.02/call on Base USDC (also Solana), no API key. Read results from body.earnings — an array of objects with ticker, report_period, fiscal_period, source_type (10-K/10-Q), filing_date, filing_window, and filing_url (SEC EDGAR). Do NOT POST.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablefinance#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#8",
+      "classification": "verified-with-quirks",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablefinance#9",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

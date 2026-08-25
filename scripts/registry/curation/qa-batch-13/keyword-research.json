@@ -1,0 +1,44 @@
+{
+  "serviceId": "keyword-research",
+  "subcat": "seo-keywords",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/keywords",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/keywords with JSON body {text}",
+    "inputExample": {
+      "text": "coffee"
+    },
+    "outputShape": "body.keywords[] (array of keyword strings), body.processedAt (ISO timestamp)",
+    "quirks": [
+      "Input field is 'text' (a string seed/topic), NOT 'keyword' — sending {keyword:...} returns 400 'Validation failed: field text expected string, received undefined'. inputSchema was null in the registry.",
+      "Output is thin: for seed 'coffee' it returned only {keywords:['coffee']} — i.e. it echoed the seed back as a 1-element array rather than producing related/expanded keyword ideas. Useful keyword expansion was not observed for a single-word seed.",
+      "Response confirmed:false / txHash:null but payment settled (paid:true, status 200)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://gg402.vercel.app/keywords with a JSON body {\"text\":\"<seed keyword or topic>\"} and pay the $0.01 x402 charge (USDC on Base). The field MUST be named 'text' — 'keyword' or other names return a 400 validation error. On success you get a sync 200 with {\"keywords\":[...],\"processedAt\":\"<iso>\"}; read the keyword ideas from body.keywords[]. Note that for a short single-word seed the service may just echo the seed back, so expect possibly limited expansion.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "keyword-research#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

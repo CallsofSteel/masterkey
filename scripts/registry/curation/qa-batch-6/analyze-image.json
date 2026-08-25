@@ -1,0 +1,46 @@
+{
+  "serviceId": "analyze-image",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://cnvrt.ing/api/analyze-image",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://cnvrt.ing/api/analyze-image with JSON body {url} or {file} (+optional detail), x402 USDC on Base. NOTE: registry's GET method is WRONG — GET returns 404 'Cannot GET'.",
+    "inputExample": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Example.jpg/320px-Example.jpg",
+      "detail": "low"
+    },
+    "outputShape": "body.success (bool), body.ocr_text (string|null), body.detected_objects[] (string[]), body.metadata.{model,detail_level,schema_version}",
+    "quirks": [
+      "REGISTRY METHOD IS WRONG: it lists GET, but GET (and PUT) return HTTP 404 'Cannot GET /api/analyze-image'. The endpoint ONLY accepts POST. Must be corrected to POST.",
+      "POST returns a valid x402 402 challenge: 0.005 USDC (5000 units) on Base, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0xfad67Ce5A834E68d5533bA7Ac08619fF82a42084, scheme exact.",
+      "Body requires either url (public image URL) OR file (base64 data URI data:image/...;base64,...). Both optional in schema but you need one of them. Optional detail: 'low'|'high'|'auto' (default high).",
+      "Registry priceDisplay 'Varies' is misleading — observed flat 0.005 USDC from the live 402.",
+      "Could NOT complete a paid round-trip from this QA environment: the money-safe qa-pay tool (node) consistently fails DNS resolution for cnvrt.ing ('fetch failed', $0 spent). The endpoint resolves fine via 8.8.8.8 (Cloudflare-fronted, Railway backend, x-service-health: healthy) and was reached by forcing the IP. The paid response body is therefore unverified — only the 402 challenge/schema is confirmed."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://cnvrt.ing/api/analyze-image (NOT GET — GET 404s) with a JSON body containing either {\"url\":\"<public image url>\"} or {\"file\":\"data:image/png;base64,...\"}, plus optional \"detail\":\"low\"|\"high\"|\"auto\". It is x402-paywalled at 0.005 USDC on Base (pay via your x402 wallet; no API key/SIWX). On success read body.ocr_text for extracted text, body.detected_objects[] for the object list, and body.metadata for model/detail info. Synchronous — the result returns in the same response.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "analyze-image#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    }
+  ]
+}

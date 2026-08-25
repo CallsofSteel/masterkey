@@ -1,0 +1,44 @@
+{
+  "serviceId": "clawmoney-escrow",
+  "subcat": "payment-processing",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://pay.clawmoney.ai/hub/escrow/:id",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://pay.clawmoney.ai/hub/escrow/:id with JSON body (escrow payment details); :id = a pre-existing escrow record ID",
+    "inputExample": {
+      "id": "<EXISTING_ESCROW_ID>"
+    },
+    "outputShape": "unknown (could not test; outputSchema null)",
+    "quirks": [
+      "URL has unresolved path template :id (an escrow record ID) with no source in schema/instructions/managedResource — cannot be fabricated",
+      "Outward/irreversible: agent-to-agent escrow payment; needs a real recipient + a created escrow before calling",
+      "inputSchema is a bare http-GET stub (no field defs); paymentAccepts empty; price is 'Varies'",
+      "Probe shows 402 (looks payable) but that does not mean a fabricated :id will work — paying a bad id would 404 and lose USDC"
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This endpoint settles an agent-to-agent escrow payment and requires an existing escrow ID in the path (:id). Before calling, you must already have created/obtained that escrow resource and its id — the registry spec provides no way to mint one, so a fresh agent cannot call this blind. Resolve the :id from a prior escrow-creation step, then POST the payment body. Treat as outward/irreversible and get user approval (real funds move).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "clawmoney-escrow#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

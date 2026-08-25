@@ -1,0 +1,48 @@
+{
+  "serviceId": "didit",
+  "subcat": "identity-verification-kyc",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/didit/v3/database-validation",
+      "method": "POST",
+      "amountUsd": 0.31
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/didit/v3/database-validation with JSON body {issuing_state, validation_type, identification_number} (required) plus optional first_name, last_name, date_of_birth, document_type, expiration_date, nationality, address depending on country",
+    "inputExample": {
+      "issuing_state": "MEX",
+      "validation_type": "one_by_one",
+      "identification_number": "ABCD800101HDFXYZ01"
+    },
+    "outputShape": "body.database_validation.status (\"Approved\"/\"Declined\"), body.database_validation.match_type (\"match\"/\"no_match\"), body.database_validation.validations[] (per-registry outcome: .service_name, .outcome_code, .outcome_detail), body.request_id",
+    "quirks": [
+      "issuing_state must be an ISO 3166-1 alpha-3 code from the supported set: ARG, BOL, BRA, CHL, COL, CRI, DOM, ECU, ESP, GTM, HND, MEX, PAN, PER, PRY, SLV, URY, VEN (Latin America + Spain only)",
+      "validation_type must be exactly 'one_by_one' or 'two_by_two'",
+      "identification_number is a universal field that auto-maps to the country-specific registry format (e.g. CURP for Mexico)",
+      "Some countries require extra fields: ESP requires document_type and expiration_date; provide first_name/last_name/date_of_birth for two_by_two checks",
+      "A non-existent or invalid ID returns HTTP 200 with status='Declined' and match_type='no_match' — this is a successful CALL, not an error; read database_validation.status to determine the actual KYC result"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402.orth.sh/didit/v3/database-validation with a JSON body containing at minimum issuing_state (alpha-3 country code from the supported Latin America + Spain set), validation_type ('one_by_one' or 'two_by_two'), and identification_number. Pay $0.31 USDC on Base via x402. The call returns HTTP 200 with a structured result; read body.database_validation.status ('Approved' or 'Declined') and body.database_validation.match_type to determine whether the identity matched the national registry, and inspect body.database_validation.validations[] for per-registry detail. A 'Declined'/'no_match' response means the ID was not found (the service still worked).",
+    "costObservedUsd": 0.31
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "didit#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.31
+    }
+  ]
+}

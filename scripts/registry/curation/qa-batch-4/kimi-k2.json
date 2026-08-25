@@ -1,0 +1,53 @@
+{
+  "serviceId": "kimi-k2",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with OpenAI-compatible JSON body {model, messages[], max_tokens} — model MUST be \"moonshot/kimi-k2.6\" (lowercase, slash form)",
+    "inputExample": {
+      "model": "moonshot/kimi-k2.6",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); body.usage.{prompt_tokens,completion_tokens,total_tokens}; body.model; body.choices[0].finish_reason",
+    "quirks": [
+      "This is the blockrun.ai backend (backendIndex 2), a DIFFERENT host than the other Kimi K2 backend (x402.telnyx.com). The model param string differs by host: blockrun wants 'moonshot/kimi-k2.6' (lowercase, slash); telnyx wants 'moonshotai/Kimi-K2.6'. Do not mix them.",
+      "The registry/service id 'kimi-k2' is NOT a valid model param value — use 'moonshot/kimi-k2.6'.",
+      "Observed cost was $0.001 USDC on Base for a tiny call (cheaper than the telnyx backend's ~$0.02); price likely scales with tokens.",
+      "x402-only auth; OpenAI-compatible /v1/chat/completions shape.",
+      "qa-pay reported confirmed:false / txHash:null but status 200 with a valid completion body — payment settled and the call succeeded."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/chat/completions with an OpenAI-style JSON body. Set model to \"moonshot/kimi-k2.6\" (lowercase with a slash — this backend's exact string, distinct from the telnyx backend's \"moonshotai/Kimi-K2.6\"). Pass messages as an array of {role, content} objects and optionally max_tokens. Payment is via x402 (USDC on Base, ~$0.001 for a small call, scales with tokens). Read the assistant reply from body.choices[0].message.content and token usage from body.usage.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "kimi-k2#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.001
+    }
+  ]
+}

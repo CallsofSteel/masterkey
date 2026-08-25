@@ -1,0 +1,45 @@
+{
+  "serviceId": "website-url-extractor",
+  "subcat": "web-crawling",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://url-extractor.x402.paysponge.com/url/:domain",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://url-extractor.x402.paysponge.com/url/:domain where :domain is a bare hostname (e.g. vercel.com), no body",
+    "inputExample": {
+      "domain": "vercel.com"
+    },
+    "outputShape": "body.urls[] (array of {url, lastmod}), body.count (int), body.sitemap (string)",
+    "quirks": [
+      "The :domain path segment is a bare hostname (e.g. 'vercel.com'), NOT a full URL with scheme/path.",
+      "It only reads the target site's /sitemap.xml. If the domain has no sitemap, you STILL get charged $0.01 and receive HTTP 422 {error:'No URLs found in sitemap', count:0} -- pick a domain you know publishes a sitemap.",
+      "example.com has no sitemap and returns 422; use a real content site to get a 200.",
+      "Response can be very large (vercel.com returned ~766KB / 6975 urls) -- expect big payloads for big sites."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://url-extractor.x402.paysponge.com/url/<domain> with the bare hostname in the path (e.g. /url/vercel.com), no request body; pay the $0.01 x402 quote (USDC on Base). On success you get HTTP 200 with {sitemap, count, urls:[{url, lastmod}]} -- read the link list from body.urls. The service only parses the domain's /sitemap.xml, so if the site lacks one you are still charged and get a 422 with count:0; only point it at domains you know publish a sitemap. Large sites return very large responses (thousands of URLs).",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "website-url-extractor#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

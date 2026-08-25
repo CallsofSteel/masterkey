@@ -1,0 +1,41 @@
+{
+  "serviceId": "channel3-visual-product-search",
+  "subcat": "vision-image-recognition",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableproduct.dev/api/channel3/image-search",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableproduct.dev/api/channel3/image-search with JSON body {image_url} (or {base64_image}), optional {limit:1-30, filters, config, include_raw, page_token}",
+    "inputExample": {
+      "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+      "limit": 3
+    },
+    "outputShape": "body.products[] each with .id, .title, .brands[].name, .main_image_url, .categories[], .price.price/.currency, .availability, .best_offer.url, .offers[]; body.next_page_token for pagination",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST with a JSON body containing either image_url (a publicly reachable image URL) or base64_image. Optionally set limit (1-30), filters (brand/gender/condition/price/availability/etc.), and config (language/country/currency). It costs $0.01 USDC on Base per call and returns synchronously. Read matches from body.products[]: use .title, .brands[].name, .price.price, and .best_offer.url (the buy link). Pass body.next_page_token back as page_token to fetch more results.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "channel3-visual-product-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

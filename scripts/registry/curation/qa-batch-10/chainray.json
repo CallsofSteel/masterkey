@@ -1,0 +1,60 @@
+{
+  "serviceId": "chainray",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://chainray.online/block-info",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://chainray.online/market-overview",
+      "method": "GET",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://chainray.online/address-report/:var1",
+      "method": "GET",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://chainray.online/block-info (optional query params: chain=<evm-chain>, block=<number>)",
+    "inputExample": {},
+    "outputShape": "body.number, body.hash, body.timestamp, body.timestampISO, body.gasUsed, body.gasLimit, body.transactionCount, body.miner, body.chain; cryptographic proof at body._proof",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Plain x402-paid GET. Call GET https://chainray.online/block-info with no params to get the latest block on Base. Optionally add ?chain=<one of base|ethereum|arbitrum|optimism|polygon|bsc|avalanche|... (EVM chains only)> to switch chains, and ?block=<number> to fetch a specific block (omit for latest). The JSON body is the block metadata directly (number, hash, timestamp/timestampISO, gas fields, transactionCount, miner); read fields off the top-level body. body._proof carries a verifiable proof bundle if needed.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "chainray#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "chainray#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "chainray#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

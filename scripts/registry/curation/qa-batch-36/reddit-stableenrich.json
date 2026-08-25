@@ -1,0 +1,57 @@
+{
+  "serviceId": "reddit-stableenrich",
+  "subcat": "social-media-data",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/reddit/search",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/reddit/post-comments",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/reddit/search with JSON body {query, sort, timeframe, maxResults}",
+    "inputExample": {
+      "query": "AI agents",
+      "sort": "top",
+      "timeframe": "week",
+      "maxResults": 3
+    },
+    "outputShape": "body.posts[] (each: id, title, author, subreddit, score, numComments, createdAt, selftext, selftextTruncated, permalink); body.after (pagination cursor); body.searchContext{query, resultCount}",
+    "quirks": [
+      "search returns truncated previews: selftext capped ~500 chars with selftextTruncated flag (often null in list results); for full untruncated selftext + all comments call the sibling POST /api/reddit/post-comments with {url} (a separate $0.02 call)",
+      "body.after is a base64 pagination cursor, not a page number"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST JSON {query, sort:\"top\"|\"new\"|\"relevance\", timeframe:\"hour\"|\"day\"|\"week\"|\"month\"|\"year\"|\"all\", maxResults} to https://stableenrich.dev/api/reddit/search. Pays x402 USDC ($0.02/call) on Base, no API key. Response is synchronous JSON: read the post list from body.posts[] (title, subreddit, score, numComments, permalink). selftext in search results may be truncated/null — to get the full post body and comments, call POST https://stableenrich.dev/api/reddit/post-comments with {url:<permalink>} as a separate paid call. Paginate using body.after.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "reddit-stableenrich#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "reddit-stableenrich#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    }
+  ]
+}

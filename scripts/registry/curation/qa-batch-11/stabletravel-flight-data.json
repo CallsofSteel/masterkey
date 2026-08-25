@@ -1,0 +1,54 @@
+{
+  "serviceId": "stabletravel-flight-data",
+  "subcat": "flight-aviation",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/search",
+      "method": "GET",
+      "amountUsd": 0.1
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/AA95",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/flightaware/flights/search?query=<FlightAware-search-syntax> (required query param, e.g. query=-airline UAL)",
+    "inputExample": {
+      "query": "-airline UAL"
+    },
+    "outputShape": "body.flights[] (array of flight objects with .ident, .ident_iata, .origin.{code_iata,name,city}, .destination.{code_iata,name,city}, .status, .actual_off/.scheduled_off times); pagination at body.links.next and body.num_pages",
+    "quirks": [
+      "The query param uses FlightAware AeroAPI search syntax, not a plain text search. Use operators like -airline UAL, -idents UAL123, or -latlong 'minlat minlon maxlat maxlon'. A bare keyword may return no/empty results.",
+      "Response can be large (~33KB for one airline); each flight includes a long waypoints[] lat/lon array."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Pay-per-call x402 flight search ($0.10 on Base USDC). Call GET https://stabletravel.dev/api/flightaware/flights/search with a required `query` parameter using FlightAware search syntax — e.g. `-airline UAL` for all United flights, `-idents UAL1526` for a specific flight, or `-latlong \"...\"` for a bounding box. The response is synchronous JSON; read the results from body.flights[], where each flight has ident/ident_iata, origin and destination objects (code_iata, name, city), status, and scheduled/actual times.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-flight-data#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

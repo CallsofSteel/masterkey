@@ -1,0 +1,2768 @@
+{
+  "subcategory": "tax-compliance",
+  "category": "ecommerce",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Surfaced by re-dumping with expanded queries (vat/tax-rate/compliance) \u2014 original keyword set returned 0. Strale ships a full tax/compliance suite. DROPPED/routed: orbisapi/x402helper farms, agentwonderland copy/invoice-extract (#..) -> content/enrichment, Strale SIRENE/KBO company-registry #32/#36 -> data-enrichment (KYB), token-safety/onchainexpat -> crypto, accessibility/compatibility/x402-doctor graders -> devtools.",
+  "entries": [
+    {
+      "name": "Strale EU VAT Validate",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-eu-vat-validate",
+        "vat-validate"
+      ],
+      "description": "Validate an EU VAT number against the EC VIES service and enrich with the registered company name and address.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/vat-validate",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/vat-validate?vat_number=<VAT_WITH_COUNTRY_PREFIX>",
+        "inputExample": {
+          "vat_number": "SE556703748501"
+        },
+        "outputShape": "valid (bool), vat_number, company_name, country_code, company_address, request_date, cache_hit, cache_age_hours, _meta.provenance.source",
+        "quirks": [
+          "vat_number is a REQUIRED query param and must include the 2-letter country prefix (e.g. SE556703748501).",
+          "Source is ec.europa.eu VIES; results are cached (cache_hit/cache_age_hours fields) so repeated calls may be served from cache but still charge.",
+          "Response wrapped with _meta block carrying provenance + payment.settlement_id."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate an EU VAT number against the EC VIES service and enrich with the registered company name and address. GET https://api.strale.io/x402/vat-validate?vat_number=<VAT_WITH_COUNTRY_PREFIX> Output: valid (bool), vat_number, company_name, country_code, company_address, request_date, cache_hit, cache_age_hours, _meta.provenance.source",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Country Tax Rates",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-country-tax-rates",
+        "country-tax-rates"
+      ],
+      "description": "Look up published tax rates for a country: VAT standard/reduced, corporate, personal income top rate, capital gains, withholding, and social security percentages.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/country-tax-rates",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/country-tax-rates?country_code=<ISO2>",
+        "inputExample": {
+          "country_code": "SE"
+        },
+        "outputShape": "country_code, country_name, corporate_tax_rate, vat_standard_rate, vat_reduced_rates[], personal_income_tax_top_rate, capital_gains_rate, withholding_tax{dividend,interest,royalty}, social_security{employer,employee}, currency, tax_year, last_updated, notes",
+        "quirks": [
+          "country_code is a REQUIRED ISO 2-letter query param.",
+          "provenance.source is 'published-tax-data' (static reference data, not live)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Look up published tax rates for a country: VAT standard/reduced, corporate, personal income top rate, capital gains, withholding, and social security percentages. GET https://api.strale.io/x402/country-tax-rates?country_code=<ISO2> Output: country_code, country_name, corporate_tax_rate, vat_standard_rate, vat_reduced_rates[], personal_income_tax_top_rate, capital_gains_rate, withholding_tax{dividend,interest,royalty}, social_security{employer,employee}, currency, tax_year, last_updated, notes",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Financial Year Dates",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-financial-year-dates",
+        "financial-year-dates"
+      ],
+      "description": "Return a country's fiscal/financial year start & end, VAT filing frequency, tax filing and annual report deadlines.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/financial-year-dates",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/financial-year-dates?country_code=<ISO2>",
+        "inputExample": {
+          "country_code": "SE"
+        },
+        "outputShape": "country_code, country_name, financial_year_start (MM-DD), financial_year_end (MM-DD), fiscal_year_matches_calendar (bool), tax_filing_deadline, vat_filing_frequency, annual_report_deadline, notes",
+        "quirks": [
+          "country_code is a REQUIRED ISO 2-letter query param.",
+          "Dates returned as MM-DD strings, not full dates."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Return a country's fiscal/financial year start & end, VAT filing frequency, tax filing and annual report deadlines. GET https://api.strale.io/x402/financial-year-dates?country_code=<ISO2> Output: country_code, country_name, financial_year_start (MM-DD), financial_year_end (MM-DD), fiscal_year_matches_calendar (bool), tax_filing_deadline, vat_filing_frequency, annual_report_deadline, notes",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Customs Duty Lookup",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-customs-duty-lookup",
+        "customs-duty-lookup"
+      ],
+      "description": "Look up import customs duty / VAT rate for an HS code by scraping the live EU TARIC database, optionally scoped to origin and destination country.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/customs-duty-lookup",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.216001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "216001",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/customs-duty-lookup?hs_code=<HS>&origin_country=<ISO2>&destination_country=<ISO2>",
+        "inputExample": {
+          "hs_code": "0101",
+          "origin_country": "CN",
+          "destination_country": "DE"
+        },
+        "outputShape": "hs_code, description, origin_country, destination, duty_rate, duty_type, preferential_rates[], anti_dumping, additional_duties[], vat_rate, notes, _meta.provenance.source=ec.europa.eu/taric",
+        "quirks": [
+          "hs_code is the only REQUIRED query param; origin_country/destination_country are optional ISO-2 codes.",
+          "Scrapes ec.europa.eu/taric LIVE (latency ~6s). For many HS codes the TARIC page does not surface duty data, so duty_rate/vat_rate/duty_type/description come back null with an explanatory body.notes string \u2014 this is NOT an error, payment still settles and a valid 200 is returned. Retry with a more specific 10-digit HS code if you need actual rates.",
+          "Most expensive of the cheap GET ops at ~$0.216/call."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Look up import customs duty / VAT rate for an HS code by scraping the live EU TARIC database, optionally scoped to origin and destination country. GET https://api.strale.io/x402/customs-duty-lookup?hs_code=<HS>&origin_country=<ISO2>&destination_country=<ISO2> Output: hs_code, description, origin_country, destination, duty_rate, duty_type, preferential_rates[], anti_dumping, additional_duties[], vat_rate, notes, _meta.provenance.source=ec.europa.eu/taric",
+        "costObservedUsd": 0.216001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Tax ID Validate",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-tax-id-validate",
+        "tax-id-validate"
+      ],
+      "description": "Validate the FORMAT of a national tax identification number (across 27 countries), normalize it, and name the format. Auto-detects country from a prefix if country_code omitted.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/tax-id-validate",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/tax-id-validate?tax_id=<ID>[&country_code=<ISO2>]",
+        "inputExample": {
+          "tax_id": "SE556703748501"
+        },
+        "outputShape": "valid (bool), tax_id, country_code, format_name, checksum_valid (bool|null), normalized",
+        "quirks": [
+          "tax_id is REQUIRED; country_code is OPTIONAL (auto-detected from the prefix when omitted).",
+          "This is FORMAT validation only \u2014 checksum_valid can be null when no checksum algorithm is known for that format; it does NOT confirm the ID exists in any registry (use vat-validate for live VIES existence checks)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate the FORMAT of a national tax identification number (across 27 countries), normalize it, and name the format. Auto-detects country from a prefix if country_code omitted. GET https://api.strale.io/x402/tax-id-validate?tax_id=<ID>[&country_code=<ISO2>] Output: valid (bool), tax_id, country_code, format_name, checksum_valid (bool|null), normalized",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Invoice Validate",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-invoice-validate",
+        "invoice-validate"
+      ],
+      "description": "Validate a structured invoice JSON object for EU compliance: checks required/recommended fields, line-item and tax math, and returns errors/warnings plus an eu_compliant verdict.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/invoice-validate",
+          "method": "POST",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.strale.io/x402/invoice-validate  body={\"invoice\":{...}}",
+        "inputExample": {
+          "invoice": {
+            "invoice_number": "INV-001",
+            "invoice_date": "2025-01-15",
+            "vendor_vat": "SE556703748501",
+            "vendor_name": "Spotify AB",
+            "vendor_address": "Regeringsgatan 19, Stockholm",
+            "line_items": [
+              {
+                "description": "Service",
+                "quantity": 1,
+                "unit_price": 100,
+                "line_total": 100,
+                "tax_rate": 25
+              }
+            ],
+            "amounts": {
+              "subtotal": 100,
+              "tax_amount": 25,
+              "total": 125
+            },
+            "currency": "SEK"
+          }
+        },
+        "outputShape": "valid (bool), errors[]{field,issue}, warnings[]{field,issue}, tax_calculation_check{expected_tax,actual_tax,difference,pass}, line_items_check{total_checked,passed,failed}, eu_compliant (bool)",
+        "quirks": [
+          "Body wraps everything under the `invoice` key.",
+          "FIELD-NAME TRAPS confirmed live: amounts must use `tax_amount` (NOT `tax`) and each line_item must include `line_total` (NOT `amount`) \u2014 otherwise the engine reports subtotal/total mismatches and skips line-item math (line_items_check stays 0).",
+          "Required invoice fields: invoice_number, invoice_date, vendor_vat, vendor_name, vendor_address, line_items, amounts. Recommended (warning-only): buyer_name, buyer_vat, buyer_address, due_date, currency."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate a structured invoice JSON object for EU compliance: checks required/recommended fields, line-item and tax math, and returns errors/warnings plus an eu_compliant verdict. POST https://api.strale.io/x402/invoice-validate  body={\"invoice\":{...}} Output: valid (bool), errors[]{field,issue}, warnings[]{field,issue}, tax_calculation_check{expected_tax,actual_tax,difference,pass}, line_items_check{total_checked,passed,failed}, eu_compliant (bool)",
+        "costObservedUsd": 0.0216
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Invoice / Receipt Extract",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-invoice-receipt-extract",
+        "invoice-extract"
+      ],
+      "description": "OCR/extract structured fields (vendor, dates, totals, VAT, line items) from an invoice or receipt image/PDF, with per-field confidence scores.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/invoice-extract",
+          "method": "POST",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.54,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "540000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.strale.io/x402/invoice-extract  body={\"url\":\"<image-or-pdf-url>\"}  OR  body={\"base64\":\"<base64-file>\"}",
+        "inputExample": {
+          "url": "https://templates.invoicehome.com/invoice-template-us-neat-750px.png"
+        },
+        "outputShape": "vendor_name, vendor_vat, invoice_number, invoice_date, due_date, currency, total_amount, vat_amount, vat_rate, subtotal, line_items[]{description,quantity,unit_price,amount,vat_rate}, iban, payment_reference, buyer_name, buyer_vat, confidence{vendor_name,total_amount,line_items,vat_amount}",
+        "quirks": [
+          "Provide EITHER `url` (Strale fetches the file server-side) OR `base64`.",
+          "MONEY TRAP confirmed live: if the `url` is unreachable/404, Strale STILL CHARGES the full $0.54 fee and then returns HTTP 400 {\"error\":\"Failed to fetch invoice from URL: HTTP 404\"}. Always pass a verified-reachable URL (or use base64).",
+          "Most expensive op in the bundle at $0.54/call.",
+          "Unknown fields come back null; confidence object grades vendor_name/total_amount/line_items/vat_amount as high/low."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "OCR/extract structured fields (vendor, dates, totals, VAT, line items) from an invoice or receipt image/PDF, with per-field confidence scores. POST https://api.strale.io/x402/invoice-extract  body={\"url\":\"<image-or-pdf-url>\"}  OR  body={\"base64\":\"<base64-file>\"} Output: vendor_name, vendor_vat, invoice_number, invoice_date, due_date, currency, total_amount, vat_amount, vat_rate, subtotal, line_items[]{description,quantity,unit_price,amount,vat_rate}, iban, payment_reference, buyer_name, buyer_vat, confidence{vendor_name,total_amount,line_items,vat_amount}",
+        "costObservedUsd": 0.54
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale Employment Cost Estimate",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-employment-cost-estimate",
+        "employment-cost-estimate"
+      ],
+      "description": "Estimate total employer cost, net salary, employer contributions and effective tax rate for a gross salary in a given country.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/employment-cost-estimate",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0324,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "32400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/employment-cost-estimate?country_code=<ISO2>&gross_salary=<NUMBER>[&currency=<CCY>]",
+        "inputExample": {
+          "country_code": "SE",
+          "gross_salary": 500000
+        },
+        "outputShape": "gross_salary, currency, country_code, country_name, period, employer_contributions{social_security_percent,pension_percent,other_percent,total_percent,total_amount}, total_employer_cost, net_salary_estimate, effective_tax_rate, breakdown_notes[]",
+        "quirks": [
+          "country_code AND gross_salary are REQUIRED query params; currency is optional (defaults to the country currency, e.g. SEK for SE).",
+          "gross_salary is interpreted as ANNUAL. Pass a realistic figure \u2014 gross_salary=1 returns near-zero estimates.",
+          "provenance.source is 'algorithmic'."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Estimate total employer cost, net salary, employer contributions and effective tax rate for a gross salary in a given country. GET https://api.strale.io/x402/employment-cost-estimate?country_code=<ISO2>&gross_salary=<NUMBER>[&currency=<CCY>] Output: gross_salary, currency, country_code, country_name, period, employer_contributions{social_security_percent,pension_percent,other_percent,total_percent,total_amount}, total_employer_cost, net_salary_estimate, effective_tax_rate, breakdown_notes[]",
+        "costObservedUsd": 0.0324
+      },
+      "status": "active"
+    },
+    {
+      "name": "Strale GDPR Website Check",
+      "kind": "api",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale-gdpr-website-check",
+        "gdpr-website-check"
+      ],
+      "description": "Analyze a website's GDPR/privacy posture: cookie consent, privacy/cookie/ToS policies, tracking scripts, security headers, and cookie hygiene, returning a 0-100 score and letter grade.",
+      "tags": [
+        "tax",
+        "compliance",
+        "vat",
+        "customs",
+        "invoice",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/gdpr-website-check",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.108001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "108001",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.strale.io/x402/gdpr-website-check?url=<WEBSITE_URL>",
+        "inputExample": {
+          "url": "https://www.google.com"
+        },
+        "outputShape": "url, gdpr_score (0-100 int), grade (A-F), has_cookie_consent, has_privacy_policy, has_cookie_policy, has_terms_of_service, tracking_scripts{google_analytics,facebook_pixel,hotjar,mixpanel,segment,linkedin_insight,tiktok_pixel}, tracker_count, security_headers{hsts,csp}, cookie_issues[], findings[], uses_https",
+        "quirks": [
+          "url is a REQUIRED query param (full URL incl. scheme).",
+          "Live HTTP analysis (source=http-analysis, ~60ms); only inspects the page's HTTP response/headers, so JS-injected consent banners may be missed.",
+          "Priced ~$0.108/call."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Analyze a website's GDPR/privacy posture: cookie consent, privacy/cookie/ToS policies, tracking scripts, security headers, and cookie hygiene, returning a 0-100 score and letter grade. GET https://api.strale.io/x402/gdpr-website-check?url=<WEBSITE_URL> Output: url, gdpr_score (0-100 int), grade (A-F), has_cookie_consent, has_privacy_policy, has_cookie_policy, has_terms_of_service, tracking_scripts{google_analytics,facebook_pixel,hotjar,mixpanel,segment,linkedin_insight,tiktok_pixel}, tracker_count, security_headers{hsts,csp}, cookie_issues[], findings[], uses_https",
+        "costObservedUsd": 0.108001
+      },
+      "status": "active"
+    },
+    {
+      "name": "UK Property Tax Stamp Duty (SDLT)",
+      "kind": "api",
+      "provider": "property.payapi",
+      "providerId": "property-payapi",
+      "aka": [
+        "uk-property-tax-stamp-duty-sdlt",
+        "stamp-duty"
+      ],
+      "description": "Calculate UK Stamp Duty Land Tax (SDLT) for a property purchase. Returns total tax, effective rate, and a per-band breakdown. Supports first-time-buyer relief, additional-property (5% second-home/buy-to-let) surcharge, and non-resident (2%) surcharge flags.",
+      "tags": [
+        "tax",
+        "property-tax",
+        "uk",
+        "sdlt",
+        "council-tax"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://property.payapi.market/stamp-duty",
+          "method": "POST",
+          "provider": "property.payapi",
+          "providerId": "property-payapi",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0xFFc458dB291b4ABcE020fE3de4f91F2770E537b1",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://property.payapi.market/stamp-duty with JSON body {price (required, GBP number >0), is_first_time_buyer?, is_additional_property?, is_non_resident?} \u2014 booleans default false",
+        "inputExample": {
+          "price": 350000
+        },
+        "outputShape": "price, total_tax, effective_rate, buyer_type, breakdown[].{band,rate,tax}",
+        "quirks": [
+          "Input is purchase PRICE (number), NOT a postcode \u2014 distinct from the council-tax op on the same domain",
+          "Optional boolean modifiers default to false: is_first_time_buyer, is_additional_property (5% surcharge since Oct 2024), is_non_resident (+2%)",
+          "effective_rate is a percentage number (e.g. 2.14 = 2.14%); breakdown rate field is a string like '5.0%'",
+          "buyer_type is a summary string: 'Standard' / 'First-time buyer' / 'Additional property'",
+          "Flat $0.001 x402 fee on Base; response not on-chain-confirmed (txHash null) but deterministic 200"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Calculate UK Stamp Duty Land Tax (SDLT) for a property purchase. Returns total tax, effective rate, and a per-band breakdown. Supports first-time-buyer relief, additional-property (5% second-home/buy-to-let) surcharge, and non-resident (2%) surcharge flags. POST https://property.payapi.market/stamp-duty with JSON body {price (required, GBP number >0), is_first_time_buyer?, is_additional_property?, is_non_resident?} \u2014 booleans default false Output: price, total_tax, effective_rate, buyer_type, breakdown[].{band,rate,tax}",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "UK Property Tax Council Tax Lookup",
+      "kind": "api",
+      "provider": "property.payapi",
+      "providerId": "property-payapi",
+      "aka": [
+        "uk-property-tax-council-tax-lookup",
+        "council-tax"
+      ],
+      "description": "Look up council tax estimates for a UK postcode. Returns the local authority name, the Band D rate (annual + monthly), and the full A\u2013H band schedule.",
+      "tags": [
+        "tax",
+        "property-tax",
+        "uk",
+        "sdlt",
+        "council-tax"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://property.payapi.market/council-tax",
+          "method": "POST",
+          "provider": "property.payapi",
+          "providerId": "property-payapi",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0xFFc458dB291b4ABcE020fE3de4f91F2770E537b1",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://property.payapi.market/council-tax with JSON body {postcode (required string)}",
+        "inputExample": {
+          "postcode": "SW1A 1AA"
+        },
+        "outputShape": "postcode, local_authority, band_d_rate, band_d_monthly, all_bands.{A,B,C,D,E,F,G,H}, used_national_average, cached",
+        "quirks": [
+          "Input is a POSTCODE string, NOT a price \u2014 distinct from the stamp-duty op on the same domain",
+          "all_bands is an object keyed A\u2013H with annual \u00a3 rates (not an array)",
+          "used_national_average:true signals the postcode wasn't matched to a specific authority and a national fallback was used",
+          "cached field indicates a cached vs fresh result",
+          "Flat $0.001 x402 fee on Base; OpenAPI declares no output schema but live 200 returns the shape above"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Look up council tax estimates for a UK postcode. Returns the local authority name, the Band D rate (annual + monthly), and the full A\u2013H band schedule. POST https://property.payapi.market/council-tax with JSON body {postcode (required string)} Output: postcode, local_authority, band_d_rate, band_d_monthly, all_bands.{A,B,C,D,E,F,G,H}, used_national_average, cached",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Tax Calculator",
+      "provider": "gg402",
+      "providerId": "gg402",
+      "description": "General tax/sales-tax calculation from amount and jurisdiction inputs. Pay-per-call x402.",
+      "tags": [
+        "tax",
+        "sales-tax",
+        "calculation"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        55
+      ],
+      "resolved": {
+        "55": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://gg402.vercel.app/tax_calc with JSON body {income: number, location: string}",
+        "inputExample": {
+          "income": 100000,
+          "location": "California"
+        },
+        "outputShape": "body.estimated_tax (number), body.breakdown.federal, body.breakdown.state, body.tips[] (string array of advice), body.processedAt",
+        "quirks": [
+          "inputSchema is null in the registry; the REAL required fields are income (number) and location (string) \u2014 NOT amount/state/zip. Sending amount/state/zip returns HTTP 400 (but you are still charged $0.01).",
+          "Despite the name 'Tax Calculator' and subcat 'tax-compliance', this is an INCOME tax estimator (returns federal + state income tax + savings tips), not a sales-tax calculator.",
+          "location accepts a state name like 'California'.",
+          "qa-pay reported confirmed:false and txHash:null but status 200 + paid true; settlement not surfaced in response."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://gg402.vercel.app/tax_calc with a JSON body containing income (a number, e.g. annual income) and location (a string, e.g. a US state name like 'California'). It is a paid x402 endpoint costing $0.01 USDC on Base, no auth/SIWX needed. The response is synchronous JSON: read body.estimated_tax for the total estimated income tax, body.breakdown.federal and body.breakdown.state for the split, and body.tips[] for tax-saving suggestions. Do not send amount/state/zip \u2014 those wrong field names return a 400 yet still charge you.",
+        "costObservedUsd": 0.01
+      }
+    },
+    {
+      "name": "OpenSanctions Screening",
+      "provider": "OpenSanctions",
+      "providerId": "opensanctions",
+      "description": "Screen people/entities against global sanctions, PEP and watchlists for compliance/KYC. Pay-per-call x402.",
+      "tags": [
+        "compliance",
+        "sanctions",
+        "kyc",
+        "screening",
+        "aml"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        81
+      ],
+      "resolved": {
+        "81": {
+          "amount": 0.04,
+          "method": "GET"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://scan.madhousewallet.com/api/public/sanctions-check?name=<full+name>&country=<iso2>",
+        "inputExample": {
+          "name": "Viktor Bout",
+          "country": "ru"
+        },
+        "outputShape": "body.sanctioned (bool), body.matchCount (number), body.matches[] with .caption, .entityType, .topics[], .matchedOn[], .datasets[], .countries[]",
+        "quirks": [
+          "All inputs are URL query params, not a JSON body (it is a GET).",
+          "Only name is required; country/address/birthDate are optional filters that cut false positives.",
+          "sanctioned:false with empty matches[] means clean \u2014 that is a valid successful result, not an error.",
+          "Common names without country/birthDate can return multiple matches; inspect matchedOn per entry for confidence (name is always present, country/birthDate indicate stronger hits)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call GET https://scan.madhousewallet.com/api/public/sanctions-check with the entity name as the required `name` query param (URL-encode spaces); optionally add country (ISO 3166-1 alpha-2), address, and birthDate to reduce false positives. Pay $0.04 USDC via x402 on Base (also accepts Polygon/Arbitrum). Read body.sanctioned for the boolean verdict and body.matches[] for matched entities \u2014 each match has caption, entityType, topics (sanction/role.pep/etc.), matchedOn, and source datasets. sanctioned:false with empty matches means the entity is clean.",
+        "costObservedUsd": 0.04
+      },
+      "status": "active"
+    },
+    {
+      "name": "MiCA Compliance Pre-flight",
+      "provider": "ToolOracle",
+      "providerId": "tooloracle",
+      "description": "EU stablecoin MiCA compliance pre-flight check for tokens/services. Pay-per-call x402.",
+      "tags": [
+        "compliance",
+        "mica",
+        "crypto-regulation",
+        "eu"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        94
+      ],
+      "resolved": {
+        "94": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://tooloracle.io/v2/compliance_preflight with JSON body {token, issuer, jurisdiction}",
+        "inputExample": {
+          "token": "USDC",
+          "issuer": "Circle",
+          "jurisdiction": "EU"
+        },
+        "outputShape": "JSON-RPC envelope. Parse the JSON string at body.result.content[0].text, then read: data.decision (e.g. \"PASS\"), data.reason_codes[] (e.g. [\"ALL_CHECKS_PASSED\"]), data.evidence.mica.verdict, data.evidence.custody. Signed attestation at body.result._meta.grounding_receipt.",
+        "quirks": [
+          "Response is a JSON-RPC 2.0 envelope (jsonrpc/id/result), not a flat JSON object.",
+          "The actual compliance result is a JSON STRING nested at result.content[0].text and must be JSON.parse'd a second time.",
+          "result._meta.grounding_receipt carries a cryptographically signed attestation (ES256K + ML-DSA-65 PQC, NIST beacon anchors) over the input/output hashes.",
+          "Backend is an MCP server (server_did did:web:feedoracle.io) fronted at tooloracle.io; observed_auth_method=anonymous despite x402 payment.",
+          "x402 paid $0.01 on Base; qa-pay reported confirmed:false / txHash:null but call returned 200 with real data."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://tooloracle.io/v2/compliance_preflight with a JSON body describing the token/service to check, e.g. {\"token\":\"USDC\",\"issuer\":\"Circle\",\"jurisdiction\":\"EU\"}. Pay $0.01 USDC via x402 on Base (no API key, no sign-in). The response is a JSON-RPC envelope: parse the JSON string at result.content[0].text, then read data.decision (PASS/FAIL), data.reason_codes[], and data.evidence (mica verdict, custody risk, etc.). A signed grounding receipt sits at result._meta.grounding_receipt if you need attestation.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris EU EORI Validation",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-eu-eori-validation",
+        "eu-eori",
+        "check-eori",
+        "eori-validate",
+        "customs-eori-lookup"
+      ],
+      "description": "Validate an EU EORI (Economic Operators Registration and Identification) customs number live against the official European Commission EOS/DDS2 registry, returning valid true/false plus the registered operator name and address when the operator consented to publication.",
+      "tags": [
+        "eori",
+        "customs",
+        "compliance",
+        "kyb",
+        "validation",
+        "trade"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/eu/eori",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.003,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "3000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "GET",
+            "queryParams": {
+              "eori": "REQUIRED. EORI number: 2-letter country code + 1-15 alphanumerics (FR uses SIRET), e.g. FR38347481400100"
+            }
+          },
+          "outputSchema": {
+            "ok": "boolean",
+            "data": {
+              "eori": "string (echoed EORI number)",
+              "valid": "boolean",
+              "name": "string (registered operator name, when published)",
+              "address": "string (registered address, when published)",
+              "status_description": "string (e.g. 'Valid')",
+              "source": "string ('European Commission EOS/DDS2')"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/eu/eori?eori=<EORI_NUMBER> (2-letter country code + 1-15 alphanumerics). x402 paid endpoint (~0.003 USDC on Base, no API key) \u2014 pay the 402 quote and re-request.",
+        "inputExample": {
+          "eori": "FR38347481400100"
+        },
+        "outputShape": "JSON: { ok: true, data: { eori, valid (bool), name, address, status_description, source } }. name/address are populated only when the operator consented to publication in the EU registry.",
+        "quirks": [
+          "Single required query param: eori (2-letter country code + 1-15 alphanumerics; France uses the SIRET-based form, e.g. FR38347481400100 = AIRBUS).",
+          "Backed by the European Commission EOS/DDS2 SOAP service; returned as clean JSON. Results are 24h cached.",
+          "name and address are only returned when the operator consented to publication \u2014 an EORI can be valid:true with no name/address.",
+          "Static price ($0.003), not a dynamic quote (accepts amount 3000 = 0.003 USDC, 6 decimals).",
+          "Distinct from Greeneris EU Company Check, which carries EORI only as one optional sub-check; this endpoint is a dedicated single-purpose EORI validator.",
+          "Part of Greeneris 'eu-verify' \u2014 sibling validators (/v1/eu/vat-check, /v1/validate/*, /v1/eu/company-check, /v1/global/lei) live on the same host as separate services."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate an EU customs EORI number against the official European Commission registry. GET https://data.greeneris.io/v1/eu/eori?eori=<EORI> where EORI is a 2-letter country code followed by 1-15 alphanumerics (France uses the SIRET-based form, e.g. FR38347481400100 for AIRBUS). It is an x402 paid endpoint (~0.003 USDC on Base, no API key) \u2014 pay the 402 quote and re-request. Read data.valid (bool); when the operator consented to publication you also get data.name and data.address. Use for customs/KYB checks before trading with an EU business.",
+        "costObservedUsd": 0.003
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris French Invoice-Ready Check",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-fr-invoice-ready",
+        "greeneris-french-e-invoicing-check"
+      ],
+      "description": "One-call French e-invoicing compliance check by SIREN or SIRET \u2014 runs the Luhn checksum, confirms existence and active status in the official SIRENE registry, computes the FR VAT number and validates it live against VIES, returning a single ready / not_ready / check_vat_manually verdict. Keyless over x402. $0.02.",
+      "tags": [
+        "e-invoicing",
+        "vat",
+        "france",
+        "siren",
+        "compliance",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/fr/invoice-ready",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "20000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "siren": {
+                "type": "string",
+                "description": "9-digit SIREN (this or siret is required)"
+              },
+              "siret": {
+                "type": "string",
+                "description": "14-digit SIRET; the SIREN is extracted from it (this or siren is required)"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "{ ok, data: { siren, checksum_valid, exists, active, legal_name, vat_number, vat_status, invoice_ready, verdict, details, source } }"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET /v1/fr/invoice-ready?siren=<9-digit>  (or ?siret=<14-digit>)",
+        "inputExample": {
+          "siren": "552032534"
+        },
+        "outputShape": "JSON: { ok:true, data:{ siren, checksum_valid:bool, exists:bool, active:bool, legal_name, vat_number, vat_status, invoice_ready:bool, verdict:'ready'|'not_ready'|'check_vat_manually', details, source } }",
+        "quirks": [
+          "Exactly one of siren (9 digits) or siret (14 digits) is required; passing a SIRET extracts the SIREN from it.",
+          "verdict is one of ready / not_ready / check_vat_manually \u2014 the last is returned when VIES is unreachable, so VIES flakiness never blocks the answer (invoice_ready then reflects checksum+SIRENE only).",
+          "Built for the French e-invoicing reform: from 2026-09-01 the customer's SIREN is a mandatory invoice mention. Returns firmographic legal_name only, no people (GDPR).",
+          "Data sources: recherche-entreprises.api.gouv.fr (INSEE SIRENE) + VIES REST API (European Commission); the Luhn checksum and FR VAT key are computed locally. Responses are 1h cached.",
+          "Only French entities are covered \u2014 this host has sibling per-country company/registry endpoints but no invoice-ready equivalent for other countries."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "French e-invoicing readiness check for KYB / invoice compliance. Pass ?siren= a 9-digit SIREN (or ?siret= a 14-digit SIRET) of the customer you're about to invoice. Read data.verdict ('ready' | 'not_ready' | 'check_vat_manually') plus the component flags checksum_valid / exists / active / vat_status and the computed vat_number (e.g. FR27552032534). Use invoice_ready as the boolean gate. No API key \u2014 pay the x402 402 (Base USDC, $0.02). For generic (non-FR) VAT validation use the Strale EU VAT Validate entry instead.",
+        "costObservedUsd": 0.02,
+        "priceText": "$0.02"
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris SIRET Validation",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-siret-validation",
+        "siret-check",
+        "siren-check",
+        "validate-siret-fr"
+      ],
+      "description": "Offline checksum validation of French company numbers: auto-detects SIREN (9 digits) vs SIRET (14 digits) and applies the INSEE Luhn rule plus the documented La Poste exception, returning validity, type, siren and nic.",
+      "tags": [
+        "siret",
+        "siren",
+        "validation",
+        "france",
+        "kyb",
+        "compliance"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/fr/siret-check",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "number"
+            ],
+            "properties": {
+              "number": {
+                "type": "string",
+                "description": "SIREN (9 digits) or SIRET (14 digits); spaces/dots/dashes tolerated, passed as the ?number= query param"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "ok": {
+                "type": "boolean"
+              },
+              "data": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string"
+                  },
+                  "valid": {
+                    "type": "boolean"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "rule": {
+                    "type": "string"
+                  },
+                  "siren": {
+                    "type": "string"
+                  },
+                  "nic": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/fr/siret-check?number=<SIREN_OR_SIRET>",
+        "inputExample": {
+          "number": "44306184100047"
+        },
+        "outputShape": "ok (bool), data.{number, valid (bool), type (siren|siret), rule (e.g. luhn), siren, nic, source}",
+        "quirks": [
+          "number is a REQUIRED query param; separators (spaces/dots/dashes) are tolerated and stripped.",
+          "Auto-detects SIREN (9 digits) vs SIRET (14 digits) and reports it in data.type.",
+          "Pure OFFLINE checksum computation (INSEE Luhn + La Poste 356000000* exception) \u2014 it does NOT confirm the company exists in any registry; use /v1/fr/company or /v1/fr/invoice-ready for a registry lookup.",
+          "Response is 1y-cached; the provider does not charge for empty/failed answers.",
+          "Static price ($0.001); not a dynamic quote."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate a French SIREN or SIRET number's checksum offline before invoicing or before a costly Sirene registry call. GET https://data.greeneris.io/v1/fr/siret-check?number=<SIREN_OR_SIRET> (separators tolerated). Output: ok (bool) + data.{number, valid, type (siren|siret), rule, siren, nic, source}. Offline INSEE Luhn + La Poste exception only \u2014 checksum validity, not registry existence.",
+        "costObservedUsd": 0.001
+      },
+      "status": "active"
+    },
+    {
+      "name": "Stratalize Regulatory Comment Deadlines",
+      "kind": "api",
+      "provider": "Stratalize",
+      "providerId": "stratalize",
+      "aka": [
+        "stratalize-regulatory-comment-deadlines",
+        "regulatory-comment-deadlines",
+        "get_regulatory_comment_deadlines"
+      ],
+      "description": "Attested tracker of US Federal Register proposed rules and notices with open public-comment periods \u2014 returns upcoming comment-close deadlines (filtered client-side on comments_close_on over a days-ahead horizon, with optional search term and agency filters) pulled live from the Federal Register API.",
+      "tags": [
+        "regulatory",
+        "federal-register",
+        "comment-period",
+        "compliance",
+        "governance",
+        "deadlines"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://www.stratalize.com/api/x402/regulatory-comment-deadlines",
+          "method": "POST",
+          "provider": "Stratalize",
+          "providerId": "stratalize",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "100000",
+              "payTo": "0x5d51ECC50813E0937a5c43be298E9146796ad60d",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "amount": "100000",
+              "payTo": "6kswsVRgpf32jWRLAeRxaiqJ9Y7bn9jHMzv5aqF1dQDX",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T23:04:27.610Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "days_ahead": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "Horizon in days ahead to include comment windows closing on/before (default returns near-term). Example: 1."
+              },
+              "term": {
+                "type": "string",
+                "description": "Optional full-text search term to filter Federal Register documents (e.g. \"artificial intelligence\")."
+              },
+              "agencies": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional list of agency slugs to filter by."
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "tool": {
+                "type": "string"
+              },
+              "open_comment_count": {
+                "type": "integer"
+              },
+              "days_ahead": {
+                "type": "integer"
+              },
+              "filter_note": {
+                "type": "string"
+              },
+              "documents": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "description": "Federal Register document with an open comment period (title, agencies, document_number, comments_close_on, html_url, etc.)"
+                }
+              },
+              "data_source": {
+                "type": "string"
+              },
+              "freshness": {
+                "type": "string"
+              },
+              "retrieved_at": {
+                "type": "string"
+              },
+              "synthesis_id": {
+                "type": "string"
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "Cryptographic receipt identifier"
+              },
+              "verified_at": {
+                "type": "string",
+                "format": "uri",
+                "description": "Receipt verification URL at trust.stratalize.com/verify"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30T23:04:27.610Z",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://www.stratalize.com/api/x402/regulatory-comment-deadlines with JSON body {\"days_ahead\":1} (optional term string, optional agencies[]). x402 USDC on Base (eip155:8453) or Solana; no API key, no account. NOTE: despite the 402 challenge labeling method GET, execution requires POST.",
+        "inputExample": {
+          "days_ahead": 1
+        },
+        "outputShape": "JSON with tool ('get_regulatory_comment_deadlines'), open_comment_count, days_ahead (echoed), filter_note (explains client-side comments_close_on filtering), documents[] (Federal Register documents with an open comment period), data_source ('Federal Register API (client-side comment window filter)'), freshness ('live'), retrieved_at, synthesis_id, plus an attested settlement receipt envelope (_stratalize with ML-DSA-65 signature + verify URL; receipt_id, verified_at trust.stratalize.com/verify; _receipt with payment.settlement_tx_hash + chain + amount_atomic and post-quantum signature). Observed on a verified 200 for {days_ahead:1}: open_comment_count 0, documents[] empty (no comment window closes within a 1-day horizon), settlement_tx_hash 0x555b7d92b979288f5afa06fd2ee1a7ac7ee2867b2f4b5f64585391f2d175e48d on Base.",
+        "quirks": [
+          "Execution is POST with a JSON body, NOT GET \u2014 the x402 402 challenge and its bazaar extensions.info.input.method both mislabel the method as GET; per sibling Stratalize ops a paid GET returns HTTP 405 'Use POST to execute paid tool calls'.",
+          "days_ahead is the primary filter (integer, minimum 1); term and agencies are optional. A small days_ahead (e.g. 1) can legitimately return open_comment_count 0 with an empty documents[] when no comment window closes within that horizon \u2014 use a larger days_ahead to see upcoming deadlines.",
+          "Comment windows are filtered CLIENT-SIDE on comments_close_on (per filter_note) because the Federal Register API does not guarantee server-side open-window filtering.",
+          "Host stratalize.com 308-redirects to www.stratalize.com; call the canonical www host.",
+          "Every response carries a cryptographically signed post-quantum (ML-DSA-65) settlement receipt (receipt_id + settlement_tx_hash + verify URL at trust.stratalize.com/verify).",
+          "Fixed price $0.10 (amount 100000, USDC 6 decimals); not dynamic. Payable in USDC on Base or Solana, no API key."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Attested tracking of US Federal Register proposed rules and notices with OPEN public-comment periods \u2014 for compliance, government-affairs, and policy-monitoring agents that need upcoming comment-submission deadlines. Call POST https://www.stratalize.com/api/x402/regulatory-comment-deadlines with a JSON body {\"days_ahead\":30} (optionally a search term and/or an agencies[] filter); use a larger days_ahead to widen the horizon (a small value can return zero results). Pay per call via x402 USDC on Base or Solana \u2014 no API key or account. Returns Federal Register documents whose comment windows close within the horizon (filtered client-side on comments_close_on), sourced live from the Federal Register API, plus a cryptographically attested settlement receipt verifiable at trust.stratalize.com/verify. IMPORTANT: use POST, not GET \u2014 the x402 challenge mislabels the method and a GET returns 405.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Tax Brackets",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-tax-brackets",
+        "tax-brackets",
+        "us-tax-reference-tables"
+      ],
+      "description": "US federal tax reference tables for a year and filing status: the ordered income-tax brackets, standard deduction, long-term capital-gains breakpoints, FICA/self-employment constants, and the net investment income tax threshold (IRS Rev. Proc. 2025-32 + SSA 2026). Pure lookup, not tax advice.",
+      "tags": [
+        "tax",
+        "brackets",
+        "standard-deduction",
+        "fica",
+        "capital-gains",
+        "irs"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/tax/brackets",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.002,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "tax_year": {
+                "type": "integer",
+                "description": "Tax year (optional, default 2026)."
+              },
+              "filing_status": {
+                "type": "string",
+                "enum": [
+                  "single",
+                  "married_jointly",
+                  "married_separately",
+                  "head_of_household"
+                ],
+                "description": "Filing status (optional, default single)."
+              }
+            },
+            "required": []
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "filing_status": {
+                "type": "string"
+              },
+              "tax_year": {
+                "type": "integer"
+              },
+              "standard_deduction": {
+                "type": "number"
+              },
+              "brackets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rate": {
+                      "type": "number"
+                    },
+                    "from": {
+                      "type": "number"
+                    },
+                    "to": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              },
+              "capital_gains_longterm": {
+                "type": "object",
+                "properties": {
+                  "rate_0_up_to": {
+                    "type": "number"
+                  },
+                  "rate_15_up_to": {
+                    "type": "number"
+                  },
+                  "rate_20_above": {
+                    "type": "number"
+                  }
+                }
+              },
+              "fica_constants": {
+                "type": "object",
+                "properties": {
+                  "oasdi_rate": {
+                    "type": "number"
+                  },
+                  "oasdi_wage_base": {
+                    "type": "number"
+                  },
+                  "medicare_rate": {
+                    "type": "number"
+                  },
+                  "additional_medicare_rate": {
+                    "type": "number"
+                  },
+                  "additional_medicare_threshold": {
+                    "type": "number"
+                  },
+                  "se_oasdi_rate": {
+                    "type": "number"
+                  },
+                  "se_medicare_rate": {
+                    "type": "number"
+                  },
+                  "se_net_factor": {
+                    "type": "number"
+                  }
+                }
+              },
+              "niit": {
+                "type": "object",
+                "properties": {
+                  "rate": {
+                    "type": "number"
+                  },
+                  "threshold": {
+                    "type": "number"
+                  }
+                }
+              },
+              "source": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/tax/brackets?filing_status=<status>&tax_year=<year> (both query params OPTIONAL; default filing_status=single, tax_year=2026). No body. x402 v2 on Base USDC, $0.002. Result is inline in the 200 body (synchronous).",
+        "inputExample": {
+          "filing_status": "single",
+          "tax_year": 2026
+        },
+        "outputShape": "filing_status (string echo), tax_year (int), standard_deduction (number USD), brackets (array of {rate, from, to} \u2014 to is null on the top bracket), capital_gains_longterm ({rate_0_up_to, rate_15_up_to, rate_20_above}), fica_constants ({oasdi_rate, oasdi_wage_base, medicare_rate, additional_medicare_rate, additional_medicare_threshold, se_oasdi_rate, se_medicare_rate, se_net_factor}), niit ({rate, threshold}), source (citation string), disclaimer",
+        "quirks": [
+          "Both params are OPTIONAL query params on a GET (no body); omitting them defaults to filing_status=single, tax_year=2026",
+          "filing_status is an enum: single | married_jointly | married_separately | head_of_household",
+          "The top income bracket has \"to\": null (open-ended); rates are decimals (0.1 = 10%)",
+          "Reference data only \u2014 sourced from IRS Rev. Proc. 2025-32 + SSA 2026; the body carries a 'not tax advice' disclaimer",
+          "This is a pure lookup/dump; it does not compute a tax owed \u2014 use /tax/income or /tax/paycheck for calculations"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "US federal tax reference tables for a year and filing status. GET https://api.agentstools.dev/tax/brackets?filing_status=<single|married_jointly|married_separately|head_of_household>&tax_year=<year> \u2014 both query params are OPTIONAL (default single/2026). No body. x402 v2 on Base USDC, $0.002. Synchronous \u2014 the 200 body returns {filing_status, tax_year, standard_deduction, brackets[{rate,from,to}], capital_gains_longterm, fica_constants, niit, source, disclaimer}. Pure lookup (IRS Rev. Proc. 2025-32 + SSA 2026), not tax advice.",
+        "costObservedUsd": 0.002
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Capital Gains Tax",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-capital-gains-tax",
+        "capital-gains-tax",
+        "capgains-tax",
+        "agentstools-tax-capgains"
+      ],
+      "description": "Estimates US federal capital-gains tax on a gain \u2014 long-term 0/15/20 percent rates or short-term ordinary rates, plus the 3.8 percent net investment income tax (NIIT) \u2014 stacked on top of ordinary income. Pure local computation over IRS Rev. Proc. 2025-32 breakpoints; a reference estimate, not tax advice.",
+      "tags": [
+        "tax",
+        "capital-gains",
+        "niit",
+        "investments",
+        "compliance"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/tax/capgains",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.003,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "gain": {
+                "type": "number",
+                "description": "Capital gain amount (>= 0). REQUIRED."
+              },
+              "holding_period": {
+                "type": "string",
+                "enum": [
+                  "long",
+                  "short"
+                ],
+                "description": "long uses 0/15/20 rates; short uses ordinary rates. Default long behaviour per example."
+              },
+              "ordinary_income": {
+                "type": "number",
+                "description": "Other taxable income, used to stack the gain into brackets."
+              },
+              "filing_status": {
+                "type": "string",
+                "enum": [
+                  "single",
+                  "married_jointly",
+                  "married_separately",
+                  "head_of_household"
+                ],
+                "description": "Filing status, default single."
+              },
+              "tax_year": {
+                "type": "integer",
+                "description": "Tax year, default 2026."
+              }
+            },
+            "required": [
+              "gain"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "filing_status": {
+                "type": "string"
+              },
+              "holding_period": {
+                "type": "string"
+              },
+              "gain": {
+                "type": "number"
+              },
+              "ordinary_income": {
+                "type": "number"
+              },
+              "cap_gains_rate": {
+                "type": "number"
+              },
+              "cap_gains_tax": {
+                "type": "number"
+              },
+              "cap_gains_breakdown": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rate": {
+                      "type": "number"
+                    },
+                    "amount_in_bracket": {
+                      "type": "number"
+                    },
+                    "tax": {
+                      "type": "number"
+                    }
+                  }
+                }
+              },
+              "niit": {
+                "type": "number"
+              },
+              "niit_rate": {
+                "type": "number"
+              },
+              "niit_threshold": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "tax_year": {
+                "type": "integer"
+              },
+              "source": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/tax/capgains?gain=<AMOUNT>&holding_period=<long|short>&ordinary_income=<AMOUNT>&filing_status=<single|married_jointly|married_separately|head_of_household>&tax_year=<YEAR> \u2014 all query params, no body. Only gain is required; the rest have defaults (filing_status=single, tax_year=2026). x402 v2 on Base USDC, $0.003. Result is inline in the 200 body (synchronous).",
+        "inputExample": {
+          "filing_status": "single",
+          "gain": 50000,
+          "holding_period": "long",
+          "ordinary_income": 100000
+        },
+        "outputShape": "filing_status, holding_period, gain, ordinary_income (echoed) \u00b7 cap_gains_rate (blended effective LT rate) \u00b7 cap_gains_tax (number, USD) \u00b7 cap_gains_breakdown[] ({rate, amount_in_bracket, tax} per 0/15/20 bracket layer) \u00b7 niit (number, NIIT owed) \u00b7 niit_rate (0.038) \u00b7 niit_threshold (filing-status MAGI threshold) \u00b7 total (number, cap_gains_tax + niit) \u00b7 tax_year (int) \u00b7 source (citation string) \u00b7 disclaimer",
+        "quirks": [
+          "gain is the only REQUIRED query param; holding_period/ordinary_income/filing_status/tax_year are optional with defaults (filing_status=single, tax_year=2026).",
+          "All inputs are QUERY params on a GET (no request body); despite the JSON-looking documented example, values go in the query string.",
+          "Pure local computation \u2014 not tax advice; breakpoints from IRS Rev. Proc. 2025-32 (2026 tax year). Response carries a disclaimer field.",
+          "holding_period=long uses the layered 0/15/20 percent long-term rates (see cap_gains_breakdown[]); holding_period=short taxes the gain at ordinary rates as the incremental tax of stacking it on ordinary_income.",
+          "NIIT (3.8 percent) is added on the lesser of the gain and income above the filing-status threshold; niit=0 when below threshold."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Estimate US federal capital-gains tax. GET https://api.agentstools.dev/tax/capgains with query params: gain (REQUIRED, >=0), holding_period (long|short, long uses 0/15/20 rates), ordinary_income (stacks the gain into brackets), filing_status (single|married_jointly|married_separately|head_of_household, default single), tax_year (default 2026). No body. x402 v2 on Base USDC, $0.003. Synchronous \u2014 the 200 body carries {cap_gains_rate, cap_gains_tax, cap_gains_breakdown[], niit, niit_rate, niit_threshold, total, tax_year, source, disclaimer}. Pure computation over IRS Rev. Proc. 2025-32; a reference estimate, not tax advice.",
+        "costObservedUsd": 0.003
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools FICA Tax Estimate",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-fica-tax-estimate",
+        "tax-fica",
+        "payroll-tax"
+      ],
+      "description": "Estimates US FICA payroll taxes from annual wages \u2014 Social Security (OASDI), Medicare, and the additional Medicare surtax for employees, or self-employment tax (both halves plus the deductible half) when self_employed is set.",
+      "tags": [
+        "tax",
+        "fica",
+        "payroll",
+        "social-security",
+        "medicare",
+        "self-employment"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/tax/fica",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.003,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "wages": {
+                "type": "number",
+                "description": "Annual wages or net self-employment earnings (>= 0). Required."
+              },
+              "filing_status": {
+                "type": "string",
+                "enum": [
+                  "single",
+                  "married_jointly",
+                  "married_separately",
+                  "head_of_household"
+                ],
+                "description": "Filing status; default single"
+              },
+              "self_employed": {
+                "type": "boolean",
+                "description": "True computes self-employment tax (both halves + deductible half); default false"
+              },
+              "tax_year": {
+                "type": "integer",
+                "description": "Tax year; default 2026"
+              }
+            },
+            "required": [
+              "wages"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "self_employed": {
+                "type": "boolean"
+              },
+              "wages": {
+                "type": "number"
+              },
+              "filing_status": {
+                "type": "string"
+              },
+              "social_security": {
+                "type": "number"
+              },
+              "medicare": {
+                "type": "number"
+              },
+              "additional_medicare": {
+                "type": "number"
+              },
+              "additional_medicare_threshold": {
+                "type": "number"
+              },
+              "oasdi_wage_base": {
+                "type": "number"
+              },
+              "total": {
+                "type": "number"
+              },
+              "tax_year": {
+                "type": "integer"
+              },
+              "source": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/tax/fica with query params: wages (required, number >= 0), filing_status (optional enum: single|married_jointly|married_separately|head_of_household, default single), self_employed (optional boolean, default false), tax_year (optional integer, default 2026). No request body. Pays $0.003 USDC via x402 on Base (eip155:8453). Result returned inline in the 200 body (synchronous, no poll).",
+        "inputExample": {
+          "url": "https://api.agentstools.dev/tax/fica?wages=200000&filing_status=single&self_employed=false",
+          "method": "GET"
+        },
+        "outputShape": "self_employed (bool); wages; filing_status; social_security; medicare; additional_medicare; additional_medicare_threshold; oasdi_wage_base; total; tax_year; source (citations: IRS Rev. Proc./SSA base/Tax Foundation); disclaimer.",
+        "quirks": [
+          "The 402 quote is delivered in the 'payment-required' response HEADER (base64 x402 v2 envelope); the 402 body is an empty '{}'. Wallets that read accepts only from the JSON body will fail to pay \u2014 read the header.",
+          "All inputs are query params; wages is the only required one. There is no request body (documented methods are GET/HEAD/DELETE).",
+          "Pure local computation using SSA 2026 wage base and IRS Rev. Proc. 2025-32 thresholds; a reference estimate, explicitly not tax advice (disclaimer field).",
+          "For self_employed=true the calc applies both OASDI+Medicare halves to 92.35% of net earnings plus the additional Medicare surtax and the deductible half of SE tax."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Estimate US FICA/payroll taxes in one paid call. GET https://api.agentstools.dev/tax/fica?wages=<annual_wages> with optional filing_status (single|married_jointly|married_separately|head_of_household), self_employed (true|false), and tax_year. Pays $0.003 USDC via x402 on Base. Returns social_security, medicare, additional_medicare (with its threshold), the oasdi_wage_base, and the total, plus tax_year, source citations and a not-tax-advice disclaimer. Verified live: wages=200000, single, employee -> social_security 11439, medicare 2900, additional_medicare 0, total 14339, oasdi_wage_base 184500, tax_year 2026.",
+        "costObservedUsd": 0.003
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Paycheck Estimate",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-paycheck-estimate",
+        "take-home-pay",
+        "net-pay-calculator",
+        "agentstools-tax-paycheck"
+      ],
+      "description": "US take-home paycheck estimate \u2014 federal income tax plus payroll (FICA) tax and an optional flat state estimate, returning total tax, effective rate, net pay per year and per pay period, and disposable income.",
+      "tags": [
+        "tax",
+        "paycheck",
+        "take-home",
+        "net-pay",
+        "payroll",
+        "fica"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/tax/paycheck",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.008,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "8000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "gross_income": {
+                "type": "number",
+                "description": "Annual gross income (>= 0). REQUIRED."
+              },
+              "filing_status": {
+                "type": "string",
+                "enum": [
+                  "single",
+                  "married_jointly",
+                  "married_separately",
+                  "head_of_household"
+                ],
+                "description": "Filing status, default single."
+              },
+              "pay_period": {
+                "type": "string",
+                "enum": [
+                  "annual",
+                  "monthly",
+                  "semimonthly",
+                  "biweekly",
+                  "weekly"
+                ],
+                "description": "Pay period for the per-period figures, default annual."
+              },
+              "state": {
+                "type": "string",
+                "description": "Optional two-letter US state code (adds a flat state-tax estimate)."
+              },
+              "pretax_deductions": {
+                "type": "number",
+                "description": "Annual pretax deductions such as 401k, default 0. Reduces the income-tax base but not payroll wages."
+              },
+              "tax_year": {
+                "type": "integer",
+                "description": "Tax year, default 2026."
+              }
+            },
+            "required": [
+              "gross_income"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "filing_status": {
+                "type": "string"
+              },
+              "pay_period": {
+                "type": "string"
+              },
+              "periods_per_year": {
+                "type": "integer"
+              },
+              "gross_income": {
+                "type": "number"
+              },
+              "pretax_deductions": {
+                "type": "number"
+              },
+              "taxable_income": {
+                "type": "number"
+              },
+              "federal_income_tax": {
+                "type": "number"
+              },
+              "fica": {
+                "type": "object",
+                "properties": {
+                  "social_security": {
+                    "type": "number"
+                  },
+                  "medicare": {
+                    "type": "number"
+                  },
+                  "additional_medicare": {
+                    "type": "number"
+                  },
+                  "total": {
+                    "type": "number"
+                  }
+                }
+              },
+              "total_tax": {
+                "type": "number"
+              },
+              "total_effective_rate": {
+                "type": "number"
+              },
+              "net_pay_annual": {
+                "type": "number"
+              },
+              "net_pay_per_period": {
+                "type": "number"
+              },
+              "gross_per_period": {
+                "type": "number"
+              },
+              "disposable_income": {
+                "type": "number"
+              },
+              "state": {
+                "type": "string"
+              },
+              "state_name": {
+                "type": "string"
+              },
+              "state_rate": {
+                "type": "number"
+              },
+              "state_tax": {
+                "type": "number"
+              },
+              "tax_year": {
+                "type": "integer"
+              },
+              "source": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/tax/paycheck with query params (required: gross_income; optional: filing_status, pay_period, state, pretax_deductions, tax_year). No body. x402 v2 on Base USDC, $0.008. Result inline in the 200 body (synchronous).",
+        "inputExample": {
+          "filing_status": "single",
+          "gross_income": 100000,
+          "pay_period": "biweekly",
+          "state": "CO"
+        },
+        "outputShape": "Object with taxable_income, federal_income_tax, fica{social_security, medicare, additional_medicare, total}, total_tax, total_effective_rate (fraction), net_pay_annual, net_pay_per_period, gross_per_period, disposable_income, periods_per_year, plus state/state_name/state_rate/state_tax when a state code is given, tax_year, source (citations), and a disclaimer.",
+        "quirks": [
+          "gross_income is the only REQUIRED param; all others default (filing_status=single, pay_period=annual, pretax_deductions=0, tax_year=2026)",
+          "All inputs are QUERY params on a GET \u2014 there is no request body",
+          "state is optional; passing a two-letter code (e.g. CO) adds a FLAT state-tax estimate (state_rate/state_tax) \u2014 it does not model progressive state brackets",
+          "pretax_deductions reduce the federal income-tax base but NOT payroll (FICA) wages, so Social Security/Medicare are still computed on gross",
+          "total_effective_rate is a fraction (e.g. 0.245116 = 24.51%), not a percentage",
+          "Composite endpoint: reuses the /tax/income and /tax/fica math internally",
+          "Pure reference computation, explicitly not tax advice (see disclaimer field)"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "US take-home paycheck estimator. GET https://api.agentstools.dev/tax/paycheck with query params: gross_income (required, annual USD), filing_status (single|married_jointly|married_separately|head_of_household, default single), pay_period (annual|monthly|semimonthly|biweekly|weekly, default annual), state (optional two-letter code adds a flat state-tax estimate), pretax_deductions (annual 401k-style, default 0), tax_year (default 2026). No body. x402 v2 on Base USDC, $0.008, synchronous. The 200 body returns federal income tax, FICA (Social Security + Medicare), optional state tax, total tax, effective rate, and net/disposable pay per year and per period. Reference estimate only, not tax advice.",
+        "costObservedUsd": 0.008
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Insurance Model Law",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-insurance-model-law",
+        "naic-model-law-adoption",
+        "insurance-model-law",
+        "naic-state-adoption-tracker"
+      ],
+      "description": "Turns a NAIC insurance model law (by model number or title keyword) into a normalized, machine-readable state-by-state adoption tracker across all 50 states, DC and US territories \u2014 each jurisdiction classified as MODEL_ADOPTION, PREVIOUS_VERSION, RELATED_ACTIVITY or NO_CURRENT_ACTIVITY with its statutory citation, plus NAIC provenance/attribution. Cited adoption facts only; the copyrighted NAIC model text is never rehosted.",
+      "tags": [
+        "insurance",
+        "regulation",
+        "compliance",
+        "naic",
+        "model-law",
+        "state-law"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/insurance/model-law",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.03,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "string",
+                "description": "NAIC model number such as 22, or a title keyword such as 'annuity suitability'."
+              },
+              "number": {
+                "type": "integer",
+                "description": "NAIC model number (alias for model)."
+              },
+              "keyword": {
+                "type": "string",
+                "description": "Title keyword (alias for model)."
+              }
+            },
+            "required": []
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "found": {
+                "type": "boolean"
+              },
+              "query": {
+                "type": "object"
+              },
+              "model": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "integer"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "model_text_url": {
+                    "type": "string"
+                  }
+                }
+              },
+              "adoption": {
+                "type": "object",
+                "description": "Keyed by US jurisdiction name; each value is {classification, citation|null, columns|null, note|null}.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "classification": {
+                      "type": "string",
+                      "enum": [
+                        "MODEL_ADOPTION",
+                        "PREVIOUS_VERSION",
+                        "RELATED_ACTIVITY",
+                        "NO_CURRENT_ACTIVITY"
+                      ]
+                    },
+                    "citation": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "columns": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    },
+                    "note": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "states_total": {
+                    "type": "integer"
+                  },
+                  "by_classification": {
+                    "type": "object"
+                  }
+                }
+              },
+              "provenance": {
+                "type": "object",
+                "properties": {
+                  "source_url": {
+                    "type": "string"
+                  },
+                  "naic_version": {
+                    "type": "string"
+                  },
+                  "retrieved": {
+                    "type": "string"
+                  }
+                }
+              },
+              "linkback": {
+                "type": "string"
+              },
+              "sources": {
+                "type": "object"
+              },
+              "attribution": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/insurance/model-law?model=<number-or-keyword>. One query param `model` (aliases: `number` for the integer, `keyword` for a title term). No body. x402 v2 on Base USDC, $0.03. Result is inline in the 200 body (synchronous).",
+        "inputExample": {
+          "model": "22"
+        },
+        "outputShape": "found (bool), query (echo of {model}), model ({number, title, model_text_url}), adoption (object keyed by jurisdiction name \u2192 {classification: MODEL_ADOPTION|PREVIOUS_VERSION|RELATED_ACTIVITY|NO_CURRENT_ACTIVITY, citation|null, columns|null, note|null}) covering 50 states + DC + territories, summary ({states_total, by_classification counts}), provenance ({source_url, naic_version, retrieved}), linkback (NAIC PDF url), sources ({errors, partial, used[]}), attribution (string[]), disclaimer (not-legal-advice string).",
+        "quirks": [
+          "Supply `model` as either a NAIC model number (e.g. 22, 170=Long-Term Care Insurance, 880=Insurance Data Security, 895=Annuity Suitability) OR a title keyword the route resolves to a model; `number` and `keyword` are documented aliases",
+          "Classifications are the NAIC Legal Division's own scheme; NO_CURRENT_ACTIVITY / RELATED_ACTIVITY jurisdictions carry a null citation, adopted ones carry the exact statutory citation",
+          "summary.states_total counted 56 in the probed response (50 states + DC + 5 territories)",
+          "Cited adoption facts only \u2014 the copyrighted NAIC model text and compiled chart pages are NOT rehosted; the body carries mandatory NAIC attribution and a 'not legal advice' disclaimer",
+          "Hard-cached: the NAIC charts change roughly once every year or two (probed response was NAIC 'Fall 2025')"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Per-state adoption tracker for a NAIC insurance model law. GET https://api.agentstools.dev/insurance/model-law?model=<number-or-keyword> \u2014 pass a NAIC model number (e.g. 22) or a title keyword (e.g. 'annuity suitability'); `number`/`keyword` are aliases for `model`. No body. x402 v2 on Base USDC, $0.03, synchronous. The 200 body returns {found, model{number,title}, adoption{<jurisdiction>:{classification,citation}}, summary{states_total,by_classification}, provenance, linkback, attribution, disclaimer}. Classification enum: MODEL_ADOPTION, PREVIOUS_VERSION, RELATED_ACTIVITY, NO_CURRENT_ACTIVITY. Reference/compliance data (normalized NAIC facts with linkback), not legal advice.",
+        "costObservedUsd": 0.03
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Insurance State Adoption",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-insurance-state-adoption",
+        "naic-state-adoption",
+        "insurance-model-law-adoption",
+        "state-insurance-regulation"
+      ],
+      "description": "Returns which NAIC insurance model laws a given US state has adopted, inverted from the NAIC state-page corpus, with each model's adoption classification, statutory citation and a linkback to the NAIC source PDF.",
+      "tags": [
+        "insurance",
+        "regulation",
+        "compliance",
+        "naic",
+        "model-law",
+        "state-law"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/insurance/state-adoption",
+          "method": "GET",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.03,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "30000",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "type": "string",
+                "description": "US state or territory name or 2-letter code, such as California or CA."
+              },
+              "model": {
+                "type": "string",
+                "description": "Optional NAIC model number(s) to check, comma separated."
+              },
+              "topic": {
+                "type": "string",
+                "description": "Optional keyword to filter the models scanned (e.g. annuity)."
+              }
+            },
+            "required": []
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "found": {
+                "type": "boolean"
+              },
+              "state": {
+                "type": "string"
+              },
+              "adopted": {
+                "type": "array",
+                "description": "Models the state has adopted; each {number, title, classification, citation, linkback}.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "classification": {
+                      "type": "string"
+                    },
+                    "citation": {
+                      "type": "string"
+                    },
+                    "linkback": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "models_scanned": {
+                    "type": "integer"
+                  },
+                  "adopted_count": {
+                    "type": "integer"
+                  },
+                  "coverage": {
+                    "type": "string"
+                  },
+                  "scan_cap": {
+                    "type": "integer"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              },
+              "scanned": {
+                "type": "array",
+                "description": "Every model scanned with its resolution status; each {number, title, status}.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "integer"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "provenance": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "retrieved": {
+                    "type": "string"
+                  }
+                }
+              },
+              "sources": {
+                "type": "object"
+              },
+              "attribution": {
+                "type": "array"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "found",
+              "adopted",
+              "summary",
+              "attribution"
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.agentstools.dev/insurance/state-adoption with QUERY params (no body): state (US name or 2-letter code) plus optional model (NAIC model number(s), comma separated) and/or topic (keyword filter). Result is inline in the 200 body (synchronous). Pays $0.03 USDC via x402 v2 on Base (eip155:8453), keyless.",
+        "inputExample": {
+          "state": "New York",
+          "topic": "annuity"
+        },
+        "outputShape": "JSON object: found (bool), state, adopted[] where each item is {number, title, classification (e.g. MODEL_ADOPTION / RELATED_ACTIVITY), citation (statutory cite), linkback (NAIC source PDF URL)}, summary {models_scanned, adopted_count, coverage, scan_cap, note}, scanned[] {number, title, status (ok/no_chart)}, provenance {source, retrieved}, sources {errors, partial, used}, attribution[], disclaimer. Verified live for {state:'New York', topic:'annuity'} -> found:true, 3 adopted annuity models: #245 Annuity Disclosure Model Regulation (RELATED_ACTIVITY, N.Y. COMP. CODES R. & REGS. tit. 11 \u00a7\u00a740.0-40.6), #250 Variable Annuity Model Regulation, #821 Model Rule for a New Annuity Mortality Table (MODEL_ADOPTION); summary models_scanned 6, adopted_count 3, coverage bounded_default, scan_cap 8; each with a content.naic.org linkback PDF.",
+        "quirks": [
+          "Params go in the QUERY STRING, not a body \u2014 this is a GET.",
+          "Without a model/topic filter the scan is BOUNDED (coverage 'bounded_default', scan_cap 8) \u2014 it scans only a subset of the NAIC model corpus. Pass model= (NAIC number(s), comma separated) or topic= to target specific models for full coverage.",
+          "state accepts either the full name ('New York') or the 2-letter code ('NY').",
+          "classification is the NAIC Legal Division's interpretation (MODEL_ADOPTION, RELATED_ACTIVITY, etc.) and may differ from the state's own view.",
+          "Each adopted model carries a statutory citation and a linkback to the NAIC source PDF; NAIC model text and compiled chart pages are NOT rehosted, only the adoption fact + citation.",
+          "scanned[] lists every model examined and its status ('ok' or 'no_chart' when NAIC has no state chart for that model).",
+          "Attribution (NAIC / content.naic.org, \u00a9 NAIC) and the not-legal-advice disclaimer are returned and should be displayed.",
+          "Distinct from the sibling /insurance/model-law (single model law detail) and /insurance/bulletins."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Find out which NAIC insurance model laws a US state has adopted in one keyless x402 call, instead of manually reading NAIC state-page charts. GET https://api.agentstools.dev/insurance/state-adoption with QUERY params: state (full name or 2-letter code) plus an optional model= (NAIC model number(s), comma separated) and/or topic= keyword to narrow the scan. Synchronous \u2014 the 200 body carries adopted[] (each model's number, title, adoption classification, statutory citation, and NAIC linkback PDF), a summary (models_scanned, adopted_count, coverage, scan_cap), scanned[] with per-model resolution status, provenance/attribution, and a not-legal-advice disclaimer. NOTE: with no model/topic filter the scan is bounded to a subset of the corpus (coverage 'bounded_default') \u2014 pass model or topic for full coverage of the models you care about. Pays $0.03 USDC via x402 v2 on Base (eip155:8453). Example: {state:'New York', topic:'annuity'} -> 3 adopted annuity models incl. #245 Annuity Disclosure and #821 the new annuity mortality-table rule.",
+        "costObservedUsd": 0.03
+      },
+      "status": "active"
+    },
+    {
+      "name": "Greeneris EU VAT Validation",
+      "kind": "api",
+      "provider": "Greeneris",
+      "providerId": "greeneris",
+      "aka": [
+        "greeneris-eu-vat-validation",
+        "eu-vat-check",
+        "vies-vat-check",
+        "vat-validate",
+        "intra-eu-vat-lookup"
+      ],
+      "description": "Validate an intra-EU VAT number live against the European Commission VIES REST API, returning is_valid plus the registered trader name and address (when the member state publishes them) and a compliance request_date timestamp.",
+      "tags": [
+        "vat",
+        "vies",
+        "tax",
+        "compliance",
+        "eu",
+        "kyb"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://data.greeneris.io/v1/eu/vat-check",
+          "method": "GET",
+          "provider": "Greeneris",
+          "providerId": "greeneris",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "5000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-08-07"
+          },
+          "inputSchema": {
+            "type": "http",
+            "method": "GET",
+            "queryParams": {
+              "cc": "REQUIRED. EU member state code (2 letters, incl. EL for Greece and XI for Northern Ireland), e.g. IE, FR, EL, XI",
+              "vat": "REQUIRED. VAT number WITHOUT the country prefix, e.g. 6388047V"
+            }
+          },
+          "outputSchema": {
+            "ok": "boolean",
+            "data": {
+              "country_code": "string (echoed member state code)",
+              "vat_number": "string (echoed VAT number, no prefix)",
+              "is_valid": "boolean",
+              "name": "string (registered trader name, when the member state publishes it)",
+              "address": "string (registered address, when published)",
+              "request_date": "string (ISO timestamp \u2014 compliance evidence)",
+              "user_error": "string (e.g. 'VALID')",
+              "source": "string ('VIES REST API (European Commission, DG TAXUD) ...')"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://data.greeneris.io/v1/eu/vat-check?cc=<MEMBER_STATE_CODE>&vat=<VAT_NUMBER_NO_PREFIX>. x402 paid endpoint (~0.005 USDC on Base, no API key) \u2014 pay the 402 quote and re-request.",
+        "inputExample": {
+          "cc": "IE",
+          "vat": "6388047V"
+        },
+        "outputShape": "JSON: { ok: true, data: { country_code, vat_number, is_valid (bool), name, address, request_date (ISO), user_error, source } }. name/address are populated only when the member state publishes them; is_valid is the boolean gate.",
+        "quirks": [
+          "Two required query params: cc (2-letter EU member state code \u2014 use EL for Greece and XI for Northern Ireland, not GR/GB) and vat (the VAT number WITHOUT its country prefix).",
+          "Backed by the live European Commission VIES REST API (DG TAXUD) \u2014 real-time query of the member-state registry; results are 24h cached.",
+          "name/address are returned only when the member state publishes them \u2014 a VAT number can be is_valid:true with name/address empty.",
+          "request_date is a compliance timestamp of the live check, useful as VIES verification evidence.",
+          "Static price ($0.005), not a dynamic quote (accepts amount 5000 = 0.005 USDC, 6 decimals).",
+          "Part of Greeneris 'eu-verify' \u2014 sibling validators (/v1/eu/eori, /v1/eu/company-check, /v1/global/lei) live on the same host as separate services. For French e-invoicing readiness (auto-computes + validates the FR VAT) use Greeneris French Invoice-Ready Check instead."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Validate an intra-EU VAT number against the European Commission VIES registry. GET https://data.greeneris.io/v1/eu/vat-check?cc=<CC>&vat=<VAT> where cc is the 2-letter member-state code (use EL for Greece, XI for Northern Ireland) and vat is the number WITHOUT the country prefix (e.g. cc=IE&vat=6388047V = GOOGLE IRELAND LIMITED). No API key \u2014 pay the x402 402 (Base USDC, $0.005) and re-request. Read data.is_valid (bool); when the member state publishes them you also get data.name and data.address, plus data.request_date as a compliance timestamp. Use for KYB / invoice compliance before trading with an EU business.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    }
+  ]
+}

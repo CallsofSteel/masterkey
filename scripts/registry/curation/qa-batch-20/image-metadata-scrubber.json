@@ -1,0 +1,50 @@
+{
+  "serviceId": "image-metadata-scrubber",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://utilsforagents.com/v1/image/scrub-metadata",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://utilsforagents.com/v1/image/scrub-metadata — body MUST be raw binary image bytes with Content-Type: image/jpeg or image/png, OR multipart/form-data with field 'file' = the image binary (max 5 MB). NOT JSON, NOT base64.",
+    "inputExample": {
+      "_note": "no JSON body — send raw image bytes with Content-Type: image/png, or multipart/form-data field 'file' = <binary JPEG/PNG>",
+      "multipart_field": "file",
+      "raw_body_content_types": [
+        "image/jpeg",
+        "image/png"
+      ]
+    },
+    "outputShape": "Response body is the raw cleaned image binary (Content-Type matches the uploaded image format, image/jpeg or image/png) with all EXIF/XMP/IPTC metadata stripped. There is no JSON wrapper — save the response bytes directly as the output image file.",
+    "quirks": [
+      "Binary upload endpoint: requires raw image bytes (Content-Type: image/jpeg|image/png) OR multipart/form-data with field 'file'. Does NOT accept a JSON body or a base64 string.",
+      "Output is raw binary image bytes (no JSON envelope); response Content-Type matches the original image format. Save the bytes directly.",
+      "Max image size 5 MB.",
+      "COULD NOT TEST via the qa-pay harness: that tool only sends Content-Type application/json, reads --body=@file as utf8 text (corrupting binary), and has no multipart/octet-stream support — so it cannot deliver a valid image to this endpoint. Did not pay (paying would charge $0.003 then 4xx with no usable result). Needs an x402 client that can POST raw binary / multipart file bodies to verify.",
+      "Decoded payment-required (x402 v2) confirms input bodyType 'form-data' with required field 'file' and output type 'binary'."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST the image to https://utilsforagents.com/v1/image/scrub-metadata to strip EXIF/XMP/IPTC metadata. Send the image either as a raw binary body with Content-Type set to image/jpeg or image/png, or as multipart/form-data with a single field named 'file' containing the image bytes (max 5 MB). Pay the $0.003 USDC x402 charge (Base eip155:8453 or Solana). The response body is the cleaned image as raw binary bytes (no JSON) with Content-Type matching the original format — write those bytes straight to a file. Do NOT send a JSON or base64 body; it will be rejected. NOTE: this endpoint was not paid-tested because the QA pay harness cannot send binary/multipart bodies — verify with a binary-capable x402 client before trusting.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-metadata-scrubber#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "serviceId": "stableflowers",
+  "subcat": "storefront-commerce-apis",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableflowers.dev/api/products",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "GET https://stableflowers.dev/api/products?category=<string>&count=<1-50> (siwx-signed; supply either category OR code query param)",
+    "inputExample": {
+      "category": "bouquet",
+      "count": 3
+    },
+    "outputShape": "body.products[] (each: code, name, price, description, image, categories[], dimensions), body.total",
+    "quirks": [
+      "Despite registry surface showing price 'Varies' and a 402 probe, the GET call returns 200 FREE under siwx identity - no USDC is charged (it's auth-gated, not pay-gated).",
+      "MUST supply either ?category= or ?code= query param; with neither it returns HTTP 400 {success:false,error:'Provide either category or code.'} even though inputSchema marks all params optional.",
+      "Requires siwx wallet signature (authMode=siwx); call qa-pay with --siwx.",
+      "Test category values 'roses'/'bouquet' returned {products:[],total:0} - the exact category taxonomy is unknown; a fresh agent should discover valid category strings or use ?code= for a known product code.",
+      "Optional query params: count (1-50, default 12), start (pagination, default 1), sorttype (pa|pd|az|za)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stableflowers.dev/api/products with a siwx wallet signature (free - no USDC charged despite the registry probe showing 402). You MUST include either a ?category=<string> or ?code=<string> query param or the API returns HTTP 400 'Provide either category or code.' Read results from body.products[] (each has code, name, price, description, image, categories[], dimensions) and body.total. Use count (1-50), start, and sorttype (pa/pd/az/za) for paging and sorting. Valid category strings were not discovered during QA - empty arrays came back for generic guesses, so probe for the real taxonomy or use a known product code.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableflowers#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

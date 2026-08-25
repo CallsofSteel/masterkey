@@ -1,0 +1,77 @@
+{
+  "serviceId": "apollo-io",
+  "subcat": "company-people-data",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/apollo/people-search",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/apollo/people-enrich",
+      "method": "POST",
+      "amountUsd": 0.0495
+    },
+    {
+      "backend": "https://x402.orth.sh/apollo/api/v1/people/match",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://x402.orth.sh/apollo/api/v1/organizations/enrich",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/apollo/api/v1/organizations/enrich?domain=<company-domain> (x402 pay, no body)",
+    "inputExample": {
+      "domain": "stripe.com"
+    },
+    "outputShape": "body.organization (object): .name, .industry, .estimated_num_employees, .annual_revenue, .founded_year, .primary_domain, .linkedin_url, .website_url, .keywords[], .phone",
+    "quirks": [
+      "No input schema was published — the org-enrich endpoint REQUIRES a ?domain= query string param (the company's web domain, e.g. domain=stripe.com). Without it the call would not return a useful org.",
+      "All data is nested under body.organization, not at the top level.",
+      "Despite being GET, it is a paid x402 endpoint ($0.01 USDC on Base); the payment is for the lookup, not a body."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.orth.sh/apollo/api/v1/organizations/enrich with a single query param ?domain=<company web domain> (e.g. stripe.com). It is an x402 paid endpoint ($0.01 USDC on Base, no API key, no request body). The response is JSON with the full Apollo organization profile nested under body.organization — read fields like body.organization.name, .industry, .estimated_num_employees, .annual_revenue, .founded_year, and .linkedin_url. Synchronous; the result comes back in one call.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "apollo-io#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "apollo-io#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.0495
+    },
+    {
+      "key": "apollo-io#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "apollo-io#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

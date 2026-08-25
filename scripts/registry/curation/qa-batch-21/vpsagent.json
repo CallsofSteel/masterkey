@@ -1,0 +1,41 @@
+{
+  "serviceId": "vpsagent",
+  "subcat": "vm-cloud-providers",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://vpsagent.fly.dev/catalog",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://vpsagent.fly.dev/catalog (x402-gated, no body)",
+    "inputExample": {},
+    "outputShape": "Intended (per outputSchema, never reached): array of {sku, track, price_usdc, duration_minutes, spec_floor:{vcpu,memory_mb}, available, description}",
+    "quirks": [
+      "Payment FAILS at the facilitator: endpoint's 402 paymentRequirements use network 'base' (legacy x402 v1 string) which the CDP facilitator rejects with 'payment_invalid' / invalid_request — network must be a CAIP-2 id like eip155:8453.",
+      "Pre-flight 402 looks payable (probe.payable=true) but the actual pay attempt cannot settle. No USDC was spent (paid:false, costUsd:0).",
+      "Do NOT retry — the malformed paymentRequirements are server-side; retries cannot succeed until the provider fixes the network field."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently uncallable. GET https://vpsagent.fly.dev/catalog returns a 402 with x402 paymentRequirements whose network is the legacy string 'base' instead of a CAIP-2 id (eip155:8453), so the CDP facilitator rejects the payment with error 'payment_invalid' and the call cannot be settled. No money is lost, but no catalog data is returned. Treat as broken until the provider fixes the network field.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "vpsagent#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

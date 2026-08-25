@@ -1,0 +1,48 @@
+{
+  "serviceId": "olostep-crawl",
+  "subcat": "web-crawling",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/olostep/v1/crawls",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/olostep/v1/crawls with JSON body {start_url, max_pages} (x402 USDC on Base, $0.01). Then poll GET https://x402.orth.sh/olostep/v1/crawls/{id} (FREE) until status==\"completed\".",
+    "inputExample": {
+      "start_url": "https://example.com",
+      "max_pages": 1
+    },
+    "outputShape": "POST returns body.id (crawl id) and body.status=\"in_progress\". Poll GET on the id returns body.status (\"in_progress\"->\"completed\"), body.pages_count, body.credits_consumed.",
+    "quirks": [
+      "Async/queued: the paid POST returns status='in_progress' with a crawl id (body.id like 'crawl_xxx'), NOT the crawl results.",
+      "Poll GET https://x402.orth.sh/olostep/v1/crawls/{id} to get progress; this status GET is FREE (no x402 payment) and returns 200.",
+      "Crawl completes fast for small max_pages (1 page completed within seconds in testing).",
+      "Required body fields: start_url and max_pages. Optional: include_urls/exclude_urls (glob), max_depth, search_query, webhook_url, timeout.",
+      "Price is fixed at $0.01 per crawl-create call (accepts.amount=10000 USDC base units) despite priceDisplay='Varies'; per-page credits tracked in credits_consumed.",
+      "Supply a webhook_url in the POST body to get pushed the final result instead of polling."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Start a crawl with POST https://x402.orth.sh/olostep/v1/crawls and JSON body {\"start_url\":\"<url>\",\"max_pages\":<n>} — this is the only paid step (x402 USDC on Base, ~$0.01). The response is a queued job: read body.id and note status='in_progress'. Then poll GET https://x402.orth.sh/olostep/v1/crawls/{id} (free, no payment) every few seconds until body.status=='completed'; read body.pages_count and body.credits_consumed. Alternatively pass webhook_url in the POST body to be notified on completion instead of polling.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "olostep-crawl#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

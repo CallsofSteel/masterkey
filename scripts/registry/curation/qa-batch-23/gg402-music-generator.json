@@ -1,0 +1,46 @@
+{
+  "serviceId": "gg402-music-generator",
+  "subcat": "music-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/compose_music",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/compose_music with JSON body {theme, genre}",
+    "inputExample": {
+      "theme": "sunrise over the ocean",
+      "genre": "ambient"
+    },
+    "outputShape": "body.lyrics[] (array of strings), body.chords (string), body.melody_description (string), body.processedAt",
+    "quirks": [
+      "inputSchema is empty in the registry — required body is {theme, genre}, BOTH plain strings. Do NOT use 'prompt' or 'text' (returns 400 'Validation failed').",
+      "Sending the wrong field names still 400s AFTER payment — you pay even on a validation failure. Send {theme, genre} on the first try.",
+      "Output is a TEXT music composition (lyrics, chord progression, prose melody_description) — NOT an audio file/URL. There is no MP3/WAV.",
+      "Sync response; no job id / polling."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://gg402.vercel.app/compose_music with a JSON body containing exactly two string fields: theme (the mood/subject) and genre (the musical style). Pay $0.01 USDC on Base via x402. The 200 response is synchronous JSON describing a composition: read body.lyrics (array of lines), body.chords (chord progression string), and body.melody_description (prose). Note this is a textual composition, not playable audio. Avoid 'prompt'/'text' field names — they cause a paid 400.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gg402-music-generator#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

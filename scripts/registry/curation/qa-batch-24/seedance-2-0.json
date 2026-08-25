@@ -1,0 +1,67 @@
+{
+  "serviceId": "seedance-2-0",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.ottoai.services/video-gen",
+      "method": "POST"
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/videos/generations",
+      "method": "POST",
+      "amountUsd": 1.488817
+    },
+    {
+      "backend": "https://api.xona-agent.com/video/seedance-generation",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/videos/generations with JSON body {model:\"bytedance/seedance-2.0\", prompt} paid via x402 USDC on Base; then GET the returned poll_url (also x402-paid) to retrieve the video.",
+    "inputExample": {
+      "model": "bytedance/seedance-2.0",
+      "prompt": "a red circle"
+    },
+    "outputShape": "POST 202 -> body.id, body.status (\"queued\"), body.poll_url, body.price.amount, body.payment_status. Poll the poll_url; when body.status==\"completed\" the response carries the video URL (field not captured in QA, expected video url in the completed job body).",
+    "quirks": [
+      "REAL PRICE IS ~$1.49 USDC per call, NOT $0.150 — the registry priceAmount/priceDisplay is stale by ~10x. POST body.price.amount reports the true charge (e.g. '1.488816').",
+      "Async job: POST returns status=queued with a relative poll_url. Result = GET that poll_url with a fresh x-payment header signed by the SAME wallet that submitted the POST (wallet-binding enforced, not signature byte-equality). The poll endpoint issues its own 402 challenge so x402 clients re-sign automatically.",
+      "MONEY TRAP: the poll response says 'No charge until status=completed', but settlement capture shows EVERY poll actually pays the full ~$1.49 even while status=in_progress. Do NOT poll repeatedly — each poll costs the full generation price. Wait the full generation time (60-180s) before polling, and poll as few times as possible.",
+      "poll_url is relative (/api/v1/...); prefix with https://blockrun.ai. The URL contains its own sig query param — use it verbatim.",
+      "Generation takes 60-180s; in QA it was still in_progress after ~90s, so the completed-state body and final video URL were not captured."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/videos/generations with JSON {\"model\":\"bytedance/seedance-2.0\",\"prompt\":\"<your prompt>\"}, paying via x402 USDC on Base. Expect a 202 with a queued video.generation.job: keep body.id and body.poll_url. Budget ~$1.49 per generation — the $0.150 registry price is stale. Wait the full 60-180s, then GET https://blockrun.ai + body.poll_url (verbatim, including its sig param) with a fresh x402 payment signed by the same wallet; read the video URL from the completed job body. CRITICAL: each poll re-charges the full ~$1.49 despite the 'no charge until completed' note, so poll as rarely as possible (ideally once, after a long wait).",
+    "costObservedUsd": 4.466451
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "seedance-2-0#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.488817
+    },
+    {
+      "key": "seedance-2-0#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.8
+    }
+  ]
+}

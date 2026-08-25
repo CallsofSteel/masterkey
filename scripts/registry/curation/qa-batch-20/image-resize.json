@@ -1,0 +1,49 @@
+{
+  "serviceId": "image-resize",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/image-resize",
+      "method": "GET",
+      "amountUsd": 0.0324
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/image-resize?image_url=<URL>&target_width=<int>&target_height=<int>&format=png&fit=cover (all params are query string; all optional but image_url + target dims needed for a useful result)",
+    "inputExample": {
+      "image_url": "https://httpbin.org/image/png",
+      "target_width": 64,
+      "target_height": 64,
+      "format": "png",
+      "fit": "cover"
+    },
+    "outputShape": "body.base64 (resized image, base64-encoded), body.width, body.height, body.format, body.size_bytes, body.content_type; metadata at body._meta.payment",
+    "quirks": [
+      "All inputs are QUERY-STRING params on a GET (no JSON body): image_url, target_width, target_height, format (png|jpeg|webp), fit (cover|contain|fill|inside|outside), quality.",
+      "URL-encode image_url.",
+      "CHARGES EVEN ON FAILURE: a source image the server cannot fetch returns HTTP 400 'Failed to fetch image' but STILL bills ~$0.0324. Use a reliably server-fetchable image URL (a Wikipedia upload.wikimedia.org URL was rejected with 400; httpbin.org/image/png worked).",
+      "Output image is returned as base64 string in body.base64, not a binary body."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.strale.io/x402/image-resize with query params: image_url (URL-encoded, must be a publicly+server-fetchable image), target_width, target_height, plus optional format (png/jpeg/webp) and fit (cover/contain/fill/inside/outside). It pays via x402 (~$0.032/call on Base) and returns JSON synchronously. Read the resized image from body.base64 (decode it), with body.width/height/format/size_bytes describing the result. Important: pick an image URL you know the server can fetch — bad/blocked URLs return HTTP 400 but you are still charged.",
+    "costObservedUsd": 0.0324
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "image-resize#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

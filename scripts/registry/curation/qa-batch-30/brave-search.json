@@ -1,0 +1,45 @@
+{
+  "serviceId": "brave-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.signalfuse.co/v1/gateway/search/brave",
+      "method": "GET",
+      "amountUsd": 0.008
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.signalfuse.co/v1/gateway/search/brave?q=<query>&count=<n> (query params, no body)",
+    "inputExample": {
+      "q": "bitcoin price",
+      "count": 3
+    },
+    "outputShape": "body.web.results[] (each {title, url, description}); also body.faq.results[] for FAQ-style answers; body.query echoes the parsed query",
+    "quirks": [
+      "Params are query-string, not a JSON body: pass ?q=...&count=... on the URL.",
+      "count maxes at 20.",
+      "Response is large (~110KB for count=3) and richly structured (web, faq, query, etc.) — Brave's native API shape, not flattened."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.signalfuse.co/v1/gateway/search/brave with query params q (the search query, required) and count (number of web results, optional, default 10, max 20). Pays $0.008 USDC per call over x402 on Base. Read the web results from body.web.results[] — each has title, url, and description. FAQ-style answers, when present, are at body.faq.results[]. Plain synchronous response; no auth or polling needed.",
+    "costObservedUsd": 0.008
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "brave-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

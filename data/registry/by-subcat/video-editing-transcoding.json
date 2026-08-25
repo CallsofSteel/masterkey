@@ -1,0 +1,1237 @@
+[
+  {
+    "id": "video-convert-transcode",
+    "kind": "model",
+    "name": "Video Convert / Transcode",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Convert/transcode video between formats and codecs.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "transcoding",
+      "convert",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-convert-api-9b6300",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-convert-api-9b6300"
+              },
+              "description": "Convert video between MP4 MOV AVI MKV WebM formats",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-convert-api-9b6300"
+              },
+              "description": "Convert video between MP4 MOV AVI MKV WebM formats",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-convert-api-9b6300 with JSON body {url, format}",
+      "inputExample": {
+        "url": "https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4",
+        "format": "mov"
+      },
+      "outputShape": "N/A — endpoint dead. Returns body.error=\"API_NOT_FOUND\", body.message.",
+      "quirks": [
+        "Orbis proxy dead slug: pre-flight probe returns 402 (looks payable) but actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'video-convert-api-9b6300'.\"}",
+        "No payment was taken (paid:false, costUsd:0) — the proxy 404s before settlement here, but other Orbis slugs charge-then-404.",
+        "Do not retry with alternate bodies/paths — the slug/route is dead."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is dead and cannot be used. The Orbis proxy slug 'video-convert-api-9b6300' is not registered — a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"} even though the x402 pre-flight probe advertises a 402 payment requirement. Do not call it; it will not transcode anything. No fresh-agent retry will help (the route is gone).",
+      "costObservedUsd": 0,
+      "droppedReason": "video-convert-transcode#0: Orbis proxy dead slug: pre-flight probe returns 402 (looks payable) but actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'video-convert-api-9b6300'.\"}"
+    },
+    "source": {
+      "serviceKey": "video-convert-transcode",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "video-compress",
+    "kind": "model",
+    "name": "Video Compress",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Compress video to reduce file size.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "compress",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-compress-api-845ffb",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-compress-api-845ffb"
+              },
+              "description": "Compress video file size while maintaining quality",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-compress-api-845ffb"
+              },
+              "description": "Compress video file size while maintaining quality",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-compress-api-845ffb with JSON body {video_url} (intended, but route is dead)",
+      "inputExample": {
+        "video_url": "https://download.samplelib.com/mp4/sample-5s.mp4"
+      },
+      "outputShape": "none — endpoint returns {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-compress-api-845ffb'.\"}",
+      "quirks": [
+        "Orbis proxy slug is dead: returns HTTP 404 with body {error:\"API_NOT_FOUND\"} for 'video-compress-api-845ffb'.",
+        "The pre-flight probe shows 402/payable but the route does not actually resolve — do NOT pay; payment would be charge-then-404.",
+        "In this test the 404 came back before any payment was taken (paid:false, costUsd:0), so no funds were lost."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is broken and should not be called. The Orbis proxy slug 'video-compress-api-845ffb' no longer maps to an active API — POSTing to it returns HTTP 404 with {error:\"API_NOT_FOUND\"}. Although a pre-flight probe reports 402/payable, the route is dead and will never return a compressed video. Do not attempt payment.",
+      "costObservedUsd": 0,
+      "droppedReason": "video-compress#0: Orbis proxy slug is dead: returns HTTP 404 with body {error:\"API_NOT_FOUND\"} for 'video-compress-api-845ffb'."
+    },
+    "source": {
+      "serviceKey": "video-compress",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "video-merge",
+    "kind": "model",
+    "name": "Video Merge",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Merge/concatenate multiple video clips into one.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "merge",
+      "concat",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-merge-api-5634aa",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-merge-api-5634aa"
+              },
+              "description": "Merge multiple video files into one",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-merge-api-5634aa"
+              },
+              "description": "Merge multiple video files into one",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-merge-api-5634aa with JSON body {videos:[url,url]}",
+      "inputExample": {
+        "videos": [
+          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+        ]
+      },
+      "outputShape": "n/a - endpoint dead (404 API_NOT_FOUND)",
+      "quirks": [
+        "Orbis proxy slug is DEAD: returns 404 {error:API_NOT_FOUND, message:No active API found with slug video-merge-api-5634aa}.",
+        "404 returned pre-payment (paid:false, costUsd:0) - no USDC lost.",
+        "Do NOT retry with alternate bodies/paths - the slug/route does not exist."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'video-merge-api-5634aa' no longer exists - any call returns HTTP 404 {error:API_NOT_FOUND}. Do not attempt to call it. No payment is taken because the 404 fires before the x402 settlement step.",
+      "costObservedUsd": 0,
+      "droppedReason": "video-merge#0: Orbis proxy slug is DEAD: returns 404 {error:API_NOT_FOUND, message:No active API found with slug video-merge-api-5634aa}."
+    },
+    "source": {
+      "serviceKey": "video-merge",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "video-trim",
+    "kind": "model",
+    "name": "Video Trim",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Trim/cut a video to a time range.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "trim",
+      "cut",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-trim-api-876fe3",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-trim-api-876fe3"
+              },
+              "description": "Trim video files to specific start and end times",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-trim-api-876fe3"
+              },
+              "description": "Trim video files to specific start and end times",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-trim-api-876fe3 with JSON body {video_url, start, end}",
+      "inputExample": {
+        "video_url": "https://download.samplelib.com/mp4/sample-5s.mp4",
+        "start": 0,
+        "end": 2
+      },
+      "outputShape": "N/A — endpoint dead, returns body.error=\"API_NOT_FOUND\"",
+      "quirks": [
+        "Orbis proxy dead slug: x402 probe returns 402 (payable) but actual POST returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug video-trim-api-876fe3'}.",
+        "No payment was taken (paid:false, costUsd:0) — the route is dead at Orbis before settlement.",
+        "Do NOT retry with alternate bodies/paths; the slug is gone."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is dead. The Orbis proxy slug 'video-trim-api-876fe3' returns 404 API_NOT_FOUND on POST despite advertising an x402 402 quote during pre-flight. No payment is collected (paid:false, costUsd:0), but the service is non-functional. Do not call it; it cannot trim videos. Treat as broken/removed.",
+      "costObservedUsd": 0,
+      "droppedReason": "video-trim#0: Orbis proxy dead slug: x402 probe returns 402 (payable) but actual POST returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug video-trim-api-876fe3'}."
+    },
+    "source": {
+      "serviceKey": "video-trim",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "video-watermark",
+    "kind": "model",
+    "name": "Video Watermark",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Overlay a watermark onto a video.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "watermark",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-watermark-api-5ba65c",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-watermark-api-5ba65c"
+              },
+              "description": "Add logo or text watermarks to video files",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-watermark-api-5ba65c"
+              },
+              "description": "Add logo or text watermarks to video files",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-watermark-api-5ba65c with JSON body {video_url, text}",
+      "inputExample": {
+        "video_url": "https://samplelib.com/lib/preview/mp4/sample-5s.mp4",
+        "text": "hello"
+      },
+      "outputShape": "none (endpoint returns 404 error: body.error=API_NOT_FOUND)",
+      "quirks": [
+        "DEAD ENDPOINT: Orbis proxy slug 'video-watermark-api-5ba65c' returns 404 API_NOT_FOUND. Pre-flight probe shows 402 (looks payable) but the actual POST 404s.",
+        "Known Orbis charge-then-404 pattern; do not retry with alternate bodies or paths.",
+        "No payment was charged on the failed call (server 404'd before settlement)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is broken and unusable. The Orbis proxy slug 'video-watermark-api-5ba65c' returns HTTP 404 {error:\"API_NOT_FOUND\"} on POST even though the x402 pre-flight probe reports 402/payable. Do not call it; the route does not exist. Use an alternate video-watermark provider instead.",
+      "costObservedUsd": 0,
+      "droppedReason": "video-watermark#0: DEAD ENDPOINT: Orbis proxy slug 'video-watermark-api-5ba65c' returns 404 API_NOT_FOUND. Pre-flight probe shows 402 (looks payable) but the actual POST 404s."
+    },
+    "source": {
+      "serviceKey": "video-watermark",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "video-metadata-extract",
+    "kind": "model",
+    "name": "Video Metadata Extract",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Extract metadata (codec, duration, dimensions) from a video.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "metadata",
+      "probe",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-metadata-extract-api-ea5352",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-metadata-extract-api-ea5352"
+              },
+              "description": "Extract codec, resolution, FPS and duration from video",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-metadata-extract-api-ea5352"
+              },
+              "description": "Extract codec, resolution, FPS and duration from video",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-metadata-extract-api-ea5352 with JSON body {video_url}",
+      "inputExample": {
+        "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+      },
+      "outputShape": "N/A — endpoint dead, returns {error:\"API_NOT_FOUND\", message:\"...\"}",
+      "quirks": [
+        "Orbis proxy slug is DEAD: returns HTTP 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-metadata-extract-api-ea5352'.\"}",
+        "Registry probe showed 402 (payable) on 2026-06-01 but the route is now gone — do not trust the probe",
+        "No payment was made (request 404'd before settlement); no USDC lost"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do not call this endpoint — it is dead. The Orbis proxy slug 'video-metadata-extract-api-ea5352' returns HTTP 404 with {error:\"API_NOT_FOUND\"}. No payment is taken because the route 404s before settlement, but the service does not exist. Remove or mark this endpoint broken in the registry.",
+      "costObservedUsd": 0,
+      "droppedReason": "video-metadata-extract#0: Orbis proxy slug is DEAD: returns HTTP 404 {error:\"API_NOT_FOUND\", message:\"No active API found with slug 'video-metadata-extract-api-ea5352'.\"}"
+    },
+    "source": {
+      "serviceKey": "video-metadata-extract",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  },
+  {
+    "id": "mp4-to-mp3-audio-extract",
+    "kind": "model",
+    "name": "MP4 to MP3 (Audio Extract)",
+    "aka": [],
+    "provider": "x402 Deployer",
+    "providerId": "x402-deployer",
+    "description": "Extract the audio track from a video as MP3.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "audio-extract",
+      "convert",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.020",
+          "min": 0.1,
+          "max": 0.1,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3 with JSON body {video_url, bitrate?}",
+      "inputExample": {
+        "video_url": "https://samplelib.com/mp4/sample-5s.mp4",
+        "bitrate": 96
+      },
+      "outputShape": "body.audio_url (signed CloudConvert MP3 URL, ~24h validity); also body.file_size_bytes, body.bitrate, body.content_type, body.source_url, body.job_id",
+      "quirks": [
+        "inputSchema was null in the registry batch file; the real schema is embedded in the x402 payment-required header under extensions.bazaar.info (body {video_url required, bitrate enum [96,128,192]})",
+        "Response includes a job_id field but the call is fully synchronous — audio_url is returned directly in the 200 body, do NOT poll",
+        "video_url must be a PUBLIC, directly-downloadable video URL; max 500MB / 60 minutes",
+        "audio_url is a signed CloudConvert S3 URL that expires (~24h) — download/re-host promptly",
+        "Accepts any common video format (mov, webm, mkv, avi, m4v, flv) not just mp4"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST a JSON body {video_url, bitrate} to https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3 paying $0.10 USDC via x402 on Base. video_url must be a public direct-download video link (any common format, max 500MB/60min); bitrate is optional and must be one of 96, 128 (default), or 192 kbps. The 200 response returns the extracted MP3 at body.audio_url synchronously (ignore the job_id field, no polling needed). Download body.audio_url promptly since it is a signed CloudConvert URL that expires in ~24h.",
+      "costObservedUsd": 0.1
+    },
+    "source": {
+      "serviceKey": "mp4-to-mp3-audio-extract",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "platform"
+    },
+    "status": "active"
+  },
+  {
+    "id": "video-thumbnail-extractor",
+    "kind": "model",
+    "name": "Video Thumbnail Extractor",
+    "aka": [],
+    "provider": "x402 Deployer",
+    "providerId": "x402-deployer",
+    "description": "Extract a thumbnail/poster frame from a video.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "thumbnail",
+      "frame",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "image"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.030",
+      "amount": 0.03,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402-deployer.x402-deployer.workers",
+        "providerId": "x402-deployer-x402-deployer-workers",
+        "url": "https://x402-deployer.x402-deployer.workers.dev/video-thumbnail",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Cloudflare Workers",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 200,
+          "method": "GET",
+          "payable": false,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "needs-review",
+        "team": "x402 Deployer"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/video-thumbnail with JSON body {video_url, frame_type}",
+      "inputExample": {
+        "video_url": "https://samplelib.com/mp4/sample-5s.mp4",
+        "frame_type": "middle"
+      },
+      "outputShape": "body.image_url (JPG URL); also body.width, body.height, body.file_size_bytes, body.content_type, body.frame_type, body.source_url",
+      "quirks": [
+        "Registry lists method=GET but that only returns a self-describing manifest (name/price/input_schema/input_example). The real paid call is POST.",
+        "Pay with POST + JSON body {video_url, frame_type}; video_url is required, frame_type is optional enum first|middle|last (defaults appear to honor 'middle').",
+        "Output image is hosted at a fal.media URL (returned in body.image_url), not inline bytes — fetch the URL to get the JPG.",
+        "x402 payment $0.03 on Base via CDP facilitator."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Send POST to https://x402-deployer.x402-deployer.workers.dev/video-thumbnail with JSON body {\"video_url\":\"<mp4 url>\",\"frame_type\":\"first|middle|last\"} (only video_url is required). The x402 payment is $0.03 USDC on Base. The response is JSON; read body.image_url for the extracted frame JPG (fal.media hosted), plus width/height/file_size_bytes metadata. A GET to the same URL returns only a price/schema manifest, not a result — always POST to actually run it.",
+      "costObservedUsd": 0.03
+    },
+    "source": {
+      "serviceKey": "video-thumbnail-extractor",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "platform"
+    },
+    "status": "active"
+  },
+  {
+    "id": "video-edit",
+    "kind": "model",
+    "name": "Video Edit",
+    "aka": [],
+    "provider": "gg402",
+    "providerId": "gg402",
+    "description": "General AI-assisted video editing.",
+    "category": "image-video-processing",
+    "subcategory": "video-editing-transcoding",
+    "tags": [
+      "video-editing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "video"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "gg402.vercel",
+        "providerId": "gg402-vercel",
+        "url": "https://gg402.vercel.app/video_edit",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Vercel",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x9257cD24721e3c06E9F7655b77C283bCD9652132",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:38:27.529Z"
+        },
+        "status": "needs-review",
+        "team": "gg402"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://gg402.vercel.app/video_edit with JSON body {video_url, video_description}",
+      "inputExample": {
+        "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
+        "video_description": "trim the video to the first 3 seconds"
+      },
+      "outputShape": "No usable output. On error: body.status=\"ERROR\", body.error.message, body.error.code. (Successful output shape unknown — backend never reached a success state.)",
+      "quirks": [
+        "Required input field is 'video_description' (string), NOT 'prompt' — sending 'prompt' returns 400 'Invalid input: expected string, received undefined' for field video_description.",
+        "After fixing the field name, the backend returns HTTP 500 with an internal JSON parse error: 'Expected , or } after property value in JSON at position 1303 (line 37 column 2)'. Position 1303 is far beyond our ~150-byte request body, so this is a server-side processing failure (likely parsing an upstream/LLM response), not a client body issue.",
+        "Payment is taken on every request including the ones that fail validation/processing (charged $0.01 on both the 400 and the 500). No refund. Total $0.02 lost across 2 attempts with no result produced.",
+        "No txHash returned by the facilitator on either paid call (confirmed:false)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Do not use this endpoint — it is broken. It payment-gates ($0.01 USDC on Base) and validates input (it requires a 'video_url' and a 'video_description' string), but after passing validation the backend fails with an internal HTTP 500 JSON-parse error and never returns an edited video. Payment is charged even on failures with no refund, so calling it just loses money. Revisit only if the provider fixes the server-side 500.",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "video-edit",
+      "discoveredVia": [
+        "video transcoding",
+        "video editing api",
+        "ffmpeg",
+        "video convert",
+        "video merge",
+        "video processing"
+      ],
+      "lastSyncedAt": "2026-06-01T22:38:27.529Z",
+      "hosting": "platform"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  }
+]

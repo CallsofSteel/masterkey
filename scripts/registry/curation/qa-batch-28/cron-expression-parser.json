@@ -1,0 +1,91 @@
+{
+  "serviceId": "cron-expression-parser",
+  "subcat": "cron-job-scheduling",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.nichospt.net/text-to-cron",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/cron-parser/explain",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/cron-parse",
+      "method": "POST",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://x402.agentutility.ai/cron-explain",
+      "method": "POST",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/cron-explain",
+      "method": "POST",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://netintel-production-440c.up.railway.app/cron-parser/explain?expression=<cron>&timezone=UTC&count=5 — params go in the query string (GET, no body)",
+    "inputExample": {
+      "expression": "0 9 * * 1",
+      "timezone": "UTC",
+      "count": 3
+    },
+    "outputShape": "body.explanation (plain English), body.is_valid (bool), body.fields{minute,hour,day_of_month,month,day_of_week}, body.next_runs[] (ISO timestamps), body.score, body.grade, body.warnings[], body.findings[]",
+    "quirks": [
+      "This is a GET endpoint — pass expression/timezone/count as URL query-string params, NOT a JSON body (despite inputSchema being object-shaped).",
+      "expression is required and must be URL-encoded (spaces -> %20, asterisks -> %2A).",
+      "Supports both 5- and 6-field cron expressions.",
+      "count defaults to 5, max 20; timezone defaults to UTC (IANA strings)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://netintel-production-440c.up.railway.app/cron-parser/explain with the cron expression in the query string, e.g. ?expression=0%209%20%2A%20%2A%201&timezone=UTC&count=5. Pay $0.001 USDC via x402 on Base (eip155:8453). Read the plain-English meaning from body.explanation, validity from body.is_valid, and upcoming fire times from body.next_runs[]. The expression value must be URL-encoded.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cron-expression-parser#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "cron-expression-parser#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "cron-expression-parser#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    },
+    {
+      "key": "cron-expression-parser#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    },
+    {
+      "key": "cron-expression-parser#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.002
+    }
+  ]
+}

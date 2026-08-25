@@ -1,0 +1,75 @@
+{
+  "serviceId": "background-removal",
+  "subcat": "background-removal",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/background-removal-api-4291ed/:endpoint",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402helper.xyz/api/proxy/background-removal-2",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/remove-bg",
+      "method": "POST",
+      "amountUsd": 0.08
+    },
+    {
+      "backend": "https://api.agentwonderland.com/x402/endpoints/remove-image-background",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/remove-bg with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://www.gstatic.com/webp/gallery/1.jpg"
+    },
+    "outputShape": "body.image_url (hosted fal.media PNG URL of the cutout); also body.width, body.height, body.file_size_bytes, body.content_type, body.source_url",
+    "quirks": [
+      "Returns a JSON object with a HOSTED result URL (body.image_url, a fal.media PNG) — NOT raw PNG binary. This differs from the dellbot backend in prior usage which returned raw PNG bytes. Fetch body.image_url to download the cutout.",
+      "Large source images can fail: a full-res ~2MB Wikipedia JPG returned HTTP 502 {error:'Background removal failed: Unprocessable Entity'} AND still charged $0.08. Use a reasonably sized, directly-accessible image URL.",
+      "Price is $0.08 (registry surface), confirmed charged on both the failed and successful call — a 502 does NOT refund.",
+      "Pass the image as a public URL in the 'image_url' field; the backend processes via fal and crops to bbox=false by default."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/remove-bg with a JSON body {\"image_url\": \"<public image URL>\"} and pay $0.08 USDC on Base via x402. On success you get HTTP 200 with a JSON object whose image_url field is a hosted fal.media PNG of the transparent cutout — fetch that URL to download the result. Use a moderately sized, directly fetchable image; oversized or unprocessable images return a 502 error and still charge you (no refund).",
+    "costObservedUsd": 0.08
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "background-removal#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "background-removal#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    },
+    {
+      "key": "background-removal#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.08
+    },
+    {
+      "key": "background-removal#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "serviceId": "toxicity-moderation-x402-deployer",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/moderate-content",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/moderate-content with JSON body {text}",
+    "inputExample": {
+      "text": "You are an idiot and I hate you."
+    },
+    "outputShape": "body.verdict (\"allow\"|\"review\"|\"block\"), body.flagged_count, body.summary, body.categories.{harassment,hate_speech,violence,sexual_content,self_harm,spam,phishing,doxing,illegal_activity}.{score,flagged,evidence}, body.model, body.source, body.input_chars",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST the text you want moderated as JSON {\"text\": \"...\"} to https://x402-deployer.x402-deployer.workers.dev/moderate-content; payment is x402 USDC on Base (~$0.02 per call), no API key. The response is plain sync JSON: read body.verdict for the top-level decision (allow / review / block), body.flagged_count for how many categories tripped, and body.categories.<category>.{score,flagged,evidence} for per-category detail. body.summary gives a human-readable rationale.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "toxicity-moderation-x402-deployer#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    }
+  ]
+}

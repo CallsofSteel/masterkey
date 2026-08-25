@@ -1,0 +1,47 @@
+{
+  "serviceId": "sponge-payment-gateway",
+  "subcat": "payment-processing",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/text",
+      "method": "POST",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d6kszbre4qwg5n4n4/text with JSON body {phone, message}",
+    "inputExample": {
+      "phone": "+15555550123",
+      "message": "Test message from MasterKey registry QA. Please ignore."
+    },
+    "outputShape": "body.success (bool), body.textId (SMS id on success), body.quotaRemaining; on failure body.success=false + body.error",
+    "quirks": [
+      "This /text endpoint SENDS an SMS to the supplied phone number - it is an outward, irreversible action.",
+      "Registry inputSchema is EMPTY/wrong (additionalProperties:false). The real required fields are phone (E.164, e.g. +15555550123) and message. Sending {} returns 200 with success:false and error 'Missing phone number parameter'.",
+      "EVERY call costs $0.02 and is charged even when it fails (the malformed empty-body call was still billed). Do not probe with empty bodies.",
+      "Response is HTTP 200 even on logical failure - you MUST check body.success, not the status code.",
+      "Each successful send decrements body.quotaRemaining (per-account SMS quota)."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "POST to the URL with a JSON body {phone, message} where phone is E.164 format (+countrycode...) and message is the SMS text. Payment is $0.02 USDC per call on Base via x402, charged even on malformed requests, so always send a valid phone + message. The response is HTTP 200 regardless of outcome - read body.success: true means the SMS was sent (body.textId is the message id), false means it failed (body.error explains why). This sends a real text message, so confirm the recipient before calling.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "sponge-payment-gateway#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

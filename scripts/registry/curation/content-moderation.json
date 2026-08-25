@@ -1,0 +1,994 @@
+{
+  "subcategory": "content-moderation",
+  "category": "ai-ml",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. backends = candidate indices from candidates/content-moderation.json. resolved = exact prices from live x402 accepts (USDC 6dp). Kept the core moderation primitives (toxicity, NSFW image, profanity, policy-validate, safe-rewrite, AI-output safety, spam, prompt-injection guardrail) plus the recognizable Mistral Moderation model. Semantic dedup: generic orbis toxicity/hate/adult/spam proxies (#2,#4,#5,#7,#9,#10) merged into one Toxicity & Safety Classifier; moderate+rewrite #3/#8 merged; brack-hive output/prompt risk #34/#36 merged. PRUNED low-signal orbis auto-proxy 'score X' farm not kept (consistent with how the orbis model-guide/comparison proxies were dropped in llm-chat-apis): comment-signal #25, facebook-group-triage #27, queue-prioritizer #40/#41, decision-quality #6, appeals-quality #42, crisis-rumor #53, ethics-auditor(gg402) #23, content-moderator(gg402) #12/#13, ai-security-guard #35. Dropped junk: x402helper.xyz test brand #0,#14,#15,#52; bundle-maker #71; the402.ai apiKey-no-evidence #64,#67,#68,#69,#70. Contamination routed: social-media #16,#17,#19,#20,#21,#24,#38,#59,#60,#61,#63,#65,#72; nlp-text-analysis #30,#57,#66; data-enrichment #45,#46,#47,#48,#49,#50,#51,#73; security #32,#37; web-scraping #31,#74,#75; llm-chat-apis #22,#58; image-generation #62; finance #44; crypto-defi #43; marketing #33; content-generation #18.",
+  "entries": [
+    {
+      "name": "Toxicity & Safety Classifier",
+      "kind": "api",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "content-moderation-api",
+        "ai-content-moderation-scorer-api"
+      ],
+      "description": "Moderate user-generated text for toxicity, hate speech, harassment, violence, adult/NSFW content, spam and misinformation, returning per-category scores with allow/review/block recommendations. Pay-per-call x402 on Base and Solana.",
+      "tags": [
+        "moderation",
+        "toxicity",
+        "hate-speech",
+        "nsfw",
+        "spam",
+        "trust-and-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        2,
+        4,
+        5,
+        7,
+        9,
+        10
+      ],
+      "resolved": {
+        "2": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "4": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "5": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "7": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "9": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "10": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/content-moderation-api-aa4eb5 with JSON body {text}",
+        "inputExample": {
+          "text": "I will hurt you, you idiot."
+        },
+        "outputShape": "N/A - endpoint dead, returns {error:\\\"API_NOT_FOUND\\\", message}",
+        "quirks": [
+          "Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"}",
+          "Unpaid pre-flight shows 402 (looks payable) but the route does not exist - do NOT attempt to pay; you would lose money to a 404 charge-then-fail pattern",
+          "No payment was charged in this test (paid:false, status 404 returned before settlement)"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint - it is broken. The Orbis proxy slug 'content-moderation-api-aa4eb5' no longer maps to any active API and returns HTTP 404 {error:'API_NOT_FOUND'} for POST requests with a {text} body. Although the unpaid probe advertises a 402 payment requirement, the route is dead. Skip it and find an alternative content-moderation service.",
+        "costObservedUsd": 0,
+        "droppedReason": "toxicity-safety-classifier#0: Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"} | toxicity-safety-classifier#1: Dead Orbis proxy slug: POST returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-82f76f'.\"} | toxicity-safety-classifier#2: Orbis proxy slug is dead: POST returns 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-content-moderation-scorer-api-d02dd5'.\"} | toxicity-safety-classifier#3: Orbis proxy charge-then-404 pattern: the 402 pre-flight probe reports payable but the slug is dead. | toxicity-safety-classifier#4: Orbis proxy charge-then-404 pattern: unpaid pre-flight returns 402 (looks payable) but after payment the slug returns 404 API_NOT_FOUND. | toxicity-safety-classifier#5: Orbis proxy dead slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'content-moderation-api-f3754a'.\"} directly — no 402 preflight, no payment taken. The route is gone; do not call."
+      },
+      "status": "hidden",
+      "_droppedReason": "toxicity-safety-classifier#0: Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"} | toxicity-safety-classifier#1: Dead Orbis proxy slug: POST returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-82f76f'.\"} | toxicity-safety-classifier#2: Orbis proxy slug is dead: POST returns 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-content-moderation-scorer-api-d02dd5'.\"} | toxicity-safety-classifier#3: Orbis proxy charge-then-404 pattern: the 402 pre-flight probe reports payable but the slug is dead. | toxicity-safety-classifier#4: Orbis proxy charge-then-404 pattern: unpaid pre-flight returns 402 (looks payable) but after payment the slug returns 404 API_NOT_FOUND. | toxicity-safety-classifier#5: Orbis proxy dead slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'content-moderation-api-f3754a'.\"} directly — no 402 preflight, no payment taken. The route is gone; do not call.",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Content Moderation + Safe Rewrite",
+      "kind": "api",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "content-moderation-api-4fa8a6"
+      ],
+      "description": "Moderate text, classify it into policy categories, and generate a safe rewrite of flagged content. Pay-per-call x402 on Base and Solana.",
+      "tags": [
+        "moderation",
+        "classification",
+        "safe-rewrite",
+        "trust-and-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json",
+          "text"
+        ]
+      },
+      "backends": [
+        3,
+        8
+      ],
+      "resolved": {
+        "3": {
+          "amount": 0.0035,
+          "status": "hidden"
+        },
+        "8": {
+          "amount": 0.0035,
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/content-moderation-api-4fa8a6 with JSON body {text}  (DEAD — see quirks; the /:endpoint variant only returns a service index)",
+        "inputExample": {
+          "text": "You are such an idiot, I hate you."
+        },
+        "outputShape": "N/A — primary POST endpoint dead (404); /:endpoint variant returns only a service-index {name,info,openapi,health}, not a moderation result",
+        "quirks": [
+          "Backend #0 (POST https://orbisapi.com/proxy/content-moderation-api-4fa8a6) is DEAD: x402 charge settles on Base (~$0.0035) but upstream returns HTTP 404 HTML 'Cannot POST /content-moderation/'. Money lost, no result.",
+          "Backend #1 (.../content-moderation-api-4fa8a6/:endpoint) charges PER PATH ($0.005) and every path is 402-paywalled — there is no free discovery. The root/empty :endpoint returns only a service-index JSON {name,info,openapi,health}, NOT a moderation result.",
+          "The proxy PREPENDS upstream base path /content-moderation/ to :endpoint, so :endpoint=openapi.json -> /content-moderation/openapi.json. Do NOT include /content-moderation/ yourself.",
+          "The actual moderation route name was NOT discoverable from registry data or 402 metadata within the test budget; the openapi.json could not be fetched cleanly. Phase A and Phase B even disagreed on the method (GET vs POST), confirming the doc is not usable as-is.",
+          "Actual price is $0.005 (registry said $0.0035).",
+          "Phase B verification FAILED: a blind agent could not produce a working moderation call from the doc, and spent $0.015 exploring."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "DO NOT CALL as documented. The primary POST endpoint is dead (charges then 404s). The /:endpoint variant charges per path and only exposes a service index, not a moderation result; the real moderation route is undiscoverable without paid trial-and-error. Net: agents lose money for no usable moderation output.",
+        "costObservedUsd": 0.025,
+        "droppedReason": "orbisapi.com content-moderation-api-4fa8a6: primary POST endpoint charges x402 then 404s; /:endpoint variant charges per path and only returns a service index. Real moderation route undiscoverable within budget; Phase B FAILED. ~$0.025 lost across batch-1 tests."
+      },
+      "status": "hidden",
+      "_droppedReason": "Dead/undiscoverable orbisapi.com moderation proxy; charges then fails. ~$0.025 lost on test 2026-06-08. Salvage path documented.",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Profanity Filter",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "profanity-filter-api"
+      ],
+      "description": "Detect and filter profanity in text with per-term severity levels — designed for agent and LLM pipelines.",
+      "tags": [
+        "moderation",
+        "profanity-filter",
+        "text-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        55
+      ],
+      "resolved": {
+        "55": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/profanity-filter-api-3bac11 with JSON body {text}",
+        "inputExample": {
+          "text": "You are a damn idiot"
+        },
+        "outputShape": "unknown — endpoint dead, never returned a result body",
+        "quirks": [
+          "DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}",
+          "The registry probe showed 402 (payable) on 2026-06-01, but the slug is now dead — 402 pre-flight does NOT mean it works.",
+          "No payment was charged on this test (paid:false, costUsd:0) because the route 404s before settlement, but do NOT retry — the slug is gone."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint — it is dead. The Orbis proxy slug 'profanity-filter-api-3bac11' returns HTTP 404 API_NOT_FOUND for any POST. It should be pruned from the registry. No working call shape exists.",
+        "costObservedUsd": 0,
+        "droppedReason": "profanity-filter#0: DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "profanity-filter#0: DEAD Orbis proxy slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'profanity-filter-api-3bac11'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "NSFW Image Shield",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "nsfw-image-shield-api"
+      ],
+      "description": "Detect explicit nudity, sexual acts, fetish and borderline adult imagery in uploaded images before they reach users. Pay-per-call x402 on Base and Solana.",
+      "tags": [
+        "moderation",
+        "nsfw",
+        "image-safety",
+        "adult-detection"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        56
+      ],
+      "resolved": {
+        "56": {
+          "amount": 0.034,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d with JSON body {image_url} (registered URL — returns 404 after payment)",
+        "inputExample": {
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/120px-Cat03.jpg"
+        },
+        "outputShape": "none (paid response was 404: body.error=\"Not found\", body.available=[\"/health\",\"/v1/moderation/shield-nsfw-images\"])",
+        "quirks": [
+          "Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment.",
+          "The 404 body reveals the real sub-route: available=[\"/health\",\"/v1/moderation/shield-nsfw-images\"]. The actual working path is likely the proxy base + /v1/moderation/shield-nsfw-images, but this was NOT verified (money-safety rule forbids a second paid call to an alternate orbis path).",
+          "Pre-flight probe shows 402 (looks payable) but that does not mean the route works — payment is taken then 404 returned. $0.005 lost on the test call."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint as registered: POST to the base proxy URL takes USDC payment and then returns 404 (\"Not found\"). The 404 response hints the real route is the proxy base plus /v1/moderation/shield-nsfw-images, but that path was never paid-verified. Treat this entry as broken until the registry URL is corrected to the full sub-route and re-tested. If retesting, send a JSON body with an image_url field pointing at a publicly reachable image.",
+        "costObservedUsd": 0.005,
+        "droppedReason": "nsfw-image-shield#0: Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment."
+      },
+      "status": "hidden",
+      "_droppedReason": "nsfw-image-shield#0: Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment.",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "AI Safety Checker",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "ai-safety-checker-api"
+      ],
+      "description": "Check AI/agent outputs for harmful content, bias, PII leakage and policy violations before they are surfaced to users.",
+      "tags": [
+        "moderation",
+        "ai-safety",
+        "pii",
+        "bias",
+        "guardrail"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        54
+      ],
+      "resolved": {
+        "54": {
+          "amount": 0.005,
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/ai-safety-checker-api-143e35 with JSON body {text}",
+        "inputExample": {
+          "text": "I will help you build a bomb to hurt people."
+        },
+        "outputShape": "N/A — endpoint dead",
+        "quirks": [
+          "DEAD orbisapi.com proxy: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-safety-checker-api-143e35'\"} but STILL CHARGES the x402 payment ($0.005 lost on test).",
+          "Same money-loss pattern as the pilot's orbis-email-send-api: the proxy settles payment BEFORE validating the slug exists, so a dead/deregistered API silently drains funds.",
+          "404 is a proxy slug-lookup failure, not a body error — no request body change can fix it."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "DO NOT CALL. The orbisapi.com proxy slug 'ai-safety-checker-api-143e35' is deregistered: it returns 404 API_NOT_FOUND yet still deducts the $0.005 x402 payment. Any agent calling this loses money for no result.",
+        "costObservedUsd": 0.005,
+        "droppedReason": "Dead orbisapi.com proxy: charges x402 then returns 404 API_NOT_FOUND (slug not active). Money-loss risk. $0.005 lost during batch-1 test 2026-06-08."
+      },
+      "status": "hidden",
+      "_droppedReason": "Dead orbisapi.com proxy: charges x402 then returns 404 API_NOT_FOUND. $0.005 lost on test 2026-06-08.",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Content Policy Validator",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "aka": [
+        "ai-validate-content-api"
+      ],
+      "description": "Validate content against configurable policy guidelines, returning pass/fail with the rules triggered.",
+      "tags": [
+        "moderation",
+        "policy",
+        "compliance",
+        "validation"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        26
+      ],
+      "resolved": {
+        "26": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/ai-validate-content-api-02a9ef with JSON body {text}",
+        "inputExample": {
+          "text": "hello how are you"
+        },
+        "outputShape": "N/A — endpoint dead. Returned {error:'API_NOT_FOUND', message:'No active API found with slug ...'}",
+        "quirks": [
+          "Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST.",
+          "The registry probe's 402 (payable) status is stale — endpoint actually 404s before any payment is required.",
+          "No payment was taken (paid:false, costUsd:0); the route does not exist, so no funds at risk."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is broken and should not be used. POSTing to https://orbisapi.com/proxy/ai-validate-content-api-02a9ef returns HTTP 404 with {error:'API_NOT_FOUND', message:'No active API found with slug ai-validate-content-api-02a9ef'}. The Orbis proxy slug has been deactivated/removed. No payment is taken (the 402 in older probes is stale). Drop this endpoint from the registry or mark it unavailable.",
+        "costObservedUsd": 0,
+        "droppedReason": "content-policy-validator#0: Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST."
+      },
+      "status": "hidden",
+      "_droppedReason": "content-policy-validator#0: Orbis proxy slug 'ai-validate-content-api-02a9ef' is dead: returns HTTP 404 {error:'API_NOT_FOUND'} on POST.",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Toxicity Moderation (x402 Deployer)",
+      "provider": "x402 Deployer",
+      "providerId": "x402-deployer",
+      "description": "Classifies text for toxicity and harmful content across default and custom categories, returning a verdict of allow, review or block.",
+      "tags": [
+        "moderation",
+        "toxicity",
+        "custom-categories",
+        "trust-and-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        11
+      ],
+      "resolved": {
+        "11": {
+          "amount": 0.02,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/moderate-content with JSON body {text}",
+        "inputExample": {
+          "text": "You are an idiot and I hate you."
+        },
+        "outputShape": "body.verdict (\"allow\"|\"review\"|\"block\"), body.flagged_count, body.summary, body.categories.{harassment,hate_speech,violence,sexual_content,self_harm,spam,phishing,doxing,illegal_activity}.{score,flagged,evidence}, body.model, body.source, body.input_chars",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST the text you want moderated as JSON {\"text\": \"...\"} to https://x402-deployer.x402-deployer.workers.dev/moderate-content; payment is x402 USDC on Base (~$0.02 per call), no API key. The response is plain sync JSON: read body.verdict for the top-level decision (allow / review / block), body.flagged_count for how many categories tripped, and body.categories.<category>.{score,flagged,evidence} for per-category detail. body.summary gives a human-readable rationale.",
+        "costObservedUsd": 0.02
+      }
+    },
+    {
+      "name": "Explicit Image Detector",
+      "provider": "SlinkyLayer",
+      "providerId": "slinkylayer",
+      "aka": [
+        "explicit-detect"
+      ],
+      "description": "Analyzes an image URL for explicit or sensitive content using a selectable AI provider (Azure, Google, etc.) and returns a detection result.",
+      "tags": [
+        "moderation",
+        "nsfw",
+        "image-safety",
+        "adult-detection"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        28
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/a0755425-9710-49f2-aca7-463d72f7db2a/explicit-detect with JSON body {imageUrl}",
+        "inputExample": {
+          "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
+        },
+        "outputShape": "unknown (host unreachable, no response observed)",
+        "quirks": [
+          "NEEDS-REVIEW (not dropped): failure looks transient (host down / upstream 502) as of 2026-06-08 — re-test before relying on it. MONEY-RISK if it charges-then-fails.",
+          "Host x402.slinkylayer.ai is unreachable as of 2026-06-08 (connection timeout, HTTP 000 on both endpoint and root).",
+          "qa-pay returns 'provider request failed: fetch failed' because the upstream host does not respond.",
+          "No payment is made when the host is down (paid:false) - safe, but the service is non-functional."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is currently broken: the host x402.slinkylayer.ai does not respond (connection timeout / HTTP 000 on both the endpoint and the domain root). Based on the description it would analyze an image URL for explicit/sensitive content, expected body shape {imageUrl}, but this could not be confirmed because no request reached the server. Do not rely on it until the host comes back online; re-test before use.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "28": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "Spam Detector",
+      "provider": "SlinkyLayer",
+      "providerId": "slinkylayer",
+      "aka": [
+        "content-detect-spam"
+      ],
+      "description": "Detects whether provided text is spam and returns a confidence score with supporting detail.",
+      "tags": [
+        "moderation",
+        "spam",
+        "text-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        29
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/00e31e91-413d-43f0-833d-56e6b6789aab/content-detect-spam with JSON body {text}",
+        "inputExample": {
+          "text": "Congratulations! You won a free iPhone. Click here to claim your prize now!!!"
+        },
+        "outputShape": "unknown (endpoint unreachable; not observed). Likely body.isSpam/body.spam + body.confidence/body.score per the service description \"confidence score with supporting detail\".",
+        "quirks": [
+          "Host x402.slinkylayer.ai did NOT resolve from the QA environment — DNS timed out and both qa-pay attempts failed with 'fetch failed' BEFORE any payment (paid:false, no USDC spent).",
+          "Spec is sparse: inputSchema/outputSchema/instructions all null, paymentAccepts empty, priceDisplay 'Varies'. Body field {text} was inferred from service name + description, not confirmed.",
+          "Re-test required from an environment with working DNS/network access to slinkylayer.ai."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Untested: the host x402.slinkylayer.ai could not be resolved/reached from the QA environment (DNS timeout), so no paid call completed and no money was spent. When reachable, call POST to the proxy URL with a JSON body of the form {\"text\":\"<sample message>\"} for a spam-detection sample. The service is described as returning whether the text is spam plus a confidence score and supporting detail, so expect a JSON body with an is-spam boolean and a confidence/score field. Price is \"Varies\" (x402-gated). Verify the exact body field name and output shape on first successful call.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "29": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "AI Output Risk Guardrail",
+      "kind": "api",
+      "provider": "brack-hive.tail4f568d.ts",
+      "providerId": "brack-hive-tail4f568d-ts",
+      "aka": [
+        "ai-output-risk-guardrail",
+        "output-risk"
+      ],
+      "description": "Screens AI model OUTPUT for unsafe/harmful content. Returns a risk verdict (low/medium/high), recommended action (allow/block), detected attack type, matched patterns, and sanitized content. v0.5 brackoracle, primarily regex-based.",
+      "tags": [
+        "moderation",
+        "ai-safety",
+        "guardrail",
+        "prompt-injection"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://brack-hive.tail4f568d.ts.net/output-risk",
+          "method": "POST",
+          "provider": "brack-hive.tail4f568d.ts",
+          "providerId": "brack-hive-tail4f568d-ts",
+          "amount": 0,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0x7E37015a806FF05d6ab3de50F6D0e8765d38C72D"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://brack-hive.tail4f568d.ts.net/output-risk with header 'X-Free-Tier: AGENTFAST' and Content-Type: application/json, JSON body {\"content\": \"<model output text to screen>\"}",
+        "inputExample": {
+          "content": "The weather today is sunny with a high of 72 degrees."
+        },
+        "outputShape": "risk, confidence, attack_type, patterns[], recommended_action, sanitized_content, analysed_by[], escalated, oracle",
+        "quirks": [
+          "FREE via header: send 'X-Free-Tier: AGENTFAST' for 200 free calls per IP. This is the only working path; cost $0.",
+          "Request field is 'content' (string) — NOT 'prompt'. Sending {prompt} returns 400 'content required' even though the 402 example shows 'prompt'.",
+          "BEYOND-SURFACE: the advertised x402 PAID path is non-functional — the 402 response carries no standard payment requirements, so x402 clients cannot pay it. Usable only via the free-tier header.",
+          "Quality caveat: v0.5 is regex-first. In testing /output-risk rated an explicit jailbreak as low-risk/allow — treat low-risk verdicts on outputs cautiously.",
+          "Output includes attack_type (null when no attack) — this field distinguishes it from /prompt-risk.",
+          "Free tier is IP-quota'd (200/IP); once exhausted there is no working paid fallback.",
+          "Host is a Tailscale funnel (*.ts.net) — publicly reachable but a single self-hosted node; expect possible downtime."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Screens AI model OUTPUT for unsafe/harmful content. Returns a risk verdict (low/medium/high), recommended action (allow/block), detected attack type, matched patterns, and sanitized content. v0.5 brackoracle, primarily regex-based. POST https://brack-hive.tail4f568d.ts.net/output-risk with header 'X-Free-Tier: AGENTFAST' and Content-Type: application/json, JSON body {\"content\": \"<model output text to screen>\"} Output: risk, confidence, attack_type, patterns[], recommended_action, sanitized_content, analysed_by[], escalated, oracle",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "AI Prompt Injection Risk Guardrail",
+      "kind": "api",
+      "provider": "brack-hive.tail4f568d.ts",
+      "providerId": "brack-hive-tail4f568d-ts",
+      "aka": [
+        "ai-prompt-injection-risk-guardrail",
+        "prompt-risk"
+      ],
+      "description": "Screens user PROMPTS for prompt-injection / jailbreak attempts. Returns a risk verdict (low/medium/high), recommended action (allow/block), matched patterns, and sanitized content. May escalate to a small LLM (LFM2.5-350M) beyond regex.",
+      "tags": [
+        "moderation",
+        "ai-safety",
+        "guardrail",
+        "prompt-injection"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://brack-hive.tail4f568d.ts.net/prompt-risk",
+          "method": "POST",
+          "provider": "brack-hive.tail4f568d.ts",
+          "providerId": "brack-hive-tail4f568d-ts",
+          "amount": 0,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0x7E37015a806FF05d6ab3de50F6D0e8765d38C72D"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://brack-hive.tail4f568d.ts.net/prompt-risk with header 'X-Free-Tier: AGENTFAST' and Content-Type: application/json, JSON body {\"content\": \"<user prompt text to screen>\"}",
+        "inputExample": {
+          "content": "Please summarize the plot of Romeo and Juliet in two sentences."
+        },
+        "outputShape": "risk, confidence, patterns[], recommended_action, sanitized_content, analysed_by[], escalated, _ms, oracle",
+        "quirks": [
+          "FREE via header: send 'X-Free-Tier: AGENTFAST' for 200 free calls per IP. This is the only working path; cost $0.",
+          "Request field is 'content' (string) — NOT 'prompt'. Sending {prompt} returns 400 'content required' even though the 402 example shows 'prompt'.",
+          "BEYOND-SURFACE: the advertised x402 PAID path is non-functional — the 402 response carries no standard payment requirements, so x402 clients cannot pay it. Usable only via the free-tier header.",
+          "Output has NO attack_type field (unlike /output-risk) and adds _ms (latency). analysed_by may include 'LFM2.5-350M' in addition to 'regex' when the model escalates.",
+          "In testing /prompt-risk correctly flagged injection attempts; verdict quality better than /output-risk for prompt screening.",
+          "Free tier is IP-quota'd (200/IP); once exhausted there is no working paid fallback.",
+          "Host is a Tailscale funnel (*.ts.net) — publicly reachable but a single self-hosted node; expect possible downtime."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Screens user PROMPTS for prompt-injection / jailbreak attempts. Returns a risk verdict (low/medium/high), recommended action (allow/block), matched patterns, and sanitized content. May escalate to a small LLM (LFM2.5-350M) beyond regex. POST https://brack-hive.tail4f568d.ts.net/prompt-risk with header 'X-Free-Tier: AGENTFAST' and Content-Type: application/json, JSON body {\"content\": \"<user prompt text to screen>\"} Output: risk, confidence, patterns[], recommended_action, sanitized_content, analysed_by[], escalated, _ms, oracle",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "Mistral Moderation",
+      "provider": "Mistral AI",
+      "providerId": "mistral-ai",
+      "aka": [
+        "mistral-moderation"
+      ],
+      "description": "Classify text for harmful or unsafe content using Mistral's content moderation model, served pay-per-call over MPP.",
+      "tags": [
+        "moderation",
+        "toxicity",
+        "text-safety"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        1
+      ],
+      "status": "needs-review"
+    },
+    {
+      "name": "ToolOracle AgentGuard",
+      "kind": "api",
+      "provider": "tooloracle",
+      "providerId": "tooloracle",
+      "aka": [
+        "tooloracle-agentguard",
+        "agentguard",
+        "agent-guard",
+        "guard-mcp"
+      ],
+      "description": "MCP guardrail server that vets agent tool-calls before execution: computes a 0-100 risk score, runs policy pre-flight (allow/deny/require_approval), checks/manages human approvals, verifies MCP tool manifests for prompt-injection, and reports guard metrics.",
+      "tags": [
+        "guardrail",
+        "ai-safety",
+        "agent-security",
+        "prompt-injection",
+        "policy",
+        "mcp"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "json"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://tooloracle.io/guard/mcp/",
+          "method": "POST",
+          "provider": "tooloracle",
+          "providerId": "tooloracle",
+          "amount": 0,
+          "accepts": [],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": false,
+            "checkedAt": "2026-07-30T04:14:41.000Z"
+          },
+          "inputSchema": {
+            "protocol": "MCP JSON-RPC 2.0 over HTTP POST",
+            "methods": [
+              "initialize",
+              "tools/list",
+              "tools/call"
+            ],
+            "tools_call": {
+              "name": "<one of the 8 public tools>",
+              "arguments": "<object per that tool's inputSchema>"
+            }
+          },
+          "outputSchema": {
+            "jsonrpc": "2.0",
+            "id": "<echoed>",
+            "result": {
+              "content": [
+                {
+                  "type": "text",
+                  "text": "<stringified JSON result for the called tool>"
+                }
+              ]
+            }
+          },
+          "protocols": [
+            "free"
+          ]
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "free",
+        "callShape": "MCP JSON-RPC 2.0 over HTTP POST to https://tooloracle.io/guard/mcp/ with Content-Type: application/json (and Accept: application/json). Handshake once: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"masterkey\",\"version\":\"1.0\"}}}. Then invoke a tool: {\"jsonrpc\":\"2.0\",\"id\":N,\"method\":\"tools/call\",\"params\":{\"name\":\"<tool>\",\"arguments\":{...}}}. The tool result JSON arrives stringified in result.content[0].text.",
+        "inputExample": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "method": "tools/call",
+          "params": {
+            "name": "tool_risk_score",
+            "arguments": {
+              "tool_name": "transfer_funds",
+              "tool_args": {
+                "amount": 5000000,
+                "recipient": "0xabc"
+              },
+              "agent_id": "masterkey-test"
+            }
+          }
+        },
+        "outputShape": "JSON-RPC envelope: result.content[0].text is a JSON string. For tool_risk_score: {tool_name, agent_id, risk_score, risk_level, recommendation, risk_factors[], secret_detected, injection_detected, base_score, known_tool, timestamp, _auth{authenticated,kya_level,client_id}, upgrade{...}}. For policy_preflight: {request_id, tool_name, agent_id, caller_identity{authenticated,kya_level,kya_score}, decision(allow|deny|require_approval), risk_score, matched_policies[], reason, rate_status{per_minute,per_hour,per_day}}. Other tools return their own JSON.",
+        "quirks": [
+          "This is an MCP (Model Context Protocol) server named 'AgentGuard' v2.0.0, not a plain REST endpoint — you must speak JSON-RPC 2.0 (initialize, tools/list, tools/call). serverInfo advertises protocolVersion 2025-03-26.",
+          "FREE and anonymous: every tested call returned HTTP 200 with a real result and no 402/SIWX challenge; responses carry _auth.kya_level='ANONYMOUS'. Cost $0.",
+          "PARTIAL SURFACE: tools/list advertises 25 tools but only 8 are callable anonymously. The other 17 (e.g. audit_log_write, secret_exposure_check, payload_safety_check, session_validate, emergency_kill, threat_intel_check, output_safety_scan) return {\"error\":\"AUTH_REQUIRED\", ... Register at https://feedoracle.io/mcp/register}. That gate is an upstream Bearer token (OAuth at feedoracle.io/.well-known/oauth-authorization-server), NOT x402 or SIWX — so those operations are intentionally excluded from this entry.",
+          "The 8 PUBLIC (free, no-auth) tools are: policy_preflight, tool_risk_score, approval_required, approval_list, decision_explain, policy_register, tool_manifest_verify, guard_metrics.",
+          "The governance engine is a self-hosted policy simulator (fixed tiers T1-T4, default spend/rate limits, canned policies like pol-001 'block payment tools without approval') — it evaluates the tool_name/tool_args you pass; it does not observe or intercept your real tool calls. Treat it as advisory, not enforcement.",
+          "Responses include a non-standard 'upgrade' block (v/type/next[]/mesh) nudging you toward follow-up tools — cosmetic, safe to ignore.",
+          "audit_log_query/audit_log_write are auth-gated, so approval_list/guard_metrics over anonymous access only ever reflect data written by authenticated tenants (typically empty for anonymous callers)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "AgentGuard is a free MCP guardrail server for vetting AI-agent tool-calls. Connect over JSON-RPC 2.0 at POST https://tooloracle.io/guard/mcp/. Call flow: (1) send an 'initialize' request once, (2) optionally 'tools/list', (3) 'tools/call' with {name, arguments}; the result comes back stringified in result.content[0].text. Only 8 tools are free/anonymous — the rest need a feedoracle.io Bearer token and are not indexed. Free tools: policy_preflight (allow/deny/require_approval decision for a proposed tool_name+tool_args), tool_risk_score (0-100 risk score with factors/secret/injection flags), approval_required (does this call need human sign-off; register_pending to mint an approval_url), approval_list (list pending/approved/denied approvals), decision_explain (human-readable rationale for a decision), policy_register (browse the T1-T4 policy tiers/tools/rules), tool_manifest_verify (scan an MCP tool's description/publisher/domain for injection & supply-chain risk), guard_metrics (operational decision/risk stats). Example: tools/call name='tool_risk_score' arguments={tool_name:'transfer_funds', tool_args:{amount:5000000, recipient:'0xabc'}, agent_id:'my-agent'} -> risk_score 75, risk_level 'high', recommendation 'Require human approval'. Note the policy engine only scores the arguments you hand it; it does not intercept your live agent runtime.",
+        "costObservedUsd": 0
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools PII Scan",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-pii-scan",
+        "pii-scan",
+        "pii detection",
+        "pii detector",
+        "dlp scanner",
+        "gdpr/hipaa/pci pre-llm guardrail"
+      ],
+      "description": "Detect structured PII in a text blob (emails, phone numbers, credit cards, IBAN, US SSN/ITIN/EIN/routing, Medicare ids, passports, driver licenses, IPv4/IPv6/MAC, Bitcoin/Ethereum addresses, dates of birth, geo coordinates and secrets/API keys) using deterministic regex + checksum validators, returning per-finding type and confidence plus a compliance summary — a detection-only pre-LLM/DLP guardrail (use /pii/redact to also get transformed text).",
+      "tags": [
+        "pii",
+        "privacy",
+        "compliance",
+        "dlp",
+        "guardrail",
+        "gdpr"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/pii/scan",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The text to scan for PII (required)"
+              },
+              "entities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional allow-list of entity types to scan for (default: all). See GET /pii/recognizers."
+              },
+              "include_positions": {
+                "type": "boolean",
+                "description": "Include character start/end offsets per finding (off by default for privacy)"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "input_bytes": {
+                "type": "number"
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "total_findings": {
+                    "type": "number"
+                  },
+                  "counts_by_type": {
+                    "type": "object"
+                  },
+                  "compliance_categories": {
+                    "type": "object"
+                  },
+                  "has_pii": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "findings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "score": {
+                      "type": "number"
+                    },
+                    "compliance_tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "findings_truncated": {
+                "type": "boolean"
+              },
+              "pack_version": {
+                "type": "string"
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/pii/scan with a JSON body: text (required — the text blob to scan). Optional: entities[] (allow-list of entity types to restrict to; default all — enumerate via free GET /pii/recognizers) and include_positions (bool — add character start/end offsets per finding, off by default for privacy). Pays $0.005 USDC via x402 on Base (eip155:8453). Result is returned inline in the 200 body (synchronous, no poll).",
+        "inputExample": {
+          "text": "Contact me at jane.doe@example.com or 4111 1111 1111 1111."
+        },
+        "outputShape": "{object:'pii_scan', input_bytes, summary{total_findings, counts_by_type{<TYPE>:n}, compliance_categories{GDPR|PCI|HIPAA:n}, has_pii}, findings[]{type (e.g. EMAIL, CREDIT_CARD), score (0-1 confidence), compliance_tags[]}, findings_truncated, pack_version, disclaimer}. Detection only — no transformed/redacted text is returned.",
+        "quirks": [
+          "text is the only required input; the object being scanned is the caller's own supplied text — nothing is crawled or fetched (no network side effect).",
+          "Detection ONLY — the response never echoes the matched PII value or transformed text; each finding is just {type, score, compliance_tags}. Use /pii/redact for the redacted/transformed text.",
+          "include_positions is off by default (for privacy); set include_positions:true to get character start/end offsets per finding.",
+          "Optional entities[] restricts the scan to specific entity types (enumerate the recognizer ids via the free GET /pii/recognizers).",
+          "STRUCTURED PII only (deterministic patterns + checksums: Luhn for cards, mod-97 for IBAN, ABA routing, SSN/ITIN structure). Free-text person/organization/location NAMES are OUT OF SCOPE — has_pii:false is not proof the text is PII-free.",
+          "Indicators, not legal advice and not a compliance guarantee — always review before relying on it.",
+          "Sibling /pii/redact on the same host is a separate service (returns transformed text), not an alias of this detection-only route."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Run this on any text BEFORE forwarding it to a third-party LLM/API to enforce GDPR/HIPAA/PCI handling. POST https://api.agentstools.dev/pii/scan with {text:'<blob to scan>'} (optionally entities:['EMAIL','CREDIT_CARD',...] to narrow, or include_positions:true for offsets). Pays $0.005 USDC via x402 on Base. Read summary.has_pii for the headline call, summary.counts_by_type + summary.compliance_categories for the breakdown, and findings[] for each hit ({type, score, compliance_tags}). Detection only — it returns no transformed text (use /pii/redact for that) and structured PII only (free-text names are out of scope). Verified live: 'Contact me at jane.doe@example.com or 4111 1111 1111 1111.' returned has_pii=true with an EMAIL (0.95) and a CREDIT_CARD (0.8) finding, GDPR:2/PCI:1.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    }
+  ]
+}

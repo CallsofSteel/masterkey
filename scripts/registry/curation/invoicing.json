@@ -1,0 +1,163 @@
+{
+  "subcategory": "invoicing",
+  "category": "payments-billing",
+  "unit": "per call",
+  "_note": "Curated by claude-main; +3-channel re-verify — added Strale Invoice Validator (real x402 invoice validation $0.0216). Invoice generation + validation. Dropped: invoice DATA EXTRACTION (gg402/agentwonderland -> document-content/ocr), AgentMail, gift cards (-> payment-processing). ✗ not on x402: FreshBooks, Stripe Invoicing (Stripe API added to payment-processing; no dedicated x402 invoicing layer).",
+  "entries": [
+    {
+      "name": "Invoice Generator",
+      "provider": "Various",
+      "providerId": "various",
+      "description": "Generate an invoice (PDF/structured) from line items and customer details.",
+      "tags": [
+        "invoicing",
+        "billing",
+        "documents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        13,
+        0
+      ],
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/invoice-generator-api-e020f1 with JSON body {from, to, number, currency, items:[{name, quantity, unit_cost}]} (slug UNCONFIRMED — see quirks)",
+        "inputExample": {
+          "from": "Acme Corp",
+          "to": "Jane Doe",
+          "number": "INV-001",
+          "currency": "USD",
+          "items": [
+            {
+              "name": "Consulting",
+              "quantity": 1,
+              "unit_cost": 100
+            }
+          ]
+        },
+        "outputShape": "unknown (never paid; expected PDF bytes or structured invoice JSON per description \"Generate an invoice (PDF/structured)\")",
+        "quirks": [
+          "BLOCKING: URL slug mismatch between sources. Task brief says slug 2e3f1d; registry spec (qa-batch-current.json) says slug e020f1. For an Orbis proxy the slug IS the route — paying the wrong one loses money to a 404.",
+          "Auto-mode money classifier DENIED the payment specifically because the spec slug (e020f1) differs from the brief slug (2e3f1d) and could not be cross-verified.",
+          "Orbis proxy: known charge-then-404 pattern. The 402 pre-flight (probe payable:true) does NOT prove the route works.",
+          "inputSchema is empty {} — body shape was inferred from the service name + description; field names (from/to/number/currency/items[].unit_cost) are unconfirmed.",
+          "Never paid — endpoint untested. Resolve canonical slug, then pay exactly once."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "Do not call until the canonical Orbis slug is confirmed: the QA task brief and the registry spec disagree (2e3f1d vs e020f1) and for an Orbis proxy the slug is the route, so a wrong slug charges you and returns 404. Once the correct slug is known, POST a JSON invoice body like {from, to, number, currency, items:[{name, quantity, unit_cost}]} (the input schema is empty so these field names are a best-guess from the service description and may need adjustment on a 422). Pay exactly once — Orbis has a charge-then-404 pattern, so if the post-payment response is 404/HTML/refund, treat the endpoint as broken and stop. Expect either PDF invoice bytes or a structured invoice JSON in the response body.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "resolved": {
+        "0": {
+          "method": "POST"
+        },
+        "13": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "Strale Invoice Validator",
+      "provider": "Strale",
+      "providerId": "strale",
+      "aka": [
+        "strale.io"
+      ],
+      "description": "Validate an invoice's structure, totals, and required fields, returning issues found — billed $0.0216 per call via x402.",
+      "tags": [
+        "invoicing",
+        "validation",
+        "billing"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.strale.io/x402/invoice-validate",
+          "method": "POST",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.0216,
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "21600",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC"
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "payable": true,
+            "checkedAt": "2026-06-09T22:09:59.331Z"
+          }
+        }
+      ],
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.strale.io/x402/invoice-validate with JSON body {invoice:{...invoice fields...}}",
+        "inputExample": {
+          "invoice": {
+            "invoice_number": "INV-001",
+            "invoice_date": "2026-06-08",
+            "vendor_name": "Acme Co",
+            "vendor_vat": "DE123456789",
+            "vendor_address": "1 Main St, Berlin",
+            "line_items": [
+              {
+                "description": "Service",
+                "quantity": 1,
+                "unit_price": 100,
+                "line_total": 100
+              }
+            ],
+            "amounts": {
+              "subtotal": 100,
+              "tax": 0,
+              "total": 100
+            },
+            "currency": "USD"
+          }
+        },
+        "outputShape": "body.valid (bool), body.errors[] ({field,issue} required-field failures), body.warnings[] ({field,issue} recommended/EU-compliance gaps), body.tax_calculation_check {expected_tax,actual_tax,difference,pass}, body.line_items_check {total_checked,passed,failed}, body.eu_compliant (bool)",
+        "quirks": [
+          "inputSchema is null in the registry; wrap the invoice under an 'invoice' key. The validator's canonical required fields are: invoice_date, vendor_name, vendor_vat, vendor_address, amounts (object with subtotal/tax/total). Recommended (warning-only) fields: buyer_name, buyer_vat, buyer_address, due_date. Each line item should include line_total or it cannot verify line math.",
+          "Sending unknown/extra field names does NOT error the call (HTTP 200 always for a well-formed JSON body); the validator simply reports missing required fields as errors. So a wrong field name yields valid:false rather than a 4xx.",
+          "body.valid:false is a normal successful response indicating the invoice has issues, not an endpoint failure."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body to https://api.strale.io/x402/invoice-validate with an \"invoice\" object containing the invoice fields. The canonical fields the validator checks are invoice_date, vendor_name, vendor_vat, vendor_address, an amounts object {subtotal,tax,total}, and line_items[] each with a line_total. Pay $0.0216 USDC on Base via x402 (no API key, no sign-in). Read body.valid for the pass/fail verdict, body.errors[] for blocking required-field problems, body.warnings[] for EU-compliance recommendations, and tax_calculation_check / line_items_check for math validation. A valid:false response is still a successful call.",
+        "costObservedUsd": 0.0216
+      }
+    }
+  ]
+}

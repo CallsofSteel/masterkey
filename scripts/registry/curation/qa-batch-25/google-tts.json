@@ -1,0 +1,46 @@
+{
+  "serviceId": "google-tts",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://text-to-speech-x402-production.up.railway.app/api/speak",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://text-to-speech-x402-production.up.railway.app/api/speak?text=... (DEAD — 404). Task-summary alternate POST https://x402.orth.sh/google/tts {text} also DEAD — 404.",
+    "inputExample": {
+      "text": "hello how are you"
+    },
+    "outputShape": "none — endpoint returns 404 error JSON, no audio result produced",
+    "quirks": [
+      "Registry endpoint object and task summary disagree on the URL: registry says GET https://text-to-speech-x402-production.up.railway.app/api/speak, task summary says POST https://x402.orth.sh/google/tts. BOTH are dead.",
+      "Railway URL returns 404 {\"status\":\"error\",\"code\":404,\"message\":\"Application not found\"} with header x-railway-fallback:true — the app is no longer deployed on Railway (root path also 404s).",
+      "orth.sh URL returns 404 {\"error\":\"API not found\",\"message\":\"Invalid API key/slug or API is not active\"} — the proxy slug/route is dead/inactive.",
+      "Neither URL returns an HTTP 402 payment-required response, so there is no x402 payment surface at all — nothing to pay.",
+      "Original registry probe (2026-06-01) already recorded status 404, payable:false, blocked:true — confirmed still dead on retest 2026-06-09."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this service — it is dead. Both candidate URLs return hard 404s: the Railway host (text-to-speech-x402-production.up.railway.app) reports 'Application not found' with a railway fallback header meaning the app is undeployed, and the orth.sh proxy (x402.orth.sh/google/tts) reports 'API not found / Invalid API key/slug or API is not active'. Neither emits an HTTP 402, so there is no payment to make and no audio can be obtained. Mark this endpoint broken/removed; use a different TTS provider.",
+    "costObservedUsd": 0,
+    "droppedReason": "google-tts#0: Registry endpoint object and task summary disagree on the URL: registry says GET https://text-to-speech-x402-production.up.railway.app/api/speak, task summary says POST https://x402.orth.sh/google/tts. BOTH are dead."
+  },
+  "droppedReason": "google-tts#0: Registry endpoint object and task summary disagree on the URL: registry says GET https://text-to-speech-x402-production.up.railway.app/api/speak, task summary says POST https://x402.orth.sh/google/tts. BOTH are dead.",
+  "_backends": [
+    {
+      "key": "google-tts#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

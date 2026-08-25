@@ -1,0 +1,226 @@
+[
+  {
+    "id": "orbis-push-notification-api",
+    "kind": "api",
+    "name": "Orbis Push Notification API",
+    "aka": [
+      "push-notification-api",
+      "push-notification-send-api"
+    ],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Send push notifications to iOS and Android devices via Orbis, billed per call via x402 on Base and Solana.",
+    "category": "communication",
+    "subcategory": "push-notifications",
+    "tags": [
+      "push-notifications",
+      "mobile",
+      "ios",
+      "android",
+      "send"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per notification"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/push-notification-api-71d44e",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per notification",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/push-notification-api-71d44e"
+              },
+              "description": "Send push notifications to iOS and Android devices",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/push-notification-api-71d44e"
+              },
+              "description": "Send push notifications to iOS and Android devices",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:06:05.142Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      },
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/push-notification-send-api-2f7841",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per notification",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/push-notification-send-api-2f7841"
+              },
+              "description": "Send push notifications to iOS and Android devices",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/push-notification-send-api-2f7841"
+              },
+              "description": "Send push notifications to iOS and Android devices",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:06:05.142Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/push-notification-api-71d44e with JSON body {title, body, message}",
+      "inputExample": {
+        "title": "MasterKey QA",
+        "body": "Test push notification for John Doe",
+        "message": "Test push notification for John Doe"
+      },
+      "outputShape": "body.error (=\\\"API_NOT_FOUND\\\"), body.message — dead slug, no useful result",
+      "quirks": [
+        "DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'push-notification-api-71d44e'.\"}",
+        "Orbis proxy charge-then-fail pattern: unpaid pre-flight returns 402 (looks payable) but the actual call 404s. Do NOT pay/retry.",
+        "In this run qa-pay reported paid:false / costUsd:0 — the 404 came back before settlement so no USDC was lost.",
+        "inputSchema is empty (no field hints); body shape is a guess and untestable because the slug itself is gone.",
+        "MARKED DEAD 2026-06-11 (ash): push/notification provider not viable (Orbis charge-then-404 / requires bring-your-own key). Not exposed."
+      ],
+      "needs": [],
+      "needsApproval": true,
+      "guide": "Do not use this endpoint — it is dead. The Orbis proxy slug 'push-notification-api-71d44e' has no active API behind it and returns HTTP 404 with body {\"error\":\"API_NOT_FOUND\"} on every POST. The pre-flight 402 is misleading; calling it does nothing useful. There is no working call shape to document. Skip it / mark broken in the registry.",
+      "costObservedUsd": 0,
+      "droppedReason": "orbis-push-notification-api#0: DEAD ENDPOINT: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'push-notification-api-71d44e'.\"} | orbis-push-notification-api#1: Orbis proxy charge-then-404 dead route: the unpaid probe returns 402 (looks payable) but the actual POST returns HTTP 404 with body {error:'API_NOT_FOUND'} — the slug 'push-notification-send-api-2f7841' is not an active API."
+    },
+    "source": {
+      "serviceKey": "orbis-push-notification-api",
+      "discoveredVia": [
+        "push notifications"
+      ],
+      "lastSyncedAt": "2026-06-02T00:06:05.142Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "serviceId": "x402node-sentiment-afinn",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/nlp/sentiment",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/nlp/sentiment?text=<URL-encoded text> (text passed as query param, NOT a JSON body)",
+    "inputExample": {
+      "text": "This product is amazing and I love it"
+    },
+    "outputShape": "body.score (raw int), body.normalized (length-normalized float), body.label (\"positive\"|\"neutral\"|\"negative\"), body.word_count, body.positive_words[], body.negative_words[], body.positive_hits, body.negative_hits",
+    "quirks": [
+      "Input is a URL query parameter ?text=..., NOT a JSON request body — it is a GET.",
+      "URL-encode the text (spaces -> %20). The expected param name 'text' is only documented in the 402 response description, not in inputSchema.",
+      "Deterministic lexicon (AFINN) scorer — no upstream LLM, same input always yields same output.",
+      "Response includes a marketing _hint field that can be ignored."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.x402node.dev/nlp/sentiment with the text to analyze in a URL-encoded ?text= query parameter (there is no JSON body). The endpoint is x402-paid (~$0.005 USDC on Base, scheme exact) and responds synchronously with 200. Read body.label for the positive/neutral/negative verdict, body.score for the raw AFINN total, and body.normalized for the length-adjusted score; body.positive_words[] and body.negative_words[] list the matched terms. Results are deterministic.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "x402node-sentiment-afinn#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

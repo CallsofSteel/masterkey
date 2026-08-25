@@ -1,0 +1,44 @@
+{
+  "serviceId": "cnvrt-ing-transcription",
+  "subcat": "speech-to-text",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://cnvrt.ing/api/transcribe",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://cnvrt.ing/api/transcribe with JSON body {url, includeTimestamps?, language?, enhanceAccuracy?}",
+    "inputExample": {
+      "url": "https://download.samplelib.com/mp3/sample-3s.mp3"
+    },
+    "outputShape": "body.transcription (string), body.success, body.jobId, body.language, body.duration, body.wordCount, body.timestamps[]{start,end,text} (when includeTimestamps:true)",
+    "quirks": [
+      "Host cnvrt.ing is unreachable as of 2026-06-08: DNS does not resolve (connection timed out, no servers reachable) and HTTP returns 000 after a 15-30s timeout.",
+      "Control host google.com returned HTTP 200 in 0.2s from the same sandbox, confirming the network is fine and the failure is host-side.",
+      "qa-pay returned classification 'wallet-error' / 'provider request failed: fetch failed' with paid:false on two attempts — no USDC was spent because the connection never established.",
+      "Earlier probe (2026-06-01) showed a 402 (payable); the service has since gone offline."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently dead. As of 2026-06-08 cnvrt.ing does not resolve via DNS and all requests time out (HTTP 000), confirmed against a working control host. When live, the documented call is POST https://cnvrt.ing/api/transcribe with JSON body {\"url\":\"<media URL>\"} (optional includeTimestamps, language ISO-639-1, enhanceAccuracy), paid via x402, and the result text would be at body.transcription with metadata at body.duration/wordCount and timestamp segments at body.timestamps[]. Do not call until reachability is re-confirmed.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cnvrt-ing-transcription#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

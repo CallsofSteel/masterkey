@@ -1,0 +1,45 @@
+{
+  "serviceId": "honcho-agent-memory",
+  "subcat": "ai-semantic-search",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://agentcash.honcho.dev/api/honcho/search",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "POST https://agentcash.honcho.dev/api/honcho/search with JSON body {query, limit?, session?, peer?} and a SIWX wallet identity signature",
+    "inputExample": {
+      "query": "hello",
+      "limit": 1
+    },
+    "outputShape": "body.messages[] (each {id, content, peer_id, session_id, created_at, token_count}); empty array when no matching memory exists",
+    "quirks": [
+      "authMode=siwx: requires a SIWX wallet identity signature, NOT a USDC payment. The unpaid probe returns 402/payable, but with a valid SIWX identity it settles FREE (200, $0).",
+      "Returns {messages:[]} (empty array) for a fresh wallet identity that has no stored agent memory — this is a correct success, not an error.",
+      "Search is scoped to the calling wallet's identity (its stored peer/session memory); results are per-identity.",
+      "Only 'query' is required. Optional: limit (default 10, max 100), session, peer to narrow scope."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://agentcash.honcho.dev/api/honcho/search with a JSON body containing at least {\"query\":\"...\"} and a SIWX wallet identity (sign-in), not a payment — the endpoint is free once authenticated. Optionally add limit (1-100), session, or peer to narrow the search. Read results from body.messages[], where each item has content, peer_id, session_id, created_at and token_count. An empty messages array means no stored memory matched for that wallet identity (expected for a new identity), not a failure.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "honcho-agent-memory#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

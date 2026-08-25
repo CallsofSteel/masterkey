@@ -1,0 +1,49 @@
+{
+  "serviceId": "agent-restaurant-reservation",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://agentic-reservations.vercel.app/api/book",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://agentres.dev/api/book with JSON body {venue_id, config_id, party_size, day} and content-type: application/json. x402 wallet auth on Base (USDC) — booking costs 0.01 USDC; all setup/search/availability endpoints are $0 (wallet signs for identity only). (Registry alias url agentic-reservations.vercel.app also works.)",
+    "inputExample": {
+      "venue_id": "59237",
+      "config_id": "<fresh token from GET /api/availability>",
+      "party_size": 2,
+      "day": "2026-06-20"
+    },
+    "outputShape": "body.success (bool), body.resy_token, body.reservation_id, body.kind",
+    "quirks": [
+      "NOT a single-call endpoint: /api/book is the terminal step of a multi-step session flow. Prereqs that cannot be invented: a real venue_id (from GET /api/search?query=&city=), and an ephemeral config_id slot token (from GET /api/availability?venue_id=&party_size=&day=). Docs: 'Config IDs expire — always fetch fresh availability before booking.'",
+      "A LINKED Resy account is mandatory: GET /api/me must return resy_linked:true. Linking is a two-step OTP flow on POST /api/link-resy: step1 {em_address} sends a 6-digit code to the user's real Resy.com email, step2 {em_address, code} completes it. Field is em_address (NOT email). Without a linked Resy account /api/book returns 400 NO_LINKED_ACCOUNT and the 0.01 USDC is lost.",
+      "First-time wallet must POST /api/account {email} (after GET /api/me returns 401) before link-resy. $0 identity call.",
+      "REAL-WORLD IRREVERSIBLE ACTION: books an actual restaurant table on the user's Resy account. Provider warns automated bookings may get the Resy account suspended/banned. Requires explicit human 'yes' confirmation before calling (docs make this a hard rule). Use POST /api/cancel (after GET /api/reservations to get resy_token) to undo.",
+      "Base domain is agentres.dev; full schema at /openapi.json, agent guide at /skill.md. Only /api/book is paid (0.01 USDC); /api/me, /api/account, /api/link-resy, /api/search, /api/availability, /api/reservations, /api/cancel are all $0 identity-only.",
+      "Errors include retryable + next_step fields; 409 ALREADY_BOOKED = user already has a reservation there; 502 BOOKING_FAILED = upstream Resy failure."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "This is a multi-step Resy booking flow, not a one-shot call — do NOT POST /api/book directly. First GET /api/me to check resy_linked; if false, run the one-time setup: POST /api/account {email} then the two-step OTP on POST /api/link-resy ({em_address} to send a code, then {em_address, code} — needs the user's real Resy.com email and the 6-digit code they receive). Then GET /api/search to get a venue_id, GET /api/availability to get a FRESH config_id (they expire), present a full summary and get explicit user 'yes', then POST /api/book {venue_id, config_id, party_size, day}. Read body.success / body.reservation_id / body.resy_token. Booking costs 0.01 USDC via x402 on Base; everything else is free. This books a real table and can get the Resy account banned — always confirm with the user first.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agent-restaurant-reservation#0",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

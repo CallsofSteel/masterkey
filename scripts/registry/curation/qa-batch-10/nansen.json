@@ -1,0 +1,126 @@
+{
+  "serviceId": "nansen",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-10",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.nansen.ai/api/v1/smart-money/netflow",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/smart-money/holdings",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/profiler/address/current-balance",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/profiler/address/pnl-summary",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/profiler/address/transactions",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/tgm/holders",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/tgm/who-bought-sold",
+      "method": "POST",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.nansen.ai/api/v1/token-screener",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.nansen.ai/api/v1/profiler/address/pnl-summary with JSON body {address, chain, date:{from,to}}",
+    "inputExample": {
+      "address": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+      "chain": "ethereum",
+      "date": {
+        "from": "2024-01-01",
+        "to": "2024-12-31"
+      }
+    },
+    "outputShape": "body.realized_pnl_usd, body.realized_pnl_percent, body.win_rate, body.traded_token_count, body.traded_times, body.top5_tokens[] (each: token_symbol, token_address, chain, realized_pnl, realized_roi), body.pagination",
+    "quirks": [
+      "REQUIRED 'date' field — omitting it returns 422 'Required field body -> date is missing'. Must be {\"from\":\"YYYY-MM-DD\",\"to\":\"YYYY-MM-DD\"}.",
+      "Body needs 'address' (EVM/Solana wallet) and 'chain' (e.g. ethereum).",
+      "Sync JSON response, no async/poll, no API key — x402 pay-per-call $0.01 on Base.",
+      "txHash returned null but payment confirmed and 200 data returned."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://api.nansen.ai/api/v1/profiler/address/pnl-summary with a JSON body containing address (wallet), chain (e.g. \"ethereum\"), and a required date range object {\"from\":\"YYYY-MM-DD\",\"to\":\"YYYY-MM-DD\"}. Without the date field you get a 422. Pay $0.01 USDC via x402 on Base. Read the wallet's realized PnL from body.realized_pnl_usd, body.realized_pnl_percent and body.win_rate, and the best/worst positions from body.top5_tokens[] (token_symbol, realized_pnl, realized_roi).",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nansen#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "nansen#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "nansen#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "nansen#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "nansen#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "nansen#5",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "nansen#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "nansen#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "FAIL",
+      "realCostUsd": 0.01
+    }
+  ]
+}

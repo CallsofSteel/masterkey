@@ -1,0 +1,72 @@
+{
+  "subcategory": "survey-feedback",
+  "category": "forms-surveys",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml. Thin supply; the one genuine survey/poll service is Quali. DROPPED/routed: orbisapi/x402helper farms, Sixtyfour/Apollo/Tomba enrichment (#19,#21,#22,#24 orth) -> data-enrichment, gg402 data-sampling #26 (statistics, not survey), x402 trust/proof/audit services (#30,#31,#33,#34,#36,#37) -> devtools/crypto, agentic-swarm structured-Q #35 (marketplace meta).",
+  "entries": [
+    {
+      "name": "Quali Poll Creator",
+      "provider": "Quali",
+      "providerId": "quali",
+      "description": "Create polls/surveys and collect responses programmatically. Pay-per-call x402.",
+      "tags": [
+        "survey",
+        "poll",
+        "feedback",
+        "forms"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        39
+      ],
+      "resolved": {
+        "39": {
+          "amount": 0.5,
+          "method": "POST",
+          "needsApproval": true
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://www.getquali.com/api/v1/polls with JSON body {question, options:[{text}], maxResponses, expiresAt} (description/mediaUrl/layoutType/callbackUrl optional)",
+        "inputExample": {
+          "question": "QA test poll by John Doe (john.doe@gmail.com) - do you like USDC micropayments?",
+          "description": "Registry QA verification poll created via x402. Contact: John Doe, john.doe@gmail.com.",
+          "options": [
+            {
+              "text": "Yes"
+            },
+            {
+              "text": "No"
+            }
+          ],
+          "maxResponses": 100,
+          "expiresAt": "2026-06-09T12:00:00.000Z"
+        },
+        "outputShape": "body.id (uuid), body.url (public poll page), body.readToken (use to read private results), body.endpoints.poll / body.endpoints.results / body.endpoints.votes (API URLs), body.pricing.costUsdc, body.payment.txHash",
+        "quirks": [
+          "Price is VARIABLE: $0.005 USDC per response. Quote = rewardPool (maxResponses * 0.005) + Quali fee. With minimum maxResponses=100 the quote was $0.50 (pool $0.05 + fee $0.45). Higher maxResponses = higher charge; cap your maxResponses to control cost.",
+          "Required fields: question, options (2-10 items, each {text}), maxResponses (integer >=100, max 1000000), expiresAt (ISO8601, must be at least 5 minutes in the future).",
+          "OUTWARD: creates a REAL public poll page at body.url that anyone can vote on. This is an irreversible publish action.",
+          "Save body.readToken from the 201 response - it is needed to read results from the results endpoint later (not re-fetchable).",
+          "Returns 201 (not 200) on success. Payment txHash is inside body.payment.txHash; qa-pay reported txHash:null but the on-chain hash is in the response body."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "POST a JSON body to https://www.getquali.com/api/v1/polls with question, options array of {text} (2-10), maxResponses (>=100), and a future ISO8601 expiresAt; pays x402 USDC on Base, no API key. Price is variable at $0.005/response so keep maxResponses low. On 201 success you get body.id, public body.url, and body.readToken. Save the readToken and body.endpoints.results to fetch responses later. Publishes a real public poll, so confirm before calling.",
+        "costObservedUsd": 0.5
+      }
+    }
+  ]
+}

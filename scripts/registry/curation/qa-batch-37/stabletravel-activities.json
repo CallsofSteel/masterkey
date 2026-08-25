@@ -1,0 +1,59 @@
+{
+  "serviceId": "stabletravel-activities",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-37",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/activities/search",
+      "method": "GET",
+      "amountUsd": 0.054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/activities/by-square",
+      "method": "GET",
+      "amountUsd": 0.054
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/activities/search?latitude={lat}&longitude={lng}&radius={km}&max={n}",
+    "inputExample": {
+      "latitude": 48.8566,
+      "longitude": 2.3522,
+      "radius": 1,
+      "max": 3
+    },
+    "outputShape": "body.data[] — each activity: .id, .name, .description (HTML), .geoCode{latitude,longitude}, .price{amount,currencyCode}, .pictures[], .bookingLink, .minimumDuration. Total match count at body.meta.count.",
+    "quirks": [
+      "Query params are required: latitude, longitude, radius (km), max. No request body (GET).",
+      "Amadeus tours & activities backend; descriptions are HTML strings.",
+      "Sibling routes on same service: /api/activities/by-square?north&south&east&west&max and /api/activities/details?activityId (the activityId comes from data[].id of a search).",
+      "price.currencyCode is often EUR, not USD."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stabletravel.dev/api/activities/search with query params latitude, longitude, radius (in km), and max (result cap). It pays $0.05 USDC via x402 on Base, no auth, fully synchronous. Read results from body.data[] — each item has name, description, price{amount,currencyCode}, geoCode, pictures[], and a bookingLink; total matches are in body.meta.count. To get full detail for one activity, take its .id and call /api/activities/details?activityId={id}.",
+    "costObservedUsd": 0.054
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-activities#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-activities#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

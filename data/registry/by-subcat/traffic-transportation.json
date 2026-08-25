@@ -1,0 +1,2774 @@
+[
+  {
+    "id": "nyc-transit-live-subway-nearest",
+    "kind": "api",
+    "name": "NYC Transit Live Subway Nearest",
+    "aka": [
+      "nyc-transit-live-subway-nearest",
+      "subway-nearest"
+    ],
+    "provider": "transit402",
+    "providerId": "transit402",
+    "description": "Find nearby NYC subway stations with live train arrivals near a WGS84 coordinate. Returns stations with distance, walk time, served lines, and per-train arrival predictions (line, Uptown/Downtown direction, minutes). Does not geocode - caller must resolve place names to lat/lng first.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "transit",
+      "public-transit",
+      "real-time",
+      "nyc"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "transit402",
+        "providerId": "transit402",
+        "url": "https://transit402.dev/subway/nearest",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x687E3217668DDe7c32478A3F2613750c8Bd505E9",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "resource": "https://transit402.dev/subway/nearest",
+              "description": "Nearby subway stations with real-time train arrivals"
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://transit402.dev/subway/nearest with JSON body {lat, lng, limit?}. Pay via MPP on Tempo ($0.02). additionalProperties:false - send only lat/lng/limit.",
+      "inputExample": {
+        "lat": 40.758,
+        "lng": -73.9855,
+        "limit": 2
+      },
+      "outputShape": "results[].{name, distance_feet, walk_minutes, lines[], arrivals[].{line, direction(Uptown|Downtown), minutes}, lat, lng}",
+      "quirks": [
+        "lat/lng required (WGS84 decimal degrees); limit optional integer 1-10, default 5. additionalProperties:false.",
+        "PAYMENT: plain x402 'exact' does NOT work and qa-pay cannot complete it - first 402 returns application/problem+json type https://paymentauth.org/problems/payment-required carrying a challengeId. Pay via MPP protocol on Tempo instead (agentcash fetch paymentProtocol:'mpp'); settled $0.02 with real txHash 0xd206b5b2e1d0b7294217d638db0671e310ef780caca0dfa498eae0b8612d8a7c.",
+        "Server advertises protocols [x402, mpp]; mpp is the reliable path.",
+        "No geocoding - resolve place names to lat/lng before calling.",
+        "arrivals direction enum is exactly Uptown|Downtown."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Find nearby NYC subway stations with live train arrivals near a WGS84 coordinate. Returns stations with distance, walk time, served lines, and per-train arrival predictions (line, Uptown/Downtown direction, minutes). Does not geocode - caller must resolve place names to lat/lng first. POST https://transit402.dev/subway/nearest with JSON body {lat, lng, limit?}. Pay via MPP on Tempo ($0.02). additionalProperties:false - send only lat/lng/limit. Output: results[].{name, distance_feet, walk_minutes, lines[], arrivals[].{line, direction(Uptown|Downtown), minutes}, lat, lng}",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "nyc-transit-live-subway-nearest",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "nyc-transit-live-bus-nearest",
+    "kind": "api",
+    "name": "NYC Transit Live Bus Nearest",
+    "aka": [
+      "nyc-transit-live-bus-nearest",
+      "bus-nearest"
+    ],
+    "provider": "transit402",
+    "providerId": "transit402",
+    "description": "Find nearby NYC bus stops with live ETA predictions near a WGS84 coordinate. Returns stops with distance, walk time, served routes, and per-bus arrival predictions (route, destination headsign, minutes, proximity text, stops_away). Does not geocode - caller must resolve place names to lat/lng first.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "transit",
+      "public-transit",
+      "real-time",
+      "nyc"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "transit402",
+        "providerId": "transit402",
+        "url": "https://transit402.dev/bus/nearest",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x687E3217668DDe7c32478A3F2613750c8Bd505E9",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "resource": "https://transit402.dev/bus/nearest",
+              "description": "Nearby bus stops with real-time arrival predictions"
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://transit402.dev/bus/nearest with JSON body {lat, lng, limit?}. Pay via MPP on Tempo ($0.02). additionalProperties:false - send only lat/lng/limit.",
+      "inputExample": {
+        "lat": 40.758,
+        "lng": -73.9855,
+        "limit": 2
+      },
+      "outputShape": "results[].{name, distance_feet, walk_minutes, routes[], arrivals[].{route, destination, minutes(nullable), proximity(nullable), stops_away(nullable)}, lat, lng}",
+      "quirks": [
+        "lat/lng required (WGS84 decimal degrees); limit optional integer 1-10, default 5. additionalProperties:false.",
+        "Output differs from subway: uses routes[] (not lines[]) and arrivals carry route/destination/proximity/stops_away.",
+        "arrivals.minutes, proximity, and stops_away can each be null (bus not yet predicted with an ETA, only a distance/proximity string).",
+        "PAYMENT: plain x402 'exact' fails and qa-pay can't complete the paymentauth.org challengeId handshake (402 problem+json). Pay via MPP on Tempo (agentcash fetch paymentProtocol:'mpp'); settled $0.02 with real txHash 0x43eb51b4a0f422a65399eac3cfe4fe9950688adc004cae1534a03f32ca8e84bf.",
+        "No geocoding - resolve place names to lat/lng before calling."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Find nearby NYC bus stops with live ETA predictions near a WGS84 coordinate. Returns stops with distance, walk time, served routes, and per-bus arrival predictions (route, destination headsign, minutes, proximity text, stops_away). Does not geocode - caller must resolve place names to lat/lng first. POST https://transit402.dev/bus/nearest with JSON body {lat, lng, limit?}. Pay via MPP on Tempo ($0.02). additionalProperties:false - send only lat/lng/limit. Output: results[].{name, distance_feet, walk_minutes, routes[], arrivals[].{route, destination, minutes(nullable), proximity(nullable), stops_away(nullable)}, lat, lng}",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "nyc-transit-live-bus-nearest",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "japan-transit-station-search",
+    "kind": "api",
+    "name": "Japan Transit Station Search",
+    "aka": [
+      "japan-transit-station-search",
+      "stations-search"
+    ],
+    "provider": "transit.agentic-jp",
+    "providerId": "transit-agentic-jp",
+    "description": "Fuzzy-search Japanese train stations by name (accepts kanji, kana, or romaji; tolerates the 駅/station suffix). Returns matching stations with canonical station_id, EN/JA names, operator_ids, line_ids, and lat/lng. Use to resolve a station name to a canonical record before calling status.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "transit",
+      "rail",
+      "japan",
+      "real-time"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "transit.agentic-jp",
+        "providerId": "transit-agentic-jp",
+        "url": "https://transit.agentic-jp.com/stations/search",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "1000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2BTzdCAcCLaNA2SSZ1YjJvTtscNCpUMUEjLY3LyBpNMk",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://transit.agentic-jp.com/stations/search?q=Shinjuku  (query param `q` required, min 2 chars; NOT `query`/`search`)",
+      "inputExample": {
+        "q": "Shinjuku"
+      },
+      "outputShape": "query (string, echoes input), count (number), results[] each: station_id, name_ja, name_en, name_kana, operator_ids[], line_ids[], lat, lng",
+      "quirks": [
+        "Required query param is `q` (NOT `query` or `search`); min 2 chars; accepts kanji (新宿), kana, or romaji (Shinjuku) and tolerates the 駅/station suffix.",
+        "Registry inputSchema is null but the real schema is discoverable from the x402 402-challenge bazaar extension.",
+        "name_kana is frequently null (e.g. Shinjuku); lat/lng can be null for some stations (e.g. Seibu-Shinjuku).",
+        "station_id is operator-prefixed (e.g. toei-oedo-shinjuku) — the same physical station can appear multiple times under different operators.",
+        "Price $0.001 = atomic amount 1000 USDC; x402 rails available on Base/Polygon/Solana."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Fuzzy-search Japanese train stations by name (accepts kanji, kana, or romaji; tolerates the 駅/station suffix). Returns matching stations with canonical station_id, EN/JA names, operator_ids, line_ids, and lat/lng. Use to resolve a station name to a canonical record before calling status. GET https://transit.agentic-jp.com/stations/search?q=Shinjuku  (query param `q` required, min 2 chars; NOT `query`/`search`) Output: query (string, echoes input), count (number), results[] each: station_id, name_ja, name_en, name_kana, operator_ids[], line_ids[], lat, lng",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "japan-transit-station-search",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "japan-transit-station-status",
+    "kind": "api",
+    "name": "Japan Transit Station Status",
+    "aka": [
+      "japan-transit-station-status",
+      "station-status"
+    ],
+    "provider": "transit.agentic-jp",
+    "providerId": "transit-agentic-jp",
+    "description": "Real-time delay and operational status for a Japanese train station, sourced live from ODPT. Returns per-line status (normal/delayed/suspended), estimated delay minutes, cause (JA/EN), staleness flag, plus one-line EN and JA summaries. Use to answer 'is my train delayed' for a station.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "transit",
+      "rail",
+      "japan",
+      "real-time"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "transit.agentic-jp",
+        "providerId": "transit-agentic-jp",
+        "url": "https://transit.agentic-jp.com/station/:name/status",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "5000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2BTzdCAcCLaNA2SSZ1YjJvTtscNCpUMUEjLY3LyBpNMk",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://transit.agentic-jp.com/station/{name}/status  — station name is a PATH param (kanji/kana/romaji), NOT a query param; no body",
+      "inputExample": {
+        "name": "Shinjuku"
+      },
+      "outputShape": "station{name_ja,name_en,operator,lines[](JA line names)}, status{overall, lines[]{line_id,line_name_ja,line_name_en,status,delay_minutes_estimated,reason,reason_en,updated_at,stale}}, summary_en, summary_ja, generated_at",
+      "quirks": [
+        "Station name is a URL PATH param ({name}), NOT a query param.",
+        "status.overall and per-line `status` use enum normal/delayed/suspended; a line can be flagged `delayed` even when reason text says no >15min delay, so treat `status` as the canonical signal and check `delay_minutes_estimated` (often null).",
+        "reason/reason_en are often null or Japanese-only; English context is in summary_en.",
+        "Each line carries its own `stale` flag and `updated_at` (mixed timezones: ODPT lines use +09:00, fallbacks use Z) — check `stale` before trusting.",
+        "Best used after stations-search to get a resolvable name; provider resolves romaji/kanji directly.",
+        "Price $0.005 = atomic amount 5000 USDC; x402 rails on Base/Polygon/Solana. Note: live discover_api_endpoints quoted the status price as $0.01 but the actual paid call settled at $0.005 (matches registry)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Real-time delay and operational status for a Japanese train station, sourced live from ODPT. Returns per-line status (normal/delayed/suspended), estimated delay minutes, cause (JA/EN), staleness flag, plus one-line EN and JA summaries. Use to answer 'is my train delayed' for a station. GET https://transit.agentic-jp.com/station/{name}/status  — station name is a PATH param (kanji/kana/romaji), NOT a query param; no body Output: station{name_ja,name_en,operator,lines[](JA line names)}, status{overall, lines[]{line_id,line_name_ja,line_name_en,status,delay_minutes_estimated,reason,reason_en,updated_at,stale}}, summary_en, summary_ja, generated_at",
+      "costObservedUsd": 0.005
+    },
+    "source": {
+      "serviceKey": "japan-transit-station-status",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "odpt-japan-rail-delays",
+    "kind": "model",
+    "name": "ODPT Japan Rail Delays",
+    "aka": [],
+    "provider": "ODPT",
+    "providerId": "odpt",
+    "description": "Open Data Platform for Transportation (Japan) — real-time train delay information across Japanese rail lines. Pay-per-call x402.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "transit",
+      "rail",
+      "japan",
+      "delays",
+      "real-time"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "oracle-network-jp-data.fly",
+        "providerId": "oracle-network-jp-data-fly",
+        "url": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay",
+        "method": "GET",
+        "hosting": "platform",
+        "platformName": "Fly.io",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": 0.001,
+          "max": 0.001,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "1000",
+              "payTo": "0xb50092c2961135F66C4c7849D8CbbD1b54A48060",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "resource": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay"
+              },
+              "resource": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay"
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "amount": "1000",
+              "payTo": "AwkTsoaLjiUgzyNb4X2T9kyKjK6XcBy6DrZ55Vp8biWs",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88",
+                "resource": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay"
+              },
+              "resource": "https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay"
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "needs-review"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "GET https://oracle-network-jp-data.fly.dev/v1/jp/transit/delay (no body, x402 on Base)",
+      "inputExample": {},
+      "outputShape": "unknown — host down, never returned a payable 402 or any body",
+      "quirks": [
+        "Host oracle-network-jp-data.fly.dev returns HTTP 503 at both / and the endpoint path (Fly.io app has no healthy machines).",
+        "No x402 402 challenge is even reachable — the server is down before payment, so nothing can be paid.",
+        "Confirmed down across 2 attempts ~8s apart on 2026-06-09."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is currently DOWN. The host oracle-network-jp-data.fly.dev returns 503 (Fly.io: no healthy machines) for both the root and the /v1/jp/transit/delay path, so the x402 payment challenge is never reached and no call succeeds. Do not attempt to pay — there is nothing to pay. Re-check whether the Fly app is back up before relying on this service; if it returns a 402 challenge again, it would be a plain GET with no body, x402 on Base USDC (~$0.001).",
+      "costObservedUsd": 0
+    },
+    "source": {
+      "serviceKey": "odpt-japan-rail-delays",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "platform"
+    },
+    "status": "hidden",
+    "hiddenReason": "broken"
+  },
+  {
+    "id": "waze-traffic",
+    "kind": "model",
+    "name": "Waze Traffic",
+    "aka": [],
+    "provider": "StableNinja",
+    "providerId": "stableninja",
+    "description": "Waze traffic alerts and live traffic-jam data for a location. Pay-per-call x402.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "traffic",
+      "waze",
+      "alerts",
+      "real-time"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableninja",
+        "providerId": "stableninja",
+        "url": "https://stableninja.dev/api/waze/alerts-and-jams",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xc0CCF68a8e61A4d25EEcFcaCd486e673e900De0A",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "parameters": [
+            {
+              "in": "query",
+              "name": "bottom_left",
+              "schema": {
+                "type": "string",
+                "minLength": 3,
+                "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+              }
+            },
+            {
+              "in": "query",
+              "name": "top_right",
+              "schema": {
+                "type": "string",
+                "minLength": 3,
+                "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+              }
+            },
+            {
+              "in": "query",
+              "name": "center",
+              "schema": {
+                "type": "string",
+                "minLength": 3,
+                "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+              }
+            },
+            {
+              "in": "query",
+              "name": "radius",
+              "schema": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            {
+              "in": "query",
+              "name": "radius_units",
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "KM",
+                  "MI"
+                ]
+              }
+            },
+            {
+              "in": "query",
+              "name": "max_alerts",
+              "schema": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            {
+              "in": "query",
+              "name": "max_jams",
+              "schema": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            {
+              "in": "query",
+              "name": "alert_types",
+              "schema": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            {
+              "in": "query",
+              "name": "alert_subtypes",
+              "schema": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          ]
+        },
+        "outputSchema": {},
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://stableninja.dev/api/waze/alerts-and-jams?center=LAT,LON&radius=5&radius_units=KM&max_alerts=5&max_jams=5 (all params optional; specify a location via center+radius+radius_units, or via bottom_left+top_right bounding box)",
+      "inputExample": {
+        "center": "37.7749,-122.4194",
+        "radius": "5",
+        "radius_units": "KM",
+        "max_alerts": 5,
+        "max_jams": 5
+      },
+      "outputShape": "body.status (\"OK\"), body.data.alerts[] (each: type, subtype, description, street, city, latitude, longitude, num_thumbs_up, publish_datetime_utc), body.data.jams[] (each: level, speed_kmh, length_meters, street, end_location, line_coordinates[], update_datetime_utc), body.parameters (echo of resolved query incl computed bottom_left/top_right)",
+      "quirks": [
+        "All query params are optional but you must specify a location somehow; center=LAT,LON requires radius and radius_units (KM|MI) alongside it. Coordinates are LAT,LON comma-separated strings matching pattern ^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$. Cap max_alerts/max_jams (0-100) to keep the response small."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Send a GET to https://stableninja.dev/api/waze/alerts-and-jams with a location in the query string. Simplest: center=LAT,LON plus radius (e.g. 5) and radius_units=KM (or MI); alternatively pass a bounding box via bottom_left and top_right. Optionally cap results with max_alerts and max_jams (0-100). Pays $0.01 USDC via x402 on Base. Read body.data.alerts[] for incidents/hazards/closures and body.data.jams[] for live congestion (level, speed_kmh, length_meters, street). Plain synchronous JSON, no auth beyond payment.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "waze-traffic",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "greeneris-france-fuel-prices",
+    "kind": "api",
+    "name": "Greeneris France Fuel Prices",
+    "aka": [
+      "greeneris-france-fuel-prices",
+      "fr-fuel",
+      "france-gas-prices",
+      "roulez-eco"
+    ],
+    "provider": "Greeneris",
+    "providerId": "greeneris",
+    "description": "Near-real-time French gas-station pump prices (EUR/L) from the official roulez-eco / data.economie.gouv.fr feed, filtered by departement or city, optionally sorted cheapest-first per fuel type, returning per-station address, lat/lon, per-fuel price with update timestamp, and a 24/7 automat flag.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "france",
+      "fuel",
+      "gas-prices",
+      "energy",
+      "logistics",
+      "geo"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Greeneris",
+        "providerId": "greeneris",
+        "url": "https://data.greeneris.io/v1/fr/fuel",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "2000",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              },
+              "resource": "https://data.greeneris.io/v1/fr/fuel",
+              "description": "Near-real-time pump prices (EUR/L) for French gas stations from the official roulez-eco feed"
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "dept": {
+              "type": "string",
+              "description": "French departement code, e.g. 75, 2A, 971"
+            },
+            "city": {
+              "type": "string",
+              "description": "City name, e.g. Lyon"
+            },
+            "fuel": {
+              "type": "string",
+              "enum": [
+                "gazole",
+                "sp95",
+                "sp98",
+                "e10",
+                "e85",
+                "gplc"
+              ],
+              "description": "Sort cheapest-first by this fuel and require it in stock"
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Max stations, 1-40 (default 10)"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "ok": {
+              "type": "boolean"
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "dept": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "sorted_by": {
+                  "type": "string"
+                },
+                "total_count": {
+                  "type": "integer"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "stations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "postal_code": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "dept": {
+                        "type": "string"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "lon": {
+                        "type": "number"
+                      },
+                      "prices": {
+                        "type": "object"
+                      },
+                      "open_24h_automat": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://data.greeneris.io/v1/fr/fuel with query params. Provide ?dept=<departement code> and/or ?city=<name>; optional &fuel=gazole|sp95|sp98|e10|e85|gplc (sorts cheapest-first and drops stations lacking it) and &limit=1-40 (default 10). Pay via x402 (exact, Base USDC, $0.002). No API key.",
+      "inputExample": {
+        "dept": "75",
+        "fuel": "gazole",
+        "limit": 3
+      },
+      "outputShape": "{ ok: boolean, data: { dept, city(nullable), sorted_by, total_count, count, stations[]{ id, address, postal_code, city, dept, lat, lon, prices{ <fuel>: { price_eur_l, updated_at } }, open_24h_automat }, source } }",
+      "quirks": [
+        "Result is wrapped in { ok, data:{...} } - the actual payload is under `data` (the 402 bazaar example shows the inner object un-wrapped, but the live 200 wraps it).",
+        "At least one of dept or city should be supplied; dept is a French departement code (e.g. 75, 2A, 971), city is a plain name (e.g. Lyon).",
+        "fuel enum is exactly gazole|sp95|sp98|e10|e85|gplc; when set, stations are sorted cheapest-first by that fuel and stations without it are dropped (sorted_by echoes e.g. 'gazole_prix asc').",
+        "limit is 1-40 (default 10). Query schema allows methods GET|HEAD|DELETE; GET is the read.",
+        "Per-station prices only include the fuels that station reports; each carries its own updated_at (some stale by months) - not every station updates continuously.",
+        "Data sourced from data.economie.gouv.fr / roulez-eco (Licence Ouverte 2.0), cached ~10 min. Prices in EUR/L.",
+        "Price $0.002 = atomic amount 2000 USDC (6 decimals) on Base."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Get near-real-time French gas-station pump prices (EUR/L) from the official roulez-eco feed. GET https://data.greeneris.io/v1/fr/fuel with query params: ?dept=<departement code, e.g. 75> and/or ?city=<name, e.g. Lyon>; optional &fuel=gazole|sp95|sp98|e10|e85|gplc to sort cheapest-first and require that fuel in stock; &limit=1-40 (default 10). Pay via x402 exact (Base USDC, $0.002), no API key. Returns { ok, data:{ dept, city, sorted_by, total_count, count, stations[]{ id, address, postal_code, city, dept, lat, lon, prices{<fuel>:{price_eur_l, updated_at}}, open_24h_automat }, source } }.",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "greeneris-france-fuel-prices",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "2s-wmi-decode",
+    "kind": "api",
+    "name": "2s WMI Decode",
+    "aka": [
+      "2s-wmi-decode",
+      "2s-io-decode-wmi",
+      "wmi-decoder",
+      "world-manufacturer-identifier",
+      "nhtsa-vpic-decode-wmi"
+    ],
+    "provider": "2s",
+    "providerId": "2s",
+    "description": "Decode a 3-character World Manufacturer Identifier (the first three characters of a VIN) into the assigning manufacturer via NHTSA's vPIC database: full manufacturer legal name, common short name, make, vehicle type, and the date NHTSA published the assignment.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "wmi",
+      "vehicle",
+      "automotive",
+      "nhtsa",
+      "public-records",
+      "us-gov-data"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0024",
+      "amount": 0.0024,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "2s",
+        "providerId": "2s",
+        "url": "https://2s.io/api/vehicle/decode-wmi",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.0024,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0024",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1",
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "wmi": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 3,
+              "description": "3-character WMI (the first 3 chars of a VIN). Case-insensitive. Examples: 1HG (American Honda), 5YJ (Tesla US), WBA (BMW)."
+            }
+          },
+          "required": [
+            "wmi"
+          ],
+          "additionalProperties": false
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "body.data.{ok,items[],total,source}; each items[] entry has wmi,manufacturerName,commonName,make,vehicleType,dateAvailableToPublic (fields nullable when vPIC has no value). body.data.source attributes NHTSA vPIC DecodeWMI (public domain). body.meta carries cost + settlement."
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active",
+        "team": "2s"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://2s.io/api/vehicle/decode-wmi?wmi=1HG (x402 paid, no body)",
+      "inputExample": {
+        "wmi": "1HG"
+      },
+      "outputShape": "body.data.items[0] = {wmi,manufacturerName,commonName,make,vehicleType,dateAvailableToPublic}; body.data.total = row count; body.data.source = {provider,url,license} attributing NHTSA vPIC DecodeWMI; settlement at body.meta.settlement",
+      "outputExample": {
+        "wmi": "1HG",
+        "manufacturerName": "AMERICAN HONDA MOTOR CO., INC.",
+        "commonName": "Honda",
+        "make": "HONDA",
+        "vehicleType": "Passenger Car",
+        "dateAvailableToPublic": "2015-01-01"
+      },
+      "quirks": [
+        "Result is nested under body.data.items[] (an array even for a single WMI) — read items[0]",
+        "wmi is a query-string param, not a body or path segment",
+        "wmi must be exactly 3 chars; case-insensitive (the first 3 characters of a 17-char VIN)",
+        "Decoded fields (manufacturerName, commonName, make, vehicleType, dateAvailableToPublic) may be null when vPIC has no value for that WMI",
+        "Distinct from 2s VIN Decode: this resolves only the 3-char manufacturer prefix (useful when only a partial VIN is recoverable — crash reports, damaged-vehicle photos, fleet records)",
+        "Data sourced from NHTSA vPIC DecodeWMI (public-domain US government records); coverage is best for US-market manufacturers"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Decode a 3-character World Manufacturer Identifier into the assigning manufacturer. Send a GET to https://2s.io/api/vehicle/decode-wmi with query param wmi set to the 3-char WMI (e.g. ?wmi=1HG for American Honda, 5YJ for Tesla US, WBA for BMW); no request body. It is an x402 paid endpoint at $0.0024 USDC on Base (also accepts Solana USDC); the pay layer handles the 402. On success you get 200 with the result at body.data.items[0] — manufacturerName (full legal name), commonName (short name), make, vehicleType, and dateAvailableToPublic (the date NHTSA published the assignment). Fields are null when NHTSA vPIC has no value. body.data.source attributes NHTSA vPIC DecodeWMI. Use this for partial-VIN analysis where only the WMI prefix is recoverable; use 2s VIN Decode for a full 17-char VIN.",
+      "costObservedUsd": 0.0024
+    },
+    "source": {
+      "serviceKey": "2s-wmi-decode",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "2s-vin-decode",
+    "kind": "api",
+    "name": "2s VIN Decode",
+    "aka": [
+      "2s-vin-decode",
+      "2s-io-vin-decode",
+      "vin-decoder",
+      "nhtsa-vpic-vin-decode"
+    ],
+    "provider": "2s",
+    "providerId": "2s",
+    "description": "Decode a 17-character VIN into manufacturer-supplied vehicle metadata via NHTSA's vPIC database: identity (year, make, model, trim, series, body class, manufacturer), assembly plant, engine (cylinders, displacement, HP, fuel type, configuration, engine model), transmission, and body/weight specs.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "vin",
+      "vehicle",
+      "automotive",
+      "nhtsa",
+      "public-records",
+      "us-gov-data"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0024",
+      "amount": 0.0024,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "2s",
+        "providerId": "2s",
+        "url": "https://2s.io/api/vehicle/vin-decode",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.0024,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0024",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2400",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2400",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1",
+                "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "vin": {
+              "type": "string",
+              "minLength": 17,
+              "maxLength": 17,
+              "description": "17-character VIN. Case-insensitive. Excludes letters I, O, and Q per VIN standard."
+            },
+            "modelYear": {
+              "type": "integer",
+              "minimum": 1949,
+              "maximum": 2099,
+              "description": "Optional model-year hint — disambiguates VINs where the year-digit wraps (A=1980/2010, etc.)."
+            }
+          },
+          "required": [
+            "vin"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "body.data.{ok,items[],total,source}; each items[] entry has vin,modelYear,make,model,trim,series,bodyClass,manufacturer,plant{city,state,country},engine{cylinders,displacementL,hp,fuelTypePrimary,configuration,model},transmission{style,speeds},doors,driveType,vehicleType,gvwrClass. Fields nullable when vPIC has no value. body.meta carries cost + settlement."
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active",
+        "team": "2s"
+      },
+      {
+        "provider": "Greeneris",
+        "providerId": "greeneris",
+        "url": "https://data.greeneris.io/v1/vehicle/vin",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "vin": {
+              "type": "string",
+              "minLength": 5,
+              "maxLength": 17,
+              "description": "VIN, 5-17 chars; '*' wildcard allowed for partial VINs."
+            },
+            "model_year": {
+              "type": "string",
+              "description": "Model year hint to improve decoding (optional)."
+            }
+          },
+          "required": [
+            "vin"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "body.ok + body.data.{vin,make,model,model_year,manufacturer,vehicle_type,body_class,doors,drive_type,fuel_type,engine_cylinders,displacement_l,engine_hp,transmission,gvwr,series,trim,plant{city,state,country},error_code,error_text,source}. Fields nullable when vPIC has no value. error_code/error_text carry vPIC's structural verdict (0 = decoded clean). data.source attributes NHTSA vPIC (US DOT), public domain."
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://2s.io/api/vehicle/vin-decode?vin=1HGCM82633A004352 (x402 paid, no body)",
+      "inputExample": {
+        "vin": "1HGCM82633A004352"
+      },
+      "outputShape": "body.data.items[0] = {vin,modelYear,make,model,trim,series,bodyClass,manufacturer,plant{city,state,country},engine{cylinders,displacementL,hp,fuelTypePrimary,configuration,model},transmission{style,speeds},doors,driveType,vehicleType,gvwrClass}; body.data.total = row count; body.data.source attributes NHTSA vPIC (public domain); settlement at body.meta.settlement",
+      "outputExample": {
+        "vin": "1HGCM82633A004352",
+        "modelYear": "2003",
+        "make": "HONDA",
+        "model": "Accord",
+        "trim": "EX-V6",
+        "series": null,
+        "bodyClass": "Coupe",
+        "manufacturer": "AMERICAN HONDA MOTOR CO., INC.",
+        "plant": {
+          "city": "MARYSVILLE",
+          "state": "OHIO",
+          "country": "UNITED STATES (USA)"
+        },
+        "engine": {
+          "cylinders": "6",
+          "displacementL": "2.998832712",
+          "hp": "240",
+          "fuelTypePrimary": "Gasoline",
+          "configuration": "V-Shaped",
+          "model": "J30A4"
+        },
+        "transmission": {
+          "style": "Automatic",
+          "speeds": "5"
+        },
+        "doors": "2",
+        "driveType": null,
+        "vehicleType": "PASSENGER CAR",
+        "gvwrClass": "Class 1C: 4,001 - 5,000 lb (1,814 - 2,268 kg)"
+      },
+      "quirks": [
+        "Result is nested under body.data.items[] (an array even for a single VIN) — read items[0]",
+        "vin is a query-string param, not a body or path segment",
+        "vin must be exactly 17 chars; case-insensitive; VIN standard excludes letters I, O and Q",
+        "Optional modelYear query param (1949..2099) disambiguates VINs whose year digit wraps (A=1980/2010, etc.)",
+        "All decoded fields are strings and may be null when vPIC has no value for that field",
+        "Data sourced from NHTSA vPIC (public-domain US government records); coverage is best for US-market vehicles"
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Decode a 17-character VIN into vehicle metadata. Send a GET to https://2s.io/api/vehicle/vin-decode with query param vin set to the 17-char VIN (e.g. ?vin=1HGCM82633A004352); optionally add modelYear (1949..2099) as a disambiguation hint; no request body. It is an x402 paid endpoint at $0.0024 USDC on Base (also accepts Solana USDC); the pay layer handles the 402. On success you get 200 with the decode at body.data.items[0] — year, make, model, trim, body class, manufacturer, assembly plant, engine (cylinders/displacement/HP/fuel/config/engine-model), transmission, doors, drive type, vehicle type and GVWR class. Fields are null when NHTSA vPIC has no value. body.data.source attributes NHTSA vPIC.",
+      "costObservedUsd": 0.0024
+    },
+    "source": {
+      "serviceKey": "2s-vin-decode",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-vehicle-safety",
+    "kind": "api",
+    "name": "Agentstools Vehicle Safety",
+    "aka": [
+      "agentstools-safety-vehicle",
+      "safety-vehicle",
+      "vehicle-recall-check",
+      "nhtsa-recall-safety-check"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Fuses NHTSA open recalls, a complaint summary (crash/fire/injuries/deaths) and the 5-star NCAP safety rating for a car — by make/model/year or by 17-char VIN — into one cited JSON with a deterministic 0-100 risk score and band.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "safety",
+      "vehicle",
+      "recall",
+      "nhtsa",
+      "automotive",
+      "risk-score"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.030",
+      "amount": 0.03,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/safety/vehicle",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "make": {
+              "type": "string",
+              "description": "Vehicle make, e.g. Honda. Supply make+model+year, OR just a vin."
+            },
+            "model": {
+              "type": "string",
+              "description": "Vehicle model, e.g. Accord."
+            },
+            "year": {
+              "type": "integer",
+              "minimum": 1949,
+              "maximum": 2030,
+              "description": "Vehicle model year, e.g. 2015."
+            },
+            "vin": {
+              "type": "string",
+              "description": "17-char VIN; decoded to make/model/year via NHTSA vPIC instead of supplying them."
+            }
+          },
+          "required": []
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "vehicle_identity": {
+              "type": "object",
+              "properties": {
+                "make": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "year": {
+                  "type": "string"
+                },
+                "vin": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "decoded_from_vin": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "recalls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "campaign_number": {
+                    "type": "string"
+                  },
+                  "manufacturer": {
+                    "type": "string"
+                  },
+                  "component": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "consequence": {
+                    "type": "string"
+                  },
+                  "remedy": {
+                    "type": "string"
+                  },
+                  "report_date": {
+                    "type": "string"
+                  },
+                  "park_it": {
+                    "type": "boolean"
+                  },
+                  "park_outside": {
+                    "type": "boolean"
+                  },
+                  "over_the_air_update": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "recalls_count": {
+              "type": "integer"
+            },
+            "complaints_summary": {
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "integer"
+                },
+                "scanned": {
+                  "type": "integer"
+                },
+                "totals": {
+                  "type": "object"
+                },
+                "recent": {
+                  "type": "object",
+                  "description": "Recent counts by category: crash, fire, injuries, deaths."
+                },
+                "top_components": {
+                  "type": "array"
+                }
+              }
+            },
+            "safety_rating": {
+              "type": "object",
+              "properties": {
+                "vehicle_description": {
+                  "type": "string"
+                },
+                "overall": {
+                  "type": "string"
+                },
+                "overall_front": {
+                  "type": "string"
+                },
+                "overall_side": {
+                  "type": "string"
+                },
+                "rollover": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            },
+            "risk_score": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "type": "integer"
+                },
+                "band": {
+                  "type": "string",
+                  "description": "low | medium | high | critical."
+                },
+                "flags": {
+                  "type": "object"
+                },
+                "reasons": {
+                  "type": "array"
+                },
+                "signals": {
+                  "type": "object"
+                }
+              }
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "type": "object"
+                },
+                "partial": {
+                  "type": "boolean"
+                },
+                "providers": {
+                  "type": "array"
+                }
+              }
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "disclaimer": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/safety/vehicle?make=<make>&model=<model>&year=<1949-2030> — OR — ?vin=<17-char VIN>. All inputs are query params, no request body. Result is inline in the 200 body (synchronous, no poll). Pays $0.03 USDC via x402 v2 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "make": "Honda",
+        "model": "Accord",
+        "year": 2015
+      },
+      "outputShape": "vehicle_identity{make, model, year, vin, decoded_from_vin}, recalls[] (each: campaign_number, manufacturer, component, summary, consequence, remedy, report_date, park_it, park_outside, over_the_air_update), recalls_count, complaints_summary{count, scanned, totals, recent{crash,fire,injuries,deaths}, top_components[]}, safety_rating{vehicle_description, overall, overall_front, overall_side, rollover, source}, risk_score{score (0-100), band (low|medium|high|critical), flags{has_open_recall, do_not_drive, park_outside_fire_risk, recent_crash_complaints, recent_fire_complaints, recent_casualties}, reasons[], signals{recall_points, severity_points, complaint_density_points, casualty_points}}, sources{errors, partial, providers[]}, attribution[], disclaimer.",
+      "quirks": [
+        "Supply make+model+year OR a single 17-char vin (decoded to make/model/year via NHTSA vPIC); all params are optional individually but you need one of those two combinations. Passed on the GET query string, no body.",
+        "year is an integer 1949..2030; make/model are free-text and normalized/uppercased in vehicle_identity.",
+        "Fuses three NHTSA registries — recalls, complaints, and NCAP 5-star safety ratings. Returns a partial answer (sources.partial=true, sources.errors populated) rather than a 500 if one upstream is briefly down.",
+        "risk_score is a deterministic 0-100 value with a low/medium/high/critical band computed from data-driven weights (recall_points, severity_points, complaint_density_points, casualty_points) — identical inputs give identical outputs.",
+        "recalls[] carries per-campaign park_it (Do-Not-Drive) and park_outside (fire-risk) severity flags; complaints_summary never exposes raw personal complaint bodies, only aggregated counts and top components.",
+        "Public-domain US government data (NHTSA) with attribution echoed in the response; these are automated risk INDICATORS, not safety advice — verify current recall status with the manufacturer before acting.",
+        "Verified live: make=Honda, model=Accord, year=2015 -> 5 open recalls, NCAP overall '5', risk_score 30 (band medium); complaints upstream (api.nhtsa.gov) timed out so sources.partial=true on that run."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Run one-call vehicle safety/recall due-diligence with a keyless x402 GET. Send GET https://api.agentstools.dev/safety/vehicle with EITHER make + model + year (e.g. ?make=Honda&model=Accord&year=2015) OR a single 17-char vin (?vin=1HGCM82633A004352, decoded to make/model/year via NHTSA vPIC). No request body. Pays $0.03 USDC via x402 on Base. Synchronous — the 200 body fuses every open NHTSA recall (campaign_number, component, summary, consequence, remedy, plus Do-Not-Drive/park-outside flags), an aggregated complaint summary (crash/fire/injury/death counts, no raw complaint text), and the NCAP 5-star ratings (overall/front/side/rollover), then adds a deterministic 0-100 risk_score with a low/medium/high/critical band and human-readable reasons. Use for a buying agent, used-car shopper, or insurance/fleet workflow. Returns a partial (sources.partial=true) rather than a 500 if one NHTSA registry is briefly down.",
+      "costObservedUsd": 0.03
+    },
+    "source": {
+      "serviceKey": "agentstools-vehicle-safety",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-aircraft-diligence",
+    "kind": "api",
+    "name": "Agentstools Aircraft Diligence",
+    "aka": [
+      "agentstools-aircraft-diligence",
+      "aircraft-diligence",
+      "faa-aircraft-title-check",
+      "aircraft-airworthiness-diligence"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Deterministic title/airworthiness due-diligence verdict for a US-registered aircraft from the public FAA Aircraft Registry — by tail number (N-number) or serial — returning a 0-100 title risk score, a low/medium/high/critical rating, a clear_to_transact flag, per-dimension signals and the cited registry fields.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "aircraft",
+      "faa",
+      "title-risk",
+      "airworthiness",
+      "due-diligence",
+      "aviation"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.040",
+      "amount": 0.04,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/aircraft/diligence",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "tail": {
+              "type": "string",
+              "description": "US tail number / N-number, e.g. N801NN. Supply tail OR serial."
+            },
+            "serial": {
+              "type": "string",
+              "description": "Aircraft serial number, used if no tail is given."
+            }
+          },
+          "required": []
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "description": "e.g. found | not_found."
+            },
+            "title_risk_score": {
+              "type": "integer",
+              "description": "0-100 deterministic title risk score."
+            },
+            "rating": {
+              "type": "string",
+              "description": "low | medium | high | critical."
+            },
+            "clear_to_transact": {
+              "type": "boolean"
+            },
+            "query": {
+              "type": "object"
+            },
+            "aircraft": {
+              "type": "object",
+              "properties": {
+                "n_number": {
+                  "type": "string"
+                },
+                "serial_number": {
+                  "type": "string"
+                },
+                "manufacturer_name": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "mfr_year": {
+                  "type": "string"
+                },
+                "type_aircraft": {
+                  "type": "string"
+                },
+                "registration_status": {
+                  "type": "string"
+                },
+                "registered_owner": {
+                  "type": "string"
+                },
+                "owner_state": {
+                  "type": "string"
+                },
+                "type_registration": {
+                  "type": "string"
+                }
+              }
+            },
+            "signals": {
+              "type": "array"
+            },
+            "reasons": {
+              "type": "array"
+            },
+            "dimensions": {
+              "type": "object",
+              "properties": {
+                "registration_status": {
+                  "type": "string"
+                },
+                "status_is_valid": {
+                  "type": "boolean"
+                },
+                "expiration_date": {
+                  "type": "string"
+                },
+                "days_to_expiration": {
+                  "type": "integer"
+                },
+                "airworthiness_on_record": {
+                  "type": "boolean"
+                },
+                "airworthiness_date": {
+                  "type": "string"
+                },
+                "exception_code": {
+                  "type": "string"
+                },
+                "fractional_owner": {
+                  "type": "string"
+                },
+                "dealer": {
+                  "type": "string"
+                }
+              }
+            },
+            "dimensions_evaluated": {
+              "type": "array"
+            },
+            "lien_status": {
+              "type": "string",
+              "description": "e.g. not_available_free — recorded liens are not free by tail number."
+            },
+            "lien_note": {
+              "type": "string"
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "datasets": {
+                  "type": "object"
+                }
+              }
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "type": "object"
+                },
+                "partial": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "disclaimer": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "integer"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/aircraft/diligence?tail=<N-number> — OR — ?serial=<serial>. All inputs are query params, no request body. Result is inline in the 200 body (synchronous, no poll). Pays $0.04 USDC via x402 v2 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "tail": "N801NN"
+      },
+      "outputShape": "verdict, title_risk_score (0-100), rating (low|medium|high|critical), clear_to_transact, query{tail}, aircraft{n_number, serial_number, manufacturer_name, model, mfr_year, type_aircraft, registration_status, registered_owner, owner_state, type_registration}, signals[], reasons[], dimensions{registration_status, status_is_valid, expiration_date, days_to_expiration, airworthiness_on_record, airworthiness_date, exception_code, fractional_owner, dealer}, dimensions_evaluated[], lien_status, lien_note, coverage{datasets{faa_registry, faa_bulk_db, faa_lien_abstract, faa_airworthiness_directives, uscg_vessel_psix}}, sources{errors, partial}, attribution[], disclaimer, ts.",
+      "quirks": [
+        "Supply EITHER a tail number (N-number, e.g. tail=N801NN) OR a serial number on the GET query string; no request body. tail takes precedence when both are given.",
+        "title_risk_score is a deterministic 0-100 value (no LLM) with a low/medium/high/critical rating and a clear_to_transact boolean, computed from FAA registry title/airworthiness dimensions — identical inputs give identical outputs.",
+        "dimensions_evaluated lists the eight checked title dimensions (status_not_valid, sale_reported, registration_expired, registration_expiring, airworthiness_missing, exception_code, fractional_owner, dealer_registration); any that trip appear in signals[] with reasons[].",
+        "Recorded liens and the full ownership/conveyance chain are NOT available free by tail number (lien_status='not_available_free'); the endpoint says to order an FAA certified abstract of title for an authoritative clear-title determination. coverage.datasets shows which registries were consulted (faa_registry true; lien abstract / airworthiness-directives / USCG-vessel false).",
+        "This is an automated diligence SIGNAL from public-domain FAA data, NOT a certified title search, lien/clear-title guarantee or legal advice; the FAA registry updates on a lag — verify current status directly with the FAA.",
+        "Verified live: tail=N801NN -> verdict 'found', BOEING 737-823 (2009), owner BANK OF UTAH TRUSTEE, registration 'Valid', title_risk_score 0, rating 'low', clear_to_transact true; sources.partial=false."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Run one-call US aircraft title/airworthiness due-diligence with a keyless x402 GET. Send GET https://api.agentstools.dev/aircraft/diligence with EITHER a tail number (?tail=N801NN) OR a serial (?serial=<serial>) — no request body. Pays $0.04 USDC via x402 on Base. Synchronous: the 200 body returns a deterministic 0-100 title_risk_score with a low/medium/high/critical rating and a clear_to_transact flag, the cited FAA registry aircraft record (owner, make/model/year, serial, registration status), the per-dimension diligence signals/reasons (status validity, expiration, airworthiness on record, exception code, fractional/dealer flags), and a coverage map of which datasets were consulted. Recorded liens/ownership chain are NOT available free by tail number — for an authoritative clear-title determination order an FAA certified abstract of title. Use for aviation lending, aircraft purchase, escrow, or insurance-underwriting workflows. This is a diligence signal from public FAA data, not a certified title search.",
+      "costObservedUsd": 0.04
+    },
+    "source": {
+      "serviceKey": "agentstools-aircraft-diligence",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-aircraft-owner",
+    "kind": "api",
+    "name": "Agentstools Aircraft Owner",
+    "aka": [
+      "agentstools-aircraft-owner",
+      "aircraft-owner",
+      "faa-aircraft-owner-lookup",
+      "aircraft-fleet-by-owner"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Lists the US-registered aircraft held by an owner or company name in the public FAA Aircraft Registry (fleet lookup) — each with tail number (N-number), serial number, and make/model.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "aircraft",
+      "faa",
+      "aviation",
+      "owner",
+      "fleet",
+      "due-diligence"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/aircraft/owner",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Registered owner or company name to search for (FAA name search)."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Max aircraft to return, default 25."
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "count": {
+              "type": "integer"
+            },
+            "total_found": {
+              "type": "integer"
+            },
+            "truncated": {
+              "type": "boolean"
+            },
+            "aircraft": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "n_number": {
+                    "type": "string"
+                  },
+                  "serial_number": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "manufacturer_model": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "owner": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "type": "object"
+                },
+                "partial": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "disclaimer": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/aircraft/owner?name=<owner or company name>&limit=<1-100, default 25>. Inputs are query params, no request body. Result is inline in the 200 body (synchronous, no poll). Pays $0.02 USDC via x402 v2 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "name": "Bank Of Utah Trustee"
+      },
+      "outputShape": "query, count, total_found, truncated (bool), aircraft[] (each: n_number, serial_number, manufacturer_model, owner) — serial_number/manufacturer_model may be null; sources{errors, partial}, attribution[], disclaimer.",
+      "quirks": [
+        "name is a required query param; limit is optional (1..100, default 25). Owner-name matching is exactly what the FAA name search returns — a common name can match many owners, so confirm the tail before relying on a row.",
+        "Returns count (rows in this page) plus total_found and a truncated flag when more exist than limit; returns an empty aircraft[] when nothing matches.",
+        "Some rows have null serial_number/manufacturer_model (registry gaps); duplicate n_numbers can appear (e.g. registration in transition).",
+        "Registry metadata only — a diligence SIGNAL, not a certified title search, lien/clear-title guarantee, or legal advice. Enumerate a fleet here, then call aircraft/registration or aircraft/diligence per tail for the full record.",
+        "Source is the public FAA Aircraft Registry (US DOT, registry.faa.gov/AircraftInquiry; US-gov public domain); the registry updates on a lag. Returns a partial result (sources.partial=true) rather than failing if the source is briefly down.",
+        "Verified live: name='Bank Of Utah Trustee' -> count 25, total_found 50, truncated true; first row N100CM PIPER PA-31T; sources.partial=false."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Enumerate the US-registered aircraft a person or company holds, with a keyless x402 GET. Send GET https://api.agentstools.dev/aircraft/owner with name=<registered owner or company name> (e.g. ?name=Bank%20Of%20Utah%20Trustee) and optional limit (1..100, default 25). No request body. Pays $0.02 USDC via x402 on Base. Synchronous — the 200 body runs the public FAA Aircraft Registry name search and returns aircraft[] rows, each with n_number (tail), serial_number, manufacturer_model, and owner, plus count/total_found/truncated. Use it for asset-verification, lending, or underwriting due diligence to map an owner's fleet, then call aircraft/registration or aircraft/diligence per tail for the full record and title verdict. This is registry metadata only — a diligence signal, not a certified title search.",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "agentstools-aircraft-owner",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-aircraft-registration",
+    "kind": "api",
+    "name": "Agentstools Aircraft Registration",
+    "aka": [
+      "agentstools-aircraft-registration",
+      "faa-aircraft-registry-lookup",
+      "n-number-lookup",
+      "tail-number-registration"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Looks up a US-registered aircraft in the public FAA Aircraft Registry by tail number (N-number) or serial and returns a normalized record: registration status, registered owner, make/model/year, serial, engine, airworthiness, type certificate and Mode-S code.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "aircraft",
+      "faa",
+      "n-number",
+      "registration",
+      "aviation",
+      "due-diligence"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/aircraft/registration",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "tail": {
+              "type": "string",
+              "description": "US tail number / N-number, e.g. N801NN. Supply tail OR serial."
+            },
+            "serial": {
+              "type": "string",
+              "description": "Aircraft serial number (used if no tail is given), resolved through the FAA serial search to the matching tail."
+            }
+          },
+          "required": []
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "verdict": {
+              "type": "string",
+              "description": "found | reserved | not_found | partial."
+            },
+            "record": {
+              "type": "object",
+              "properties": {
+                "n_number": {
+                  "type": "string"
+                },
+                "record_type": {
+                  "type": "string"
+                },
+                "serial_number": {
+                  "type": "string"
+                },
+                "status_label": {
+                  "type": "string"
+                },
+                "status_is_valid": {
+                  "type": "boolean"
+                },
+                "manufacturer_name": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "mfr_year": {
+                  "type": "string"
+                },
+                "type_aircraft": {
+                  "type": "string"
+                },
+                "type_engine": {
+                  "type": "string"
+                },
+                "type_registration": {
+                  "type": "string"
+                },
+                "fractional_owner": {
+                  "type": "string"
+                },
+                "dealer": {
+                  "type": "string"
+                },
+                "certificate_issue_date": {
+                  "type": "string"
+                },
+                "expiration_date": {
+                  "type": "string"
+                },
+                "mode_s_code_oct": {
+                  "type": "string"
+                },
+                "mode_s_code_hex": {
+                  "type": "string"
+                },
+                "registered_owner": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "street": {
+                      "type": "string"
+                    },
+                    "city": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    },
+                    "county": {
+                      "type": "string"
+                    },
+                    "zip": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "airworthiness": {
+                  "type": "object",
+                  "properties": {
+                    "type_certificate_data_sheet": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "type_certificate_holder": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "engine_manufacturer": {
+                      "type": "string"
+                    },
+                    "engine_model": {
+                      "type": "string"
+                    },
+                    "classification": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "aw_date": {
+                      "type": "string"
+                    },
+                    "exception_code": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "lien_status": {
+              "type": "string",
+              "description": "not_available_free — recorded liens and the full ownership chain are not available free by tail number."
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "type": "object"
+                },
+                "partial": {
+                  "type": "boolean"
+                },
+                "datasets": {
+                  "type": "object"
+                }
+              }
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "disclaimer": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/aircraft/registration?tail=<N-number> — OR — ?serial=<aircraft serial>. All inputs are query params, no request body. Result is inline in the 200 body (synchronous, no poll). Pays $0.01 USDC via x402 v2 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "tail": "N801NN"
+      },
+      "outputShape": "verdict (found|reserved|not_found|partial), record{n_number, record_type, serial_number, status_label, status_is_valid, manufacturer_name, model, mfr_year, type_aircraft, type_engine, type_registration, fractional_owner, dealer, certificate_issue_date, expiration_date, mode_s_code_oct, mode_s_code_hex, registered_owner{name, street, city, state, county, zip, country}, airworthiness{type_certificate_data_sheet, type_certificate_holder, engine_manufacturer, engine_model, classification, category, aw_date, exception_code}}, lien_status (not_available_free), sources{errors, partial, datasets{faa_registry, faa_bulk_db, faa_lien_abstract, faa_airworthiness_directives, uscg_vessel_psix}}, attribution[], disclaimer, ts.",
+      "quirks": [
+        "Supply EITHER tail (N-number, e.g. N801NN) OR serial (aircraft serial); both params are individually optional but you need one. Passed on the GET query string, no body. A serial resolves through the FAA serial search to the matching tail then the full record.",
+        "This is the light first step of a two-step aircraft asset-vetting flow (registration then aircraft/diligence, mirroring the OSHA/freight screen-then-verify pattern).",
+        "lien_status is always not_available_free — recorded liens and the full ownership/conveyance chain are NOT available free by tail number; for a clear-title determination order an FAA certified abstract of title.",
+        "verdict is 'found' for a live aircraft; a reserved N-number returns verdict 'reserved' with reservation detail and no aircraft; nothing found returns 'not_found'; an upstream hiccup returns a partial result (sources.partial=true) rather than a 500.",
+        "Registry metadata only, US aircraft only. Source is the FAA Aircraft Registry (US DOT public domain), which updates on a lag — an automated diligence signal, not a certified title search and not legal advice.",
+        "Verified live: tail=N801NN -> verdict 'found', BOEING 737-823 (2009), owner BANK OF UTAH TRUSTEE (Salt Lake City, UT), status Valid, Mode-S AAE6CD, sources.partial=false."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Look up a US-registered aircraft in the public FAA Aircraft Registry with a keyless x402 GET. Send GET https://api.agentstools.dev/aircraft/registration with EITHER tail=<N-number> (e.g. ?tail=N801NN) OR serial=<aircraft serial number>. No request body. Pays $0.01 USDC via x402 on Base. Synchronous — the 200 body returns verdict plus a normalized record: registration status/label, registered owner name and address, manufacturer/model/year, serial, aircraft and engine type, airworthiness (engine make/model, classification, category, airworthiness date), type registration, fractional-owner and dealer flags, certificate issue/expiration dates and the Mode-S code (octal + hex). lien_status is always not_available_free (liens/ownership chain require a paid FAA certified abstract). Use as the cheap first step before aircraft/diligence for aircraft asset vetting, ownership/registration checks, or Mode-S/tail resolution. Returns a partial (sources.partial=true) rather than failing if an upstream registry is briefly down.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "agentstools-aircraft-registration",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-travel-visa",
+    "kind": "api",
+    "name": "Agentstools Travel Visa",
+    "aka": [
+      "agentstools-travel-visa",
+      "travel-visa",
+      "visa-requirement",
+      "passport-visa-matrix"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Visa requirement for a passport-and-destination pair from a community visa-matrix: give a passport country and a destination and get the normalized requirement (visa free, visa on arrival, e-visa, ETA, visa required or no admission) plus the visa-free day allowance where available.",
+    "category": "data-intelligence",
+    "subcategory": "traffic-transportation",
+    "tags": [
+      "travel",
+      "visa",
+      "passport",
+      "visa-requirement",
+      "immigration",
+      "visa-matrix"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0080",
+      "amount": 0.008,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/travel/visa",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.008,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0080",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "8000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "passport_country": {
+              "type": "string",
+              "description": "Passport country name, ISO2 or ISO3 code"
+            },
+            "destination": {
+              "type": "string",
+              "description": "Destination country name, ISO2 or ISO3 code"
+            }
+          },
+          "required": [
+            "passport_country",
+            "destination"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "passport_country": {
+              "type": "object",
+              "properties": {
+                "iso2": {
+                  "type": "string"
+                },
+                "iso3": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            },
+            "destination": {
+              "type": "object",
+              "properties": {
+                "iso2": {
+                  "type": "string"
+                },
+                "iso3": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            },
+            "found": {
+              "type": "boolean"
+            },
+            "visa": {
+              "type": "object",
+              "properties": {
+                "requirement": {
+                  "type": "string"
+                },
+                "requirement_label": {
+                  "type": "string"
+                },
+                "allowed_days": {
+                  "type": "integer"
+                },
+                "visa_required": {
+                  "type": "boolean"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            },
+            "sources": {
+              "type": "object",
+              "properties": {
+                "providers": {
+                  "type": "array"
+                },
+                "errors": {
+                  "type": "object"
+                },
+                "partial": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "disclaimer": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T23:34:16.019Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/travel/visa with two required query params: passport_country (country name, ISO2 or ISO3) and destination (country name, ISO2 or ISO3). No request body. Pays $0.008 USDC via x402 on Base (eip155:8453). Result is returned inline in the 200 body (synchronous, no poll).",
+      "inputExample": {
+        "url": "https://api.agentstools.dev/travel/visa?passport_country=DE&destination=Japan",
+        "method": "GET"
+      },
+      "outputShape": "passport_country.{iso2,iso3,name}; destination.{iso2,iso3,name}; found (boolean; false = pair not in dataset, not an error); visa.{requirement(visa free|visa on arrival|e-visa|electronic travel authorization|visa required|no admission),requirement_label,allowed_days(number of visa-free days when the source gives one),visa_required(boolean),description,source(visa_matrix)}; sources.{providers[],errors,partial}; attribution[] (Passport Index Dataset, MIT); disclaimer.",
+      "quirks": [
+        "Both params are required and are query params (no request body). Either country accepts a name, ISO2 or ISO3 code (e.g. passport_country=DE or Germany; destination=Japan or JP or JPN).",
+        "An unknown/unsupported pair returns found=false rather than an HTTP error.",
+        "Sibling travel ops on the same host are DISTINCT operations, not variants: /travel/health (health/vaccination requirements), /travel/advisory (US-gov travel advisory level) and /travel/entry (entry rules). This op returns visa requirement only.",
+        "Visa data is INDICATIVE, not authoritative: it comes from the community Passport Index Dataset (Ilya Ilyankou, MIT License) compiled from Wikipedia. Not immigration or legal advice and not a guarantee of entry — always verify with the destination's embassy/official immigration authority before booking or travelling.",
+        "Verified live: passport_country=DE, destination=Japan returned found=true, visa free, allowed_days=90 ('Visa-free entry for up to 90 days.')."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Look up the visa requirement for a passport+destination pair in one paid call. GET https://api.agentstools.dev/travel/visa?passport_country=<country/ISO2/ISO3>&destination=<country/ISO2/ISO3>. Pays $0.008 USDC via x402 on Base. Returns the normalized requirement (visa free, visa on arrival, e-visa, ETA, visa required, no admission) with a human label, description and the visa-free day allowance when known, plus dataset attribution and a disclaimer. Data is INDICATIVE (community Passport Index Dataset compiled from Wikipedia) — verify with the embassy before travelling. Verified live: DE->Japan = visa free, 90 days.",
+      "costObservedUsd": 0.008
+    },
+    "source": {
+      "serviceKey": "agentstools-travel-visa",
+      "discoveredVia": [
+        "traffic data",
+        "transit api"
+      ],
+      "lastSyncedAt": "2026-06-01T23:34:16.019Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

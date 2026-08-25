@@ -1,0 +1,56 @@
+{
+  "serviceId": "reducto",
+  "subcat": "ocr-document-extraction",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse",
+      "method": "POST",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/extract",
+      "method": "POST",
+      "amountUsd": 0.05
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse with JSON body {document_url}",
+    "inputExample": {
+      "document_url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+    },
+    "outputShape": "body.result.chunks[].content (extracted text/markdown per chunk); body.result.chunks[].blocks[] for typed blocks with bbox+confidence; body.usage.num_pages / body.usage.credits for billing; body.job_id and body.studio_link for reference",
+    "quirks": [
+      "Body field is document_url (a public URL to the PDF/image/spreadsheet) — there is no documented inputSchema, this field name was confirmed by a successful paid call.",
+      "Despite returning a job_id, the parse result is delivered INLINE and synchronously in the same response (body.result.chunks[]). Do NOT poll the job_id — there is no separate status/result endpoint needed.",
+      "response_type is 'parse'. To extract structured fields against a schema use the /extract sibling route instead of /parse.",
+      "Billed per page: body.usage.credits = pages processed (1 credit = 1 page)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to the Sponge purchase URL with a JSON body {\"document_url\":\"<public URL to a PDF/image/spreadsheet>\"}; payment is handled via x402 on Base ($0.05/call, billed per page). The response comes back synchronously as JSON — read the parsed content from body.result.chunks[].content (Markdown/text per chunk) and per-block details (with bounding boxes and confidence) from body.result.chunks[].blocks[]. Ignore body.job_id for retrieval; the result is already inline so no polling is required. Check body.usage.num_pages / body.usage.credits to understand billing.",
+    "costObservedUsd": 0.05
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "reducto#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    },
+    {
+      "key": "reducto#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.05
+    }
+  ]
+}

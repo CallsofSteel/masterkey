@@ -1,0 +1,48 @@
+{
+  "serviceId": "elevenlabs-scribe",
+  "subcat": "speech-to-text",
+  "batchId": "batch-23",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/elevenlabs/v1/speech-to-text",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/elevenlabs/v1/speech-to-text with multipart/form-data fields: model_id=scribe_v1 + file=<audio binary> (NOT JSON)",
+    "inputExample": {
+      "model_id": "scribe_v1",
+      "file": "<multipart audio file, >=100ms>"
+    },
+    "outputShape": "unknown — never received a 2xx (server rejected JSON body before transcription)",
+    "quirks": [
+      "Endpoint is a multipart/form-data proxy to ElevenLabs Scribe, NOT a JSON endpoint.",
+      "Required field model_id (e.g. scribe_v1) plus the audio in a multipart 'file' field (100ms minimum audio).",
+      "A JSON request body is ignored entirely: the server's validator reports input:null and 422 'model_id field required' even when model_id IS present in the JSON.",
+      "source_url / cloud_storage_url are documented in the registry inputSchema but were NOT honored when sent in a JSON body (same 422).",
+      "The money-safe JSON x402 pay primitive (qa-pay) cannot call this endpoint — it hard-codes Content-Type: application/json and JSON-stringifies the body, so it cannot build multipart with a file part.",
+      "x402 charges $0.030 USDC on Base BEFORE the multipart validation runs, so a JSON call pays then 422s with no refund (lost $0.03 in this test, tx 0xddab6aeb849c909426d2dc0e1e83ace7d3851e04d57c24ec53d8746971c5ce31)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402.orth.sh/elevenlabs/v1/speech-to-text as multipart/form-data, not JSON. Send form field model_id=scribe_v1 and the audio as the file form field (at least 100ms of audio); optional fields: diarize, language_code, tag_audio_events, num_speakers, timestamps_granularity. Pay the $0.030 x402 USDC charge on Base. Do NOT send a JSON body — the server ignores it and returns 422 after charging you. A JSON-only x402 client (like the qa-pay primitive) cannot use this endpoint; you need a client that can build multipart bodies with the x402 payment header attached.",
+    "costObservedUsd": 0.03,
+    "droppedReason": "elevenlabs-scribe#0: Endpoint is a multipart/form-data proxy to ElevenLabs Scribe, NOT a JSON endpoint."
+  },
+  "droppedReason": "elevenlabs-scribe#0: Endpoint is a multipart/form-data proxy to ElevenLabs Scribe, NOT a JSON endpoint.",
+  "_backends": [
+    {
+      "key": "elevenlabs-scribe#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.03
+    }
+  ]
+}

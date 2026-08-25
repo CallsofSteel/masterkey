@@ -1,0 +1,47 @@
+{
+  "serviceId": "suede-ai",
+  "subcat": "music-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://app.suedeai.xyz/create-music",
+      "method": "POST",
+      "amountUsd": 0.2
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://app.suedeai.xyz/create-music with JSON body {prompt, durationSeconds?, style?, custom_mode?, lyrics?, make_instrumental?, vocal_gender?}",
+    "inputExample": {
+      "prompt": "a short upbeat acoustic guitar loop",
+      "durationSeconds": 5,
+      "make_instrumental": true
+    },
+    "outputShape": "body.shareUrl (shareable HTML page with playable track), body.songId, body.title, body.imageUrl (cover art), body.duration, body.modelVersion. body.trackUrl is the direct audio URL but is null in the immediate response.",
+    "quirks": [
+      "Sync 200 response but body.trackUrl is null at call time — the direct audio URL is not ready immediately; the track finishes generating async. Use body.shareUrl (an HTML page, returns 200) or re-fetch by body.songId to get the listenable audio.",
+      "shareUrl host is app.suedeai.ai (.ai) while the API call host is app.suedeai.xyz (.xyz) — different TLD.",
+      "durationSeconds is not strictly honored: requesting 5 returned duration 161.",
+      "Only 'prompt' is required; make_instrumental:true skips vocals."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://app.suedeai.xyz/create-music with a JSON body containing at minimum {\"prompt\":\"...\"} (pays $0.20 USDC on Base via x402, no API key). Optional fields: durationSeconds (5-120, loosely honored), style, custom_mode, lyrics, make_instrumental (bool), vocal_gender (\"m\"|\"f\"). The 200 response is JSON with title, cover imageUrl, songId, and shareUrl, but trackUrl is null because the audio finishes rendering asynchronously — give the user body.shareUrl (a 200 HTML player page) or use body.songId to fetch the final track rather than relying on trackUrl.",
+    "costObservedUsd": 0.2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "suede-ai#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2
+    }
+  ]
+}

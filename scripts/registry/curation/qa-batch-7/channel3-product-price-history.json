@@ -1,0 +1,46 @@
+{
+  "serviceId": "channel3-product-price-history",
+  "subcat": "product-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableproduct.dev/api/channel3/price-tracking/history",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stableproduct.dev/api/channel3/price-tracking/history?canonical_product_id={id}&days={1-30} (x402 paid, $0.01 USDC on Base)",
+    "inputExample": {
+      "canonical_product_id": "VN9WKnq",
+      "days": 30
+    },
+    "outputShape": "body.product_title; body.history[] (timestamp, price, currency); body.statistics (mean, std_dev, min_price, max_price, current_price, current_status, currency)",
+    "quirks": [
+      "Required query param canonical_product_id is an opaque Channel3 catalog id (e.g. 'VN9WKnq'), NOT a name or URL.",
+      "Obtain a valid canonical_product_id from the Channel3 image/product search endpoint (POST https://stableproduct.dev/api/channel3/image-search -> body.products[].id) before calling this.",
+      "The 402 payment gate fires BEFORE param validation: a call with a missing/invalid canonical_product_id still charges then fails, so always supply a real id.",
+      "Optional query params: days (integer 1-30) and include_raw (boolean)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stableproduct.dev/api/channel3/price-tracking/history with a required canonical_product_id query param set to a real Channel3 catalog product id (get one from POST .../channel3/image-search, field body.products[].id). Optionally add days=1..30 and include_raw=true. It is x402-paid ($0.01 USDC on Base) and returns plain sync JSON. Read the price series from body.history[] (each {timestamp, price, currency}) and the summary from body.statistics.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "channel3-product-price-history#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

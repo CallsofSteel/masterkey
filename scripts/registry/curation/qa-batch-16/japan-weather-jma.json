@@ -1,0 +1,45 @@
+{
+  "serviceId": "japan-weather-jma",
+  "subcat": "weather",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://weather.agentic-jp.com/forecast/:area",
+      "method": "GET",
+      "amountUsd": 0.003
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://weather.agentic-jp.com/forecast/:area where :area is a JMA 6-digit area code (e.g. 130000 for Tokyo). No body, no query params.",
+    "inputExample": {
+      "area": "130000"
+    },
+    "outputShape": "body.summary_en (one-line English summary), body.daily[] (today/tomorrow: .weather_en, .pops[], .temps[]), body.weekly[] (7-day: .weather_en, .pop, .temp_min, .temp_max, .reliability), body.area.name_en, body.report_datetime",
+    "quirks": [
+      "The :area path segment must be a JMA 6-digit area-office code, NOT a city name or lat/long. 130000 = Tokyo. Other examples: 016000=Sapporo, 270000=Osaka, 400000=Fukuoka, 471000=Okinawa.",
+      "Japan-only coverage (Japan Meteorological Agency data).",
+      "Response mixes Japanese and English fields; use the *_en fields (weather_en, name_en, summary_en) for English. Raw weather/wind/wave strings and summary_ja are Japanese.",
+      "Plain sync x402 on Base ($0.003 USDC); no auth, no async."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Pick a JMA 6-digit area code for the Japanese location you want (130000=Tokyo, 270000=Osaka, 016000=Sapporo, 400000=Fukuoka, 471000=Okinawa) and GET https://weather.agentic-jp.com/forecast/{code}. It is a paid x402 endpoint (~$0.003 USDC on Base), no body or auth required. Read body.summary_en for a quick English answer, body.daily[] for today/tomorrow (weather_en, pops percent-chance-of-rain array, temps array), and body.weekly[] for the 7-day outlook (weather_en, pop, temp_min, temp_max). Japan only.",
+    "costObservedUsd": 0.003
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "japan-weather-jma#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

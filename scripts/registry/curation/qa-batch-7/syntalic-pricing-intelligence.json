@@ -1,0 +1,47 @@
+{
+  "serviceId": "syntalic-pricing-intelligence",
+  "subcat": "product-analytics",
+  "batchId": "batch-7",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.syntalic.com/v1/marketing/promo-intelligence",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.syntalic.com/v1/marketing/promo-intelligence?category=electronics (required query param: category; optional: country=us|ca, brand, aggregate_by=brand|retailer, from, to as ISO dates)",
+    "inputExample": {
+      "category": "electronics",
+      "country": "us",
+      "aggregate_by": "brand"
+    },
+    "outputShape": "untested — outputSchema is generic object; per service description, returns competitive promo/pricing analysis aggregated by brand (or retailer) for the category. Response is JSON (declared output type json).",
+    "quirks": [
+      "category is a REQUIRED query-string param (not a body) — GET request; omitting it 402s/422s.",
+      "category is fuzzy human-readable (e.g. electronics, grocery, beauty); resolver maps it to a canonical id via id->exact->trigram->embedding kNN.",
+      "Endpoint is x402-paid ($0.01). It returned a VALID, well-formed 402 challenge (Base eip155:8453 USDC accept with full EIP-712 extra, plus two Solana accepts).",
+      "COULD NOT COMPLETE PAYMENT via the qa-pay money-safe harness on 2 attempts: harness returned classification 'http-error', paid:false, costUsd:0, txHash:null — its payment flow did not engage on this challenge. No money was lost. This is a payer-side settlement gap, NOT a dead endpoint (no 404/5xx/refund).",
+      "Re-test required with a working x402 payer to confirm the paid 2xx body."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.syntalic.com/v1/marketing/promo-intelligence with the required query param ?category=<human-readable category like electronics|grocery|beauty>. Optionally add country (us|ca, default us), brand, aggregate_by (brand default, or retailer), and from/to ISO dates. It is an x402-paid endpoint ($0.01 USDC, settles on Base or Solana). On success expect a JSON body of competitive promo/pricing analysis aggregated by brand (or retailer). NOTE: the QA harness received a valid 402 challenge but could not settle payment, so the paid response shape is unverified — a future agent with a working x402 client should be able to pay and read the JSON result directly.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "syntalic-pricing-intelligence#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

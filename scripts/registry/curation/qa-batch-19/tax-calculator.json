@@ -1,0 +1,46 @@
+{
+  "serviceId": "tax-calculator",
+  "subcat": "tax-compliance",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/tax_calc",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/tax_calc with JSON body {income: number, location: string}",
+    "inputExample": {
+      "income": 100000,
+      "location": "California"
+    },
+    "outputShape": "body.estimated_tax (number), body.breakdown.federal, body.breakdown.state, body.tips[] (string array of advice), body.processedAt",
+    "quirks": [
+      "inputSchema is null in the registry; the REAL required fields are income (number) and location (string) — NOT amount/state/zip. Sending amount/state/zip returns HTTP 400 (but you are still charged $0.01).",
+      "Despite the name 'Tax Calculator' and subcat 'tax-compliance', this is an INCOME tax estimator (returns federal + state income tax + savings tips), not a sales-tax calculator.",
+      "location accepts a state name like 'California'.",
+      "qa-pay reported confirmed:false and txHash:null but status 200 + paid true; settlement not surfaced in response."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://gg402.vercel.app/tax_calc with a JSON body containing income (a number, e.g. annual income) and location (a string, e.g. a US state name like 'California'). It is a paid x402 endpoint costing $0.01 USDC on Base, no auth/SIWX needed. The response is synchronous JSON: read body.estimated_tax for the total estimated income tax, body.breakdown.federal and body.breakdown.state for the split, and body.tips[] for tax-saving suggestions. Do not send amount/state/zip — those wrong field names return a 400 yet still charge you.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "tax-calculator#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

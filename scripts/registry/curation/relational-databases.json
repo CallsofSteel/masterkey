@@ -1,0 +1,803 @@
+{
+  "subcategory": "relational-databases",
+  "category": "database-storage",
+  "unit": "per call",
+  "_note": "Curated by claude-main; re-verified + missed.md brand sweep — added Supabase, Neon, Turso (recognizable serverless Postgres/SQLite platforms) served via the HTTPay x402 gateway ($0.001/call, dual x402+mpp). These are real x402 passthroughs to the platform APIs, surfaced by the brand sweep (low keyword relevance hid them in the first pass). Dropped: Apollo/Crustdata search (people data), orbisapi database guides/concepts, FDA, x402 Helper, strale SQL devtools. ✗ not on x402: PlanetScale, CockroachDB, Xata, AWS RDS.",
+  "entries": [
+    {
+      "name": "Stablebase",
+      "kind": "api",
+      "provider": "Stablebase",
+      "providerId": "stablebase",
+      "description": "Stablebase — x402-native serverless SQL (Postgres) database: run SQL queries and manage projects (create/list/get/restore/delete), pay per call. No accounts.",
+      "tags": [
+        "sql",
+        "postgres",
+        "database",
+        "serverless"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        0
+      ],
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stablebase.dev/api/stablebase/database/query with JSON body {ref, query}",
+        "inputExample": {
+          "ref": "abcdefghijklmnop",
+          "query": "SELECT 1"
+        },
+        "outputShape": "untested — query result rows (output schema empty; expected rows array in body)",
+        "quirks": [
+          "Requires a valid `ref` for a Postgres project OWNED BY THE CALLING WALLET — access is wallet-scoped, you can only query projects your own wallet created.",
+          "No standalone ref exists: you must first POST /api/stablebase/projects/create ($1.00) to provision a DB and get a ref, OR POST /api/stablebase/projects/list ({}, $0.01) to find an existing one.",
+          "Master wallet currently owns ZERO projects (projects/list returned []), so this query endpoint could not be exercised with a real ref.",
+          "The PAYING wallet must match the owning wallet — querying with a ref owned by a different wallet will be rejected.",
+          "Guessing/fabricating a ref will 404 and waste the $0.02 payment."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Stablebase query runs SQL against a serverless Postgres project that YOUR wallet owns. Before calling, obtain a `ref`: either provision one via POST https://stablebase.dev/api/stablebase/projects/create ($1.00, body {name, db_pass, region}) or find an existing owned one via POST https://stablebase.dev/api/stablebase/projects/list ({}, $0.01). Then POST https://stablebase.dev/api/stablebase/database/query with {ref, query} ($0.02) and read the returned rows from the JSON body. Access is wallet-scoped, so the wallet that pays for the query must be the same one that created the project; a foreign or fake ref fails.",
+        "costObservedUsd": 0.01
+      },
+      "status": "hidden",
+      "resolved": {
+        "0": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "Supabase",
+      "kind": "api",
+      "provider": "Supabase",
+      "providerId": "supabase",
+      "aka": [
+        "supabase.com"
+      ],
+      "description": "Access the Supabase platform API (Postgres database, auth, storage, REST/PostgREST) metered per call via an x402 pay-per-call gateway (HTTPay) at $0.001/call — no Supabase account or API key required.",
+      "tags": [
+        "postgres",
+        "database",
+        "backend",
+        "serverless"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://httpay.xyz/api/gateway/supabase/rest/v1/",
+          "method": "POST",
+          "provider": "HTTPay",
+          "providerId": "httpay",
+          "amount": 0.001,
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-09T21:43:52.335Z"
+          }
+        }
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://httpay.xyz/api/gateway/supabase/rest/v1/<table> with header X-Upstream-Token: <your Supabase JWT/API key> and JSON body (PostgREST). REQUIRES caller-supplied upstream key — not callable without one.",
+        "inputExample": {
+          "X-Upstream-Token": "<YOUR_SUPABASE_SERVICE_OR_ANON_KEY>",
+          "_note": "plus a PostgREST table path and body; bare /rest/v1/ root is not a valid PostgREST resource"
+        },
+        "outputShape": "untested — gateway never reaches a working Supabase response without a valid upstream key; demo returns body.error / body.message",
+        "quirks": [
+          "HTTPay gateway: surface shows 402 (payable) but the upstream Supabase service REQUIRES a caller-supplied API key — paying does NOT make it work.",
+          "Verified FREE via ?demo=true (10 calls/IP/hr): POST /rest/v1/?demo=true returns 401 {error:'Service supabase requires authentication', instructions:'Pass your upstream API key via the X-Upstream-Token header'}.",
+          "With a fake X-Upstream-Token the upstream replies {message:'JWT could not be decoded'} — confirming a REAL Supabase project JWT is required; there is no shared keyless backend.",
+          "Target URL points at bare PostgREST /rest/v1/ root with no table — even with a key you must append a real table path; root is not a valid PostgREST resource.",
+          "Violates MasterKey no-API-key policy; recommend pruning this endpoint from the registry."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint as a keyless paid service — it is not one. The HTTPay '/api/gateway/supabase' route is a thin proxy to YOUR OWN Supabase project: it demands an X-Upstream-Token header containing a valid Supabase JWT/API key, and forwards to a Supabase REST URL you must also target with a real table path (the registered URL stops at bare /rest/v1/). Without a caller-supplied key it returns 401 'Service supabase requires authentication'; with a bad key the upstream returns 'JWT could not be decoded'. This was confirmed for free via the ?demo=true preview, so no USDC was spent. Because MasterKey's policy excludes endpoints needing a caller-supplied auth key, this should be dropped from the registry rather than tested.",
+        "costObservedUsd": 0
+      },
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "Neon",
+      "kind": "api",
+      "provider": "Neon",
+      "providerId": "neon",
+      "aka": [
+        "neon.tech"
+      ],
+      "description": "Access Neon (serverless Postgres) platform API — projects, branches, and SQL — metered per call via an x402 pay-per-call gateway (HTTPay) at $0.001/call, no API key required.",
+      "tags": [
+        "postgres",
+        "database",
+        "serverless",
+        "branching"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://httpay.xyz/api/gateway/neon/v2/projects",
+          "method": "POST",
+          "provider": "HTTPay",
+          "providerId": "httpay",
+          "amount": 0.001,
+          "protocols": [
+            "x402"
+          ]
+        }
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://httpay.xyz/api/gateway/neon/v2/projects with JSON body {project:{}}",
+        "inputExample": {
+          "project": {}
+        },
+        "outputShape": "body.error / body.instructions (401 auth-required error; no usable result)",
+        "quirks": [
+          "NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\".",
+          "Requires your own upstream Neon API bearer token passed via the X-Upstream-Token header (authType=bearer). The x402 payment does NOT cover upstream auth.",
+          "Charge-then-401 pattern: paying does not unlock the endpoint without supplying your own Neon credentials. Do not retry without a real Neon API key."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This HTTPay gateway endpoint is NOT usable keyless. It charges $0.001 USDC on the x402 payment, then returns HTTP 401 demanding your own upstream Neon API key via the X-Upstream-Token header (e.g. X-Upstream-Token: <your-neon-bearer-token>). The registry's \"no API key required\" claim is incorrect. Without a Neon account API token there is no usable result. If you do have a Neon token, retry POST with body {project:{}} plus the X-Upstream-Token header to create a Neon project.",
+        "costObservedUsd": 0.001,
+        "droppedReason": "neon#0: NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\"."
+      },
+      "_droppedReason": "neon#0: NOT keyless despite registry claim 'no API key required'. Gateway charged $0.001 (payment settled, paid:true) then returned HTTP 401: \"Service 'neon' requires authentication\".",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Turso",
+      "kind": "api",
+      "provider": "Turso",
+      "providerId": "turso",
+      "aka": [
+        "turso.tech",
+        "libsql"
+      ],
+      "description": "Access the Turso platform API (serverless SQLite/libSQL databases) metered per call via an x402 pay-per-call gateway (HTTPay) at $0.001/call, no API key required.",
+      "tags": [
+        "sqlite",
+        "libsql",
+        "database",
+        "serverless",
+        "edge"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://httpay.xyz/api/gateway/turso/v1/organizations",
+          "method": "POST",
+          "provider": "HTTPay",
+          "providerId": "httpay",
+          "amount": 0.001,
+          "protocols": [
+            "x402"
+          ]
+        }
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://httpay.xyz/api/gateway/turso/v1/organizations with JSON body {name} — but returns 401 after payment; requires an upstream Turso bearer token via X-Upstream-Token header.",
+        "inputExample": {
+          "name": "qa-test-org"
+        },
+        "outputShape": "body.error / body.instructions (401 auth-required error; no usable result returned)",
+        "quirks": [
+          "HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication.",
+          "Requires an upstream Turso API key passed via the X-Upstream-Token header (authType=bearer). Without it every call fails after payment.",
+          "This violates the no-API-key policy — the endpoint cannot be used keylessly. Money is lost on each call.",
+          "The 402 pre-flight probe shows payable:true, which is misleading; the real gate is the missing upstream token."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint. The HTTPay Turso gateway charges the $0.001 x402 fee and then returns HTTP 401 demanding an upstream Turso API key via the X-Upstream-Token header (authType: bearer). It cannot be called keylessly, so every attempt loses money with no result. It should be pruned from the registry under the no-API-key policy unless the caller supplies their own Turso bearer token.",
+        "costObservedUsd": 0.001,
+        "droppedReason": "turso#0: HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication."
+      },
+      "_droppedReason": "turso#0: HTTPay gateway charges the x402 fee ($0.001) and THEN returns 401 requiring authentication.",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Agentstools Migration Check",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-migrate-check",
+        "migrate-check",
+        "db-migration-safety",
+        "migration-preflight"
+      ],
+      "description": "Static pre-apply safety check for a database schema migration: send Postgres or MySQL migration SQL/DDL (or an Alembic change file) and get a pass/caution/block verdict with per-finding operation, severity, plain-language reason and a zero-downtime alternative — catching table locks, rewrites and data-loss before the change ships.",
+      "tags": [
+        "database",
+        "migration",
+        "sql",
+        "postgres",
+        "mysql",
+        "devops"
+      ],
+      "modality": {
+        "input": [
+          "code"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/migrate/check",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-31T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "sql": {
+                "type": "string",
+                "description": "The migration SQL / DDL text to check (required)."
+              },
+              "dialect": {
+                "type": "string",
+                "enum": [
+                  "postgres",
+                  "mysql"
+                ],
+                "description": "Database dialect (default postgres)."
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "sql",
+                  "alembic",
+                  "auto"
+                ],
+                "description": "Input format: raw SQL, an Alembic change file, or auto."
+              },
+              "options": {
+                "type": "object",
+                "description": "Optional hints: rolling_deploy, pg_version, in_transaction."
+              }
+            },
+            "required": [
+              "sql"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "A migration-safety verdict. verdict is 'block' on a data-loss or exclusive-lock op, 'caution' on a lockable op with a safe rewrite, 'pass' otherwise.",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "dialect": {
+                "type": "string"
+              },
+              "format": {
+                "type": "string"
+              },
+              "verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "findings": {
+                "type": "array",
+                "description": "Per-statement findings; each has operation, severity, plain-language reason, a zero-downtime remediation and a docs link.",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "block_count": {
+                    "type": "number"
+                  },
+                  "caution_count": {
+                    "type": "number"
+                  },
+                  "info_count": {
+                    "type": "number"
+                  }
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "properties": {
+                  "statements_total": {
+                    "type": "number"
+                  },
+                  "statements_parsed": {
+                    "type": "number"
+                  },
+                  "parse_partial": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-31",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/migrate/check with a JSON body. Required: sql (the migration SQL/DDL text). Optional: dialect ('postgres' default | 'mysql'), format ('sql' | 'alembic' | 'auto'), options (hints: rolling_deploy, pg_version, in_transaction). Result is inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453).",
+        "inputExample": {
+          "dialect": "postgres",
+          "sql": "ALTER TABLE users ADD COLUMN nickname text"
+        },
+        "outputShape": "JSON verdict object (verified live for the ALTER TABLE example -> verdict:pass). Key fields: object ('dbmigrate_check'), dialect, format, verdict ('pass' | 'caution' | 'block'), findings[] (per-statement: operation, severity, plain-language reason, zero-downtime remediation, docs link), summary.{block_count,caution_count,info_count}, coverage.{statements_total,statements_parsed,parse_partial}, disclaimer.",
+        "quirks": [
+          "Static analysis only — nothing is fetched or executed; it parses the migration text into an ordered statement list and walks it deterministically. No network/key/LLM involved.",
+          "Objects created earlier in the same migration are tracked, so an operation on a brand-new table is correctly treated as safe rather than flagged.",
+          "A 'pass' is NOT a promise of zero downtime — lock/rewrite behaviour depends on engine version, table size and load. The disclaimer says as much; treat verdicts as migration-safety indicators, not a guarantee.",
+          "Only 'postgres' and 'mysql' dialects are supported (default postgres). coverage.parse_partial=true flags statements it could not fully parse.",
+          "Charges the flat $0.02 regardless of verdict; a clean 'pass' with empty findings still bills."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Run a defensive pre-apply safety check on a database migration BEFORE shipping it. POST https://api.agentstools.dev/migrate/check with a JSON body: required sql (the migration SQL/DDL text), optional dialect ('postgres' default | 'mysql'), format ('sql' | 'alembic' | 'auto'), and options (rolling_deploy, pg_version, in_transaction hints). It statically parses the text into an ordered statement list and walks it deterministically (nothing is fetched or executed), flagging the well-known hazards: dropping a column/table, truncate, in-place column type change, adding a NOT NULL column without a default, volatile defaults, non-concurrent index build/drop, adding an FK/check/unique/PK without deferred-validate, setting NOT NULL on an existing column, renaming during a rolling deploy, bulk backfills, and heavyweight rewrites. Result is inline in the 200: verdict ('block' on data-loss/exclusive-lock, 'caution' on a lockable op with a safe rewrite, 'pass' otherwise), plus findings[] (operation, severity, plain reason, zero-downtime remediation, docs link), summary counts, and a coverage note. Pays $0.02 USDC via x402 on Base (eip155:8453), keyless. Verdicts are safety indicators, not a guarantee — a 'pass' is not a promise of zero downtime.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools Migration Batch Check",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-migrate-batch",
+        "migrate-batch",
+        "batch-migration-safety",
+        "migration-preflight-batch"
+      ],
+      "description": "Batch pre-apply safety check for many database migrations at once: send a list of named Postgres/MySQL migration files (name + SQL each) and get a per-file pass/caution/block verdict with per-finding operation, severity, reason and zero-downtime remediation, plus a rollup carrying the worst verdict and counts — so an agent can gate a whole pull request or release train of migrations in one call.",
+      "tags": [
+        "database",
+        "migration",
+        "sql",
+        "postgres",
+        "mysql",
+        "devops"
+      ],
+      "modality": {
+        "input": [
+          "code"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/migrate/batch",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "migrations": {
+                "type": "array",
+                "description": "List of objects, each with a name and migration SQL, up to the batch cap.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "A label for the migration file."
+                    },
+                    "sql": {
+                      "type": "string",
+                      "description": "The migration SQL / DDL text for this file."
+                    }
+                  }
+                }
+              },
+              "dialect": {
+                "type": "string",
+                "enum": [
+                  "postgres",
+                  "mysql"
+                ],
+                "description": "Default dialect for entries that do not set one (default postgres)."
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "sql",
+                  "alembic",
+                  "auto"
+                ],
+                "description": "Default input format for entries that do not set one."
+              }
+            },
+            "required": [
+              "migrations"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "A batch migration-safety report. worst_verdict is the worst verdict across the set ('block' > 'caution' > 'pass').",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "count": {
+                "type": "number"
+              },
+              "worst_verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "blocked": {
+                    "type": "array"
+                  },
+                  "caution": {
+                    "type": "array"
+                  },
+                  "passed": {
+                    "type": "array"
+                  },
+                  "block_count": {
+                    "type": "number"
+                  },
+                  "caution_count": {
+                    "type": "number"
+                  },
+                  "pass_count": {
+                    "type": "number"
+                  }
+                }
+              },
+              "results": {
+                "type": "array",
+                "description": "Per-file verdict objects; each is a dbmigrate_check result (name, dialect, format, verdict, findings[], summary, coverage, disclaimer).",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/migrate/batch with a JSON body. Required: migrations[] (each object with name + sql). Optional: dialect ('postgres' default | 'mysql') and format ('sql' | 'alembic' | 'auto') as per-batch defaults for entries that omit their own. Result is inline in the 200. Pays $0.10 USDC via x402 on Base (eip155:8453).",
+        "inputExample": {
+          "dialect": "postgres",
+          "migrations": [
+            {
+              "name": "0001_add_nickname",
+              "sql": "ALTER TABLE users ADD COLUMN nickname text"
+            }
+          ]
+        },
+        "outputShape": "JSON batch report (verified live for the single-file ALTER TABLE example -> worst_verdict:pass). Key fields: object ('dbmigrate_batch'), count, worst_verdict ('pass' | 'caution' | 'block'), summary.{blocked[],caution[],passed[],block_count,caution_count,pass_count}, results[] (one dbmigrate_check per file: name, dialect, format, verdict, findings[], summary, coverage, disclaimer), disclaimer.",
+        "quirks": [
+          "Batch/multi-file form of Agentstools Migration Check (/migrate/check): same deterministic per-file analysis, wrapped with a rollup carrying the worst verdict across the set — use it to gate a whole PR or release train of migrations in one call.",
+          "Static analysis only — nothing is fetched or executed; each file's text is parsed into an ordered statement list and walked deterministically. No network/key/LLM involved.",
+          "Per-file dialect/format can be set on each migration entry; top-level dialect/format are only defaults for entries that omit their own.",
+          "A 'pass' is NOT a promise of zero downtime — lock/rewrite behaviour depends on engine version, table size and load. Treat verdicts as migration-safety indicators, not a guarantee.",
+          "Charges the flat $0.10 regardless of how many migrations are in the batch or their verdicts; a single clean 'pass' still bills the full amount (vs $0.02 for the single-file /migrate/check)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Run a defensive pre-apply safety check over a WHOLE set of database migrations at once (e.g. every migration in a pull request or release train). POST https://api.agentstools.dev/migrate/batch with a JSON body: required migrations[] where each entry is an object with a name and the migration SQL/DDL text, plus optional top-level dialect ('postgres' default | 'mysql') and format ('sql' | 'alembic' | 'auto') that serve as defaults for entries that do not set their own. Each file is statically parsed into an ordered statement list and walked deterministically (nothing is fetched or executed), flagging the well-known hazards: dropping a column/table, truncate, in-place column type change, adding a NOT NULL column without a default, volatile defaults, non-concurrent index build/drop, adding an FK/check/unique/PK without deferred-validate, setting NOT NULL on an existing column, renaming during a rolling deploy, bulk backfills, and heavyweight rewrites. The 200 returns a per-file verdict ('block' on data-loss/exclusive-lock, 'caution' on a lockable op with a safe rewrite, 'pass' otherwise) with findings[] (operation, severity, plain reason, zero-downtime remediation, docs link) and a coverage note, plus a rollup with worst_verdict across the set and summary counts (passed/caution/blocked). Pays $0.10 USDC via x402 on Base (eip155:8453), keyless. Verdicts are safety indicators, not a guarantee — a 'pass' is not a promise of zero downtime. For a single migration use the cheaper Agentstools Migration Check (/migrate/check, $0.02).",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Agentstools SQL Batch Check",
+      "kind": "api",
+      "provider": "Agentstools",
+      "providerId": "agentstools",
+      "aka": [
+        "agentstools-sql-batch",
+        "sqlscan-batch",
+        "sql-batch",
+        "batch-query-safety",
+        "query-preflight-batch"
+      ],
+      "description": "Batch safety and performance preflight for many database queries at once: send a list of named queries (name + SQL each, Postgres/MySQL/SQLite/BigQuery/Snowflake) and get a per-query pass/caution/block verdict with per-finding operation, severity, reason and remediation, plus a rollup carrying the worst verdict and counts — so an agent can gate a whole query log or set of application queries in one call.",
+      "tags": [
+        "database",
+        "sql",
+        "query",
+        "safety",
+        "postgres",
+        "devops"
+      ],
+      "modality": {
+        "input": [
+          "code"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.agentstools.dev/sql/batch",
+          "method": "POST",
+          "provider": "Agentstools",
+          "providerId": "agentstools",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-08-07T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "queries": {
+                "type": "array",
+                "description": "List of objects, each with a name and query text (the SQL is carried on the `sql` field per the provider's documented example).",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "A label for the query."
+                    },
+                    "sql": {
+                      "type": "string",
+                      "description": "The query text (SELECT/UPDATE/DELETE) to screen."
+                    }
+                  }
+                }
+              },
+              "dialect": {
+                "type": "string",
+                "enum": [
+                  "postgres",
+                  "mysql",
+                  "sqlite",
+                  "bigquery",
+                  "snowflake"
+                ],
+                "description": "Default dialect for entries that do not set one (default postgres)."
+              }
+            },
+            "required": [
+              "queries"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "description": "A batch query-safety/performance report. worst_verdict is the worst verdict across the set ('block' > 'caution' > 'pass').",
+            "properties": {
+              "object": {
+                "type": "string"
+              },
+              "count": {
+                "type": "number"
+              },
+              "worst_verdict": {
+                "type": "string",
+                "enum": [
+                  "pass",
+                  "caution",
+                  "block"
+                ]
+              },
+              "summary": {
+                "type": "object",
+                "properties": {
+                  "blocked": {
+                    "type": "array"
+                  },
+                  "caution": {
+                    "type": "array"
+                  },
+                  "passed": {
+                    "type": "array"
+                  },
+                  "block_count": {
+                    "type": "number"
+                  },
+                  "caution_count": {
+                    "type": "number"
+                  },
+                  "pass_count": {
+                    "type": "number"
+                  }
+                }
+              },
+              "results": {
+                "type": "array",
+                "description": "Per-query verdict objects; each is a sqlscan_check result (name, dialect, verdict, findings[], summary, coverage, disclaimer).",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "disclaimer": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-08-07",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.agentstools.dev/sql/batch with a JSON body. Required: queries[] (each object with name + sql). Optional: dialect ('postgres' default | 'mysql' | 'sqlite' | 'bigquery' | 'snowflake') as a per-batch default for entries that omit their own. Result is inline in the 200. Pays $0.10 USDC via x402 on Base (eip155:8453).",
+        "inputExample": {
+          "dialect": "postgres",
+          "queries": [
+            {
+              "name": "q1",
+              "sql": "SELECT id, name FROM users WHERE id = 1"
+            }
+          ]
+        },
+        "outputShape": "JSON batch report (verified live for the single-query SELECT example -> worst_verdict:pass). Key fields: object ('sqlscan_batch'), count, worst_verdict ('pass' | 'caution' | 'block'), summary.{blocked[],caution[],passed[],block_count,caution_count,pass_count}, results[] (one sqlscan_check per query: name, dialect, verdict, findings[], summary.{block_count,caution_count,info_count}, coverage.{statements_total,statements_parsed,parse_partial}, disclaimer), disclaimer.",
+        "quirks": [
+          "Batch/multi-query form of Agentstools SQL Check (/sql/check): same deterministic per-query analysis, wrapped with a rollup carrying the worst verdict across the set — use it to gate a whole query log or set of application queries in one call.",
+          "Static analysis only — nothing is fetched or executed; each query's text is parsed into an ordered statement list and walked deterministically. No network/key/LLM involved.",
+          "Screens two hazard classes: destructive/correctness (UPDATE/DELETE with no WHERE or always-true WHERE, TRUNCATE, NOT IN with a null-yielding subquery, non-aggregated/non-grouped column) decided from text alone; and performance heuristics (select-star, cartesian join, function on an indexed column, leading-wildcard, unbounded scan, deep-offset pagination, heavy distinct count). Without your schema/indexes/EXPLAIN plan, performance findings are honest caution/info hints (never a block, except an unfiltered cartesian product).",
+          "Per-query dialect can be set on each entry; the top-level dialect is only a default for entries that omit their own.",
+          "Charges the flat $0.10 regardless of how many queries are in the batch or their verdicts; a single clean 'pass' still bills the full amount (vs $0.02 for the single-query /sql/check).",
+          "A 'pass' is a query-safety/performance indicator, not a guarantee of correct or fast execution."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Run a defensive pre-run safety/performance screen over a WHOLE set of database queries at once (e.g. an application's query log or a batch of agent-generated queries). POST https://api.agentstools.dev/sql/batch with a JSON body: required queries[] where each entry is an object with a name and the query text on the `sql` field, plus an optional top-level dialect ('postgres' default | 'mysql' | 'sqlite' | 'bigquery' | 'snowflake') that serves as a default for entries that do not set their own. Each query is statically parsed into an ordered statement list and walked deterministically (nothing is fetched or executed), flagging destructive/correctness hazards (UPDATE/DELETE with no or always-true WHERE, TRUNCATE, NOT IN over a null-yielding subquery, ungrouped non-aggregated columns) and performance heuristics (select-star, cartesian join with no condition, function-wrapped indexed column, leading-wildcard search, unbounded scan, deep-offset pagination, heavy distinct usage). The 200 returns a per-query verdict ('block' on data-loss/exclusive hazard, 'caution' on a fixable issue, 'pass' otherwise) with findings[] (operation, severity, plain reason, remediation) and a coverage note, plus a rollup with worst_verdict across the set and summary counts. Pays $0.10 USDC via x402 on Base (eip155:8453), keyless. Verdicts are safety/performance indicators, not a guarantee. For a single query use the cheaper Agentstools SQL Check (/sql/check, $0.02).",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    }
+  ]
+}

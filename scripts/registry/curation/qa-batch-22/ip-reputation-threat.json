@@ -1,0 +1,75 @@
+{
+  "serviceId": "ip-reputation-threat",
+  "subcat": "ip-geolocation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/asn-lookup/analyze",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://shield.vainplex.dev/api/cdp/check/ip",
+      "method": "GET",
+      "amountUsd": 0.002
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/ip-blacklist/check",
+      "method": "GET",
+      "amountUsd": 0.003
+    },
+    {
+      "backend": "https://app.cusethejuice.com/api/bots/ip-threat-check",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://netintel-production-440c.up.railway.app/asn-lookup/analyze?target=<ip-or-domain> (x402, USDC on Base; target passed as query param)",
+    "inputExample": {
+      "target": "8.8.8.8"
+    },
+    "outputShape": "body.score (0-100), body.grade, body.classification, body.findings[] {rule,deduction,detail}; plus geo/ASN fields body.asn, body.asn_number, body.organization, body.country, body.region, body.city, body.hostname, body.is_hosting, body.is_cloud, body.is_vpn",
+    "quirks": [
+      "target is a QUERY PARAM on a GET request (no JSON body): ?target=<ip-or-domain>",
+      "Accepts both IPv4/IPv6 addresses and domain names as target"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://netintel-production-440c.up.railway.app/asn-lookup/analyze with a single query param target set to an IP address (v4 or v6) or a domain name, e.g. ?target=8.8.8.8. Pay via x402 (USDC on Base, ~$0.001/call). The JSON response is returned synchronously: read body.score (0-100), body.grade and body.classification for reputation, and body.findings[] for the specific risk signals. ASN/geo enrichment (organization, country, is_vpn, is_cloud, is_hosting) is in the same flat object.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ip-reputation-threat#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ip-reputation-threat#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ip-reputation-threat#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ip-reputation-threat#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

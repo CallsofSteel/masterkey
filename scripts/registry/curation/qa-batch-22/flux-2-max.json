@@ -1,0 +1,46 @@
+{
+  "serviceId": "flux-2-max",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image/flux-2-max",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image/flux-2-max with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "unknown (untested — likely body.image / body.url for FLUX image output, but not confirmed)",
+    "quirks": [
+      "Payment is Solana-only: paymentAccepts has a single entry network=solana, USDC asset EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, amount 80000 (=$0.08), payTo 9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA, feePayer 2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4. It does NOT accept Base/Tempo/etc.",
+      "Master Solana wallet (B17DyGyVAGgMiijrcCQLtn1TJNBosncKJXYKrZuFzug8) had $0.00 USDC at test time; the $89.39 USDC balance is on Base which this endpoint won't take. Fund Solana with USDC before calling.",
+      "inputSchema/instructions are null in the registry; {prompt} is the inferred FLUX-standard field and was NOT confirmed by a real response.",
+      "priceDisplay is 'Varies' but the live quote was a flat $0.08 for a basic prompt; reference images / larger outputs may cost more."
+    ],
+    "needs": [
+      "Fund master Solana wallet B17DyGyVAGgMiijrcCQLtn1TJNBosncKJXYKrZuFzug8 with USDC (>= $0.08) — endpoint accepts Solana USDC only, not the Base balance"
+    ],
+    "needsApproval": false,
+    "guide": "FLUX.2 Max image generation by Black Forest Labs via Xona. Call POST https://api.xona-agent.com/image/flux-2-max with a JSON body like {\"prompt\":\"...\"}; it supports reference images per the description. CRITICAL: this endpoint only accepts payment in USDC on Solana (~$0.08/call), so the paying wallet must hold Solana USDC — a Base USDC balance will not work. Could not be verified in this run because the master Solana wallet had $0.00 (Base balance was $89.39 but is not accepted). Once Solana is funded, retry; on success read the generated image from the response body (field unconfirmed, likely image/url).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-max#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

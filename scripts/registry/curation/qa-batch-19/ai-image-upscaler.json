@@ -1,0 +1,44 @@
+{
+  "serviceId": "ai-image-upscaler",
+  "subcat": "image-editing-manipulation",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/upscale-image",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/upscale-image with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/64px-Camponotus_flavomarginatus_ant.jpg"
+    },
+    "outputShape": "No successful output produced. On failure: body.error (string). A working response is undocumented; both paid calls returned only an error object.",
+    "quirks": [
+      "Charge-then-fail: charges $0.10 USDC even when upscaling fails. First paid call with a valid public image_url returned 502 {error:'Upscaling failed: Unprocessable Entity'}.",
+      "Required body field is image_url (a URL string). Using 'image' instead returns 400 {error:\"Missing 'image_url' field\"}.",
+      "Could not obtain a single successful upscale across 2 paid attempts ($0.20 spent). Upstream model appears to reject otherwise-valid images.",
+      "txHash not captured / confirmed:false on both paid calls."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402-deployer.x402-deployer.workers.dev/upscale-image with JSON body {\"image_url\":\"<public image URL>\"} and pay $0.10 USDC via x402 on Base. The required field is image_url (omitting it returns 400 'Missing image_url field'). WARNING: this endpoint is currently broken — it charges $0.10 even on failure, and in QA it returned 502 'Upscaling failed: Unprocessable Entity' for a valid public image. Avoid until upstream is fixed; the working output shape is unknown.",
+    "costObservedUsd": 0.2
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ai-image-upscaler#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "serviceId": "ideogram-v3",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/api/proxy/ideogram-v3-text-to-image-best-text-rendering-2",
+      "method": "GET"
+    },
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/image/text",
+      "method": "POST",
+      "amountUsd": 0.12
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/image/text with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.images[0].url (PNG image URL); also body.images[0].width, body.images[0].height, body.seed, body.model",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Pay $0.12 USDC via x402 (Base) and POST a JSON body {\"prompt\":\"...\"} to the endpoint. The call is synchronous: the 200 response returns immediately (~12s inference) with the generated image at body.images[0].url. Backed by fal-ai/ideogram/v3, output is a 1024x1024 PNG. Read the image URL from body.images[0].url.",
+    "costObservedUsd": 0.12
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ideogram-v3#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.013
+    },
+    {
+      "key": "ideogram-v3#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.12
+    }
+  ]
+}

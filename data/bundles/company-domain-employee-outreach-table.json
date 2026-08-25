@@ -1,0 +1,886 @@
+{
+  "slug": "company-domain-employee-outreach-table",
+  "name": "Company Domain → Employee Outreach Table",
+  "description": "For each company domain, find employees via Apollo, enrich to get real names and emails, draft a personalised intro note if an email is found, and return a formatted table.",
+  "inputs": [],
+  "graph": {
+    "nodes": [
+      {
+        "id": "input-companies",
+        "kind": "input",
+        "position": {
+          "x": 0,
+          "y": 0
+        },
+        "data": {
+          "label": "Seed Companies",
+          "prompt": "Enter the company names or domains you're inspired by (one per line, e.g. Stripe, Coinbase). The agent will find these companies AND discover similar ones automatically.",
+          "required": true,
+          "saveAs": "seedCompanies"
+        }
+      },
+      {
+        "id": "input-candidate-count",
+        "kind": "input",
+        "position": {
+          "x": 0,
+          "y": 160
+        },
+        "data": {
+          "label": "Candidate Count Range",
+          "prompt": "How many candidates are you looking for? Enter a range (e.g. '5–10', '10–20', '20–50'). The agent will aim for this many total people across all companies.",
+          "required": true,
+          "saveAs": "candidateRange"
+        }
+      },
+      {
+        "id": "input-role-filter",
+        "kind": "input",
+        "position": {
+          "x": 0,
+          "y": 320
+        },
+        "data": {
+          "label": "Role / Title Filter",
+          "prompt": "Which roles or job titles are you targeting? You can include the industry/field here too (e.g. 'Head of Marketing at a Fintech company', 'VP Engineering in Biotech', 'CFO in Genetic Finance'). Leave blank for all roles.",
+          "required": false,
+          "saveAs": "roleFilter"
+        }
+      },
+      {
+        "id": "input-sender",
+        "kind": "input",
+        "position": {
+          "x": 0,
+          "y": 480
+        },
+        "data": {
+          "label": "Sender Info for Intro Notes",
+          "prompt": "Briefly describe yourself / your company so the agent can personalise the intro note (e.g. 'Alex from Acme – we help SaaS teams reduce churn').",
+          "required": true,
+          "saveAs": "senderInfo"
+        }
+      },
+      {
+        "id": "resolve-seed-domains",
+        "kind": "instruction",
+        "position": {
+          "x": 280,
+          "y": 160
+        },
+        "data": {
+          "label": "Resolve Seed Company Domains",
+          "instruction": "Take {{input-companies.output}} (a list of company names or domains). For each entry, determine its canonical website domain (e.g. 'Stripe' → 'stripe.com', 'Coinbase' → 'coinbase.com'). Produce a clean array of domain strings. These are the seed domains."
+        }
+      },
+      {
+        "id": "find-similar",
+        "kind": "service",
+        "position": {
+          "x": 560,
+          "y": 60
+        },
+        "data": {
+          "label": "Exa — Find Similar Companies",
+          "serviceId": "exa-find-similar",
+          "inputMap": {
+            "url": "{{resolve-seed-domains.output}}"
+          },
+          "endpoint": {
+            "id": "exa-find-similar",
+            "name": "Exa Find Similar",
+            "kind": "api",
+            "provider": "Exa",
+            "category": "search",
+            "subcategory": "ai-semantic-search",
+            "description": "Exa find-similar — give a URL and get semantically similar pages from across the web. Served via the BlockRun and StableEnrich gateways. Keyless pay-per-call x402.",
+            "pricing": "$0.010 per search",
+            "tags": [
+              "semantic-search",
+              "find-similar",
+              "rag",
+              "web-search"
+            ],
+            "endpoints": [
+              {
+                "provider": "BlockRun",
+                "method": "POST",
+                "url": "https://blockrun.ai/api/v1/exa/find-similar",
+                "price": "$0.010",
+                "priceUsd": 0.01,
+                "unit": "per search",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+                    "amount": "10000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              },
+              {
+                "provider": "StableEnrich",
+                "method": "POST",
+                "url": "https://stableenrich.dev/api/exa/find-similar",
+                "price": "$0.010",
+                "priceUsd": 0.01,
+                "unit": "per search",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+                    "amount": "10000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              }
+            ],
+            "usage": {
+              "status": "verified",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "POST https://blockrun.ai/api/v1/exa/find-similar with JSON body {url}",
+              "inputExample": {
+                "url": "https://en.wikipedia.org/wiki/Paris"
+              },
+              "outputShape": "body.results[].{id,title,url,author,score}; body.requestId. Each result is a page similar to the input url, with a relevance score.",
+              "guide": "POST https://blockrun.ai/api/v1/exa/find-similar with a JSON body {\"url\": \"<a page url>\"}. Keyless x402 (~$0.01 USDC on Base). The response is synchronous JSON: read body.results[] (each has title, url, and a similarity score). Use this to discover pages related to one you already have.",
+              "quirks": [
+                "Required field is `url` (a single page URL) — NOT `query`. Returns pages semantically similar to that url.",
+                "No first-party api.exa.ai find-similar endpoint is published here, so this is served via the BlockRun (default) and StableEnrich aggregators (~$0.01). Pin with backendProviderId 'stableenrich' if desired.",
+                "Keyless x402 (~$0.01 USDC on Base). BlockRun route re-verified working 2026-06-10 (200, returned scored results[])."
+              ]
+            }
+          },
+          "instruction": "For each seed domain, call Exa Find Similar using the company's homepage URL (e.g. https://stripe.com). Collect the top results — these are semantically similar companies. Extract their domains from the returned URLs. Deduplicate and combine with the seed domains to form the full company list to process."
+        }
+      },
+      {
+        "id": "compile-all-domains",
+        "kind": "instruction",
+        "position": {
+          "x": 840,
+          "y": 160
+        },
+        "data": {
+          "label": "Compile Full Domain List",
+          "instruction": "Combine the seed domains from {{resolve-seed-domains.output}} with the similar-company domains discovered in {{find-similar.output}}. Deduplicate. Parse the candidate count range from {{input-candidate-count.output}} (e.g. '10–20' → min=10, max=20). Aim to have enough companies to surface at least the upper bound number of candidates. Store the final deduped domain array and the (min, max) candidate targets."
+        }
+      },
+      {
+        "id": "loop-domains",
+        "kind": "loop",
+        "position": {
+          "x": 1120,
+          "y": 160
+        },
+        "data": {
+          "label": "For Each Company Domain",
+          "overRef": "{{compile-all-domains.output}}",
+          "until": "All domains processed OR total enriched candidates >= upper bound of candidateRange",
+          "bodyNodeIds": [
+            "org-search",
+            "people-search",
+            "extract-person-ids",
+            "decide-people-found",
+            "people-enrich",
+            "decide-email",
+            "draft-profile",
+            "log-no-email",
+            "compile-domain-rows"
+          ]
+        }
+      },
+      {
+        "id": "decide-people-found",
+        "kind": "decision",
+        "position": {
+          "x": 1680,
+          "y": 200
+        },
+        "data": {
+          "label": "People found?",
+          "question": "Did {{people-search.output}} return at least one person (non-empty results array)?",
+          "options": [
+            {
+              "id": "people-yes",
+              "label": "Yes — people found"
+            },
+            {
+              "id": "people-no",
+              "label": "No — zero results"
+            }
+          ]
+        }
+      },
+      {
+        "id": "decide-email",
+        "kind": "decision",
+        "position": {
+          "x": 1960,
+          "y": 200
+        },
+        "data": {
+          "label": "Email found?",
+          "question": "After PDL enrich + Hunter fallback, does this person have at least one usable email address?",
+          "options": [
+            {
+              "id": "yes-email",
+              "label": "Yes — email found"
+            },
+            {
+              "id": "no-email",
+              "label": "No — email missing"
+            }
+          ]
+        }
+      },
+      {
+        "id": "draft-profile",
+        "kind": "instruction",
+        "position": {
+          "x": 2240,
+          "y": 60
+        },
+        "data": {
+          "label": "Draft Candidate Profile + Intro Note",
+          "instruction": "Using the PDL-enriched person data — specifically: data.full_name, data.job_title, data.job_company_name, data.job_company_website, data.work_email (array), data.mobile_phone, data.linkedin_url, data.twitter_username, data.github_username, data.experience[] (array of {company.name, title.name, start_date, end_date}), data.education[] — PLUS any Hunter-found email from {{hunter-email.output}} (use data.email if data.score ≥ 50), write:\n1. A 2–3 sentence TLDR summarising what this person excels at, their current role, and 1–2 standout prior employers drawn from data.experience[]\n2. A short 3–4 sentence personalised intro/outreach note that references {{input-sender.output}} and the candidate's specific background\n\nThen produce a row object with exactly these fields (use '—' for any missing value):\n{\n  domain: (current loop domain),\n  name: data.full_name,\n  title: data.job_title,\n  current_company: data.job_company_name,\n  email: best available email (PDL work_email[0] preferred, Hunter fallback),\n  phone: data.mobile_phone,\n  linkedin: data.linkedin_url,\n  twitter: data.twitter_username (prefix https://x.com/ if bare handle),\n  github: data.github_username (prefix https://github.com/ if bare handle),\n  tldr: (the TLDR you wrote),\n  intro_note: (the intro note you wrote),\n  status: 'email_found'\n}"
+        }
+      },
+      {
+        "id": "log-no-email",
+        "kind": "instruction",
+        "position": {
+          "x": 2240,
+          "y": 320
+        },
+        "data": {
+          "label": "Log Profile (no email)",
+          "instruction": "No email was found via PDL or Hunter. Using the PDL-enriched data (data.full_name, data.job_title, data.job_company_name, data.job_company_website, data.linkedin_url, data.twitter_username, data.github_username, data.experience[]), still write a 2–3 sentence TLDR on the person's background.\n\nProduce a row object with exactly these fields:\n{\n  domain: (current loop domain),\n  name: data.full_name,\n  title: data.job_title,\n  current_company: data.job_company_name,\n  email: '—',\n  phone: '—',\n  linkedin: data.linkedin_url,\n  twitter: data.twitter_username (prefix https://x.com/ if bare handle, else '—'),\n  github: data.github_username (prefix https://github.com/ if bare handle, else '—'),\n  tldr: (the TLDR you wrote),\n  intro_note: '—',\n  status: 'no_email'\n}"
+        }
+      },
+      {
+        "id": "compile-domain-rows",
+        "kind": "instruction",
+        "position": {
+          "x": 2520,
+          "y": 160
+        },
+        "data": {
+          "label": "Compile Rows for This Domain",
+          "instruction": "Collect all person row objects produced by draft-profile (status='email_found') and log-no-email (status='no_email') for the current domain iteration. Each row must have all 12 fields: {domain, name, title, current_company, email, phone, linkedin, twitter, github, tldr, intro_note, status}. If the people-no branch fired (decide-people-found returned zero results), emit a single placeholder row: {domain, name='No results', title='—', current_company='—', email='—', phone='—', linkedin='—', twitter='—', github='—', tldr='—', intro_note='—', status='no_results'}. Append these rows to the global candidate list carried across loop iterations."
+        }
+      },
+      {
+        "id": "build-html",
+        "kind": "instruction",
+        "position": {
+          "x": 2800,
+          "y": 160
+        },
+        "data": {
+          "label": "Build Minimalist HTML Report",
+          "instruction": "Take all collected candidate rows from the loop (gathered across all domains from compile-domain-rows) and render a complete, self-contained HTML document. Follow this global HTML design guideline for all published reports:\n\n── GLOBAL HTML BASELINE ──\n• Font: Inter or system-ui, 14–16px base, 1.5 line-height\n• Palette: #fff background, #111 primary text, #6b7280 muted, #f3f4f6 surface, #e5e7eb border, #16a34a green badge, #9ca3af grey badge\n• Layout: max-width 960px, centred, 24px page padding\n• Cards: 1px solid #e5e7eb border, 12px border-radius, 20px padding, 16px gap, subtle box-shadow (0 1px 3px rgba(0,0,0,.07))\n• Links: colour #2563eb, no underline by default, underline on hover\n• Badges: inline-block, 4px 10px padding, 9999px border-radius, 12px font-size, font-weight 600\n• Collapsibles: use <details>/<summary> for the intro note block\n• Fully inline CSS, zero external dependencies, no <script> required for layout\n• Footer: small, muted, border-top, 'Generated by MasterKey · [date]'\n──────────────────────────\n\nReport structure:\n1. <head>: charset, viewport, <title>Candidate Outreach Report</title>, all CSS inline in <style>\n2. Header section: 'Candidate Outreach Report' (h1), run date, summary stats bar (total candidates | # with email | # without email) in three small stat chips\n3. One card per candidate containing:\n   • Name (bold, 18px) + Title (muted, 14px) on the same line\n   • Current Company with domain in parentheses\n   • TLDR in italic, muted colour, 13px\n   • Contact row: 📧 email (mailto link) | 📞 phone | 🔗 LinkedIn | 🐦 Twitter/X | 🐙 GitHub — show '—' if missing; make all present values clickable\n   • Intro Note inside a <details><summary>Show intro note</summary>…</details> block with #f9fafb background and 12px padding\n   • Status badge bottom-right: green 'Email found' or grey 'No email'\n4. Footer: 'Generated by MasterKey · [date] · Total cost estimate: ~$[X]'\n\nInput data: all rows from compile-domain-rows across all loop iterations, each with fields {domain, name, title, current_company, email, phone, linkedin, twitter, github, tldr, intro_note, status}.\nOutput ONLY the raw HTML string — no markdown fences, no commentary."
+        }
+      },
+      {
+        "id": "upload-html",
+        "kind": "service",
+        "position": {
+          "x": 3080,
+          "y": 160
+        },
+        "data": {
+          "label": "MiniUp — Publish HTML Page",
+          "serviceId": "miniup",
+          "inputMap": {
+            "name": "candidate-report-{{compile-all-domains.output}}",
+            "html": "{{build-html.output}}",
+            "visibility": "public"
+          },
+          "endpoint": {
+            "id": "miniup",
+            "name": "MiniUp",
+            "kind": "api",
+            "provider": "MiniUp",
+            "category": "infrastructure",
+            "subcategory": "app-hosting-paas",
+            "description": "MiniUp — turn HTML into a hosted micro-app/site: create, upload assets, and publish/unpublish to a live URL.",
+            "pricing": "$0.0070 per call",
+            "tags": [
+              "app-hosting",
+              "website",
+              "deploy",
+              "html"
+            ],
+            "endpoints": [
+              {
+                "provider": "www.miniup",
+                "method": "POST",
+                "url": "https://www.miniup.io/api/x402/apps",
+                "price": "$0.0070",
+                "priceUsd": 0.007,
+                "unit": "per call",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x318a8BAC69c4ec1F9e489CE223B7cE2D719bcD3b",
+                    "amount": "7000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Desired MiniUp app slug."
+                    },
+                    "html": {
+                      "type": "string",
+                      "description": "Complete HTML document for index.html."
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "Optional password. Providing it makes the app private."
+                    },
+                    "visibility": {
+                      "type": "string",
+                      "enum": [
+                        "private",
+                        "public"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "html"
+                  ]
+                },
+                "outputSchema": {
+                  "type": "object"
+                }
+              }
+            ],
+            "usage": {
+              "status": "verified",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "POST https://www.miniup.io/api/x402/apps with JSON body {name, html, visibility?, password?}",
+              "inputExample": {
+                "name": "qa-mk-f0xp1efl",
+                "html": "<!doctype html><html><head><title>QA</title></head><body><h1>hello</h1></body></html>",
+                "visibility": "public"
+              },
+              "outputShape": "body.app.appId (slug), body.app.status (\"created\"), body.app.entryPoint, body.receipt.txHash, body.receipt.receiptId",
+              "guide": "Create a hosted micro-app by POSTing JSON {name, html} to https://www.miniup.io/api/x402/apps (x402, ~$0.007 USDC on Base, no API key). 'name' is a globally-unique slug — generate a random one, because a taken/invalid slug returns 400 'Page name unavailable' yet still charges you. 'html' is the full HTML document served as index.html; add visibility:'public'|'private' (or a password for private). On success (200) read body.app.appId and body.app.status='created'; the on-chain receipt is at body.receipt.txHash. The response gives no explicit live URL — it is derived from the slug.",
+              "quirks": [
+                "The 'name' field is a globally-unique slug. A taken or invalid slug returns HTTP 400 'Page name unavailable' AND STILL CHARGES $0.007. Use a unique random slug.",
+                "required fields: name + html; html must be a complete HTML document used as index.html.",
+                "Response gives app.status='created', no explicit live URL field; the URL is derived from the slug.",
+                "visibility:'public'|'private'; supplying 'password' makes the app private."
+              ]
+            }
+          },
+          "instruction": "Publish the HTML report to MiniUp. Generate a unique random slug (e.g. 'candidates-XXXXXX' with 6 random chars). Pass the full HTML from {{build-html.output}}. Retrieve the live public URL from the response (derived from the slug: https://miniup.io/<appId>)."
+        }
+      },
+      {
+        "id": "output-link",
+        "kind": "output",
+        "position": {
+          "x": 3360,
+          "y": 160
+        },
+        "data": {
+          "label": "Hosted Report Link",
+          "format": "Plain text with summary",
+          "template": "✅ Your candidate outreach report is ready!\n\n🔗 View it here: {{upload-html.output}} (the MiniUp public URL)\n\nSummary:\n- Seed companies: {{input-companies.output}}\n- Similar companies discovered & searched: listed in report\n- Total candidates found: [count]\n- Candidates with email: [count]\n- Candidates without email: [count]\n\nOpen the link to view the full HTML report with profiles, contact info, social handles, and personalised intro notes."
+        }
+      },
+      {
+        "id": "org-enrich",
+        "kind": "service",
+        "position": {
+          "x": 1400,
+          "y": 0
+        },
+        "data": {
+          "label": "CompanyEnrich — Verify Domain Profile",
+          "serviceId": "companyenrich-org-enrich",
+          "inputMap": {
+            "domain": "{{loop-domains.current}}"
+          },
+          "endpoint": {
+            "id": "companyenrich-org-enrich",
+            "name": "CompanyEnrich Org Enrich",
+            "kind": "api",
+            "provider": "StableEnrich",
+            "category": "data-intelligence",
+            "subcategory": "company-people-data",
+            "description": "CompanyEnrich organization enrich — full company profile by domain (employees/revenue as range strings, funding array, socials). Verify the returned domain before downstream people searches. $0.06.",
+            "pricing": "$0.060 per call",
+            "tags": [
+              "company-enrichment",
+              "org-data",
+              "firmographics",
+              "companyenrich",
+              "x402"
+            ],
+            "endpoints": [
+              {
+                "provider": "stableenrich",
+                "method": "POST",
+                "url": "https://stableenrich.dev/api/companyenrich/org-enrich",
+                "price": "$0.060",
+                "priceUsd": 0.06,
+                "unit": "per call",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+                    "amount": "60000",
+                    "scheme": "exact"
+                  },
+                  {
+                    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+                    "amount": "60000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              }
+            ],
+            "usage": {
+              "status": "untested",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "POST /api/companyenrich/org-enrich {domain}",
+              "inputExample": {
+                "domain": "stripe.com"
+              },
+              "outputShape": "JSON body (see StableEnrich OpenAPI).",
+              "guide": "CompanyEnrich org-enrich {domain} → firmographics. employees/revenue are RANGE strings (don t numeric-compare). Known bad resolves: openai.com → wrong entity; x.com → 404 (use twitter.com). M&A not in funding. Use to verify a company domain before FullEnrich people-search.",
+              "quirks": []
+            }
+          },
+          "instruction": "Enrich the current company domain to verify it resolves correctly and retrieve its canonical profile (name, industry, employee count range, funding, socials). Extract the verified domain to pass downstream. If the response is a 404 or wrong entity, flag this domain as unresolvable and skip to the next loop iteration."
+        }
+      },
+      {
+        "id": "people-search",
+        "kind": "service",
+        "position": {
+          "x": 1400,
+          "y": 200
+        },
+        "data": {
+          "label": "FullEnrich — People Search",
+          "serviceId": "fullenrich-people-search",
+          "inputMap": {
+            "current_company_domains": "[{\"value\": \"{{loop-domains.current}}\"}]",
+            "current_position_titles": "{{input-role-filter.output}}"
+          },
+          "endpoint": {
+            "id": "fullenrich-people-search",
+            "name": "FullEnrich People Search",
+            "kind": "api",
+            "provider": "StableEnrich",
+            "category": "data-intelligence",
+            "subcategory": "company-people-data",
+            "description": "FullEnrich people search — find people by company domain/name/LinkedIn, seniority, title, location, skills. First-class people discovery (replaces Apollo). $0.14 when results, free when empty; ≤10 per query, paginate with search_after. Email is NOT in results — chain PDL people-enrich for emails/phone.",
+            "pricing": "$0.140 per call",
+            "tags": [
+              "people-search",
+              "prospecting",
+              "b2b-data",
+              "fullenrich",
+              "x402"
+            ],
+            "endpoints": [
+              {
+                "provider": "stableenrich",
+                "method": "POST",
+                "url": "https://stableenrich.dev/api/fullenrich/people-search",
+                "price": "$0.140",
+                "priceUsd": 0.14,
+                "unit": "per call",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+                    "amount": "140000",
+                    "scheme": "exact"
+                  },
+                  {
+                    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+                    "amount": "140000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              }
+            ],
+            "usage": {
+              "status": "untested",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "POST /api/fullenrich/people-search with JSON filters (each value as {value:...})",
+              "inputExample": {
+                "current_company_domains": [
+                  {
+                    "value": "stripe.com"
+                  }
+                ],
+                "current_position_seniority_level": [
+                  {
+                    "value": "VP"
+                  }
+                ]
+              },
+              "outputShape": "JSON body (see StableEnrich OpenAPI).",
+              "guide": "FullEnrich people search. Filter by current_company_domains, current_position_seniority_level (C-level|VP|Head|Founder — not Apollo values), current_position_titles, person_locations, person_skills. ≥1 filter required (offset alone → 400). 3+ filters often returns zero — start with domain+seniority. ≤10 results/query; paginate via metadata.search_after. Free on no match. For emails/phone, chain to PDL people-enrich by profile/email.",
+              "quirks": []
+            }
+          },
+          "instruction": "Search for people at this company domain. Apply role/title filter from {{input-role-filter.output}} if provided (wrap each title as {value: '...'}). Start with domain + seniority/title filters; avoid combining 3+ filters as that often returns zero results. Collect up to 10 results per call. From each result extract: full_name, linkedin_url, current_job_title, current_company_name. Note: emails are NOT returned here — chain to PDL People Enrich for those."
+        }
+      },
+      {
+        "id": "extract-linkedin-urls",
+        "kind": "instruction",
+        "position": {
+          "x": 1680,
+          "y": 0
+        },
+        "data": {
+          "label": "Extract LinkedIn URLs",
+          "instruction": "From {{people-search.output}}, extract each person's linkedin_url (e.g. https://www.linkedin.com/in/patrickcollison). Produce a clean array of LinkedIn URL strings. If empty, note no people were found for this domain."
+        }
+      },
+      {
+        "id": "people-enrich",
+        "kind": "service",
+        "position": {
+          "x": 1960,
+          "y": 0
+        },
+        "data": {
+          "label": "PDL People Enrich",
+          "serviceId": "pdl-people-enrich",
+          "inputMap": {
+            "profile": "{{extract-linkedin-urls.output}}"
+          },
+          "endpoint": {
+            "id": "pdl-people-enrich",
+            "name": "PDL People Enrich",
+            "kind": "api",
+            "provider": "StableEnrich",
+            "category": "data-intelligence",
+            "subcategory": "company-people-data",
+            "description": "People Data Labs person enrich — full career history, emails, and phone. Best after a people-search: enrich by LinkedIn profile or email. $0.28 per match, free on no-match (HTTP 200, data:null).",
+            "pricing": "$0.280 per call",
+            "tags": [
+              "people-enrichment",
+              "email",
+              "phone",
+              "career-history",
+              "pdl",
+              "x402"
+            ],
+            "endpoints": [
+              {
+                "provider": "stableenrich",
+                "method": "POST",
+                "url": "https://stableenrich.dev/api/pdl/people-enrich",
+                "price": "$0.280",
+                "priceUsd": 0.28,
+                "unit": "per call",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+                    "amount": "280000",
+                    "scheme": "exact"
+                  },
+                  {
+                    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+                    "amount": "280000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              }
+            ],
+            "usage": {
+              "status": "untested",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "POST /api/pdl/people-enrich with one of {email} | {profile} | {first_name+last_name+company_domain}",
+              "inputExample": {
+                "profile": "https://www.linkedin.com/in/patrickcollison"
+              },
+              "outputShape": "JSON body (see StableEnrich OpenAPI).",
+              "guide": "PDL people-enrich. Prefer {email}, else {profile} (LinkedIn URL), else {first_name,last_name,company_domain}. {first_name,last_name} alone → 400. No match → HTTP 200 {status:404,data:null}, NOT billed. Returns career history, emails, phone. Use as the enrich step after FullEnrich people-search resolves LinkedIn URLs.",
+              "quirks": []
+            }
+          },
+          "instruction": "For each LinkedIn URL from {{extract-linkedin-urls.output}}, call PDL People Enrich using {profile: '<linkedin_url>'}. Retrieve: full name, title, current company, work emails, phone numbers, full career history, education, LinkedIn URL. One call per person. If PDL returns HTTP 200 with data:null (no match), fall back to the name+company_domain form: {first_name, last_name, company_domain}. Collect all enriched profiles."
+        }
+      },
+      {
+        "id": "hunter-email",
+        "kind": "service",
+        "position": {
+          "x": 1956,
+          "y": 102
+        },
+        "data": {
+          "label": "Hunter — Email Finder (fallback)",
+          "serviceId": "hunter-io-email-finder",
+          "backendProviderId": "orthogonal",
+          "inputMap": {
+            "domain": "{{loop-domains.current}}",
+            "first_name": "{{people-enrich.output}}",
+            "last_name": "{{people-enrich.output}}"
+          },
+          "endpoint": {
+            "id": "hunter-io-email-finder",
+            "name": "Hunter.io Email Finder",
+            "kind": "api",
+            "provider": "Orthogonal",
+            "category": "data-intelligence",
+            "subcategory": "company-people-data",
+            "description": "Find the most likely email address for a person given their name and company domain. Returns the guessed email plus a confidence score and a verification block.",
+            "pricing": "$0.010 per call",
+            "tags": [
+              "email-finder",
+              "email-verification",
+              "contact-enrichment",
+              "b2b",
+              "lead-generation"
+            ],
+            "endpoints": [
+              {
+                "provider": "Orthogonal",
+                "method": "GET",
+                "url": "https://x402.orth.sh/hunter/v2/email-finder",
+                "price": "$0.010",
+                "priceUsd": 0.01,
+                "unit": "per call",
+                "protocols": [
+                  "x402"
+                ],
+                "accepts": [
+                  {
+                    "network": "base",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0xb08759dd16756db5e6B8E3CA45588c7B98C7F809",
+                    "amount": "10000",
+                    "scheme": "exact"
+                  }
+                ],
+                "inputSchema": null,
+                "outputSchema": null
+              }
+            ],
+            "usage": {
+              "status": "verified",
+              "resultPull": "sync",
+              "auth": "none",
+              "callShape": "GET https://x402.orth.sh/hunter/v2/email-finder?domain=<domain>&first_name=<first>&last_name=<last> (x402 Base USDC, no body). Provide domain (or company) AND a name (first_name+last_name, or full_name). linkedin_handle also accepted.",
+              "inputExample": {
+                "domain": "stripe.com",
+                "first_name": "Patrick",
+                "last_name": "Collison"
+              },
+              "outputShape": "data.email, data.score (0-100 confidence), data.first_name, data.last_name, data.domain, data.company, data.accept_all (bool), data.position, data.twitter, data.linkedin_url, data.phone_number, data.source_type, data.sources[], data.verification.status (valid/invalid/...), data.verification.date, meta.params",
+              "guide": "Find the most likely email address for a person given their name and company domain. Returns the guessed email plus a confidence score and a verification block. GET https://x402.orth.sh/hunter/v2/email-finder?domain=<domain>&first_name=<first>&last_name=<last> (x402 Base USDC, no body). Provide domain (or company) AND a name (first_name+last_name, or full_name). linkedin_handle also accepted. Output: data.email, data.score (0-100 confidence), data.first_name, data.last_name, data.domain, data.company, data.accept_all (bool), data.position, data.twitter, data.linkedin_url, data.phone_number, data.source_type, data.sources[], data.verification.status (valid/invalid/...), data.verification.date, meta.params",
+              "quirks": [
+                "All query params are individually optional in the schema, but a useful call needs domain (or company) PLUS a name (first_name+last_name, or full_name); company is accepted but domain is strongly preferred",
+                "Input is URL query params, not a JSON body (GET)",
+                "Returned email may differ from a naive first.last@domain guess (returned collison@stripe.com, not patrick@stripe.com)",
+                "Read data.score for confidence and data.verification.status for deliverability; data.accept_all=true means the domain accepts all addresses so a high score is less meaningful",
+                "Underlying resource is api.hunter.io/v2/email-finder fronted by the Orthogonal x402 gateway"
+              ]
+            }
+          },
+          "instruction": "For each enriched person where PDL returned no email (data.emails is empty/null): call Hunter Email Finder using domain={{loop-domains.current}}, first_name and last_name from the PDL profile. Check data.score — accept emails with score ≥ 50. Attach the found email and data.verification.status back to the person's record. Skip this call entirely for people who already have an email from PDL."
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "e_input-companies_resolve-seed-domains_0",
+        "source": "input-companies",
+        "target": "resolve-seed-domains"
+      },
+      {
+        "id": "e_input-role-filter_resolve-seed-domains_1",
+        "source": "input-role-filter",
+        "target": "resolve-seed-domains"
+      },
+      {
+        "id": "e_resolve-seed-domains_find-similar_2",
+        "source": "resolve-seed-domains",
+        "target": "find-similar"
+      },
+      {
+        "id": "e_resolve-seed-domains_compile-all-domains_3",
+        "source": "resolve-seed-domains",
+        "target": "compile-all-domains"
+      },
+      {
+        "id": "e_find-similar_compile-all-domains_4",
+        "source": "find-similar",
+        "target": "compile-all-domains"
+      },
+      {
+        "id": "e_input-candidate-count_compile-all-domains_5",
+        "source": "input-candidate-count",
+        "target": "compile-all-domains"
+      },
+      {
+        "id": "e_compile-all-domains_loop-domains_6",
+        "source": "compile-all-domains",
+        "target": "loop-domains"
+      },
+      {
+        "id": "e_input-sender_loop-domains_7",
+        "source": "input-sender",
+        "target": "loop-domains"
+      },
+      {
+        "id": "e_input-role-filter_loop-domains_8",
+        "source": "input-role-filter",
+        "target": "loop-domains"
+      },
+      {
+        "id": "e_decide-people-found_compile-domain-rows_16",
+        "source": "decide-people-found",
+        "target": "compile-domain-rows",
+        "sourceHandle": "people-no"
+      },
+      {
+        "id": "e_decide-email_draft-profile_18",
+        "source": "decide-email",
+        "target": "draft-profile",
+        "sourceHandle": "yes-email"
+      },
+      {
+        "id": "e_decide-email_log-no-email_19",
+        "source": "decide-email",
+        "target": "log-no-email",
+        "sourceHandle": "no-email"
+      },
+      {
+        "id": "e_draft-profile_compile-domain-rows_20",
+        "source": "draft-profile",
+        "target": "compile-domain-rows"
+      },
+      {
+        "id": "e_log-no-email_compile-domain-rows_21",
+        "source": "log-no-email",
+        "target": "compile-domain-rows"
+      },
+      {
+        "id": "e_compile-domain-rows_build-html_22",
+        "source": "compile-domain-rows",
+        "target": "build-html"
+      },
+      {
+        "id": "e_build-html_upload-html_23",
+        "source": "build-html",
+        "target": "upload-html"
+      },
+      {
+        "id": "e_upload-html_output-link_24",
+        "source": "upload-html",
+        "target": "output-link"
+      },
+      {
+        "id": "e_loop-domains_org-enrich_0",
+        "source": "loop-domains",
+        "target": "org-enrich"
+      },
+      {
+        "id": "e_org-enrich_people-search_1",
+        "source": "org-enrich",
+        "target": "people-search"
+      },
+      {
+        "id": "e_people-search_extract-linkedin-urls_2",
+        "source": "people-search",
+        "target": "extract-linkedin-urls"
+      },
+      {
+        "id": "e_people-search_decide-people-found_3",
+        "source": "people-search",
+        "target": "decide-people-found"
+      },
+      {
+        "id": "e_decide-people-found_extract-linkedin-urls_4",
+        "source": "decide-people-found",
+        "target": "extract-linkedin-urls",
+        "sourceHandle": "people-yes"
+      },
+      {
+        "id": "e_extract-linkedin-urls_people-enrich_5",
+        "source": "extract-linkedin-urls",
+        "target": "people-enrich"
+      },
+      {
+        "id": "e_people-enrich_hunter-email_6",
+        "source": "people-enrich",
+        "target": "hunter-email"
+      },
+      {
+        "id": "e_hunter-email_decide-email_7",
+        "source": "hunter-email",
+        "target": "decide-email"
+      },
+      {
+        "id": "e_loop-domains_build-html_8",
+        "source": "loop-domains",
+        "target": "build-html"
+      }
+    ]
+  }
+}

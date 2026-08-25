@@ -1,0 +1,58 @@
+{
+  "serviceId": "whitepages-stableenrich",
+  "subcat": "company-people-data",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/whitepages/person-search",
+      "method": "POST",
+      "amountUsd": 0.44
+    },
+    {
+      "backend": "https://stableenrich.dev/api/whitepages/property-search",
+      "method": "POST",
+      "amountUsd": 0.44
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableenrich.dev/api/whitepages/property-search with JSON body {street, city, state_code}",
+    "inputExample": {
+      "street": "1600 Amphitheatre Parkway",
+      "city": "Mountain View",
+      "state_code": "CA"
+    },
+    "outputShape": "body.result.property_address (full_address, county, zip), body.result.ownership_info.business_owners[].name / person_owners[], body.result.residents[].{name, phones[].number, phones[].type, emails[].email, current_addresses[]}",
+    "quirks": [
+      "Property search uses field name `state_code` (two-letter code), NOT `state` — `state` is silently ignored.",
+      "Sibling endpoint /api/whitepages/person-search takes {first_name,last_name,state_code?} or phone/address to find people.",
+      "Result is nested under body.result (single object), not an array.",
+      "Returns PII (phones + emails) of residents at the address — handle responsibly."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stableenrich.dev/api/whitepages/property-search with JSON body {street, city, state_code} (state_code is the two-letter code, not full state name). Pays x402 ~$0.44 USDC on Base, returns synchronously. Read the result at body.result: property_address for the location, ownership_info for owners (business_owners[] / person_owners[]), and residents[] for people at the address with their phones[].number and emails[].email. For person lookups instead, use the sibling /api/whitepages/person-search endpoint.",
+    "costObservedUsd": 0.44
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "whitepages-stableenrich#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.44
+    },
+    {
+      "key": "whitepages-stableenrich#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.44
+    }
+  ]
+}

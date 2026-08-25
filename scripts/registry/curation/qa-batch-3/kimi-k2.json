@@ -1,0 +1,62 @@
+{
+  "serviceId": "kimi-k2",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.telnyx.com/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://jatevo.ai/api/x402/llm/kimi",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.telnyx.com/v1/chat/completions with OpenAI-compatible JSON body {model, messages[]} — model MUST be \"moonshotai/Kimi-K2.6\" (NOT \"kimi-k2\")",
+    "inputExample": {
+      "model": "moonshotai/Kimi-K2.6",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); body.usage.{prompt_tokens,completion_tokens,total_tokens}; body.model",
+    "quirks": [
+      "The registry/service id 'kimi-k2' is NOT a valid model param. Sending model:'kimi-k2' returns HTTP 400 'model kimi-k2 not supported' BEFORE payment (no money lost). Use model:'moonshotai/Kimi-K2.6' (standard) or 'moonshotai/Kimi-K2.6-long' (long context).",
+      "The 400 error body conveniently lists all supported models: ['MiniMaxAI/MiniMax-M2.7','moonshotai/Kimi-K2.6','zai-org/GLM-5.1-FP8','moonshotai/Kimi-K2.6-long'] — this endpoint is a shared multi-model gateway, not Kimi-only.",
+      "Observed cost was $0.02 USDC on Base, not the registry surface price of $0.0010 — price likely scales with tokens; budget ~$0.02 per small call.",
+      "x402-only auth; pre-flight on a wrong model 400s before charging, so model validation is free to probe."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.telnyx.com/v1/chat/completions with an OpenAI-style JSON body. You MUST set model to \"moonshotai/Kimi-K2.6\" — the registry's \"kimi-k2\" id is rejected with a 400 before any payment is taken. Pass messages as an array of {role, content} objects; payment is via x402 (USDC on Base, ~$0.02 per small call). Read the assistant reply from body.choices[0].message.content and token usage from body.usage.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "kimi-k2#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "kimi-k2#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

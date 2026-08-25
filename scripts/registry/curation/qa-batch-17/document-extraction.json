@@ -1,0 +1,65 @@
+{
+  "serviceId": "document-extraction",
+  "subcat": "ocr-document-extraction",
+  "batchId": "batch-17",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/ocr-and-document-intelligence-api-373624",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/describe-image",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/document-processing-api-c9c949",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/ocr-and-document-intelligence-api-373624 with JSON body {url}",
+    "inputExample": {
+      "url": "https://jeroen.github.io/images/testocr.png"
+    },
+    "outputShape": "n/a - endpoint returns 404 {error:'API_NOT_FOUND'}",
+    "quirks": [
+      "Orbis proxy slug is DEAD: live POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ocr-and-document-intelligence-api-373624'.\"}",
+      "Pre-flight probe reports 402/payable, but this is misleading - the route does not exist. Do not pay.",
+      "No payment was made (paid:false, costUsd:0) - the 404 came before settlement.",
+      "Do NOT retry with alternate bodies/paths; the slug itself is gone."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is dead. The Orbis proxy slug 'ocr-and-document-intelligence-api-373624' returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"} on any POST, despite the x402 probe advertising it as payable (402). Do not call or pay for it. It should be dropped/pruned from the registry until/unless Orbis republishes a working slug.",
+    "costObservedUsd": 0,
+    "droppedReason": "document-extraction#0: Orbis proxy slug is DEAD: live POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ocr-and-document-intelligence-api-373624'.\"} | document-extraction#1: Field name MUST be 'image_url' (snake_case). Sending 'imageUrl' returns HTTP 400 {error:\"Missing 'image_url' field\"}. | document-extraction#2: Orbis proxy dead-slug: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'document-processing-api-c9c949'.\"}"
+  },
+  "droppedReason": "document-extraction#0: Orbis proxy slug is DEAD: live POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ocr-and-document-intelligence-api-373624'.\"} | document-extraction#1: Field name MUST be 'image_url' (snake_case). Sending 'imageUrl' returns HTTP 400 {error:\"Missing 'image_url' field\"}. | document-extraction#2: Orbis proxy dead-slug: returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'document-processing-api-c9c949'.\"}",
+  "_backends": [
+    {
+      "key": "document-extraction#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "document-extraction#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "document-extraction#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

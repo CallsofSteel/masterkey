@@ -1,0 +1,467 @@
+{
+  "subcategory": "pdf-generation-processing",
+  "category": "document-content",
+  "unit": "per call",
+  "_note": "Curated by claude-main; re-verified (conservative bar) — added MakesPDF (real accessible-PDF/UA generation product) as a distinct entry, and orbis pdf-to-jpg/pdf-to-json conversion targets to PDF Conversion. Routed away: orth nano-banana/openai image-gen (#14-19) -> image-generation; docpull/x402node PDF *extraction* -> ocr-document-extraction; agentwonderland -> contamination. Dropped: x402 Helper, Strale generic, single-dev report PDFs (aurelianflo). | 2026-07-26: corrected live-verified price drift (re-quoted twice with the registry's own usage.inputExample so the quote reflects the real call, not a worst-case empty-body ceiling).",
+  "entries": [
+    {
+      "name": "HTML to PDF (raw HTML)",
+      "kind": "api",
+      "provider": "x402.nichospt",
+      "providerId": "x402-nichospt",
+      "aka": [
+        "html-to-pdf-raw-html",
+        "render"
+      ],
+      "description": "Render a raw HTML document string to a PDF. Returns the PDF as a binary (application/pdf) response. Part of x402-tools, a set of keyless pay-per-call utility APIs settled in USDC via x402.",
+      "tags": [
+        "pdf",
+        "html-to-pdf",
+        "render",
+        "documents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402.nichospt.net/render",
+          "method": "POST",
+          "provider": "x402.nichospt",
+          "providerId": "x402-nichospt",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HJfYcc2XtmrLgr4kze6kdp1JNHsqrdfJiHucpKNQaoJe",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "BFK9TLC3edb13K6v4YyH3DwPb5DSUpkWvb7XnqCL9b4F"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "5000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402.nichospt.net/render with JSON body {\"html\":\"<html>...</html>\", \"options\"?:{format?:\"A4\"|\"Letter\", landscape?:bool, margin?}} . x402 payment handshake (USDC on Base). Response is the raw PDF binary, NOT JSON.",
+        "inputExample": {
+          "html": "<html><body><h1>Hello PDF</h1><p>Test render.</p></body></html>"
+        },
+        "outputShape": "Binary PDF. Content-Type: application/pdf. Body is the PDF bytes (qa-pay surfaced as base64:JVBERi0xLjQ... i.e. %PDF-1.4 header). No JSON wrapper, no pdf_url — the file itself is the response body.",
+        "quirks": [
+          "Input is a raw HTML STRING in field 'html' (required, maxLength 2,000,000) — NOT a url. This is the key difference from the URL->PDF op.",
+          "Output is the PDF binary directly in the response body (Content-Type application/pdf), not a JSON object and not a presigned URL. Save the bytes to disk.",
+          "Optional 'options': {format:'A4'|'Letter' (default A4), landscape:bool (default false), margin: CSS-length string or {top,bottom,left,right}}.",
+          "Rendered with HeadlessChrome (Skia/PDF) — full CSS/HTML support.",
+          "Cheap: $0.005/call, fixed price, keyless (x402 USDC on Base)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Render a raw HTML document string to a PDF. Returns the PDF as a binary (application/pdf) response. Part of x402-tools, a set of keyless pay-per-call utility APIs settled in USDC via x402. POST https://x402.nichospt.net/render with JSON body {\"html\":\"<html>...</html>\", \"options\"?:{format?:\"A4\"|\"Letter\", landscape?:bool, margin?}} . x402 payment handshake (USDC on Base). Response is the raw PDF binary, NOT JSON. Output: Binary PDF. Content-Type: application/pdf. Body is the PDF bytes (qa-pay surfaced as base64:JVBERi0xLjQ... i.e. %PDF-1.4 header). No JSON wrapper, no pdf_url — the file itself is the response body.",
+        "costObservedUsd": 0.005
+      },
+      "status": "active"
+    },
+    {
+      "name": "HTML to PDF (from URL)",
+      "kind": "api",
+      "provider": "x402-deployer.x402-deployer.workers",
+      "providerId": "x402-deployer-x402-deployer-workers",
+      "aka": [
+        "html-to-pdf-from-url",
+        "html-to-pdf"
+      ],
+      "description": "Render a public remote URL to a PDF. The registered x402-deployer backend is currently BROKEN (unresponsive/timeouts). The same operation is available working+cheaper at x402.nichospt /render-url, recommended as the replacement backend.",
+      "tags": [
+        "pdf",
+        "html-to-pdf",
+        "render",
+        "documents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402-deployer.x402-deployer.workers.dev/html-to-pdf",
+          "method": "POST",
+          "provider": "x402-deployer.x402-deployer.workers",
+          "providerId": "x402-deployer-x402-deployer-workers",
+          "amount": 0.08,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "80000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6c0752c09e7F6fA6526fCDf40e456a159ebB5621",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://x402.nichospt.net/render-url",
+          "method": "POST",
+          "provider": "x402.nichospt",
+          "providerId": "x402-nichospt",
+          "amount": 0.005,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HJfYcc2XtmrLgr4kze6kdp1JNHsqrdfJiHucpKNQaoJe",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "feePayer": "BFK9TLC3edb13K6v4YyH3DwPb5DSUpkWvb7XnqCL9b4F"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "5000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x954c90740b8247e4b0d4a3f92201167895405555",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST {url} with JSON body {\"url\":\"https://example.com\"} (x402 USDC on Base). x402-deployer returns {pdf_url} JSON; x402.nichospt /render-url returns the PDF binary directly and accepts an optional 'options' object (format, landscape, margin, waitUntil, viewport).",
+        "inputExample": {
+          "url": "https://example.com"
+        },
+        "outputShape": "x402-deployer /html-to-pdf: JSON {pdf_url} (CloudConvert presigned S3 URL, X-Amz-Expires=86400 ~24h, not permanent) — UNVERIFIED, endpoint currently times out. x402.nichospt /render-url: binary PDF in response body (application/pdf), like /render — documented from OpenAPI, not pay-verified.",
+        "quirks": [
+          "BROKEN BACKEND: the registered x402-deployer.x402-deployer.workers.dev/html-to-pdf endpoint hangs and times out (HTTP 000 at 30s and 45s, even on an empty body which should return a fast 402 challenge). Origin root returns 200 but this route never responds. qa-pay returned wallet-error 'provider request failed: fetch failed', paid:false — no money was spent and it could not be verified.",
+          "RECOMMENDED REPLACEMENT: x402.nichospt /render-url does the same URL->PDF op for $0.005 (vs $0.08) from a provider whose sibling /render endpoint is verified working. Input field 'url' (required, must be public http(s); private/loopback IPs rejected). Optional 'options': {format, landscape, margin, waitUntil: load|domcontentloaded|networkidle0(default)|networkidle2, viewport:{width 320-3840 default 1280, height 240-2160 default 800}}. /render-url returns the PDF binary directly (not a pdf_url).",
+          "Input field is 'url' (NOT 'html') — a raw 'html' string is rejected by x402-deployer with 400 'Missing or invalid url field' (and per original notes that 400 still charged $0.08). For raw HTML use the separate /render op instead.",
+          "If keeping the x402-deployer backend: pdf_url is a presigned CloudConvert S3 URL valid ~24h — download promptly."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Render a public remote URL to a PDF. The registered x402-deployer backend is currently BROKEN (unresponsive/timeouts). The same operation is available working+cheaper at x402.nichospt /render-url, recommended as the replacement backend. POST {url} with JSON body {\"url\":\"https://example.com\"} (x402 USDC on Base). x402-deployer returns {pdf_url} JSON; x402.nichospt /render-url returns the PDF binary directly and accepts an optional 'options' object (format, landscape, margin, waitUntil, viewport). Output: x402-deployer /html-to-pdf: JSON {pdf_url} (CloudConvert presigned S3 URL, X-Amz-Expires=86400 ~24h, not permanent) — UNVERIFIED, endpoint currently times out. x402.nichospt /render-url: binary PDF in response body (application/pdf), like /render — documented from OpenAPI, not pay-verified.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "PDF Conversion",
+      "provider": "Various",
+      "providerId": "various",
+      "description": "Convert a PDF to Markdown / HTML / JSON / JPG.",
+      "tags": [
+        "pdf",
+        "convert",
+        "markdown",
+        "documents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        35,
+        37,
+        24,
+        42
+      ],
+      "resolved": {
+        "24": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "35": {
+          "method": "POST",
+          "status": "hidden"
+        },
+        "37": {
+          "method": "POST",
+          "amount": 0.0025
+        },
+        "42": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/pdf-to-markdown with JSON body {\"pdf_url\":\"<public-pdf-url>\"}",
+        "inputExample": {
+          "pdf_url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        },
+        "outputShape": "On success (200): body contains the converted output (markdown/html/json/jpg). Exact key not confirmed because the test PDF host blocked the worker; on error returns body.error (string).",
+        "quirks": [
+          "Input field MUST be named 'pdf_url' (NOT 'url') — wrong name returns 400 {error:\"Missing or invalid 'pdf_url' field\"} and STILL charges $0.20.",
+          "Endpoint server-side fetches the PDF; the PDF host must allow the Cloudflare worker's fetch. W3C/bot-blocked hosts return 403 to the worker -> body.error 'Could not fetch PDF from <url> (403)' and you are charged. Use a PDF on a host that does not bot-block (public S3/GCS bucket, arweave, ipfs gateway).",
+          "Endpoint named /pdf-to-markdown but description says it can output Markdown/HTML/JSON/JPG — output format may be selectable via an additional param (not confirmed).",
+          "Every call is charged even on 4xx input errors — get the body exactly right before paying."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/pdf-to-markdown with JSON body {\"pdf_url\":\"<url-to-a-publicly-fetchable-pdf>\"} and pay $0.20 USDC on Base via x402. The field MUST be 'pdf_url' (using 'url' returns a 400 but still charges). The server fetches the PDF itself, so the URL must point to a host that allows automated/worker fetches (avoid bot-blocked hosts like w3.org, which return 403). Read the converted markdown from the 2xx response body; on failure read body.error.",
+        "costObservedUsd": 0.4
+      },
+      "status": "active"
+    },
+    {
+      "name": "MakesPDF Markdown to PDF",
+      "kind": "api",
+      "provider": "makespdf",
+      "providerId": "makespdf",
+      "aka": [
+        "makespdf-markdown-to-pdf",
+        "markdown"
+      ],
+      "description": "Convert GitHub-Flavoured Markdown to a tagged, accessible PDF (PDF/UA-1 + PDF/A-2A dual-compliant). Sub-second, no AI call. Cheapest path when you already have document text.",
+      "tags": [
+        "pdf",
+        "pdf-generation",
+        "accessible",
+        "pdf-ua",
+        "markdown-to-pdf"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://makespdf.com/api/v1/markdown",
+          "method": "POST",
+          "provider": "makespdf",
+          "providerId": "makespdf",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x9bB96Acb3fD11D8949D862736B96e7e12D319DC4",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://makespdf.com/api/v1/markdown with JSON body {markdown: string, options?: object}. Only `markdown` is required. `options` accepts pageSize (e.g. A4), fontFamily, fontSize, margins, title, theme.",
+        "inputExample": {
+          "markdown": "# Hello World\n\nSome **bold** text and a list:\n\n- one\n- two\n",
+          "options": {
+            "pageSize": "A4",
+            "title": "Test"
+          }
+        },
+        "outputShape": "Raw binary PDF (Content-Type: application/pdf). Via x402/paid_fetch the body is returned as a 'base64:<base64-of-PDF-bytes>' string — strip the 'base64:' prefix and base64-decode to get the PDF (starts with %PDF-1.7). Response headers carry x-pages (page count) and x-render-ms (render latency); options.title sets the content-disposition filename.",
+        "quirks": [
+          "x402 payment bypasses the normal Bearer-token requirement — no API key needed for the paid call.",
+          "Response is RAW BINARY PDF, not JSON. paid_fetch/qa-pay surface it as a 'base64:...' string — strip the prefix and base64-decode to get PDF bytes (magic %PDF-1.7).",
+          "Field is `markdown` (GFM source), not `text` or `content`. `options` is a flat object (pageSize, fontFamily, fontSize, margins, title, theme).",
+          "Same operation is also reachable at the anonymous alias POST /api/v1/md (rate-limited 60/hour, 200/day, 20 pages) when the operator enables promo:md_anonymous_enabled — but the registry/x402 path uses /api/v1/markdown.",
+          "x-pages and x-render-ms headers report page count and render latency; options.title sets the download filename."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Convert GitHub-Flavoured Markdown to a tagged, accessible PDF (PDF/UA-1 + PDF/A-2A dual-compliant). Sub-second, no AI call. Cheapest path when you already have document text. POST https://makespdf.com/api/v1/markdown with JSON body {markdown: string, options?: object}. Only `markdown` is required. `options` accepts pageSize (e.g. A4), fontFamily, fontSize, margins, title, theme. Output: Raw binary PDF (Content-Type: application/pdf). Via x402/paid_fetch the body is returned as a 'base64:<base64-of-PDF-bytes>' string — strip the 'base64:' prefix and base64-decode to get the PDF (starts with %PDF-1.7). Response headers carry x-pages (page count) and x-render-ms (render latency); options.title sets the content-disposition filename.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "MakesPDF Template Render",
+      "kind": "api",
+      "provider": "makespdf",
+      "providerId": "makespdf",
+      "aka": [
+        "makespdf-template-render",
+        "render"
+      ],
+      "description": "Generate a PDF from structured data with no source document — supply data plus a curated-library template id (or inline builder DSL). Output is a tagged, accessible PDF/UA-1 + PDF/A-2A document. Use for branded layouts like invoices, certificates, reports.",
+      "tags": [
+        "pdf",
+        "pdf-generation",
+        "accessible",
+        "pdf-ua",
+        "markdown-to-pdf"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://makespdf.com/api/v1/render",
+          "method": "POST",
+          "provider": "makespdf",
+          "providerId": "makespdf",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x9bB96Acb3fD11D8949D862736B96e7e12D319DC4",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://makespdf.com/api/v1/render with JSON body {templateId: string, data: object} OR {dsl: string, data: object}. templateId and dsl are mutually exclusive — supply exactly one. `data` holds the template variables.",
+        "inputExample": {
+          "templateId": "invoice-classic",
+          "data": {
+            "name": "Ada",
+            "amount": "42.00"
+          }
+        },
+        "outputShape": "Raw binary PDF (Content-Type: application/pdf). Via x402/paid_fetch returned as 'base64:<base64-of-PDF-bytes>' — strip the prefix and decode (starts with %PDF-1.7). Same x-pages / x-render-ms headers as the markdown endpoint.",
+        "quirks": [
+          "x402 payment bypasses the normal Bearer-token requirement — no API key needed for the paid call.",
+          "Response is RAW BINARY PDF, not JSON — surfaced as a 'base64:...' string by paid_fetch/qa-pay; strip prefix and base64-decode.",
+          "`templateId` and `dsl` are MUTUALLY EXCLUSIVE — pass exactly one. templateId is the simplest path; browse valid ids at GET /api/v1/templates?owner=library (free). Verified id: invoice-classic. Other library ids: certificate-formal, certificate-modern, invoice-compact, invoice-modern.",
+          "Template variables go in the `data` object (not top-level). invoice-classic tolerates partial data; other templates may expect specific fields.",
+          "Costs $0.02 (double the /markdown endpoint at $0.01)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Generate a PDF from structured data with no source document — supply data plus a curated-library template id (or inline builder DSL). Output is a tagged, accessible PDF/UA-1 + PDF/A-2A document. Use for branded layouts like invoices, certificates, reports. POST https://makespdf.com/api/v1/render with JSON body {templateId: string, data: object} OR {dsl: string, data: object}. templateId and dsl are mutually exclusive — supply exactly one. `data` holds the template variables. Output: Raw binary PDF (Content-Type: application/pdf). Via x402/paid_fetch returned as 'base64:<base64-of-PDF-bytes>' — strip the prefix and decode (starts with %PDF-1.7). Same x-pages / x-render-ms headers as the markdown endpoint.",
+        "costObservedUsd": 0.02
+      },
+      "status": "active"
+    }
+  ]
+}

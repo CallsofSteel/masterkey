@@ -1,0 +1,78 @@
+{
+  "serviceId": "google-maps-stableenrich",
+  "subcat": "maps-geolocation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/place-details/partial",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/place-details/full",
+      "method": "GET",
+      "amountUsd": 0.05
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/nearby-search/partial",
+      "method": "POST",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stableenrich.dev/api/google-maps/nearby-search/full",
+      "method": "POST",
+      "amountUsd": 0.08
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stableenrich.dev/api/google-maps/place-details/partial?placeId=<GooglePlaceId>&languageCode=en (x402, $0.02 USDC on Base)",
+    "inputExample": {
+      "placeId": "ChIJN1t_tDeuEmsRUsoyG83frY4",
+      "languageCode": "en"
+    },
+    "outputShape": "JSON object at body root: body.id, body.displayName.text, body.formattedAddress, body.location.{latitude,longitude}, body.types[], body.primaryType (plus optional rating, websiteUri, phone, openingHours, etc. when present)",
+    "quirks": [
+      "placeId must be a real Google Place ID (e.g. ChIJN1t_tDeuEmsRUsoyG83frY4 = Google Sydney); it is a query param, not a path param",
+      "'partial' variant returns a trimmed field set; photos excluded by default via excludeFields=[photos]",
+      "Result fields are sparse — only id is guaranteed; other fields appear only when Google has the data for that place"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://stableenrich.dev/api/google-maps/place-details/partial with the required query param placeId set to a valid Google Place ID; optionally pass languageCode (default en) and excludeFields (default photos). Pay via x402 ($0.02 USDC on Base). The 200 JSON response is the place object at the root — read body.displayName.text for the name, body.formattedAddress for the address, body.location.latitude/longitude for coordinates, and body.types/primaryType for category. Only body.id is guaranteed; treat other fields as optional.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "google-maps-stableenrich#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "google-maps-stableenrich#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "google-maps-stableenrich#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "google-maps-stableenrich#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.08
+    }
+  ]
+}

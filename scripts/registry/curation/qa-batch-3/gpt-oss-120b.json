@@ -1,0 +1,49 @@
+{
+  "serviceId": "gpt-oss-120b",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://jatevo.ai/api/x402/llm/gpt-oss",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://jatevo.ai/api/x402/llm/gpt-oss with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "unknown — endpoint returns a 404 HTML error page, never reaches the 402/payment flow",
+    "quirks": [
+      "NEEDS-REVIEW (not dropped): transient failure (host 502 / jatevo 404) at $0 spent (402-gate caught it) — re-test before relying on it.",
+      "POST to https://jatevo.ai/api/x402/llm/gpt-oss returns a Next.js 404 HTML page (content-type text/html, title '404: This page could not be found.'), NOT an HTTP 402 payment-required.",
+      "GET probe also returns 404. The route is dead/removed.",
+      "No payment is taken — the request never reaches an x402 paywall, so no USDC is at risk; but the endpoint is non-functional."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is broken. POST to https://jatevo.ai/api/x402/llm/gpt-oss returns a 404 Next.js HTML error page instead of an x402 402 payment challenge, so it cannot be paid or called. The route appears removed from jatevo.ai. Do not attempt to use it; pick a different GPT-OSS 120B provider.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gpt-oss-120b#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

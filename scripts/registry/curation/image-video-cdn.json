@@ -1,0 +1,286 @@
+{
+  "subcategory": "image-video-cdn",
+  "category": "image-video-processing",
+  "unit": "per image",
+  "_note": "Curated by claude-main. Sparse — mainstream image/video CDNs aren't x402-native. Kept: image hosting (img402) + image optimizer (orbis). Dropped: screenshots (->web-automation), image GEN models (->image-generation), bg-removal, image resize (->image-editing-manipulation), orbis 'cdn guide/detector/performance' analysis, weather/solar/shirt/business noise.",
+  "entries": [
+    {
+      "name": "img402 Image Upload",
+      "kind": "api",
+      "provider": "img402",
+      "providerId": "img402",
+      "aka": [
+        "img402-image-upload",
+        "upload"
+      ],
+      "description": "Upload an image and get a public CDN URL in a single x402-paid call. Send a base64-encoded image (max 5MB) to POST /api/upload; pay $0.01 USDC on Base via x402 and the response contains the hosted CDN URL with 1-year retention. No accounts or API keys. For permanent retention, pre-mint a token via /api/upload/token/permanent ($1) and pass it as X-Upload-Token.",
+      "tags": [
+        "image-hosting",
+        "upload",
+        "cdn"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://img402.dev/api/upload",
+          "method": "POST",
+          "provider": "img402",
+          "providerId": "img402",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x77f3c9bCb898Ad1d30e9a336E2cC3108d88D6c09",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9xuipz9Y13v6Z1FnLR3XkrknoBLngwUSstjxcqK6deYX",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "D6ZhtNQ5nT9ZnTHUbqXZsTx5MH2rPFiBBggX4hY1WePM"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://img402.dev/api/upload with JSON body {\"file\":\"<base64 image bytes>\"}. x402-paid $0.01 USDC on Base. NO token header needed — paying x402 directly is sufficient. Optionally pass header X-Upload-Token (from /api/upload/token or .../permanent) instead of paying, to skip x402.",
+        "inputExample": {
+          "file": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAEA//8DAAAGAAAFV70AAAAASUVORK5CYII="
+        },
+        "outputShape": "url (public CDN url, e.g. https://i.img402.dev/<id>.png), id (10-char nanoid), contentType (image/png|jpeg|gif|webp), sizeBytes (int), expiresAt (ISO 8601, or null for permanent), img402 (informational news/thanks/feedback block — ignore)",
+        "quirks": [
+          "field is 'file' and must be BASE64-encoded image bytes (not a URL, not multipart) — max 5MB decoded.",
+          "The old registry docs' two-step token flow is UNNECESSARY for the standard tier: /api/upload accepts a direct x402 payment and returns the CDN URL immediately. The token endpoints are optional pre-payment only.",
+          "/api/upload/token (the other registry backend) is NOT this operation: it mints a single-use token (valid ~10 min) and returns {token,expiresAt} with NO CDN URL. Do not point upload users at it.",
+          "expiresAt is non-null (~1 year out) for the $0.01 tier; only the $1 permanent tier (X-Upload-Token from /api/upload/token/permanent) yields expiresAt:null.",
+          "Response carries an 'img402' metadata block (news/thanks/feedback) that is informational only.",
+          "Free tier exists at POST /api/free (1MB, 7-day retention, no payment) — same {file:<base64>} input shape."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Upload an image and get a public CDN URL in a single x402-paid call. Send a base64-encoded image (max 5MB) to POST /api/upload; pay $0.01 USDC on Base via x402 and the response contains the hosted CDN URL with 1-year retention. No accounts or API keys. For permanent retention, pre-mint a token via /api/upload/token/permanent ($1) and pass it as X-Upload-Token. POST https://img402.dev/api/upload with JSON body {\"file\":\"<base64 image bytes>\"}. x402-paid $0.01 USDC on Base. NO token header needed — paying x402 directly is sufficient. Optionally pass header X-Upload-Token (from /api/upload/token or .../permanent) instead of paying, to skip x402. Output: url (public CDN url, e.g. https://i.img402.dev/<id>.png), id (10-char nanoid), contentType (image/png|jpeg|gif|webp), sizeBytes (int), expiresAt (ISO 8601, or null for permanent), img402 (informational news/thanks/feedback block — ignore)",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "Image Optimizer",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "description": "Optimize an image (compress/format) for fast web delivery.",
+      "tags": [
+        "image-optimization",
+        "compress",
+        "cdn"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        4
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/image-optimizer-api-38f5e2 with JSON body {image, format, quality}",
+        "inputExample": {
+          "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/240px-Cat03.jpg",
+          "format": "webp",
+          "quality": 80
+        },
+        "outputShape": "none (endpoint dead; returns body.error=API_NOT_FOUND, body.message)",
+        "quirks": [
+          "Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}.",
+          "Money is lost on call: paid $0.005 USDC on Base and got nothing back.",
+          "DO NOT CALL this endpoint — the Orbis route image-optimizer-api-38f5e2 no longer exists."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not call this endpoint. It is a dead Orbis proxy slug (image-optimizer-api-38f5e2). The pre-payment probe returns a 402 payment-required so it appears live, but after paying $0.005 USDC the response is HTTP 404 with {error:'API_NOT_FOUND'} and the money is lost. Treat as broken and remove from the registry until Orbis republishes the slug.",
+        "costObservedUsd": 0.005,
+        "droppedReason": "image-optimizer#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}."
+      },
+      "status": "hidden",
+      "_droppedReason": "image-optimizer#0: Orbis proxy charge-then-404: pre-flight returns 402 (looks payable) but the slug is dead. After payment it returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'image-optimizer-api-38f5e2'.\"}.",
+      "resolved": {
+        "4": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Stableflare Image Upload",
+      "kind": "api",
+      "provider": "stableflare",
+      "providerId": "stableflare",
+      "aka": [
+        "stableflare-image-upload",
+        "cloudflare-images-upload",
+        "images-upload",
+        "upload"
+      ],
+      "description": "Upload an image by URL to Cloudflare Images and get back an image id plus public delivery URLs in a single x402-paid call. Pay $0.01 USDC on Base via x402 — no accounts or API keys. Use the returned id with the /api/images/transform endpoint to generate resized/reformatted variant URLs.",
+      "tags": [
+        "image-hosting",
+        "upload",
+        "cdn",
+        "cloudflare-images",
+        "x402"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stableflare.dev/api/images/upload",
+          "method": "POST",
+          "provider": "stableflare",
+          "providerId": "stableflare",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xb6A6ba7F58fE92E77bcE040CC0818c63ab9ac768",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-29T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Public URL of the image to upload."
+              },
+              "requireSignedURLs": {
+                "type": "boolean",
+                "description": "Restrict access to signed URLs only."
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Custom string key-value metadata for the image."
+              }
+            },
+            "required": [
+              "url"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "filename": {
+                "type": "string"
+              },
+              "uploaded": {
+                "type": "string"
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "meta": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "filename",
+              "uploaded",
+              "variants"
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-29",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "SYNC: POST https://stableflare.dev/api/images/upload with JSON body {url, requireSignedURLs?, metadata?} where url is a PUBLIC URL of an image -> 200 {id, filename, uploaded, variants[], meta?}. Result is inline; no polling. Pay per call over x402 ($0.01 USDC on Base), no API key.",
+        "inputExample": {
+          "url": "https://i.img402.dev/zx8qjbsfu0.png"
+        },
+        "outputShape": "JSON: id (Cloudflare Images image id, use with /api/images/transform), filename, uploaded (ISO timestamp), variants[] (array of public delivery URLs, e.g. https://imagedelivery.net/<account>/<id>/public), meta (optional custom metadata).",
+        "quirks": [
+          "Uploads by URL, NOT by raw file/multipart — you supply a PUBLIC image URL in the JSON body; there is no binary upload path here.",
+          "Synchronous: the delivery URL comes back inline in the 200; no job id, no polling.",
+          "The returned id feeds the companion /api/images/transform ($0.01) to generate resized/reformatted variant delivery URLs (width/height/fit/quality/format/etc.) — optional, not required to use the uploaded image.",
+          "openapi.json advertises both x402 and MPP (Tempo) payment; only the x402 accept is indexed here (MPP excluded per registry policy).",
+          "Set requireSignedURLs:true to restrict delivery to signed URLs; attach arbitrary string metadata via the metadata object."
+        ],
+        "needs": [
+          "A public URL pointing to the image to upload."
+        ],
+        "needsApproval": false,
+        "guide": "Upload an image to Cloudflare Images by URL in one x402-paid call. POST JSON {\"url\":\"<public image url>\"} (optionally requireSignedURLs, metadata) to https://stableflare.dev/api/images/upload; payment is x402 (~$0.01 USDC on Base, no API key). The 200 response returns {id, filename, uploaded, variants[]} where variants[] are public delivery URLs (imagedelivery.net) and id can be passed to /api/images/transform to generate resized/reformatted variants. Verified by uploading https://i.img402.dev/zx8qjbsfu0.png, which charged $0.01 (tx 0x8061bf7891b78d8dd21569d8d7128e2030686e2116ccc9c35c7d4ec7766a2a65) and returned id 31ef9a5d-adaf-4cc5-766d-c51138ab3000 with a working delivery URL.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    }
+  ]
+}

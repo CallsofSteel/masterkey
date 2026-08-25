@@ -1,0 +1,45 @@
+{
+  "serviceId": "mimetic-short-form-video",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://trymimetic.com/x402/create-video",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "GET https://trymimetic.com/x402/create-video?prompt=<text>&aspect_ratio=9:16&duration=15 (x402 payment of 10 USDC on Base)",
+    "inputExample": {
+      "prompt": "a red circle",
+      "aspect_ratio": "9:16",
+      "duration": 15
+    },
+    "outputShape": "body.job_id, body.token (Bearer for status), body.status_url, body.status, body.video_url (when status=completed)",
+    "quirks": [
+      "Price is $10.00 (10 USDC, amount 10000000) on Base eip155:8453 — exceeds the QA $6 per-call ceiling, so it was NOT paid/tested.",
+      "GET with query params; required param is prompt. Optional aspect_ratio (9:16|16:9|1:1|4:3|3:4, default 9:16) and duration (5|10|15 sec, default 15).",
+      "Async: response returns job_id + status_url + a Bearer token; poll status_url with Authorization: Bearer <token> until status=completed, then read video_url."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://trymimetic.com/x402/create-video with query params prompt (required), optionally aspect_ratio (default 9:16) and duration (default 15s). Pay the x402 quote of 10 USDC on Base. The response is an async job: it returns job_id, a Bearer token, and a status_url. Poll status_url with header Authorization: Bearer <token> until status is \"completed\", then download the video from video_url. Note this endpoint costs $10/call which is above the QA $6 ceiling, so it was not actually paid or verified.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "mimetic-short-form-video#0",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

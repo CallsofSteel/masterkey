@@ -1,0 +1,1422 @@
+[
+  {
+    "id": "japan-address-lookup-postal-code",
+    "kind": "api",
+    "name": "Japan Address Lookup (Postal Code)",
+    "aka": [
+      "japan-address-lookup-postal-code",
+      "postal-code-lookup"
+    ],
+    "provider": "address.agentic-jp",
+    "providerId": "address-agentic-jp",
+    "description": "Look up Japanese address candidates for a 7-digit Japanese postal code (郵便番号), backed by the official Japan Post KEN_ALL dataset. One postal code can map to several towns; all candidates are returned with kanji and kana readings. Useful for Japanese address autofill and postal-code validation.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "address-validation",
+      "postal",
+      "normalization",
+      "geolocation"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "address.agentic-jp",
+        "providerId": "address-agentic-jp",
+        "url": "https://address.agentic-jp.com/postal-code/:zip",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "1000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x38c9F689274E2fC3AE360744eF88ce212077a584",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "2BTzdCAcCLaNA2SSZ1YjJvTtscNCpUMUEjLY3LyBpNMk",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://address.agentic-jp.com/postal-code/{zip} — embed the 7-digit Japanese postal code directly in the URL path. No hyphen, no query params, no body. Pays $0.001 USDC via x402 on Base.",
+      "inputExample": {
+        "zip": "1000001"
+      },
+      "outputShape": "postal_code (string, hyphenated e.g. '100-0001'), candidates[] each with: candidates[].prefecture, candidates[].city, candidates[].town, candidates[].prefecture_kana, candidates[].city_kana, candidates[].town_kana",
+      "quirks": [
+        "Input is the 7-digit postal code embedded in the URL path WITHOUT a hyphen (e.g. 1000001, not 100-0001). The response echoes it back hyphenated.",
+        "Japanese postal codes ONLY — does not validate US or international addresses.",
+        "Response field values (prefecture/city/town) are in Japanese kanji; kana readings are provided in *_kana fields. No English/romaji is returned.",
+        "Returns multiple candidates[] when one postal code maps to several towns.",
+        "The agentic-jp origin also exposes a POST /normalize endpoint (separate op, not part of this service).",
+        "qa-pay.mjs does not complete the x402 GET flow for this origin (returns 402 empty body, paid:false); verified instead via agentcash fetch which paid $0.001 and returned 200."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Look up Japanese address candidates for a 7-digit Japanese postal code (郵便番号), backed by the official Japan Post KEN_ALL dataset. One postal code can map to several towns; all candidates are returned with kanji and kana readings. Useful for Japanese address autofill and postal-code validation. GET https://address.agentic-jp.com/postal-code/{zip} — embed the 7-digit Japanese postal code directly in the URL path. No hyphen, no query params, no body. Pays $0.001 USDC via x402 on Base. Output: postal_code (string, hyphenated e.g. '100-0001'), candidates[] each with: candidates[].prefecture, candidates[].city, candidates[].town, candidates[].prefecture_kana, candidates[].city_kana, candidates[].town_kana",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "japan-address-lookup-postal-code",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "email-deliverability-verifier-hunter",
+    "kind": "api",
+    "name": "Email Deliverability Verifier (Hunter)",
+    "aka": [
+      "email-deliverability-verifier-hunter",
+      "email-verify"
+    ],
+    "provider": "stableenrich",
+    "providerId": "stableenrich",
+    "description": "Verify the deliverability and validity of an email address via Hunter (proxied through StableEnrich). Returns a status classification plus a confidence score and granular signals (MX records, SMTP check, disposable/webmail/accept-all flags). NOT an address validator despite the original bundling.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "address-validation",
+      "postal",
+      "normalization",
+      "geolocation"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.030",
+      "amount": 0.03,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/hunter/email-verifier",
+        "method": "POST",
+        "async": {
+          "isAsync": true,
+          "submitStatusField": "status",
+          "submitPendingValues": [
+            "pending"
+          ],
+          "jobIdPath": "jobId",
+          "pollUrlTemplate": null,
+          "poll": {
+            "cost": "siwx",
+            "statusField": "status",
+            "completeValues": [
+              "valid",
+              "invalid",
+              "accept_all",
+              "webmail",
+              "disposable",
+              "unknown",
+              "complete",
+              "completed"
+            ],
+            "failedValues": [
+              "failed",
+              "error"
+            ],
+            "resultPath": null
+          }
+        },
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.03,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "30000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "30000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "Gya3gEZshojUDewwCoDV54E1NkXwxXgPc9852PnsyjDg",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "POST https://stableenrich.dev/api/hunter/email-verifier with JSON body {\"email\":\"...\"}. Pays $0.03 USDC via x402 (or mpp) on Base.",
+      "inputExample": {
+        "email": "hello@example.com"
+      },
+      "outputShape": "status (enum: valid|invalid|accept_all|webmail|disposable|unknown), score (number), email (string), regexp (bool), gibberish (bool), disposable (bool), webmail (bool), mx_records (bool), smtp_server (bool), smtp_check (bool), accept_all (bool), block (bool), sources[] (each: domain,uri,extracted_on,last_seen_on,still_on_page). ALTERNATIVELY a pending/async response: {jobId, status:'pending', pollUrl, retryAfterSeconds}",
+      "quirks": [
+        "This backend is an EMAIL verifier, not an address validator — it was misclassified under 'Address Validator'.",
+        "Single required field 'email' in the JSON body.",
+        "Fast/cached verifications return the final result immediately (200). Hunter-pending responses instead return {jobId, status:'pending', pollUrl, retryAfterSeconds} which must be polled with SIWX at pollUrl.",
+        "Common public/disposable addresses come back status:'disposable' with score:0 (as seen for hello@example.com)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Verify the deliverability and validity of an email address via Hunter (proxied through StableEnrich). Returns a status classification plus a confidence score and granular signals (MX records, SMTP check, disposable/webmail/accept-all flags). NOT an address validator despite the original bundling. POST https://stableenrich.dev/api/hunter/email-verifier with JSON body {\"email\":\"...\"}. Pays $0.03 USDC via x402 (or mpp) on Base. Output: status (enum: valid|invalid|accept_all|webmail|disposable|unknown), score (number), email (string), regexp (bool), gibberish (bool), disposable (bool), webmail (bool), mx_records (bool), smtp_server (bool), smtp_check (bool), accept_all (bool), block (bool), sources[] (each: domain,uri,extracted_on,last_seen_on,still_on_page). ALTERNATIVELY a pending/async response: {jobId, status:'pending', pollUrl, retryAfterSeconds}",
+      "costObservedUsd": 0.03
+    },
+    "source": {
+      "serviceKey": "email-deliverability-verifier-hunter",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "email-validator",
+    "kind": "api",
+    "name": "Email Validator",
+    "aka": [
+      "email-validator",
+      "validate-email"
+    ],
+    "provider": "mailcheck.hugen",
+    "providerId": "mailcheck-hugen",
+    "description": "Validate a single email address: syntax/RFC check, MX record lookup, disposable-domain detection (5,000+ domains), free-provider and role-based flags, and a typo suggestion (did_you_mean) — returns a trust score and deliverability status without ever sending mail. Use to qualify leads, clean lists, and gate signups.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "email-validation",
+      "verification",
+      "mx",
+      "disposable-detection"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0022",
+      "amount": 0.0022,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "mailcheck.hugen",
+        "providerId": "mailcheck-hugen",
+        "url": "https://mailcheck.hugen.tokyo/mailcheck/validate",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "10000",
+              "payTo": "0x29322Ea7EcB34aA6164cb2ddeB9CE650902E4f60",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "amount": "10000",
+              "payTo": "4du4AfkjJEwch2zk3shkPJVZfyJHNDnNjEWC6AboaS5Z",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "x402node",
+        "providerId": "x402node",
+        "url": "https://api.x402node.dev/validate/email",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.0022,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0022",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2200",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active",
+        "team": "x402node"
+      },
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/email-intel/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "5000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "email": "string (required) — email address to validate, passed as ?email= query param"
+        },
+        "outputSchema": {
+          "email": "string",
+          "domain": "string",
+          "local_part": "string",
+          "format_valid": "boolean",
+          "mx_records_found": "boolean",
+          "mx_records": "string[]",
+          "is_disposable": "boolean",
+          "is_role_based": "boolean",
+          "is_free_provider": "boolean",
+          "is_business_email": "boolean",
+          "deliverability": "string (deliverable|risky|undeliverable)",
+          "score": "number (0-100)",
+          "grade": "string (A-F)",
+          "findings": "string[]"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      },
+      {
+        "provider": "Greeneris",
+        "providerId": "greeneris",
+        "url": "https://data.greeneris.io/v1/validate/email",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6ab8efe305cce67daa48c97bde29c04402822dff",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "email": "string (required) — email address to verify (max 254 chars), passed as ?email= query param"
+        },
+        "outputSchema": {
+          "ok": "boolean",
+          "data": {
+            "email": "string",
+            "domain": "string",
+            "syntax_valid": "boolean",
+            "domain_exists": "boolean",
+            "has_mx": "boolean",
+            "is_null_mx": "boolean",
+            "mx_hosts": "array of {priority:number, host:string}",
+            "verdict": "string (deliverable|risky|undeliverable)",
+            "source": "string"
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "poll",
+      "auth": "none",
+      "callShape": "DEFAULT (mailcheck): POST https://mailcheck.hugen.tokyo/mailcheck/validate with JSON body {\"email\":\"<address>\"}. Synchronous JSON, no polling. x402node alternative is GET https://api.x402node.dev/validate/email?email=<address> (no body). Pay via x402 USDC on Base.",
+      "inputExample": {
+        "email": "john@example.com"
+      },
+      "outputShape": "DEFAULT (mailcheck): body.status ('valid'|...), body.score (0..1), body.syntax_valid, body.domain, body.mx_found, body.mx_records[], body.is_disposable, body.is_free, body.is_role_based, body.did_you_mean (non-null on likely typo), body.checks_performed[]",
+      "quirks": [
+        "MULTI-GATEWAY: same operation across 3 providers but DIFFERENT call shapes — mailcheck is POST with a JSON body {\"email\":...}; netintel & x402node are GET with ?email= query param and NO body. Do not send a body to the GET backends.",
+        "Output field names DIFFER by backend and do not align: mailcheck uses is_free / mx_found / did_you_mean / status+score(0..1); x402node uses valid / format / mxValid; netintel uses is_free_provider / mx_records_found / deliverability / score(0..100). Normalize per-backend, never assume a shared shape.",
+        "DEFAULT = mailcheck (richest + verified). Gate deliverability on body.status + body.score; body.is_disposable / body.is_role_based / body.mx_found give detail; body.did_you_mean is non-null when a typo is detected (e.g. gmial.com -> gmail.com).",
+        "netintel (netintel-production-440c.up.railway.app) is BROKEN: every paid request returns 402 {\"error\":\"Settlement failed\",\"details\":\"unknown_error\"} — it never settles. Exclude it from routing.",
+        "mailcheck returned confirmed:false (no txHash echoed) but HTTP 200 with full body — settlement confirmation is async/not echoed; the response itself is the proof of success.",
+        "Synchronous JSON response on all working backends — no job id / no polling.",
+        "Not outward/irreversible: validation only reads DNS/MX, never sends email."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Validate a single email address: syntax/RFC check, MX record lookup, disposable-domain detection (5,000+ domains), free-provider and role-based flags, and a typo suggestion (did_you_mean) — returns a trust score and deliverability status without ever sending mail. Use to qualify leads, clean lists, and gate signups. DEFAULT (mailcheck): POST https://mailcheck.hugen.tokyo/mailcheck/validate with JSON body {\"email\":\"<address>\"}. Synchronous JSON, no polling. x402node alternative is GET https://api.x402node.dev/validate/email?email=<address> (no body). Pay via x402 USDC on Base. Output: DEFAULT (mailcheck): body.status ('valid'|...), body.score (0..1), body.syntax_valid, body.domain, body.mx_found, body.mx_records[], body.is_disposable, body.is_free, body.is_role_based, body.did_you_mean (non-null on likely typo), body.checks_performed[]",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "email-validator",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "crypto-address-validator",
+    "kind": "model",
+    "name": "Crypto Address Validator",
+    "aka": [],
+    "provider": "2s.io",
+    "providerId": "2s-io",
+    "description": "Validate cryptocurrency wallet addresses across chains and detect their network/format. Pay-per-call x402.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "address-validation",
+      "crypto",
+      "wallet"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "2s",
+        "providerId": "2s",
+        "url": "https://2s.io/api/crypto/address-validate",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": 0.001,
+          "max": 0.001,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x2b6D4988Db4723E6908Db86Ab2b8dFBc51FC32C5",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "1000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "TW6ntaGzvj63ZgPjszd4FCGmVTGfzv1MAYZbjYcyWhn",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USDC",
+                "version": "1"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "parameters": [
+            {
+              "name": "chain",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "btc",
+                  "eth",
+                  "sol",
+                  "ltc",
+                  "trx",
+                  "xrp",
+                  "bch"
+                ]
+              }
+            },
+            {
+              "name": "address",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              }
+            }
+          ]
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active",
+        "team": "2s"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://2s.io/api/crypto/address-validate?chain={chain}&address={address} (required query params; chain enum: btc|eth|sol|ltc|trx|xrp|bch)",
+      "inputExample": {
+        "chain": "eth",
+        "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+      },
+      "outputShape": "body.data.items[0].valid (boolean), body.data.items[0].canonical (normalized address), body.data.items[0].format (e.g. eip-55), body.data.items[0].reason (null if valid); body.data.ok and body.data.total summarize the batch",
+      "quirks": [],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Call GET https://2s.io/api/crypto/address-validate with two required query params: chain (one of btc, eth, sol, ltc, trx, xrp, bch) and address (the wallet address string). Payment is x402 USDC ($0.001) on Base or Solana; no API key. Read the result from body.data.items[0]: valid tells you if the address is well-formed for that chain, canonical gives the normalized address, format names the encoding, and reason explains failures when valid is false.",
+      "costObservedUsd": 0.001
+    },
+    "source": {
+      "serviceKey": "crypto-address-validator",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-email-authentication",
+    "kind": "api",
+    "name": "NetIntel Email Authentication",
+    "aka": [
+      "netintel-email-auth",
+      "email-auth",
+      "spf dkim dmarc check",
+      "email security grade",
+      "domain email authentication"
+    ],
+    "provider": "NetIntel",
+    "providerId": "netintel",
+    "description": "Checks a sending domain's email authentication — validates SPF, DKIM (probing many selectors), and DMARC records, flags spoofing risks and misconfigurations, and returns an A-F email-security grade with transparent scored deductions.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "email-security",
+      "spf-dkim-dmarc",
+      "email-authentication",
+      "anti-spoofing",
+      "deliverability",
+      "dns"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/email-auth",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "price": "$0.002"
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "2000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "price": "$0.002"
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Sending domain to assess (e.g. example.org) — JSON body field. Bare domain, not an email address."
+            }
+          },
+          "required": [
+            "domain"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string"
+            },
+            "resolves": {
+              "type": "boolean"
+            },
+            "grade": {
+              "type": "string"
+            },
+            "score": {
+              "type": "number"
+            },
+            "spf": {
+              "type": "object",
+              "properties": {
+                "found": {
+                  "type": "boolean"
+                },
+                "record": {
+                  "type": "string"
+                },
+                "mechanisms": {
+                  "type": "array"
+                },
+                "all_qualifier": {
+                  "type": "string"
+                },
+                "dns_lookup_count": {
+                  "type": "number"
+                },
+                "issues": {
+                  "type": "array"
+                }
+              }
+            },
+            "dkim": {
+              "type": "object",
+              "properties": {
+                "found": {
+                  "type": "boolean"
+                },
+                "selectors_checked": {
+                  "type": "array"
+                },
+                "records": {
+                  "type": "array",
+                  "description": "per-selector {selector, record, key_type, key_length_bits, issues[]}"
+                },
+                "issues": {
+                  "type": "array"
+                }
+              }
+            },
+            "dmarc": {
+              "type": "object",
+              "properties": {
+                "found": {
+                  "type": "boolean"
+                },
+                "record": {
+                  "type": "string"
+                },
+                "policy": {
+                  "type": "string"
+                },
+                "subdomain_policy": {
+                  "type": "string"
+                },
+                "pct": {
+                  "type": "number"
+                },
+                "rua": {
+                  "type": "array"
+                },
+                "ruf": {
+                  "type": "array"
+                },
+                "issues": {
+                  "type": "array"
+                }
+              }
+            },
+            "deductions": {
+              "type": "array",
+              "description": "[{rule, points, detail}]"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://netintel.dev/email-auth with JSON body {domain:'<domain>'} (bare sending domain, NOT an email address). x402 pay-per-call (USDC on Base eip155:8453 OR Solana), $0.002, no API key. First unpaid request returns 402 with the accepts array; retry the same request with an X-PAYMENT header.",
+      "inputExample": {
+        "domain": "example.org"
+      },
+      "outputShape": "Synchronous JSON. Top level: domain, resolves (bool), grade (A-F), score (0-100). spf{found, record, mechanisms[], all_qualifier, dns_lookup_count, issues[]}. dkim{found, selectors_checked[] (~14 common selectors probed), records[]{selector, record, key_type, key_length_bits, issues[]}, issues[]}. dmarc{found, record, policy, subdomain_policy, pct, rua[], ruf[], issues[]}. deductions[]{rule, points, detail}. Verified live: {domain:'example.org', resolves:true, grade:'C', score:72, spf:{found:true, record:'v=spf1 -all', all_qualifier:'-all'}, dkim:{found:false, issue 'No DKIM record found for any selector' -20}, dmarc:{found:true, policy:'reject', subdomain_policy:'reject', pct:100, no rua -5, no ruf -3}, deductions:[dkim_none_found -20, dmarc_no_rua -5, dmarc_no_ruf -3]}.",
+      "quirks": [
+        "Input is the DOMAIN as a JSON body field {domain:'...'} on a POST — a bare sending domain, NOT an email address (contrast /email-intel/analyze which takes an address, and /email-report/full which takes ?email= as a query param).",
+        "This host (netintel.dev) advertises TWO accepts: Base USDC (eip155:8453) AND Solana USDC — paid cleanly on Base at $0.002.",
+        "DKIM discovery is best-effort: it probes ~14 common selectors (default, google, selector1/2, k1/2, s1/2, dkim, mail, smtp, mandrill, everlytickey1, mxvault); a domain using a non-standard selector may show dkim.found=false even if DKIM exists — read dkim.records[] for what was actually seen.",
+        "Grade/score are driven by deductions[] ({rule, points, detail}); gate on grade + score for the headline, read spf/dkim/dmarc.issues[] and deductions[] for the detail.",
+        "NetIntel does not charge on 4xx/5xx (input-validation, upstream, or server errors) per its Agent Fair-Trade guarantee; SSRF-safe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Check a sending domain's email authentication posture in one call: POST https://netintel.dev/email-auth with JSON body {domain:'<domain>'} (a bare domain such as example.org, NOT an email address). Pay via x402 (USDC on Base eip155:8453 or Solana, $0.002/call, no API key): the first unpaid request returns HTTP 402 with the accepts array; retry the same request with an X-PAYMENT header. The 200 response is synchronous, self-contained JSON — read grade (A-F) + score (0-100) for the headline, then spf{record, all_qualifier, issues[]}, dkim{found, selectors_checked[], records[], issues[]} (it probes ~14 common selectors), and dmarc{policy, subdomain_policy, pct, rua/ruf, issues[]}, plus deductions[] ({rule, points, detail}) for why the grade landed where it did. No polling. This is NetIntel's authentication-only slice — narrower than 'NetIntel Email Report' (which also folds in address intelligence + optional breach) and keyed on a domain rather than an address.",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "netintel-email-authentication",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-email-report",
+    "kind": "api",
+    "name": "NetIntel Email Report",
+    "aka": [
+      "email-report",
+      "email trust report",
+      "email vetting",
+      "full email check",
+      "spf dkim dmarc + deliverability + breach"
+    ],
+    "provider": "NetIntel",
+    "providerId": "netintel",
+    "description": "Fully vet an email address and its domain in one call — combines SPF/DKIM/DMARC authentication, deliverability and disposable/role/free-provider intelligence, and an optional password breach check into a single trust verdict with score, grade, and findings.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "email verification",
+      "deliverability",
+      "spf-dkim-dmarc",
+      "breach-check",
+      "email-security",
+      "trust-score"
+    ],
+    "modality": {
+      "input": "text",
+      "output": "json"
+    },
+    "pricing": {
+      "headline": "$0.150",
+      "amount": 0.15,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/email-report/full",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.15,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.150",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "150000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "150000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "email": "string (required) — email address to vet, passed as ?email= query param (e.g. user@example.com)",
+          "password": "string (optional) — if supplied, the breach section runs a k-anonymity HIBP check and returns {breached, breach_count, risk_level}; omitted → breach section returns error:'not_requested' (full password never transmitted, only a SHA-1 prefix)"
+        },
+        "outputSchema": {
+          "email": "string",
+          "domain": "string",
+          "generated_at": "string (ISO timestamp)",
+          "sections": {
+            "authentication": "{ available: boolean, spf: string, dkim: string, dmarc: string }",
+            "intelligence": "{ available: boolean, deliverability: string, is_disposable: boolean, is_role_based: boolean, is_free_provider: boolean }",
+            "breach": "{ available: boolean, error?: string, breached?: boolean, breach_count?: number, risk_level?: string }"
+          },
+          "sections_ok": "number",
+          "sections_failed": "number",
+          "trust_verdict": "string (trusted|untrusted|...)",
+          "score": "number (0-100)",
+          "grade": "string (A-F)",
+          "findings": "array of { rule: string, deduction: number, detail: string }"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/email-report/full?email=<address> (optionally &password=<pw> to enable the breach section) — email passed as a query param; x402 pay-per-call (USDC on Base eip155:8453 or Solana), $0.15, no API key. First unpaid request returns 402 with accepts; retry the same request with an X-PAYMENT header.",
+      "inputExample": {
+        "email": "test@example.org"
+      },
+      "outputShape": "Synchronous JSON report: body.email, body.domain, body.generated_at (ISO). body.sections.authentication{available,spf,dkim,dmarc}, body.sections.intelligence{available,deliverability,is_disposable,is_role_based,is_free_provider}, body.sections.breach{available,error|breached,breach_count,risk_level}. Aggregate: body.sections_ok/body.sections_failed (counts), body.trust_verdict (e.g. 'trusted'|'untrusted'), body.score (0-100), body.grade (A-F), body.findings[] ({rule,deduction,detail}). Verified live: {email:'test@example.org', domain:'example.org', authentication:{spf:'pass',dkim:'missing',dmarc:'p=reject'}, intelligence:{deliverability:'undeliverable'}, breach:{available:false,error:'not_requested'}, trust_verdict:'untrusted', score:70, grade:'C', findings:[{rule:'undeliverable',deduction:-30}]}.",
+      "quirks": [
+        "email is a QUERY PARAM on a GET (?email=...), not a JSON body.",
+        "The breach section is OPT-IN: omit password → breach.available=false, error='not_requested'; supply &password=<pw> → k-anonymity HaveIBeenPwned check ({breached,breach_count,risk_level}), full password never transmitted (only a SHA-1 prefix).",
+        "Composite report — a superset of the standalone /email-intel/analyze (validation) and /email-auth (domain auth) endpoints; each of the three sections runs concurrently with graceful partial-failure handling (sections_ok/sections_failed track how many succeeded), so a section can be available:false without failing the whole call.",
+        "Gate on body.trust_verdict + body.score/body.grade for the headline; read body.sections.* and body.findings[] for the detail (e.g. finding rule 'undeliverable' deducts -30 when the domain has no MX records).",
+        "Failed calls (4xx/5xx, incl. input-validation rejections) are never charged per NetIntel's Agent Fair-Trade Agreement; SSRF-safe (blocks private/internal targets)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Fully vet an email and its domain in one call: GET https://netintel.dev/email-report/full with the address in the ?email= query param (e.g. ?email=test@example.org). To also run a breach check on a candidate password, add &password=<pw> (k-anonymity HIBP — the full password is never sent). Pay via x402 (USDC on Base or Solana, $0.15/call, no API key): the first unpaid request returns HTTP 402 with the accepts array; retry the same request with an X-PAYMENT header. The 200 response is synchronous, self-contained JSON: read body.trust_verdict + body.score (0-100)/body.grade (A-F) for the headline, then body.sections.authentication (spf/dkim/dmarc), body.sections.intelligence (deliverability, is_disposable/is_role_based/is_free_provider), and body.sections.breach for the per-section detail, plus body.findings[] for the deductions. No polling. This is NetIntel's composite email-trust report — a superset of the 'Email Validator' (validation-only) capability.",
+      "costObservedUsd": 0.15
+    },
+    "source": {
+      "serviceKey": "netintel-email-report",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "netintel-phone-intel",
+    "kind": "api",
+    "name": "NetIntel Phone Intel",
+    "aka": [
+      "phone-intel",
+      "phone validation",
+      "phone number parser",
+      "phone number validator",
+      "phone lookup"
+    ],
+    "provider": "NetIntel",
+    "providerId": "netintel",
+    "description": "Parse and validate any phone number offline — normalize it to E.164, international, and national formats, identify its country and line type (mobile/landline/VOIP/toll-free/premium for NANP + UK), catch fictional/unassigned numbers, and return a validity verdict with a trust score, grade, and findings, without a paid telecom API.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "phone validation",
+      "phone lookup",
+      "phone parsing",
+      "e164-normalization",
+      "line-type",
+      "osint"
+    ],
+    "modality": {
+      "input": "text",
+      "output": "json"
+    },
+    "pricing": {
+      "headline": "$0.050",
+      "amount": 0.05,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "NetIntel",
+        "providerId": "netintel",
+        "url": "https://netintel.dev/phone-intel/analyze",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xdaDc335482AD545296Fd7b28518A251fFCbEb9Df",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8FVeybWnB4dYrxTuPK7WzFZNAiEcFVaDLFnKpRwVGr5s",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "BENrLoUbndxoNMUS5JXApGMtNykLjFXXixMtpDwDR9SP"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "phone": "string (required) — phone number in any format (e.g. '+1 555 867-5309'), passed as ?phone= query param; URL-encode a leading + as %2B",
+          "country_hint": "string (optional) — ISO 3166-1 alpha-2 country code hint (e.g. 'US') when the number has no dial code"
+        },
+        "outputSchema": {
+          "input": "string",
+          "is_valid": "boolean",
+          "e164": "string",
+          "international": "string",
+          "national": "string",
+          "country_code": "string (dial code, e.g. '1')",
+          "country": "string (ISO alpha-2, e.g. 'US')",
+          "country_name": "string",
+          "line_type": "string (mobile|landline|mobile_or_landline|voip|toll_free|premium|unknown)",
+          "digit_count": "number",
+          "score": "number (0-100)",
+          "grade": "string (A-F)",
+          "findings": "object[] ({rule, deduction, detail})"
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://netintel.dev/phone-intel/analyze?phone=<number> — phone passed as a query param (URL-encode a leading + as %2B); optional &country_hint=<ISO alpha-2>. x402 pay-per-call (USDC on Base eip155:8453 or Solana), $0.05, no API key. First unpaid request returns 402 with accepts; retry with X-PAYMENT.",
+      "inputExample": {
+        "phone": "+1 (555) 867-5309"
+      },
+      "outputShape": "Synchronous flat JSON: body.input (echo), body.is_valid (bool), body.e164/international/national (formatted strings), body.country_code (dial code), body.country (ISO alpha-2), body.country_name, body.line_type (mobile|landline|mobile_or_landline|voip|toll_free|premium|unknown; only resolved for NANP + UK, else 'unknown'), body.digit_count, body.score (0-100), body.grade (A-F), body.findings[] ({rule, deduction, detail} e.g. 'unassigned_area_code' for a 555 fictional number).",
+      "quirks": [
+        "phone is a QUERY PARAM on a GET (?phone=...), not a JSON body. URL-encode a leading + as %2B — an unencoded + in a query string decodes to a space (a leading space+digits is tolerated and re-interpreted as +).",
+        "Offline numbering-plan parser (libphonenumber-style), NOT a live telecom/carrier query: line_type is resolved only for NANP + UK numbers (mobile/landline/VOIP/toll-free/premium); other countries return line_type 'unknown'. This is a different capability from the carrier-network lookups (BlockRun Twilio, StablePhone).",
+        "Catches fictional/unassigned NANP numbers (555 area code, 555-01XX range) — the documented example '+1 (555) 867-5309' returns is_valid:false, score:0, grade:'F' with a findings 'unassigned_area_code' entry, yet still a 200 with full parse/format output.",
+        "Gate validity on body.is_valid + body.score/body.grade; use body.e164 for storage/normalization and body.findings[] for the specific deductions.",
+        "Failed calls (4xx/5xx, incl. input-validation rejections) are never charged per NetIntel's Agent Fair-Trade Agreement; SSRF-safe (blocks private/internal targets)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Validate/parse a phone number by calling GET https://netintel.dev/phone-intel/analyze with the number in the ?phone= query param, e.g. ?phone=%2B1%20(555)%20867-5309 (URL-encode a leading + as %2B, or an unencoded + decodes to a space). Add &country_hint=US when the number has no dial code. Pay via x402 (USDC on Base or Solana, $0.05/call, no API key): the first unpaid request returns HTTP 402 with the accepts array; retry the same request with an X-PAYMENT header. The 200 response is synchronous, self-contained JSON: read body.is_valid plus body.score (0-100)/body.grade (A-F) for the verdict, body.e164/international/national for normalized formats, body.country_name + body.line_type for context, and body.findings[] for the deductions (e.g. fictional 555 numbers flag 'unassigned_area_code'). No polling. This is an offline numbering-plan parser (line_type resolved only for NANP + UK), distinct from live carrier/Twilio lookups.",
+      "costObservedUsd": 0.05
+    },
+    "source": {
+      "serviceKey": "netintel-phone-intel",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "24klabs-email-validator",
+    "kind": "api",
+    "name": "24kLabs Email Validator",
+    "aka": [
+      "email-validate",
+      "email-validator"
+    ],
+    "provider": "24kLabs",
+    "providerId": "24klabs",
+    "description": "Validate an email address with an RFC-5322-ish syntax check plus disposable / role-account / free-provider flags and the parsed domain.",
+    "category": "maps-location",
+    "subcategory": "address-validation",
+    "tags": [
+      "email-validation",
+      "address-validation",
+      "disposable-email",
+      "deliverability",
+      "utility"
+    ],
+    "modality": {
+      "input": "text",
+      "output": "json"
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "24kLabs",
+        "providerId": "24klabs",
+        "url": "https://api.24klabs.ai/api/email-validate",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "email": "string (the email address to validate)"
+        },
+        "outputSchema": {
+          "service": "string",
+          "result": {
+            "valid": "boolean (RFC-5322-ish syntax check)",
+            "domain": "string (parsed domain)",
+            "disposable": "boolean (flag: disposable/temporary provider)",
+            "free_provider": "boolean (flag: free consumer provider)",
+            "role_account": "boolean (flag: role account e.g. info@, admin@)"
+          },
+          "latency_ms": "number"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T00:29:39.363Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "x402",
+      "callShape": "POST JSON body { email }",
+      "inputExample": {
+        "email": "user@example.com"
+      },
+      "outputShape": "json: { service, result: { valid, domain, disposable, free_provider, role_account }, latency_ms } — result carries the boolean flags and parsed domain",
+      "quirks": "Single-shot synchronous validator; result is inline in the 200 (no polling). Syntax + heuristic flags only (no live SMTP/MX deliverability check). The /api/v1/email-validate path is the same op on the same host (a namespace alias) and must not be indexed/paid separately.",
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Send a POST with JSON { email }. Example: {\"email\":\"user@example.com\"} returns result.valid==true with domain, disposable, free_provider and role_account flags. Pays x402 (USDC on Base, $0.002/call); the result is inline in the 200 (no polling).",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "24klabs-email-validator",
+      "discoveredVia": [
+        "address validation",
+        "address verification"
+      ],
+      "lastSyncedAt": "2026-06-02T00:29:39.363Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

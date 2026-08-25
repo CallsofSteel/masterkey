@@ -1,0 +1,45 @@
+{
+  "serviceId": "strale-translate",
+  "subcat": "translation",
+  "batchId": "batch-6",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/translate",
+      "method": "GET",
+      "amountUsd": 0.054001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/translate?text=<text>&target_language=<lang>&source_language=<optional>",
+    "inputExample": {
+      "text": "hello how are you",
+      "target_language": "Swedish"
+    },
+    "outputShape": "body.translated_text (string); body.source_language (auto-detected), body.target_language, body.confidence; meta under body._meta",
+    "quirks": [
+      "Params go in the query string, not a JSON body (GET request).",
+      "target_language and text are required; source_language is optional and auto-detected.",
+      "target_language accepts language names like 'Swedish', 'English', 'French' (not just ISO codes)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.strale.io/x402/translate with query params text (the text to translate) and target_language (a language name like 'Swedish' or 'French'); source_language is optional and auto-detected. Pay via x402 (USDC on Base, ~$0.054/call). Read the result from body.translated_text; body.source_language reports the detected source and body.confidence the quality. Plain synchronous response, no auth or polling needed.",
+    "costObservedUsd": 0.054001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-translate#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

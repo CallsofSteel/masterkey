@@ -1,0 +1,155 @@
+[
+  {
+    "id": "elevenlabs-sound-effects",
+    "kind": "model",
+    "name": "ElevenLabs Sound Effects",
+    "aka": [],
+    "provider": "ElevenLabs",
+    "providerId": "elevenlabs",
+    "description": "ElevenLabs Sound Generation — generate sound effects from a text description, with looping and duration control.",
+    "category": "media",
+    "subcategory": "sound-effects-audio",
+    "tags": [
+      "sound-effects",
+      "text-to-audio",
+      "foley"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "audio"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.150",
+      "amount": 0.15,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/elevenlabs/v1/sound-generation",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.15,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.150",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "150000",
+              "payTo": "0x89F5baA2CAA63FdC008bAF5C6E713E89A225E84f"
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "http",
+          "method": "POST",
+          "discoverable": true,
+          "queryParams": {
+            "output_format": {
+              "type": "string",
+              "description": "Output format",
+              "required": false
+            }
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Text description of the sound effect to generate"
+              },
+              "loop": {
+                "type": "boolean",
+                "description": "Create a smoothly looping sound effect"
+              },
+              "duration_seconds": {
+                "type": "number",
+                "description": "Duration in seconds (minimum 0.5)"
+              },
+              "prompt_influence": {
+                "type": "number",
+                "description": "How closely generation follows the prompt (higher = closer)"
+              },
+              "model_id": {
+                "type": "string",
+                "description": "Model ID for sound generation"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          }
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T02:26:19.883Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/elevenlabs/v1/sound-generation with JSON body {text} (optional: duration_seconds, loop, prompt_influence, model_id; optional query ?output_format=)",
+      "inputExample": {
+        "text": "a short gentle chime",
+        "duration_seconds": 0.5
+      },
+      "outputShape": "Response body IS the raw audio file (Content-Type: audio/mpeg). No JSON wrapper — write the bytes directly to a .mp3 file.",
+      "quirks": [
+        "Response is raw binary MP3 audio (audio/mpeg), NOT JSON — save the body bytes directly to a .mp3 file.",
+        "duration_seconds minimum is 0.5.",
+        "Only 'text' is required; other body fields (loop, duration_seconds, prompt_influence, model_id) are optional."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://x402.orth.sh/elevenlabs/v1/sound-generation over x402 (pays ~$0.15 USDC on Base) with a JSON body containing at minimum {\"text\": \"<description of the sound>\"}. Optionally set duration_seconds (min 0.5), loop, prompt_influence, or model_id, and an output_format query param. The response is the raw audio file itself (Content-Type audio/mpeg) — do not parse it as JSON; write the response bytes straight to a .mp3 file. Plain synchronous call, no auth beyond the x402 payment.",
+      "costObservedUsd": 0.15
+    },
+    "source": {
+      "serviceKey": "elevenlabs-sound-effects",
+      "discoveredVia": [
+        "sound effects",
+        "audio generation",
+        "sfx",
+        "sound generation",
+        "foley audio",
+        "mirelo",
+        "dolby.io"
+      ],
+      "lastSyncedAt": "2026-06-02T02:26:19.883Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

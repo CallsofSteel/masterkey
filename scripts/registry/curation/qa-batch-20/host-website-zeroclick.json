@@ -1,0 +1,43 @@
+{
+  "serviceId": "host-website-zeroclick",
+  "subcat": "app-hosting-paas",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://site.withzero.ai/run",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://site.withzero.ai/run (x402) — UNREACHABLE, host does not respond",
+    "inputExample": {},
+    "outputShape": "none — no response received (connection times out)",
+    "quirks": [
+      "Host site.withzero.ai resolves to Cloudflare IPs (104.21.6.9, 172.67.134.34) but the origin never completes a TCP/TLS connection — every request hangs and returns HTTP 000 after timeout.",
+      "The apex withzero.ai also times out (HTTP 000), indicating the whole site/origin is down, not just the /run route.",
+      "Control check passed: https://www.google.com returned HTTP 200 from the same environment, confirming egress works — the failure is the target host, not the network.",
+      "No 402 / payment requirements were ever returned, so price ('Varies') and payment.accepts (empty) could not be confirmed.",
+      "qa-pay returned classification 'wallet-error' with 'provider request failed: fetch failed' — this is the upstream fetch failing, NOT a wallet/balance problem; nothing was charged."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken/unreachable. GET https://site.withzero.ai/run never responds — DNS resolves to Cloudflare but the origin times out on every connection, and the apex withzero.ai is also down. Do not attempt to pay; no 402 quote is returned and no work can be done. Re-test later to see if the host comes back online; if it does, the documented call shape (bare GET /run, x402-gated, intended to host a website and return a live URL) will need fresh discovery since the input/output schema was never observable.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "host-website-zeroclick#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

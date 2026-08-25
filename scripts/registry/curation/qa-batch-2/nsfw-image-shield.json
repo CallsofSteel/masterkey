@@ -1,0 +1,49 @@
+{
+  "serviceId": "nsfw-image-shield",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d with JSON body {image_url} (registered URL — returns 404 after payment)",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/120px-Cat03.jpg"
+    },
+    "outputShape": "none (paid response was 404: body.error=\"Not found\", body.available=[\"/health\",\"/v1/moderation/shield-nsfw-images\"])",
+    "quirks": [
+      "Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment.",
+      "The 404 body reveals the real sub-route: available=[\"/health\",\"/v1/moderation/shield-nsfw-images\"]. The actual working path is likely the proxy base + /v1/moderation/shield-nsfw-images, but this was NOT verified (money-safety rule forbids a second paid call to an alternate orbis path).",
+      "Pre-flight probe shows 402 (looks payable) but that does not mean the route works — payment is taken then 404 returned. $0.005 lost on the test call."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint as registered: POST to the base proxy URL takes USDC payment and then returns 404 (\"Not found\"). The 404 response hints the real route is the proxy base plus /v1/moderation/shield-nsfw-images, but that path was never paid-verified. Treat this entry as broken until the registry URL is corrected to the full sub-route and re-tested. If retesting, send a JSON body with an image_url field pointing at a publicly reachable image.",
+    "costObservedUsd": 0.005,
+    "droppedReason": "nsfw-image-shield#0: Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment."
+  },
+  "droppedReason": "nsfw-image-shield#0: Orbis proxy charge-then-404: the registered base URL https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d returns HTTP 404 AFTER taking payment.",
+  "_backends": [
+    {
+      "key": "nsfw-image-shield#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ],
+  "salvage": {
+    "status": "candidate-for-future-batch",
+    "realRoute": "https://orbisapi.com/proxy/nsfw-image-shield-api-65bc6d/v1/moderation/shield-nsfw-images",
+    "plan": "The base URL charges then 404s, but the 404 body exposed available=[/health,/v1/moderation/shield-nsfw-images]. Re-test the full sub-route once (~$0.005) with body {image_url}; if it returns a real moderation result, re-add as active with the corrected URL."
+  }
+}

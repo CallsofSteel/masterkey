@@ -1,0 +1,51 @@
+{
+  "serviceId": "surplus-intelligence",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://www.surplusintelligence.ai/x402/api/inference/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.003302
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://www.surplusintelligence.ai/x402/api/inference/v1/chat/completions with JSON body {model, messages, max_tokens?, stream?}",
+    "inputExample": {
+      "model": "llama-3.3-70b",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (OpenAI-compatible; usage at body.usage)",
+    "quirks": [
+      "Backend is Venice-based: response includes a venice_parameters object alongside standard OpenAI fields.",
+      "Required body fields: model and messages. model example llama-3.3-70b works.",
+      "Prompt token count is inflated (~1689 prompt_tokens for 'hello') because an implicit system prompt is prepended; flat per-request x402 price ($0.0033) is unaffected."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://www.surplusintelligence.ai/x402/api/inference/v1/chat/completions with an OpenAI-style JSON body containing \"model\" (e.g. \"llama-3.3-70b\") and \"messages\" (array of {role, content}). Optionally set max_tokens and stream. Pay via x402 on Base (~$0.0033 flat per request). Read the assistant reply at body.choices[0].message.content. Token usage is in body.usage.",
+    "costObservedUsd": 0.003302
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "surplus-intelligence#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003302
+    }
+  ]
+}

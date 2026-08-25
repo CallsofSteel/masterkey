@@ -1,0 +1,51 @@
+{
+  "serviceId": "cloudflare-crawl-stableenrich",
+  "subcat": "web-crawling",
+  "batchId": "batch-36",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stableenrich.dev/api/cloudflare/crawl",
+      "method": "POST",
+      "amountUsd": 0.1
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "siwx",
+    "callShape": "POST https://stableenrich.dev/api/cloudflare/crawl with JSON body {url, limit, depth, formats} (x402 pay) → 202 {token}; then poll GET https://stableenrich.dev/api/cloudflare/jobs?token=<jwt> (SIWX, free, same wallet)",
+    "inputExample": {
+      "url": "https://example.com",
+      "limit": 3,
+      "depth": 1,
+      "formats": [
+        "markdown"
+      ]
+    },
+    "outputShape": "Poll response: body.status (\"completed\"), body.total/body.finished/body.skipped, body.records[].markdown, body.records[].metadata.title, body.records[].url, body.records[].status",
+    "quirks": [
+      "Async two-step: paid POST /api/cloudflare/crawl returns HTTP 202 with {token} (a JWT), NOT the result.",
+      "Poll GET /api/cloudflare/jobs?token=<jwt> using SIWX auth (same wallet, FREE) every 3-5s. Done when body.status==='completed' (or finished+skipped>=total).",
+      "limit max 25, depth max 3. render=true executes JS (slower).",
+      "Records that point off the seed origin (e.g. external links) come back status:'skipped' with no markdown.",
+      "JWT token is what you poll with; it carries the jobId+wallet binding."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Cloudflare Browser Rendering crawl via StableEnrich. POST https://stableenrich.dev/api/cloudflare/crawl with JSON {url, limit<=25, depth<=3, formats:[\"markdown\"], render?} — this pays $0.10 (x402, Base) and returns 202 {token}. Then poll GET https://stableenrich.dev/api/cloudflare/jobs?token=<jwt> with SIWX (same wallet, free) until body.status===\"completed\". Read crawled content from body.records[].markdown (each record also has metadata.title and url; off-origin links return status:\"skipped\").",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "cloudflare-crawl-stableenrich#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.1
+    }
+  ]
+}

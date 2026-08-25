@@ -1,0 +1,45 @@
+{
+  "serviceId": "nano-banana-pro",
+  "subcat": "image-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image/nano-banana-pro",
+      "method": "POST",
+      "amountUsd": 0.15
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image/nano-banana-pro with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (hosted JPG URL); also body.image_description and body.metadata.{model,aspectRatio,replicate_url,cdn_key}",
+    "quirks": [
+      "Body shape is a simple {\"prompt\":\"...\"} — NOT the Google Gemini generateContent {contents:[{parts:[{text}]}]} shape. The Gemini shape (from the sibling backend's existingUsage) PAYS and then 400s here with 'prompt is required and must be a non-empty string'.",
+      "Output is a hosted image URL at body.image_url (DigitalOcean Spaces CDN .jpg), NOT base64 inline data. Download from that URL to get the image.",
+      "Payment settled on Solana, ~$0.15/call, plain synchronous (200 returns the result directly).",
+      "This xona-agent.com backend is a different proxy than the x402.orth.sh Gemini backend listed in this service's other usage — do not mix request shapes between them."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://api.xona-agent.com/image/nano-banana-pro with a JSON body {\"prompt\":\"<your image prompt>\"}. Payment is x402 USDC (~$0.15/call, settled on Solana), plain synchronous — a 200 returns the result directly. Read the generated image URL from body.image_url (a hosted .jpg on a CDN) and download it from there. Do NOT use the Google Gemini contents/parts request shape with this URL; it will charge you and then 400.",
+    "costObservedUsd": 0.15
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-pro#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.15
+    }
+  ]
+}

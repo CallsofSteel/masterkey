@@ -1,0 +1,56 @@
+{
+  "serviceId": "stablegiftcards",
+  "subcat": "payment-processing",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablegiftcards.dev/api/buy",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablegiftcards.dev/api/invoice",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "POST https://stablegiftcards.dev/api/invoice with JSON body {\"invoice_id\":\"<id>\"} and a SIWX wallet signature (no x402 payment)",
+    "inputExample": {
+      "invoice_id": "test-nonexistent"
+    },
+    "outputShape": "On success: body with invoice status + redemption codes (Bitrefill /invoices/{id} shape). On unknown id: body.success=false, body.error=\"Bitrefill /invoices/{id}: 404 ... Invoice not found\". On bad input: body.success=false, body.error=\"Validation failed\", body.issues[]",
+    "quirks": [
+      "This is NOT the paid purchase endpoint the registry summary implies. The server's own description is 'Check invoice status and retrieve redemption codes' — it is a read-only status/code-retrieval lookup for an invoice you ALREADY bought.",
+      "Auth is SIWX, NOT x402. It returns the SIWX challenge (HTTP 402-style body with extensions['sign-in-with-x']) until you sign; once signed it is FREE — no USDC charged. Use --siwx.",
+      "Required body field is snake_case invoice_id (string). {invoiceId:...} or empty body returns 400 'Validation failed'.",
+      "Unknown/invalid invoice_id returns HTTP 500 wrapping the upstream Bitrefill 404 ('Invoice not found', error_code not_found). A 500 here means bad id, not a dead endpoint.",
+      "You need a real invoice_id minted by the SEPARATE purchase endpoint first — this endpoint cannot be exercised standalone to a 200. A 200 success could not be produced during QA (no real invoice on hand).",
+      "Sibling /api/search also now requires SIWX (changed since the 2026-06-01 probe that reported plain 402/free)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://stablegiftcards.dev/api/invoice with a SIWX wallet signature (no payment is charged — it is free with --siwx). Send JSON body {\"invoice_id\":\"<the id returned by the purchase endpoint>\"}. Read the invoice status and redemption codes from the success body (Bitrefill /invoices/{id} shape). If you pass an unknown id you get HTTP 500 wrapping Bitrefill's 'Invoice not found'; if you omit invoice_id or use camelCase you get HTTP 400 'Validation failed'. This endpoint only LOOKS UP existing invoices — the actual gift-card purchase happens on a separate endpoint.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablegiftcards#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 5
+    },
+    {
+      "key": "stablegiftcards#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

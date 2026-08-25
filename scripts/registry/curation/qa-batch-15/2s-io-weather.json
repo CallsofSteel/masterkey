@@ -1,0 +1,44 @@
+{
+  "serviceId": "2s-io-weather",
+  "subcat": "weather",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://2s.io/api/weather/zip",
+      "method": "GET",
+      "amountUsd": 0.0012
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://2s.io/api/weather/zip?zip=10001",
+    "inputExample": {
+      "zip": "10001"
+    },
+    "outputShape": "body.data.items[0].location {zip,city,state,coords{lat,lon},timezone} and body.data.items[0].current {temperatureF,apparentTemperatureF,humidityPct,windMph,windDirection,windDirectionDeg,precipProbabilityPct,conditions,isDay,observedAt}; body.data.source attributes NOAA; settlement at body.meta.settlement",
+    "quirks": [
+      "Result is nested under body.data.items[] (an array even for a single ZIP) — read items[0]",
+      "zip is a query-string param, not a path segment",
+      "US ZIPs only (NOAA-backed)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://2s.io/api/weather/zip with a query parameter zip set to a 5-digit US ZIP code (e.g. ?zip=10001). It is an x402 paid endpoint at ~$0.0012 USDC on Base (also accepts Solana USDC). The response is synchronous JSON; read current conditions from body.data.items[0].current and location metadata from body.data.items[0].location. Data is sourced from NOAA, so only US ZIPs work.",
+    "costObservedUsd": 0.0012
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "2s-io-weather#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

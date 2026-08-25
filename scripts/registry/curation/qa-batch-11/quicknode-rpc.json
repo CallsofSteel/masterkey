@@ -1,0 +1,48 @@
+{
+  "serviceId": "quicknode-rpc",
+  "subcat": "crypto-blockchain-data",
+  "batchId": "batch-11",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.quicknode.com/{network}",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "POST https://x402.quicknode.com/{network} with JSON-RPC body {jsonrpc,id,method,params} — but only AFTER a one-time SIWE auth handshake to obtain a bearer token, which is then sent on RPC calls",
+    "inputExample": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_blockNumber",
+      "params": []
+    },
+    "outputShape": "body.result (JSON-RPC result), e.g. hex block number — UNVERIFIED (auth wall reached before any RPC executed)",
+    "quirks": [
+      "Price is $10.00 — exceeds the $6 QA hard cap, so it could not be paid in this run. The $10 is a prepaid credit drawdown ($10 USDC = 1M credits), not per-call.",
+      "Registry probe reported 402, but live POST calls return HTTP 401 {\"error\":\"invalid_signature\",\"message\":\"Signature verification failed\"} — the real gate is SIWE auth, not a plain x402 paywall.",
+      "Requires a one-time SIWE (Sign-In-With-Ethereum) handshake to mint a bearer token BEFORE any RPC call; the bearer token must accompany RPC requests. Plain x402 payment alone does NOT unlock it.",
+      "qa-pay --siwx flag did NOT satisfy QuickNode's SIWE flow — still 401 invalid_signature. QuickNode uses its own bespoke auth handshake, not the generic SIWX poller.",
+      "{network} path segment must be a real network slug (e.g. ethereum-mainnet, solana-mainnet); supports 79+ EVM/Solana/Aptos networks."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Untested in this run — blocked by two issues. First, the $10.00 price exceeds the $6 QA cap so no payment was made. Second, the endpoint is NOT a plain x402 paywall: live POST calls return HTTP 401 invalid_signature because QuickNode requires a one-time SIWE auth handshake to obtain a bearer token before any JSON-RPC call. To use it, an agent must (1) complete QuickNode's SIWE sign-in to get a bearer token (this also does the $10 prepaid credit drawdown), then (2) POST JSON-RPC bodies like {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eth_blockNumber\",\"params\":[]} to https://x402.quicknode.com/{network} carrying that bearer token, and read the result from body.result. The generic --siwx path does not work here.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "quicknode-rpc#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

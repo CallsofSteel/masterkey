@@ -1,0 +1,52 @@
+{
+  "serviceId": "zhipu-glm-4-6",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/glm",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/glm with JSON body {model, messages[], max_tokens}",
+    "inputExample": {
+      "model": "glm-4.6",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Say hello in one word."
+        }
+      ],
+      "max_tokens": 256
+    },
+    "outputShape": "body.content (final assistant answer, plain string); body.model (actual served model); body.usage.total_tokens / body.usage.cost",
+    "quirks": [
+      "This gateway endpoint (/api/llm/glm) does NOT return the OpenAI chat-completions shape: the answer is at body.content directly, NOT body.choices[0].message.content.",
+      "Send a standard chat body: {model:'glm-4.6', messages:[{role,content}], max_tokens}. model 'glm-4.6' is accepted but the gateway actually serves z-ai/glm-5-20260211 (reported in body.model).",
+      "GLM has chain-of-thought on by default: reasoning_tokens (e.g. 215) are consumed and counted against max_tokens, but the reasoning text is NOT surfaced in this response shape — only the final body.content is returned. Set a generous max_tokens (256+) so the answer isn't truncated by reasoning budget.",
+      "Flat-priced x402 call at $0.030 on Base regardless of token usage (body.usage.cost reflects upstream model cost, not what you pay)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {model:\"glm-4.6\", messages:[{role:\"user\",content:\"...\"}], max_tokens:256} to https://x402-gateway-production.up.railway.app/api/llm/glm; payment is x402 (~$0.03 USDC on Base, flat per call). Read the assistant's answer from body.content (a plain string) — note this gateway does NOT use the OpenAI choices[] shape. Use a generous max_tokens (256+) because GLM reasoning tokens count against it; the chain-of-thought itself is not returned, only the final answer. Single synchronous JSON response, no auth beyond the x402 payment.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "zhipu-glm-4-6#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.03
+    }
+  ]
+}

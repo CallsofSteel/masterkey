@@ -1,0 +1,971 @@
+[
+  {
+    "id": "replicate-run-any-model",
+    "kind": "api",
+    "name": "Replicate (run any model)",
+    "aka": [
+      "replicate",
+      "httpay-replicate-gateway"
+    ],
+    "provider": "Replicate",
+    "providerId": "replicate",
+    "description": "Pay-per-call x402 gateway to Replicate's full model catalog — run any hosted model (image, video, audio, language, upscaling, etc.) by proxying to Replicate's predictions API. No Replicate API key required; billed per request in USDC on Base.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "gateway",
+      "run-any-model",
+      "inference",
+      "multi-modal",
+      "gpu",
+      "model-hosting"
+    ],
+    "modality": {
+      "input": [
+        "text",
+        "image"
+      ],
+      "output": [
+        "image",
+        "video",
+        "audio",
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "Varies",
+      "amount": null,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "httpay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/replicate/%7B*path%7D/*",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": null,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "Varies",
+          "min": null,
+          "max": null,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "http",
+          "method": "GET",
+          "discoverable": true
+        },
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "source": {
+      "serviceKey": "replicate-run-any-model",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "untested"
+  },
+  {
+    "id": "groq",
+    "kind": "api",
+    "name": "Groq",
+    "aka": [
+      "groq-llm"
+    ],
+    "provider": "Groq",
+    "providerId": "groq",
+    "description": "Groq ultra-fast LPU inference for open models (Llama, DeepSeek, Gemma, Qwen, etc.) via an OpenAI-compatible API, proxied pay-per-call over x402 (HTTPay gateway). No API key.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "inference",
+      "model-hosting",
+      "fast",
+      "lpu",
+      "openai-compatible"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0030",
+      "amount": 0.003,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "HTTPay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/groq/chat/completions",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.003,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "source": {
+      "serviceKey": "groq",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "untested"
+  },
+  {
+    "id": "together-ai",
+    "kind": "api",
+    "name": "Together AI",
+    "aka": [
+      "togetherai"
+    ],
+    "provider": "Together AI",
+    "providerId": "together-ai",
+    "description": "Together AI inference for 200+ open models (Llama, DeepSeek, Qwen, Mixtral, FLUX, etc.) via an OpenAI-compatible API, proxied pay-per-call over x402 (HTTPay gateway). No API key.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "inference",
+      "model-hosting",
+      "open-models",
+      "openai-compatible"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "HTTPay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/togetherai/v1/chat/completions",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0050",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "5000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "source": {
+      "serviceKey": "together-ai",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "untested"
+  },
+  {
+    "id": "hugging-face",
+    "kind": "api",
+    "name": "Hugging Face",
+    "aka": [
+      "huggingface",
+      "hf-inference"
+    ],
+    "provider": "Hugging Face",
+    "providerId": "hugging-face",
+    "description": "Hugging Face Hub inference for hosted open models via an OpenAI-compatible API, proxied pay-per-call over x402 (HTTPay gateway). No API key.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "inference",
+      "model-hosting",
+      "open-models",
+      "openai-compatible"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0010",
+      "amount": 0.001,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "HTTPay",
+        "providerId": "httpay",
+        "url": "https://httpay.xyz/api/gateway/huggingface/v1/chat/completions",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.001,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "1000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x5f5d6FcB315871c26F720dc6fEf17052dD984359",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "chainId": 8453
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "source": {
+      "serviceKey": "hugging-face",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "untested"
+  },
+  {
+    "id": "agentstools-model-lookup",
+    "kind": "api",
+    "name": "Agentstools Model Lookup",
+    "aka": [
+      "agentstools-model-lookup",
+      "model-lookup"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Look up normalized metadata for one AI model by name or short alias — per-million input/output pricing, context and output limits, capability tags, modalities, knowledge cutoff, release date, provider list, and coding benchmark — fused from open keyless catalogs (LiteLLM, models.dev, Aider) with source citations.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "llm",
+      "model-metadata",
+      "pricing",
+      "context-window",
+      "benchmark"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0080",
+      "amount": 0.008,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/model/lookup",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.008,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.0080",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "8000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Model name or short alias, e.g. claude-sonnet-4-5, gpt-4o, sonnet or 4o. Fuzzy-resolved to the closest catalog model."
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "One normalized model record. found:false (with 200) when the name is unknown.",
+          "properties": {
+            "found": {
+              "type": "boolean"
+            },
+            "query": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "provider": {
+              "type": "string"
+            },
+            "providers": {
+              "type": "array"
+            },
+            "aliases": {
+              "type": "array"
+            },
+            "price_in": {
+              "type": "number"
+            },
+            "price_out": {
+              "type": "number"
+            },
+            "prices": {
+              "type": "object"
+            },
+            "context": {
+              "type": "number"
+            },
+            "max_output": {
+              "type": "number"
+            },
+            "caps": {
+              "type": "array"
+            },
+            "modalities": {
+              "type": "object"
+            },
+            "knowledge_cutoff": {
+              "type": "string"
+            },
+            "release_date": {
+              "type": "string"
+            },
+            "benchmark": {
+              "type": "object"
+            },
+            "benchmarks": {
+              "type": "object"
+            },
+            "citations": {
+              "type": "array"
+            },
+            "sources_used": {
+              "type": "array"
+            },
+            "attribution": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/model/lookup?name=<model-name-or-alias>. Single required query param `name` (a model name or short alias, e.g. sonnet, 4o, claude-sonnet-4-5, gpt-4o). No request body. Result is inline in the 200. Pays $0.008 USDC via x402 on Base (eip155:8453).",
+      "inputExample": {
+        "name": "sonnet"
+      },
+      "outputShape": "Single JSON model record. Key fields (verified live for name=sonnet -> claude-sonnet-4): found (boolean), query, id, name, provider, providers[] (all gateways carrying it), aliases[], price_in / price_out (USD per 1M tokens), prices.{input,output,cache_read}.{litellm,modelsdev} (per-source USD/1M), context (context window tokens), max_output (max output tokens), caps[] (e.g. tools, vision, reasoning, pdf, prompt_caching, structured_output), modalities.{input,output}[], knowledge_cutoff (date), release_date (date), benchmark / benchmarks (coding pass-rate object or null), citations[] (source + source_url + license), sources_used[], attribution[]. Unknown names return {\"found\":false, ...} with HTTP 200.",
+      "quirks": [
+        "The `name` param is fuzzy alias-resolved to the closest catalog model, so the resolved record may not be the exact/latest variant you meant: name=sonnet resolved to id claude-sonnet-4 (not claude-sonnet-4-5). Pass a precise id/alias (e.g. claude-sonnet-4-5) when you need an exact match.",
+        "An unknown model name returns a valid HTTP 200 with {\"found\":false} (never an error) — and it still charges the $0.008. Check `found` before reading fields.",
+        "Pricing (price_in/price_out and prices.*) is quoted in USD per 1,000,000 tokens, not per call.",
+        "benchmark / benchmarks can be null even when aider sources are listed in sources_used (was null for claude-sonnet-4); do not assume a benchmark is always present.",
+        "Data is fused from open keyless catalogs (LiteLLM, models.dev, Aider) with per-record citations[] and attribution[]; a `degraded[]` array lists any source that failed to contribute."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Look up one AI model's normalized metadata by name or short alias. GET https://api.agentstools.dev/model/lookup?name=<model-name-or-alias> — the single required query param `name` accepts a full model id or a short alias (e.g. sonnet, 4o, claude-sonnet-4-5, gpt-4o) and is fuzzy-resolved to the closest catalog model. No request body; the result is inline in the 200. Pays $0.008 USDC via x402 on Base (eip155:8453), keyless. Returns a single record: found, id, name, provider, providers[] (all gateways carrying the model), aliases[], price_in/price_out (USD per 1M tokens) plus per-source prices.{input,output,cache_read}.{litellm,modelsdev}, context (context window), max_output, caps[] (tools/vision/reasoning/pdf/prompt_caching/structured_output), modalities.{input,output}, knowledge_cutoff, release_date, benchmark(s) (coding pass-rate or null), and citations[]/attribution[] (fused from LiteLLM, models.dev, Aider). Unknown names return {\"found\":false} with HTTP 200 (still billed), so pass a precise id/alias when you need an exact model and check `found` before reading fields.",
+      "costObservedUsd": 0.008
+    },
+    "source": {
+      "serviceKey": "agentstools-model-lookup",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-model-compare",
+    "kind": "api",
+    "name": "Agentstools Model Compare",
+    "aka": [
+      "agentstools-model-compare",
+      "model-compare"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Compare two to five AI models side by side — each name/alias resolved and normalized to per-million input/output pricing, context and max-output limits, capability tags, knowledge cutoff, release date and best Aider coding benchmark, plus convenience picks (cheapest, best benchmark, largest context) and per-source citations; deterministic, no LLM.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "llm",
+      "model-metadata",
+      "compare",
+      "pricing",
+      "benchmark",
+      "context-window"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.010",
+      "amount": 0.01,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/model/compare",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.010",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "models": {
+              "type": "string",
+              "description": "Comma-separated list of two to five model names or aliases to compare, e.g. gpt-4o, claude-sonnet-4-5, gemini-2.5-flash. Each is fuzzy-resolved to the closest catalog model."
+            }
+          },
+          "required": [
+            "models"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "Side-by-side comparison. models[] is one normalized record per resolved name; not_found[] lists unresolved names; picks flags convenience winners.",
+          "properties": {
+            "models": {
+              "type": "array"
+            },
+            "not_found": {
+              "type": "array"
+            },
+            "picks": {
+              "type": "object"
+            },
+            "sources_used": {
+              "type": "array"
+            },
+            "degraded": {
+              "type": "array"
+            },
+            "attribution": {
+              "type": "array"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/model/compare?models=<comma-separated-list>. Single required query param `models` (2-5 model names or aliases, comma-separated, e.g. gpt-4o, claude-sonnet-4-5, gemini-2.5-flash). No request body. Result is inline in the 200. Pays $0.01 USDC via x402 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "models": "gpt-4o, claude-sonnet-4-5, gemini-2.5-flash"
+      },
+      "outputShape": "JSON object. models[] = one normalized record per resolved name (verified live for gpt-4o, claude-sonnet-4-5, gemini-2.5-flash): query, id, name, provider, price_in / price_out (USD per 1M tokens), prices.{input,output,cache_read}.{litellm,modelsdev} (per-source USD/1M), context (tokens), max_output, caps[] (e.g. tools, vision, reasoning, prompt_caching, structured_output, audio, pdf, parallel_tools), knowledge_cutoff, release_date, benchmark (Aider coding pass-rate object or null), citations[] (source+source_url+license). not_found[] lists unresolved names. picks holds convenience winners (cheapest, best_benchmark, largest_context) — a key is omitted when no model qualifies (best_benchmark absent when every benchmark is null). sources_used[], degraded[], attribution[] round it out.",
+      "quirks": [
+        "Each `models` entry is fuzzy alias-resolved to the closest catalog model, so a resolved record may not be the exact/latest variant you meant. Pass precise ids/aliases when you need an exact match.",
+        "Pricing (price_in/price_out and prices.*) is quoted in USD per 1,000,000 tokens, not per call.",
+        "The top-level `provider` on each record reflects the first gateway in the catalog and can differ from the canonical vendor (live run showed provider:\"302ai\" for gpt-4o/claude-sonnet-4-5/gemini-2.5-flash rather than openai/anthropic/google).",
+        "benchmark can be null for well-known models even though aider sources are listed in sources_used (was null for all three in the live run); do not assume a benchmark is always present. When every benchmark is null, picks.best_benchmark is omitted entirely (live picks had only cheapest + largest_context).",
+        "Unresolved names do not error — they land in not_found[] and the call still charges the flat $0.01. Deterministic, no LLM; data fused from open keyless catalogs (LiteLLM, models.dev, Aider) with per-record citations and attribution."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Compare two to five AI models side by side. GET https://api.agentstools.dev/model/compare?models=<comma-separated-list> — the single required query param `models` takes 2-5 model names or aliases (full ids or short aliases, fuzzy-resolved). No request body; result inline in the 200. Pays $0.01 USDC via x402 on Base (eip155:8453), keyless. Returns models[] with one normalized record per resolved name (id, name, provider, price_in/price_out per 1M tokens plus per-source prices.{input,output,cache_read}.{litellm,modelsdev}, context, max_output, caps[], knowledge_cutoff, release_date, benchmark or null, citations[]), not_found[] for names that could not be resolved, and picks (cheapest / best_benchmark / largest_context — a pick key is dropped when no model qualifies). Deterministic, no LLM; fused from LiteLLM, models.dev and Aider with per-record citations. Prices are USD per 1M tokens, and the call still charges $0.01 even if some names land in not_found.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "agentstools-model-compare",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "agentstools-model-route",
+    "kind": "api",
+    "name": "Agentstools Model Route",
+    "aka": [
+      "agentstools-model-route",
+      "model-route",
+      "llm-router"
+    ],
+    "provider": "Agentstools",
+    "providerId": "agentstools",
+    "description": "Route to the cheapest LLM that passes a task class (coding, reasoning, vision, tool-use, long-context, cheap-chat, general) plus optional constraints (min context, tool/vision/reasoning, max input/output price, min coding benchmark, provider) — returns a ranked cheapest-first candidate list with normalized per-million prices, context, capability tags and citations, a recommended pick and a deterministic rationale, fused from LiteLLM, models.dev and Aider.",
+    "category": "ai-ml",
+    "subcategory": "ai-model-hosting-inference",
+    "tags": [
+      "llm",
+      "model-routing",
+      "model-selection",
+      "pricing",
+      "benchmark"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.020",
+      "amount": 0.02,
+      "currency": "USD",
+      "unit": "per call"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Agentstools",
+        "providerId": "agentstools",
+        "url": "https://api.agentstools.dev/model/route",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.02,
+          "currency": "USD",
+          "unit": "per call",
+          "display": "$0.020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xF22e558a00D91Ee12A1F50C52186FecB8dDFf493",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task": {
+              "type": "string",
+              "enum": [
+                "coding",
+                "reasoning",
+                "vision",
+                "tool-use",
+                "long-context",
+                "cheap-chat",
+                "general"
+              ],
+              "description": "Required. Workload class to route for. Each class implies required capabilities and a sensible context floor that explicit constraints override."
+            },
+            "min_context": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Minimum context window in tokens."
+            },
+            "needs_tools": {
+              "type": "boolean",
+              "description": "Require function/tool calling support."
+            },
+            "needs_vision": {
+              "type": "boolean",
+              "description": "Require image/vision input support."
+            },
+            "needs_reasoning": {
+              "type": "boolean",
+              "description": "Require extended reasoning support."
+            },
+            "max_input_price": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Maximum input price in USD per million tokens."
+            },
+            "max_output_price": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Maximum output price in USD per million tokens."
+            },
+            "min_benchmark": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Minimum Aider coding pass rate percent."
+            },
+            "provider": {
+              "type": "string",
+              "description": "Optional provider filter such as anthropic or openai."
+            }
+          },
+          "required": [
+            "task"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "description": "Ranked routing result. Deterministic; no LLM runs.",
+          "properties": {
+            "task": {
+              "type": "string"
+            },
+            "constraints_applied": {
+              "type": "object"
+            },
+            "recommended": {
+              "type": "object",
+              "description": "Top pick: id, name, provider, price_in, price_out, blended, context, caps[], benchmark, citations[]."
+            },
+            "candidates": {
+              "type": "array"
+            },
+            "candidate_count": {
+              "type": "integer"
+            },
+            "rationale": {
+              "type": "string"
+            },
+            "sources_used": {
+              "type": "array"
+            },
+            "degraded": {
+              "type": "array"
+            },
+            "attribution": {
+              "type": "array"
+            },
+            "not_advice": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T21:28:52.144Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.agentstools.dev/model/route?task=<class>&min_context=<int>&needs_tools=<bool>&max_output_price=<usd/1M>&... Only `task` is required (enum: coding, reasoning, vision, tool-use, long-context, cheap-chat, general); all constraints are optional query params. No request body. Result is inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453), keyless.",
+      "inputExample": {
+        "task": "coding",
+        "min_context": 200000,
+        "needs_tools": true,
+        "max_output_price": 10
+      },
+      "outputShape": "JSON routing result (verified live for task=coding, min_context=200000, needs_tools=true, max_output_price=10). Key fields: task, constraints_applied (echo of all constraints incl. defaults + sort), recommended (top pick object: id, name, provider, price_in, price_out, blended, sort_cost, context, caps[], benchmark or null, citations[]), candidates[] (up to ~15 cheapest-first, each same shape as recommended), candidate_count (total models passing — 967 in the verified run), rationale (deterministic string, e.g. 'Cheapest of 967 models passing [context >= 200,000; tool-use; output <= $10.0/1M] for task coding: inclusionai/ling-2.6-flash at $0.03/1M output. Ranked cheapest-first by blended price.'), sources_used[], degraded[] (sources that failed to contribute), attribution[] (LiteLLM/models.dev/Aider licenses), not_advice (disclaimer). Prices are USD per 1,000,000 tokens.",
+      "quirks": [
+        "Only `task` is required; every other param is an optional filter. Constraints combine with AND and are echoed back in constraints_applied along with defaults (e.g. sort=blended, unset numeric filters shown as null).",
+        "Prices (price_in/price_out/blended) are USD per 1,000,000 tokens, not per call. Ranking is cheapest-first by a blended input/output price (sort_cost).",
+        "benchmark can be null for a recommended/candidate model even when aider sources are listed in sources_used (all candidates in the verified run had benchmark:null); do not assume the top pick has a coding benchmark.",
+        "candidates[] is a truncated preview (~15 shown) while candidate_count reports the full passing set; narrow with tighter constraints to focus the list.",
+        "Deterministic fusion of open keyless catalogs (LiteLLM, models.dev, Aider); a degraded[] array lists any source that failed, and not_advice reminds you to verify pricing/capabilities against each provider before production routing."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Route to the cheapest LLM that still passes a quality/capability bar for a task, then send sub-calls to it. GET https://api.agentstools.dev/model/route?task=<class>&<constraints...> — `task` is required (enum: coding, reasoning, vision, tool-use, long-context, cheap-chat, general); optional query params: min_context (tokens), needs_tools/needs_vision/needs_reasoning (bool), max_input_price/max_output_price (USD per 1M tokens), min_benchmark (Aider coding pass-rate %), provider (filter, e.g. anthropic/openai). No request body; result inline in the 200. Pays $0.02 USDC via x402 on Base (eip155:8453), keyless. Returns constraints_applied, a cheapest-first candidates[] (each with normalized per-1M price_in/price_out/blended, context, caps[], benchmark or null, citations[]), candidate_count, a recommended top pick, a deterministic rationale string, sources_used/degraded, and attribution. Deterministic — no LLM runs. Prices are per 1M tokens; verify against the provider before production routing.",
+      "costObservedUsd": 0.02
+    },
+    "source": {
+      "serviceKey": "agentstools-model-route",
+      "discoveredVia": [
+        "model inference",
+        "ai inference api"
+      ],
+      "lastSyncedAt": "2026-06-01T21:28:52.144Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

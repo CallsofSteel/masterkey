@@ -1,0 +1,45 @@
+{
+  "serviceId": "flux-2-max",
+  "subcat": "image-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/image/flux-2-max",
+      "method": "POST",
+      "amountUsd": 0.08
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/image/flux-2-max with JSON body {prompt}",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "body.image_url (hosted JPG), body.image_description, body.metadata.{model,aspect_ratio,replicate_url,cdn_key}",
+    "quirks": [
+      "Payment is Solana-only: paymentAccepts has a single entry network=solana, USDC asset EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v, payTo 9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA. It does NOT accept Base/Tempo — the paying wallet must hold Solana USDC.",
+      "priceDisplay is 'Varies' but the live quote for a basic prompt was a flat $0.08; reference images / larger outputs may cost more.",
+      "Synchronous: the 200 response returns the finished image immediately (no job id / polling). Output aspect_ratio defaults to 1:1.",
+      "Result is at body.image_url (a CDN-hosted JPG); a body.metadata.replicate_url to the original .webp is also provided."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "FLUX.2 Max image generation by Black Forest Labs via Xona. Call POST https://api.xona-agent.com/image/flux-2-max with a JSON body like {\"prompt\":\"...\"} (the description says it also supports reference images). It is synchronous and pays ~$0.08/call in USDC — CRITICAL: payment is Solana-only, so the paying wallet must hold Solana USDC (a Base balance will not work). On success (HTTP 200) read the generated image from body.image_url (a CDN-hosted JPG); body.metadata gives model, aspect_ratio (default 1:1), and the original replicate_url.",
+    "costObservedUsd": 0.08
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-max#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.08
+    }
+  ]
+}

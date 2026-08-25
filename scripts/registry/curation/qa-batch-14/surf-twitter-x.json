@@ -1,0 +1,78 @@
+{
+  "serviceId": "surf-twitter-x",
+  "subcat": "social-media-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://twitter.surf.cascade.fyi/users/MadrigalCianci/tweets",
+      "method": "GET",
+      "amountUsd": 0.004
+    },
+    {
+      "backend": "https://twitter.surf.cascade.fyi/users/kleffew94/following",
+      "method": "GET",
+      "amountUsd": 0.004
+    },
+    {
+      "backend": "https://twitter.surf.cascade.fyi/tweets/2049411678094479474/replies",
+      "method": "GET",
+      "amountUsd": 0.004
+    },
+    {
+      "backend": "https://twitter.surf.cascade.fyi/tweets",
+      "method": "GET",
+      "amountUsd": 0.004
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://twitter.surf.cascade.fyi/tweets?ids=<tweetId>[,<tweetId>...] (no body; one or more tweet IDs as a comma-separated `ids` query param). x402 pay ~$0.004 USDC (Base or Solana).",
+    "inputExample": {
+      "_url": "https://twitter.surf.cascade.fyi/tweets?ids=20"
+    },
+    "outputShape": "body.data[] — array of tweet objects. Each: body.data[i].{id,url,text,created_at,lang,conversation_id,is_reply,is_quote,is_retweet,is_thread_start,content_type,time_ago}, body.data[i].author.{id,username,name,description,profile_image_url,verified,public_metrics{followers_count,following_count,tweet_count,like_count,media_count}}, body.data[i].public_metrics.{like_count,retweet_count,reply_count,quote_count,impression_count,bookmark_count}. Also body.meta.{result_count,has_next_page}.",
+    "quirks": [
+      "inputSchema was null in registry — the /tweets route REQUIRES an `ids` query param (comma-separated tweet IDs); a bare GET /tweets would have no input and fail.",
+      "Batch fetch: pass multiple tweet IDs comma-separated, e.g. ?ids=20,1234... — body.data is an array, body.meta.result_count reflects how many resolved.",
+      "Result is synchronous under body.data[]; no job id / polling.",
+      "Payment settled on Base (eip155:8453); also accepts Solana per paymentAccepts. txHash not returned by qa-pay (confirmed:false) but status 200 with real data confirms success."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Fetch one or more tweets by ID with a plain GET to https://twitter.surf.cascade.fyi/tweets?ids=<id> — supply tweet IDs as a comma-separated `ids` query parameter (this is required; there is no JSON body and no API key). Pay the x402 quote (~$0.004 USDC on Base or Solana). Read the result synchronously from body.data[], an array of full tweet objects (text, timestamps, engagement metrics, and an embedded author profile with public_metrics); check body.meta.result_count to see how many IDs resolved. Note this is the batch-tweet route of the wider Surf Twitter/X service — sibling routes like /users/{username} cover profile lookup, and others cover timelines/replies/following.",
+    "costObservedUsd": 0.004
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "surf-twitter-x#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.004
+    },
+    {
+      "key": "surf-twitter-x#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.004
+    },
+    {
+      "key": "surf-twitter-x#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.004
+    },
+    {
+      "key": "surf-twitter-x#6",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "serviceId": "twit-sh",
+  "subcat": "social-media-data",
+  "batchId": "batch-14",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.twit.sh/tweets/by/id",
+      "method": "GET",
+      "amountUsd": 0.0025
+    },
+    {
+      "backend": "https://x402.twit.sh/tweets/search",
+      "method": "GET",
+      "amountUsd": 0.005
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.twit.sh/tweets/by/id?id=<tweetId> (x402 paid, no body)",
+    "inputExample": {
+      "id": "20"
+    },
+    "outputShape": "body.data.text (tweet text); body.data.public_metrics.{like_count,retweet_count,reply_count,quote_count,bookmark_count}; body.data.created_at; body.data.author_id; body.data.author.{username,name,description,verified,public_metrics.followers_count}",
+    "quirks": [
+      "inputSchema was null — the tweet ID MUST be supplied as a ?id=<tweetId> query string param on the URL (numeric snowflake ID, passed as a string e.g. id=20). There is no request body and no path param.",
+      "Endpoint name is /tweets/by/id (singular 'id'); do not confuse with a bulk/by-ids route.",
+      "Useful result is nested under body.data (not at the top level). The author profile is embedded at body.data.author.",
+      "Payment confirmed:false / txHash:null in qa-pay but status was 200 and real data returned — settlement is async via x402 facilitator; the response itself is the proof of success."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.twit.sh/tweets/by/id with the tweet's numeric ID as a query param: ?id=<tweetId> (e.g. ?id=20). It is an x402 paid endpoint (~$0.0025 USDC on Base, eip155:8453); send no request body. On success you get HTTP 200 with JSON; read the tweet from body.data.text, engagement from body.data.public_metrics, and the author profile from body.data.author. If you get a 4xx, verify the id is a valid numeric tweet snowflake ID passed as the ?id query param.",
+    "costObservedUsd": 0.0025
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "twit-sh#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "twit-sh#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

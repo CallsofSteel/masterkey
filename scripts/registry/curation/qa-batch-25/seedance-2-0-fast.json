@@ -1,0 +1,45 @@
+{
+  "serviceId": "seedance-2-0-fast",
+  "subcat": "video-generation",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/seedance-fast/t2v",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.ottoai.services/video-gen with JSON body {prompt} (x402 USDC; networks: Base eip155:8453, Polygon eip155:137, Solana). Quotes $1.75 flat for video generation.",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "UNTESTED — could not pay. Based on the existingUsage backend (blockrun.ai), expect an async queued job (body.id + body.status + poll_url) requiring a paid poll for body.data[0].url. The otto endpoint output shape is unconfirmed.",
+    "quirks": [
+      "BLOCKER: master wallet had insufficient USDC funds during this QA run — NO payment was made and the endpoint could not be paid-tested. Fund the wallet and re-run.",
+      "URL MISMATCH: task CALL URL is https://x402.ottoai.services/video-gen, but the spec.url field is https://stablestudio.dev/api/generate/seedance-fast/t2v and the prior existingUsage was verified against a THIRD backend, https://blockrun.ai/api/v1/videos/generations. Three different URLs for the same service — confirm which is canonical before relying on usage.",
+      "Unpaid pre-flight of x402.ottoai.services/video-gen returns a clean HTTP 402 quoting $1.75 flat (description: 'Video generation ($1.75)'), payTo 0x0E84dDEdAaE6A779c462C22a59F301EC31B6b808 on Base. NOTE: this otto endpoint quoted a FLAT $1.75, unlike the blockrun.ai backend whose price was duration-based (~$1.19 for 5s).",
+      "Body field name {prompt} is INFERRED (inputSchema was null) from the service name + existingUsage; not confirmed against this otto endpoint since the 402 fires before body validation.",
+      "Async likely: existingUsage backend returned a 202 queued job needing a same-wallet paid poll of poll_url; the otto endpoint's async behavior is unverified."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Could not complete a paid test: the master QA wallet was out of USDC, so nothing was charged. The endpoint at https://x402.ottoai.services/video-gen is alive — an unpaid request returns HTTP 402 quoting a flat $1.75 (Base/Polygon/Solana). To test, fund the wallet, then POST {\"prompt\":\"<text>\"} paying x402. Expect an async/queued response that must be polled (per the prior blockrun.ai verification). IMPORTANT before trusting this entry: the task CALL URL, the spec url, and the prior verified backend are three different URLs — reconcile which one is canonical.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0-fast#1",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

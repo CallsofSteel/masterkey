@@ -1,0 +1,80 @@
+{
+  "serviceId": "laso-finance",
+  "subcat": "payment-processing",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://laso.finance/get-card",
+      "method": "GET",
+      "amountUsd": 5
+    },
+    {
+      "backend": "https://laso.finance/order-intl-card",
+      "method": "GET"
+    },
+    {
+      "backend": "https://laso.finance/get-card-data",
+      "method": "GET"
+    },
+    {
+      "backend": "https://laso.finance/search-merchants",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "GET https://laso.finance/get-card?amount=5&format=json (no body). x402 payment EQUALS the card value: amount=5 charges 5 USDC on Base (5000000 base units). Base USDC or Solana USDC accepted.",
+    "inputExample": {
+      "amount": 5,
+      "format": "json"
+    },
+    "outputShape": "body.card.card_id (prepaid card id), body.card.usd_amount, body.card.status (\"pending\" at order time -> poll for funded), body.user_id (wallet that owns the card), body.callable_base_url (Firebase Functions host for follow-up card ops), body.auth.id_token (1h Firebase JWT bearer), body.auth.refresh_token, body.auth.expires_in",
+    "quirks": [
+      "THE PRICE IS THE PRODUCT: the x402 charge equals the card value. amount=5 charges $5 USDC and loads a $5 card. amount is min $5 / max $1000 -> a higher amount means a higher real charge. Default/min is $5.",
+      "OUTWARD + IRREVERSIBLE: this actually creates and funds a real US prepaid debit card with real money. Get human approval before calling, and pick amount deliberately.",
+      "Pass &format=json so an agent gets JSON; default mimeType is text/html (browser view).",
+      "Card comes back status='pending' (card_id assigned, e.g. O-01KTN62GBAKT1VERAFMC962NYN). The actual card number/CVV/expiry are NOT in this response — you must poll/fetch them later using body.auth.id_token as a bearer token against body.callable_base_url.",
+      "auth.id_token is a 1h Firebase JWT; use auth.refresh_token to renew before it expires.",
+      "US-only; prepaid cards are not accepted at all merchants. Use the merchant-acceptance search before relying on it.",
+      "The card and token are bound to the paying wallet (user_id 0xdd13...). No separate sign-in/SIWX needed for this call; x402 payment alone authenticates and identifies you.",
+      "Registry surface lists this as a $5.00 endpoint at GET /get-card — correct, but note the $5 is the minimum card value, not a fixed service fee."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Call GET https://laso.finance/get-card?amount=N&format=json where N is the USD value you want on the card ($5-$1000). The x402 payment equals N USDC on Base (or Solana), so you are spending real money that lands on a real US prepaid debit card — always get explicit user approval and set amount intentionally. On 200, read body.card.card_id and body.card.status (status will be 'pending' at order time). The card number/CVV/expiry are not in this response: use body.auth.id_token as a Bearer token against body.callable_base_url (Firebase Cloud Functions) to fetch the funded card details, check balance, search merchant acceptance, or withdraw. This is outward and irreversible.",
+    "costObservedUsd": 5
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "laso-finance#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "laso-finance#2",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "laso-finance#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "laso-finance#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,458 @@
+[
+  {
+    "id": "subtitle-caption-generator",
+    "kind": "model",
+    "name": "Subtitle / Caption Generator",
+    "aka": [],
+    "provider": "Various",
+    "providerId": "various",
+    "description": "Generate subtitles/captions (e.g. SRT) from a video's audio.",
+    "category": "image-video-processing",
+    "subcategory": "transcription-subtitles",
+    "tags": [
+      "subtitles",
+      "captions",
+      "srt",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video",
+        "audio"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/subtitle-generate-api-3e1477",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/subtitle-generate-api-3e1477"
+              },
+              "description": "Generate SRT/VTT subtitles from audio or video",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/subtitle-generate-api-3e1477"
+              },
+              "description": "Generate SRT/VTT subtitles from audio or video",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:56:21.425Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      },
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/generate-subtitles-from-video-api-339ad3",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/generate-subtitles-from-video-api-339ad3"
+              },
+              "description": "Generate SRT, VTT, or ASS subtitles from any video URL — supports 57 languages and translation",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "10000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/generate-subtitles-from-video-api-339ad3"
+              },
+              "description": "Generate SRT, VTT, or ASS subtitles from any video URL — supports 57 languages and translation",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:56:21.425Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      },
+      {
+        "provider": "gg402.vercel",
+        "providerId": "gg402-vercel",
+        "url": "https://gg402.vercel.app/video_caption_generator",
+        "method": "POST",
+        "hosting": "platform",
+        "platformName": "Vercel",
+        "authMode": "paid",
+        "price": {
+          "amount": 0.01,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.010",
+          "min": 0.01,
+          "max": 0.01,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x9257cD24721e3c06E9F7655b77C283bCD9652132",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:56:21.425Z"
+        },
+        "status": "needs-review",
+        "team": "gg402"
+      },
+      {
+        "provider": "hookfindr",
+        "providerId": "hookfindr",
+        "url": "https://api.hookfindr.com/api/x402/caption.srt",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.05,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.050",
+          "min": 0.05,
+          "max": 0.05,
+          "source": "search",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xaE0fEa8bb97DB83FFc96BAada9A4d8Da6efd21ba"
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 404,
+          "method": "GET",
+          "payable": false,
+          "free": false,
+          "blocked": true,
+          "checkedAt": "2026-06-01T22:56:21.425Z"
+        },
+        "status": "hidden"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://gg402.vercel.app/video_caption_generator with JSON body {video_url}",
+      "inputExample": {
+        "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+      },
+      "outputShape": "body.captions[] (each {text, start_time, end_time}), body.accuracy_score, body.visual_descriptions[], body.processedAt",
+      "quirks": [
+        "inputSchema was null in registry; the correct field is video_url (a public URL to a video file).",
+        "Output is structured JSON captions with timecodes, not an SRT file; build SRT yourself from body.captions[] if needed.",
+        "Response also includes visual_descriptions[] and an accuracy_score."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "POST to https://gg402.vercel.app/video_caption_generator with a JSON body {\"video_url\": \"<public video URL>\"}, paying $0.010 USDC on Base (x402, no auth/sign-in). It returns 200 synchronously with a JSON object. Read body.captions[] for the timed caption segments (each has text, start_time, end_time in seconds); body.visual_descriptions[] gives scene descriptions and body.accuracy_score gives a confidence value. If you need an SRT file, assemble it from body.captions[] yourself.",
+      "costObservedUsd": 0.01
+    },
+    "source": {
+      "serviceKey": "subtitle-caption-generator",
+      "discoveredVia": [
+        "subtitles",
+        "captioning",
+        "video subtitles",
+        "srt generation",
+        "video to subtitle"
+      ],
+      "lastSyncedAt": "2026-06-01T22:56:21.425Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "subtitle-extract",
+    "kind": "model",
+    "name": "Subtitle Extract",
+    "aka": [],
+    "provider": "Orbis",
+    "providerId": "orbis",
+    "description": "Extract embedded subtitle tracks from a video file.",
+    "category": "image-video-processing",
+    "subcategory": "transcription-subtitles",
+    "tags": [
+      "subtitles",
+      "extract",
+      "video-processing"
+    ],
+    "modality": {
+      "input": [
+        "video"
+      ],
+      "output": [
+        "text"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0050",
+      "amount": 0.005,
+      "currency": "USD",
+      "unit": "per video"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orbis",
+        "providerId": "orbis",
+        "url": "https://orbisapi.com/proxy/video-subtitle-extract-api-6bd9a1",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.005,
+          "currency": "USD",
+          "unit": "per video",
+          "display": "$0.0050",
+          "min": 0.005,
+          "max": 0.005,
+          "source": "live-402",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-subtitle-extract-api-6bd9a1"
+              },
+              "description": "Extract embedded subtitles and closed captions from video files as SRT or VTT",
+              "mimeType": "application/json",
+              "payTo": "0x2bb72231EeD303cc91a462A1fA738b42B6a9ac6d",
+              "maxTimeoutSeconds": 60,
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana",
+              "amount": "5000",
+              "resource": {
+                "url": "https://orbisapi.com/proxy/video-subtitle-extract-api-6bd9a1"
+              },
+              "description": "Extract embedded subtitles and closed captions from video files as SRT or VTT",
+              "mimeType": "application/json",
+              "payTo": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE",
+              "maxTimeoutSeconds": 60,
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "extra": {
+                "feePayer": "GX6SKV6NahzGAocGs1uiAjFATUsdeEqT4dsEjwU6UrUE"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": {
+          "type": "object"
+        },
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-01T22:56:21.425Z"
+        },
+        "status": "hidden",
+        "team": "Orbis"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "broken",
+      "verifiedAt": "2026-06-08",
+      "resultPull": "none",
+      "auth": "none",
+      "callShape": "POST https://orbisapi.com/proxy/video-subtitle-extract-api-6bd9a1 with JSON body {video_url}",
+      "inputExample": {
+        "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+      },
+      "outputShape": "body.error = \"API_NOT_FOUND\" (endpoint dead; no useful output)",
+      "quirks": [
+        "Orbis proxy dead-slug: POST returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'video-subtitle-extract-api-6bd9a1'\"}. The route does not exist.",
+        "402 pre-flight probe falsely reported payable=true on 2026-06-01; the slug is not actually live.",
+        "No payment settled in this test (paid:false, costUsd:0) because the 404 returned before settlement."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "This endpoint is broken. The Orbis proxy slug 'video-subtitle-extract-api-6bd9a1' returns 404 API_NOT_FOUND on POST, meaning the underlying route was removed. Do not call it — it will fail (and risks charge-then-404 loss on retries). The intended use was POSTing a video URL to extract embedded subtitle tracks (SRT/VTT), but the service is no longer hosted. Remove or mark inactive in the registry.",
+      "costObservedUsd": 0,
+      "droppedReason": "subtitle-extract#0: Orbis proxy dead-slug: POST returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'video-subtitle-extract-api-6bd9a1'\"}. The route does not exist."
+    },
+    "source": {
+      "serviceKey": "subtitle-extract",
+      "discoveredVia": [
+        "subtitles",
+        "captioning",
+        "video subtitles",
+        "srt generation",
+        "video to subtitle"
+      ],
+      "lastSyncedAt": "2026-06-01T22:56:21.425Z",
+      "hosting": "custom"
+    },
+    "status": "hidden",
+    "hiddenReason": "dead"
+  }
+]

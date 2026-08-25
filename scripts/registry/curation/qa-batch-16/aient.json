@@ -1,0 +1,97 @@
+{
+  "serviceId": "aient",
+  "subcat": "apm-performance-monitoring",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://aient.ai/x402/telemetry/health",
+      "method": "GET"
+    },
+    {
+      "backend": "https://aient.ai/x402/telemetry/logs",
+      "method": "GET"
+    },
+    {
+      "backend": "https://aient.ai/x402/problems",
+      "method": "GET"
+    },
+    {
+      "backend": "https://aient.ai/x402/anomalies",
+      "method": "POST"
+    },
+    {
+      "backend": "https://aient.ai/x402/diagnose",
+      "method": "POST",
+      "amountUsd": 0.2
+    },
+    {
+      "backend": "https://aient.ai/x402/incidents/synthetic",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://aient.ai/x402/diagnose with JSON body {service_name, incident}",
+    "inputExample": {
+      "service_name": "checkout-api",
+      "incident": "TypeError: Cannot read properties of undefined (reading 'id')\n    at getUser (/app/src/user.js:12:18)\n    at /app/src/route.js:34:9"
+    },
+    "outputShape": "On error: body.success (bool), body.error.code, body.error.message. Success shape not observed; likely body.success=true with a synthesized incident + autonomous fix attempt (per service description).",
+    "quirks": [
+      "inputSchema is undocumented (null in registry) — field names discovered only via 400 error hints",
+      "Required fields: service_name (string) AND incident (the stack trace / incident text). The field is named 'incident', NOT 'stackTrace'",
+      "Validates input strictly and charges $0.20 per call EVEN on 400 bad_request — a wrong body still costs money. Get the body right before paying",
+      "Two paid probes were spent ($0.40 total) discovering required fields: first revealed service_name_required, second revealed incident_required. A successful 2xx was NOT landed within the 2-attempt money-safe ceiling",
+      "Error envelope: {success:false, error:{code:'bad_request', message:'...'}}"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://aient.ai/x402/diagnose with a JSON body containing both service_name (the affected service, e.g. 'checkout-api') and incident (the stack trace or incident description text). Pays $0.20 USDC per call via x402 on Base. NOTE: this endpoint charges even for 400 validation errors, so include BOTH required fields on the first call. The /diagnose route synthesizes a production incident from the stack trace and attempts an autonomous fix; read body.success and the result payload. On failure read body.error.message for the missing-field hint.",
+    "costObservedUsd": 0.4
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "aient#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "aient#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "aient#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "aient#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "aient#4",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.2
+    },
+    {
+      "key": "aient#5",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

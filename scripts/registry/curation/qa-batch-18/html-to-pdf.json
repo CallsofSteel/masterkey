@@ -1,0 +1,65 @@
+{
+  "serviceId": "html-to-pdf",
+  "subcat": "pdf-generation-processing",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/html-to-pdf-api-aa8d5d",
+      "method": "POST"
+    },
+    {
+      "backend": "https://x402.nichospt.net/render",
+      "method": "POST",
+      "amountUsd": 0.005
+    },
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/html-to-pdf",
+      "method": "POST",
+      "amountUsd": 0.08
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/html-to-pdf with JSON body {\"url\":\"https://example.com\"}",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body.pdf_url (presigned CloudConvert S3 download link, valid ~24h), body.file_size_bytes, body.source_url, body.job_id",
+    "quirks": [
+      "Requires a 'url' field pointing to a remote page; despite the name/description ('Render HTML or a URL'), a raw 'html' field is NOT accepted and returns 400 'Missing or invalid url field' (that call still charges $0.08).",
+      "Output pdf_url is a CloudConvert presigned S3 URL with X-Amz-Expires=86400 (~24h) — download promptly, it is not permanent.",
+      "x402 pays even on a 400 validation error, so send the correct {url} body the first time."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://x402-deployer.x402-deployer.workers.dev/html-to-pdf with JSON body {\"url\":\"<page-to-render>\"} and pay the $0.08 USDC x402 quote on Base. It renders the remote page to a PDF (via CloudConvert) and returns 200 with body.pdf_url, a presigned S3 download link that expires in ~24h — fetch the PDF from there promptly. Note: only a 'url' is accepted; do not send raw 'html' (it 400s and still costs money).",
+    "costObservedUsd": 0.08
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "html-to-pdf#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "html-to-pdf#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "html-to-pdf#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.08
+    }
+  ]
+}

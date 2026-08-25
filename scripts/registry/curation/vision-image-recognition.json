@@ -1,0 +1,549 @@
+{
+  "subcategory": "vision-image-recognition",
+  "category": "ai-ml",
+  "unit": "per call",
+  "_note": "Curated by claude-aiml workflow. backends = candidate indices from candidates/vision-image-recognition.json. resolved = agentcash check_endpoint_schema exact prices (USDC, 6dp; diffbot is MPP). One entry per recognizable vision service; same service across operations merged as backends (cheapest surfaced). Contamination routed away: OCR -> ocr-document-extraction (#0 x402node ocr, #3 x402helper image-to-text, #12 x402helper visual/ocr, #18 strale image-to-text, #19 the402 ocr job, #50 hugen pdf-ocr; #33/#34 orbis image-to-content = multimodal DOCUMENT extraction); image-generation (#20 flux pro, #28 recoup gen, #38 flux schnell, #39 imgzen gpt-image-1, #43 imagen-nano, #44 zai cogview, #53 imagen-3, #56 imgzen gpt-image-1.5, #57 genbase, #58 run402, #59 xona qwen-image, #60 questflow image-edit, #62 agentgram); image-video-processing (#5 wonderland bg-remove, #23 deployer remove-bg, #24 deployer upscale, #25 x402node EXIF extract, #26 utilsforagents scrub-metadata, #27 dellbot bg-remove); llm-chat-apis (#31 orth openai chat, #37 gateway gpt-5.4, #48 orth parallel chat); financial-data (#40 wonderland SEC earnings). Dropped junk/non-vision: x402helper.xyz brand (#1,#2,#4 face-recognition, #8 image_analyzer dup, #32 llama-vision, #52 scan-gpt); orbis educational/quiz/medical-test 'score' endpoints (#16 pattern-recognition-score, #30 computer-vision-basics guide, #35 binocular-vision-score); GIS map-tile/imageserver (#6 orth precip, #63 precip, #45/#46 tavus video persona, #47 zai video gen, #49 zai reader, #51 veo image-to-video, #64 olostep crawl, #41 brand scrape, #42 image scrape).",
+  "entries": [
+    {
+      "name": "Orbis Image Intelligence",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "kind": "api",
+      "aka": [
+        "ai-image-analysis",
+        "ai-image-classify",
+        "ai-image-describe",
+        "multimodal-analysis"
+      ],
+      "description": "Unified image-understanding API: object detection, scene classification, image captioning, OCR text extraction, face-attribute detection, NSFW scoring, chart reading and document understanding. Multiple operations (analysis, classify, describe, NSFW, multimodal) behind one provider, billed per call via x402 on Base and Solana.",
+      "tags": [
+        "object-detection",
+        "image-classification",
+        "captioning",
+        "nsfw",
+        "scene-recognition",
+        "visual-qa"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        13,
+        15,
+        14,
+        17,
+        55
+      ],
+      "resolved": {
+        "13": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "14": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "15": {
+          "method": "POST",
+          "status": "hidden"
+        },
+        "17": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "55": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/ai-image-analysis-api-c72c38 with JSON body {image_url}",
+        "inputExample": {
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/240px-Cat03.jpg"
+        },
+        "outputShape": "unknown (endpoint dead; never returned a result body)",
+        "quirks": [
+          "Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'}",
+          "Probe/pre-flight shows HTTP 402 (looks payable) but this is misleading - the route is dead",
+          "No payment was made: 404 returned before settlement (paid:false, costUsd:0), so no USDC lost",
+          "Do NOT retry with alternate bodies or paths - the route does not exist"
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-image-analysis-api-c72c38' is dead: a POST returns HTTP 404 with {error:'API_NOT_FOUND'}. The x402 probe deceptively reports 402 payable, but no working API sits behind it. No money was lost in this test because the 404 fires before payment settles. Exclude from the registry or mark as dead.",
+        "costObservedUsd": 0,
+        "droppedReason": "orbis-image-intelligence#0: Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'} | orbis-image-intelligence#1: Orbis proxy slug is dead: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-analysis-api-c72c38'.\"} | orbis-image-intelligence#2: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. Pre-flight returns HTTP 402 (looks payable) but the slug 'ai-image-classify-api-7ee35a' is not active. | orbis-image-intelligence#3: Orbis proxy dead-slug pattern: the x402 probe returns 402 (looks payable) but the actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-describe-api-3a23d8'\"}. | orbis-image-intelligence#4: Endpoint is DEAD: returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'multimodal-analysis-api-72d0ee'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "orbis-image-intelligence#0: Orbis proxy dead-slug: the slug 'ai-image-analysis-api-c72c38' returns 404 {error:'API_NOT_FOUND', message:'No active API found with slug ...'} | orbis-image-intelligence#1: Orbis proxy slug is dead: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-analysis-api-c72c38'.\"} | orbis-image-intelligence#2: DEAD ENDPOINT: Orbis proxy charge-then-404 pattern. Pre-flight returns HTTP 402 (looks payable) but the slug 'ai-image-classify-api-7ee35a' is not active. | orbis-image-intelligence#3: Orbis proxy dead-slug pattern: the x402 probe returns 402 (looks payable) but the actual POST returns 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-describe-api-3a23d8'\"}. | orbis-image-intelligence#4: Endpoint is DEAD: returns HTTP 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'multimodal-analysis-api-72d0ee'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Orbis Image Similarity",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "kind": "model",
+      "aka": [
+        "ai-image-similarity"
+      ],
+      "description": "Compare two images for visual similarity and return a similarity score, billed per call via x402 on Base and Solana.",
+      "tags": [
+        "image-similarity",
+        "image-matching",
+        "embeddings"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        54
+      ],
+      "resolved": {
+        "54": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/ai-image-similarity-api-1c4f4f with JSON body {image1, image2} (untested shape — endpoint is dead)",
+        "inputExample": {
+          "image1": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/120px-PNG_transparency_demonstration_1.png",
+          "image2": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/120px-PNG_transparency_demonstration_1.png"
+        },
+        "outputShape": "unknown — endpoint returns 404 {error, message}, never produced a real result",
+        "quirks": [
+          "DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}",
+          "The x402 pre-flight probe returns 402 (looks payable) but this is a false positive — the underlying route does not exist.",
+          "No payment is incurred because the 404 occurs before settlement (paid:false, costUsd:0). Do NOT retry with alternate bodies or paths — the slug is dead.",
+          "Input schema is empty in the registry; the {image1,image2} body is a best-guess that was never validated."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is broken and should not be used. The Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered, so a POST returns HTTP 404 with {\"error\":\"API_NOT_FOUND\"} even though the x402 pre-flight probe reports 402 (payable). The 404 happens before payment, so no USDC is lost, but the service cannot perform image similarity comparison. Do not attempt to call or pay for this endpoint until Orbis re-activates the slug.",
+        "costObservedUsd": 0,
+        "droppedReason": "orbis-image-similarity#0: DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}"
+      },
+      "status": "hidden",
+      "_droppedReason": "orbis-image-similarity#0: DEAD ENDPOINT: Orbis proxy slug 'ai-image-similarity-api-1c4f4f' is not registered. POST returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-image-similarity-api-1c4f4f'.\"}",
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Image Analyzer",
+      "provider": "gg402",
+      "providerId": "gg402",
+      "kind": "model",
+      "description": "Analyzes uploaded images to detect objects, scenes and emotions and generate detailed natural-language descriptions for accessibility and content workflows. Billed per call via x402 on Base.",
+      "tags": [
+        "object-detection",
+        "scene-recognition",
+        "captioning",
+        "accessibility"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        7
+      ],
+      "resolved": {
+        "7": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://gg402.vercel.app/image_analyzer with JSON body {image_url}",
+        "inputExample": {
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg"
+        },
+        "outputShape": "body.description (natural-language description string), body.objects[] ({name, position:{x,y,width,height}} normalized 0-1 bbox), body.insights.mood, body.insights.context, body.processedAt",
+        "quirks": [
+          "inputSchema is null in the registry; the correct body field is image_url (a publicly-accessible image URL). Field name was inferred, not documented.",
+          "Synchronous: full analysis returns in the paid 200 response, no polling.",
+          "qa-pay reported confirmed:false / txHash:null but status 200 with valid body — settlement succeeded, the txHash just was not surfaced."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Send a POST to https://gg402.vercel.app/image_analyzer with a JSON body {\"image_url\": \"<public image URL>\"} and pay the x402 charge ($0.01 USDC on Base). The response is synchronous JSON: read body.description for the natural-language caption, body.objects[] for detected objects with normalized bounding boxes, and body.insights.mood / body.insights.context for scene/emotion analysis. The image URL must be publicly fetchable. No API key or sign-in required beyond the x402 payment.",
+        "costObservedUsd": 0.01
+      }
+    },
+    {
+      "name": "Medical Image Analyzer",
+      "provider": "gg402",
+      "providerId": "gg402",
+      "kind": "model",
+      "description": "Analyzes medical images such as X-rays and MRIs to detect anomalies and return preliminary diagnostic insights. Billed per call via x402 on Base.",
+      "tags": [
+        "medical-imaging",
+        "anomaly-detection",
+        "image-analysis"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        11
+      ],
+      "resolved": {
+        "11": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://gg402.vercel.app/medical_image_analyzer with JSON body {image_url, image_type}",
+        "inputExample": {
+          "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Chest_Xray_PA_3-8-2010.png",
+          "image_type": "xray"
+        },
+        "outputShape": "body.anomalies_detected[].{anomaly,confidence,location}, body.diagnostic_insights (string), body.disclaimer, body.processedAt",
+        "quirks": [
+          "inputSchema was null in registry; the body requires BOTH image_url and image_type — omitting image_type returns a 400 'Validation failed' (and you are still charged $0.01).",
+          "image_type is a free-text string; 'xray' was accepted. Use a modality string like 'xray' or 'mri'.",
+          "Pays $0.01 USDC on Base (eip155:8453) per call even on validation failures — always include image_type to avoid a wasted charge.",
+          "Synchronous: full diagnostic result returns inline in the 200 body, no polling.",
+          "Output includes a disclaimer that this is AI preliminary screening, not a formal diagnosis."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body to https://gg402.vercel.app/medical_image_analyzer with both image_url (a publicly fetchable image URL) and image_type (a modality string such as 'xray' or 'mri'). Payment is $0.01 USDC on Base via x402. CRITICAL: image_type is required even though it is not in any published schema — omitting it returns a 400 but still charges you. Read the result from the 200 JSON body: body.anomalies_detected is an array of {anomaly, confidence, location} and body.diagnostic_insights is a prose radiology-style summary. It is synchronous; no polling needed.",
+        "costObservedUsd": 0.01
+      }
+    },
+    {
+      "name": "Describe Image (Vision LLM)",
+      "provider": "x402 Deployer",
+      "providerId": "x402-deployer",
+      "kind": "model",
+      "description": "Vision-LLM image analysis with selectable modes: full description, accessibility alt-text, OCR text extraction, keyword tags, or single-sentence caption. Billed per call via x402 on Base.",
+      "tags": [
+        "captioning",
+        "alt-text",
+        "visual-qa",
+        "tagging",
+        "vision-llm"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        22
+      ],
+      "resolved": {
+        "22": {
+          "amount": 0.02,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/describe-image with JSON body {image_url, mode} (x402 USDC on Base, $0.02/call)",
+        "inputExample": {
+          "image_url": "https://example.com/photo.jpg",
+          "mode": "caption"
+        },
+        "outputShape": "On success: body holds the vision-LLM analysis text (description/alt-text/OCR/tags/caption per mode). On failure: body.error (string). Errors deep-reference messages[0].content[1].image_url.url, confirming an OpenAI-style vision payload internally.",
+        "quirks": [
+          "Body is {image_url, mode}; mode selects the analysis type (full description, accessibility alt-text, OCR text extraction, keyword tags, single-sentence caption).",
+          "image_url MUST be a direct, static, publicly-reachable image (image/jpeg, image/png, image/webp, or image/gif). The worker downloads it server-side.",
+          "Redirect-based or generated image URLs (e.g. picsum.photos/*.jpg) get rejected with 'Supplied image did not pass validation checks'; Wikipedia thumbnail URLs returned 'Failed to download one or more images'. Use a plain hosted .jpg/.png.",
+          "On image-download/validation failure the endpoint returns HTTP 502 with body.error 'Both models failed...' AFTER charging $0.02 — payment is NOT refunded, so validate your image URL is fetchable first.",
+          "Endpoint reaches the upstream model pipeline correctly; failures are image-source issues, not a dead route."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://x402-deployer.x402-deployer.workers.dev/describe-image with JSON {\"image_url\":\"<direct static image URL>\",\"mode\":\"caption\"}. Pay $0.02 USDC via x402 on Base; no API key. mode selects: description, alt-text, OCR, tags, or caption. Provide a directly-fetchable image (jpeg/png/webp/gif); redirecting/generated URLs are rejected upstream. Read analysis text from the JSON body; a 502 with body.error 'Both models failed' means the image was unreachable/invalid and you were still charged.",
+        "costObservedUsd": 0.04
+      }
+    },
+    {
+      "name": "Logo Detection",
+      "provider": "x402 Deployer",
+      "providerId": "x402-deployer",
+      "kind": "model",
+      "description": "Detects brand logos and visual brand elements in an image, returning confidence scores and element types (wordmark, logomark, lockup, color scheme, context). Billed per call via x402 on Base.",
+      "tags": [
+        "logo-detection",
+        "brand-detection",
+        "object-detection"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        29
+      ],
+      "resolved": {
+        "29": {
+          "amount": 0.03,
+          "method": "POST"
+        }
+      },
+      "status": "active",
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/logo-detect with JSON body {image_url}",
+        "inputExample": {
+          "image_url": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+        },
+        "outputShape": "body.detected_brands[] (each {name, confidence, where_in_image, evidence, element_type}); body.overall_summary; body.no_brands_detected (bool); body.model",
+        "quirks": [
+          "inputSchema is null in the registry; the correct request field is image_url (a publicly-fetchable raster image URL such as PNG/JPG).",
+          "The image must be reachable by the worker. Some hosts (e.g. Wikimedia upload thumbs) gate non-browser user agents; use a plainly-accessible raster image URL.",
+          "Result is plain synchronous JSON, status 200, billed $0.03 via x402 on Base (eip155:8453, USDC).",
+          "Detection findings are in detected_brands[]; check no_brands_detected to know if nothing was found."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Send a POST to https://x402-deployer.x402-deployer.workers.dev/logo-detect with a JSON body {\"image_url\":\"<public raster image URL>\"} and pay the $0.03 x402 charge (USDC on Base). The response is synchronous JSON. Read detected brands from body.detected_brands[] — each entry has name, confidence, where_in_image, evidence, and element_type (wordmark/logomark/etc.). Use body.no_brands_detected and body.overall_summary for a quick read. Make sure the image_url is fetchable by the server (a plain PNG/JPG URL; avoid UA-gated hosts and SVGs).",
+        "costObservedUsd": 0.03
+      }
+    },
+    {
+      "name": "Channel3 Visual Product Search",
+      "provider": "Channel3 (StableProduct)",
+      "providerId": "stableproduct",
+      "kind": "model",
+      "aka": [
+        "channel3-image-search"
+      ],
+      "description": "Visual product search — submit an image URL or base64 image and find visually matching products in the Channel3 catalog. Billed per call via x402 on Base.",
+      "tags": [
+        "visual-search",
+        "product-matching",
+        "image-similarity"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        10
+      ],
+      "resolved": {
+        "10": {
+          "amount": 0.01,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://stableproduct.dev/api/channel3/image-search with JSON body {image_url} (or {base64_image}), optional {limit:1-30, filters, config, include_raw, page_token}",
+        "inputExample": {
+          "image_url": "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+          "limit": 3
+        },
+        "outputShape": "body.products[] each with .id, .title, .brands[].name, .main_image_url, .categories[], .price.price/.currency, .availability, .best_offer.url, .offers[]; body.next_page_token for pagination",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Send a POST with a JSON body containing either image_url (a publicly reachable image URL) or base64_image. Optionally set limit (1-30), filters (brand/gender/condition/price/availability/etc.), and config (language/country/currency). It costs $0.01 USDC on Base per call and returns synchronously. Read matches from body.products[]: use .title, .brands[].name, .price.price, and .best_offer.url (the buy link). Pass body.next_page_token back as page_token to fetch more results.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "Diffbot Image Analysis",
+      "provider": "Diffbot",
+      "providerId": "diffbot",
+      "kind": "model",
+      "description": "Extract structured metadata from an image URL — caption, dimensions, dominant colors and detected objects — using Diffbot. Billed per call via MPP.",
+      "tags": [
+        "captioning",
+        "object-detection",
+        "image-metadata",
+        "structured-extraction"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        9
+      ],
+      "resolved": {
+        "9": {
+          "amount": 0.0042
+        }
+      },
+      "status": "needs-review"
+    },
+    {
+      "name": "Analyze Image",
+      "provider": "cnvrt.ing",
+      "providerId": "cnvrt-ing",
+      "kind": "model",
+      "description": "Extracts raw OCR text and detected objects from images using GPT-4o Vision, returning clean machine-readable data without interpretation.",
+      "tags": [
+        "object-detection",
+        "ocr",
+        "vision-llm",
+        "structured-extraction"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        21
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://cnvrt.ing/api/analyze-image with JSON body {url} or {file} (+optional detail), x402 USDC on Base. NOTE: registry's GET method is WRONG — GET returns 404 'Cannot GET'.",
+        "inputExample": {
+          "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Example.jpg/320px-Example.jpg",
+          "detail": "low"
+        },
+        "outputShape": "body.success (bool), body.ocr_text (string|null), body.detected_objects[] (string[]), body.metadata.{model,detail_level,schema_version}",
+        "quirks": [
+          "REGISTRY METHOD IS WRONG: it lists GET, but GET (and PUT) return HTTP 404 'Cannot GET /api/analyze-image'. The endpoint ONLY accepts POST. Must be corrected to POST.",
+          "POST returns a valid x402 402 challenge: 0.005 USDC (5000 units) on Base, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, payTo 0xfad67Ce5A834E68d5533bA7Ac08619fF82a42084, scheme exact.",
+          "Body requires either url (public image URL) OR file (base64 data URI data:image/...;base64,...). Both optional in schema but you need one of them. Optional detail: 'low'|'high'|'auto' (default high).",
+          "Registry priceDisplay 'Varies' is misleading — observed flat 0.005 USDC from the live 402.",
+          "Could NOT complete a paid round-trip from this QA environment: the money-safe qa-pay tool (node) consistently fails DNS resolution for cnvrt.ing ('fetch failed', $0 spent). The endpoint resolves fine via 8.8.8.8 (Cloudflare-fronted, Railway backend, x-service-health: healthy) and was reached by forcing the IP. The paid response body is therefore unverified — only the 402 challenge/schema is confirmed."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call POST https://cnvrt.ing/api/analyze-image (NOT GET — GET 404s) with a JSON body containing either {\"url\":\"<public image url>\"} or {\"file\":\"data:image/png;base64,...\"}, plus optional \"detail\":\"low\"|\"high\"|\"auto\". It is x402-paywalled at 0.005 USDC on Base (pay via your x402 wallet; no API key/SIWX). On success read body.ocr_text for extracted text, body.detected_objects[] for the object list, and body.metadata for model/detail info. Synchronous — the result returns in the same response.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "21": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "TCG Card Grade Oracle",
+      "provider": "The Undesirables",
+      "providerId": "the-undesirables",
+      "kind": "model",
+      "description": "Uses AI vision to analyze images of physical Trading Card Game (TCG) cards and predict their PSA and Beckett grades.",
+      "tags": [
+        "image-analysis",
+        "grading",
+        "object-recognition",
+        "vision-llm"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        36
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "GET https://oracle.the-undesirables.com/api/v1/grade?image_url=<public TCG card image URL>",
+        "inputExample": {
+          "image_url": "https://images.pokemontcg.io/base1/4_hires.png"
+        },
+        "outputShape": "N/A — endpoint returns HTTP 500 {detail} instead of a grade. Useful result is never produced via REST.",
+        "quirks": [
+          "REST route /api/v1/grade is a non-functional stub: it accepts the image_url query param (422 confirms it is required) but then returns HTTP 500 with {\"detail\":\"Tool 'grade_card' requires the full MCP server. Use the MCP protocol directly.\"}",
+          "No x402 402 challenge is ever issued on this REST route — it 422s (missing param) or 500s (stub) before any payment step, so it cannot be paid for via HTTP/x402.",
+          "Grading is only available over the MCP protocol (tool name 'grade_card'), not this HTTP endpoint."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use the REST endpoint GET https://oracle.the-undesirables.com/api/v1/grade — it is broken. It requires an image_url query param, but even with a valid public TCG card image URL it returns HTTP 500 stating the grade_card tool requires the full MCP server and to use the MCP protocol directly. No payment is ever charged. If grading is needed, connect to the service over MCP and call the grade_card tool instead of this HTTP route.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "36": {
+          "method": "GET"
+        }
+      },
+      "hiddenReason": "broken"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "serviceId": "screenshotone",
+  "subcat": "screenshot-rendering",
+  "batchId": "batch-31",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://screenshotone.x402.paysponge.com/animate",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://screenshotone.x402.paysponge.com/animate?url=<target-url>",
+    "inputExample": {
+      "url": "https://example.com"
+    },
+    "outputShape": "body is a base64-encoded MP4 video with a literal 'base64:' prefix (e.g. 'base64:AAAAIGZ0eXBpc29t...'); Content-Type: video/mp4",
+    "quirks": [
+      "Input is a GET request with ?url= query param — there is no JSON body and no inputSchema; the url parameter is required but undocumented",
+      "Response body has a literal 'base64:' prefix before the base64 data — strip 'base64:' before decoding",
+      "The /animate endpoint returns an MP4 video (Content-Type: video/mp4), NOT a GIF as some docs suggest — decode/save as .mp4",
+      "Sibling /take endpoint returns a base64-prefixed JPEG (image/jpeg) at the same $0.02 price for a static screenshot"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Make a GET request to https://screenshotone.x402.paysponge.com/animate with the target page URL as the ?url= query parameter (e.g. ?url=https://example.com). The x402 payment of $0.02 USDC on Base is handled automatically; no API key is required. The response body is a base64-encoded MP4 video prefixed with the literal string 'base64:' — strip that prefix, then base64-decode and save as a .mp4 file. For a static screenshot instead, use the /take endpoint (same param, returns a base64-prefixed JPEG).",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "screenshotone#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

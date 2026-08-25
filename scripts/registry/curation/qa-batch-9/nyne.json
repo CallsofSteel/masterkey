@@ -1,0 +1,79 @@
+{
+  "serviceId": "nyne",
+  "subcat": "company-people-data",
+  "batchId": "batch-9",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/nyne/person/enrichment",
+      "method": "POST",
+      "amountUsd": 0.4346
+    },
+    {
+      "backend": "https://x402.orth.sh/nyne/company/enrichment",
+      "method": "POST",
+      "amountUsd": 0.076
+    },
+    {
+      "backend": "https://x402.orth.sh/nyne/person/social-profiles",
+      "method": "POST",
+      "amountUsd": 0.363
+    },
+    {
+      "backend": "https://x402.orth.sh/nyne/company/funding",
+      "method": "POST",
+      "amountUsd": 0.578
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/nyne/person/enrichment with JSON body {email} (or {phone} or {linkedin_url}); returns 202 + request_id, then poll GET https://x402.orth.sh/nyne/person/enrichment?request_id=<id>",
+    "inputExample": {
+      "email": "elon@tesla.com"
+    },
+    "outputShape": "POST 202: body.data.request_id, body.data.status==\\\"queued\\\". Poll GET: body.data.status (queued|processing|completed), body.data.completed (bool), body.data.result (the enrichment object: result.firstname, result.lastname, result.bio, result.best_work_email, result.best_personal_email, result.altemails[], result.organizations[].{name,title,phone,email}, result.schools_attended[], result.schools_info[], result.address.{city,state,country}, result.interests, result.fullphone[], result.url)",
+    "quirks": [
+      "Async: the paid POST returns HTTP 202 with body.data.status=='queued' and a request_id, NOT the enrichment result.",
+      "Poll for the result with a FREE GET to https://x402.orth.sh/nyne/person/enrichment?request_id=<request_id> (no payment needed for polling).",
+      "Status progresses queued -> processing -> completed; the actual data is under body.data.result only once body.data.status=='completed' (body.data.completed==true). Completed in ~26s in this test.",
+      "Input schema was not published; body accepts {email} (also {phone} or social/LinkedIn URL per service description). Used {email} successfully.",
+      "Each poll response returns a partial slice of the (large) result object; fetch the full result body once completed rather than relying on a single truncated preview."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.orth.sh/nyne/person/enrichment with a JSON body identifying a person, e.g. {\"email\":\"elon@tesla.com\"} (phone or LinkedIn/social URL also accepted). Payment is x402 USDC on Base (~$0.435/call). The call returns HTTP 202 with data.request_id and data.status==\"queued\"; the result is NOT in this response. Then poll GET https://x402.orth.sh/nyne/person/enrichment?request_id=<request_id> (free, no payment) until data.status==\"completed\" (~30s), and read the enrichment from data.result.",
+    "costObservedUsd": 0.4346
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nyne#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.4346
+    },
+    {
+      "key": "nyne#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.076
+    },
+    {
+      "key": "nyne#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.363
+    },
+    {
+      "key": "nyne#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.578
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "serviceId": "strale-stock-quote",
+  "subcat": "stocks-financial-data",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/stock-quote",
+      "method": "GET",
+      "amountUsd": 0.054001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/stock-quote?symbol=AAPL (required query param: symbol = ticker symbol)",
+    "inputExample": {
+      "symbol": "AAPL"
+    },
+    "outputShape": "body.price, body.name, body.symbol, body.change, body.change_percent, body.open, body.high, body.low, body.volume, body.previous_close, body.currency, body.exchange, body.trading_date; payment/provenance under body._meta",
+    "quirks": [
+      "Required query param is `symbol` (the ticker). Supports US tickers (AAPL) and exchange-suffixed tickers (e.g. VOLV-B.ST).",
+      "Data sourced from finance.yahoo.com; market_state may be null."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Make a GET request to https://api.strale.io/x402/stock-quote with the required query parameter `symbol` set to the ticker (e.g. ?symbol=AAPL). Pay via x402 (USDC on Base, ~$0.054/call). The response is a plain JSON object with the quote: read body.price for the current price, body.change / body.change_percent for movement, and body.name/body.symbol for identification. Provenance and settlement info are under body._meta.",
+    "costObservedUsd": 0.054001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-stock-quote#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

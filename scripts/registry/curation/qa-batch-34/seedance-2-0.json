@@ -1,0 +1,46 @@
+{
+  "serviceId": "seedance-2-0",
+  "subcat": "video-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.ottoai.services/video-gen",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://x402.ottoai.services/video-gen with JSON body {model:\"seedance-2.0\", prompt} paid via x402 USDC (Base eip155:8453, Polygon eip155:137, or Solana). Live quote is $1.75.",
+    "inputExample": {
+      "model": "seedance-2.0",
+      "prompt": "a red circle"
+    },
+    "outputShape": "UNTESTED on this run (wallet had no funds). Prior verified backend (blockrun.ai) returned 202 -> body.id, body.status=\"queued\", body.poll_url, body.price.amount; video URL appears in the completed job body after polling poll_url.",
+    "quirks": [
+      "COULD NOT PAY-TEST THIS RUN: qa-pay returned wallet-error 'master wallet has insufficient funds' (paid=false, $0 spent). Endpoint itself is healthy.",
+      "STALE PRICE: registry priceDisplay=$0.500 but the live 402 quote on https://x402.ottoai.services/video-gen is $1.75 (description: 'Video generation ($1.75)'). payTo 0x0E84dDEdAaE6A779c462C22a59F301EC31B6b808 on Base/Polygon, or Solana 6XcSfqJHr9vNW2vbiRaMqUYVm7shDgLepca54wUTDPN5.",
+      "ASYNC + MONEY TRAP (from prior verified usage on the blockrun.ai backend): video gen is a queued async job; result is fetched by polling a returned poll_url, and EVERY poll re-charges the full generation price despite a 'no charge until completed' note. Wait the full 60-180s generation time, then poll as few times as possible (ideally once).",
+      "Generation takes 60-180s; the ottoai frontend quotes $1.75 (vs ~$1.49 observed on blockrun.ai) - confirm whether ottoai is sync (returns video directly) or async-poll once funds are available, as that changes resultPull/cost dramatically.",
+      "poll_url (blockrun.ai pattern) is relative (/api/v1/...); prefix with https://blockrun.ai and use its embedded sig query param verbatim; re-sign x402 from the SAME wallet that submitted the POST (wallet-binding enforced)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.ottoai.services/video-gen with JSON {\"model\":\"seedance-2.0\",\"prompt\":\"<your prompt>\"}, paying via x402 USDC. The live 402 quote is $1.75 (not the stale $0.500 in the registry). This QA run could NOT verify the paid call because the master wallet had insufficient funds (nothing was charged). Based on the prior verified backend, expect an async video.generation job (202 with body.id + body.poll_url); budget for repeated full-price charges if you poll, so wait the full 60-180s and poll as rarely as possible. Re-run the pay-test once the wallet is funded to confirm whether the ottoai frontend is sync or async and capture the real output shape and cost.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

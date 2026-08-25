@@ -1,0 +1,174 @@
+{
+  "subcategory": "crypto-web3-payments",
+  "category": "payments-billing",
+  "unit": "per call",
+  "_note": "Curated by claude-main. Sparse — x402 itself IS the crypto-payment rail, so discrete catalog services are few. Kept escrow/tip/cross-border. Dropped: x402 demos (Fortune Cookie/Lucky Numbers/Roast), orbisapi web3 guides/career/grants, stablecoin DATA (->crypto-blockchain-data), Dome/Onvoyage market trends, x402 Helper, test payouts, ClawMoney (already in payment-processing).",
+  "entries": [
+    {
+      "name": "x402 Trustlayer Escrow",
+      "provider": "x402 Trustlayer",
+      "providerId": "x402-trustlayer",
+      "description": "Agent-to-agent escrow payments with a trust/settlement layer over x402.",
+      "tags": [
+        "payments",
+        "escrow",
+        "web3",
+        "agents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        39
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402trustlayer.xyz/api/agent-escrow with JSON body {action, payerAgentId, payeeAgentId, amountUsdc, releaseCondition} (x402 payment $0.12 USDC on Base/Polygon/Solana)",
+        "inputExample": {
+          "action": "evaluate",
+          "payerAgentId": "agent-masterkey-qa",
+          "payeeAgentId": "agent-payee-test",
+          "amountUsdc": 1,
+          "releaseCondition": "deliverable accepted by payer"
+        },
+        "outputShape": "Expected (per outputSchema, NOT observed): body.ok, body.allowed, body.summary, body.confidence, body.checks_passed[]. Actual response was an error: body.error, body.reason.",
+        "quirks": [
+          "Endpoint's own x402 facilitator returned facilitator_error_500: 'Timed out while waiting for transaction' - settlement could not complete.",
+          "Response was HTTP 402 with paid:false / costUsd:0; the submitted tx hash never landed on-chain (receipt = null), so no USDC was actually lost on the failed attempt.",
+          "Required body fields (all): action, payerAgentId, payeeAgentId, amountUsdc, releaseCondition. None of these need a real-world recipient - they are agent IDs + an escrow condition string.",
+          "Accepts payment on eip155:8453 (Base), eip155:137 (Polygon), and Solana mainnet, all $0.12 USDC."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "This agent-to-agent escrow trust-layer endpoint is currently BROKEN: the provider's own x402 facilitator times out during settlement (facilitator_error_500), returning HTTP 402 without completing payment. Do not rely on it. If retested and working, POST to https://x402trustlayer.xyz/api/agent-escrow with JSON {action, payerAgentId, payeeAgentId, amountUsdc, releaseCondition} and pay $0.12 USDC via x402; read the trust evaluation from body.allowed / body.summary / body.confidence / body.checks_passed[]. Because settlement failed on the only attempt, no charge occurred (tx never confirmed on-chain).",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "resolved": {
+        "39": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Molty.cash Tip / Hire",
+      "provider": "Molty.cash",
+      "providerId": "molty-cash",
+      "description": "Send USDC tips or hire/pay agents and people via Molty.cash.",
+      "tags": [
+        "payments",
+        "tip",
+        "usdc",
+        "web3"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        38
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-11",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.molty.cash/{username}/a2a — JSON-RPC 2.0 body {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tip\"|\"hire\",\"params\":{\"amount\":<USDC 0.01-10>,\"description\":\"...\",\"identity_token\":\"<Molty JWT>\"}}. The {username} path segment is the X (Twitter) handle of the recipient; the registry URL hardcodes it to \"web3idan\".",
+        "inputExample": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "tip",
+          "params": {
+            "amount": 0.01,
+            "description": "tip"
+          }
+        },
+        "outputShape": "body.result.payment_request_id, body.result.amount, body.result.x_handle, body.result.receipt (URI), body.result.message",
+        "quirks": [
+          "OUTWARD/IRREVERSIBLE: actually sends USDC. The x402 fee (~$0.02) is SEPARATE from and ON TOP OF the params.amount tip (min 0.01 USDC) it forwards.",
+          "Recipient is set by the URL path segment {username} = an X/Twitter handle, NOT by the body. Registry URL fixes it to 'web3idan'. To tip a different person you must change the path segment to their X handle.",
+          "Body is JSON-RPC 2.0: requires jsonrpc='2.0', method ('tip' or 'hire'), and params; params.amount is required (0.01-10). 'hire' additionally needs params.description.",
+          "params.identity_token is a Molty identity JWT to attribute the sender; not auto-provided by the x402 wallet and may be required for proper sender attribution.",
+          "Could not pay-test: the fixed recipient (web3idan) is not the QA verifiable contact, so receipt cannot be confirmed.",
+          "APPROVAL-GATED: this is an OUTWARD/irreversible action (real charge / order / shipment). Shape is from the provider OpenAPI/discovery and was NOT QA-executed (we do not place real bookings/purchases as tests). The needsApproval gate fires before any real execution.",
+          "DEAD 2026-06-11: De-scoped (ash 2026-06-11) — not wanted in the registry."
+        ],
+        "needs": [
+          "A recipient X (Twitter) handle to substitute into the {username} path segment that maps to the verifiable QA contact (John Doe), since the registry URL hardcodes 'web3idan' and the tip cannot otherwise be confirmed received",
+          "A Molty identity_token (JWT) for sender attribution, if required"
+        ],
+        "needsApproval": true,
+        "guide": "This is an outward money-movement endpoint: it sends a real USDC tip (or funds a hire task) to an X/Twitter handle, charging both an x402 service fee and the tip amount. Set the recipient by putting their X handle in the URL path segment (the registry URL fixes it to https://api.molty.cash/web3idan/a2a). POST a JSON-RPC 2.0 body: {\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tip\",\"params\":{\"amount\":0.01}} for a tip, or method \"hire\" with params.description for a task; optionally include params.identity_token (a Molty JWT) to identify the sender. On success read body.result.receipt for the receipt URL and body.result.payment_request_id. Always confirm the recipient X handle and amount before paying — it is irreversible.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "resolved": {
+        "38": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "Cross-Border Payments",
+      "provider": "Expansion",
+      "providerId": "expansion",
+      "description": "Cross-border payments and banking rails via x402.",
+      "tags": [
+        "payments",
+        "cross-border",
+        "banking"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        3
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "GET https://expansion.402box.io/cross_border_payments_banking_setup",
+        "inputExample": {},
+        "outputShape": "unknown (host unreachable, no response obtained)",
+        "quirks": [
+          "Host expansion.402box.io resolves via DNS to 172.104.233.24 (Linode) but accepts NO TCP connections on port 443 or 80 — every connect times out.",
+          "No 402 payment quote is obtainable; the server is effectively down/unreachable.",
+          "qa-pay returned classification=wallet-error, paid=false, error='provider request failed: fetch failed' — this is a network/host failure, not a wallet problem.",
+          "Endpoint is marked outward/irreversible (banking setup) but cannot be reached to test."
+        ],
+        "needs": [],
+        "needsApproval": true,
+        "guide": "This endpoint is currently dead. The host expansion.402box.io resolves in DNS but does not accept connections on 443/80 (all connects time out), so no request — paid or unpaid — completes. No USDC was spent. Do not attempt to call it until the provider host is confirmed back online; if it returns, it is an outward/irreversible 'banking setup' action that needs human approval before any paid call.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "3": {
+          "method": "GET"
+        }
+      },
+      "hiddenReason": "broken"
+    }
+  ]
+}

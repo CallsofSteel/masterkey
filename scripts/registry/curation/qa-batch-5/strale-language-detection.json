@@ -1,0 +1,45 @@
+{
+  "serviceId": "strale-language-detection",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.strale.io/x402/language-detect",
+      "method": "GET",
+      "amountUsd": 0.0216
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.strale.io/x402/language-detect?text=<urlencoded text>&min_length=<optional int> (no body; params in query string)",
+    "inputExample": {
+      "text": "Hello, how are you doing today?"
+    },
+    "outputShape": "body.language_code, body.language_name, body.confidence, body.script_detected, body.text_length, body.alternatives[] (each {language_code, language_name, confidence})",
+    "quirks": [
+      "GET with query params only — pass 'text' as a URL-encoded query parameter, there is no request body.",
+      "Optional 'min_length' query param (default 10) sets minimum text length for reliable detection.",
+      "Detection accuracy is weak in practice: a clear English sentence was misclassified as 'sot' (Sotho) with the correct language not even in the top alternatives. Treat confidence/language_code as low-trust; backend uses the 'franc' trigram library (see _meta.provenance.source).",
+      "language_name often equals the raw ISO code (e.g. 'sot', 'zyb', 'nob') rather than a human-readable name; only some codes resolve to friendly names."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://api.strale.io/x402/language-detect with the text URL-encoded in the 'text' query parameter (e.g. ?text=Bonjour%20le%20monde); optionally add &min_length=N. Payment is x402 USDC on Base, ~$0.02 per call, settled synchronously — the 200 response IS the result. Read the detected language from body.language_code / body.language_name with body.confidence, and body.alternatives[] for ranked guesses. Note the detection accuracy is unreliable, so do not depend on its output for critical routing.",
+    "costObservedUsd": 0.0216
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "strale-language-detection#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "serviceId": "toxicity-safety-classifier",
+  "subcat": "content-moderation",
+  "batchId": "batch-2",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/content-moderation-api-aa4eb5",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/content-moderation-api-82f76f",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ai-content-moderation-scorer-api-d02dd5",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/content-moderation-api-f08d8a",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/content-moderation-api-b31936",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/content-moderation-api-f3754a",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://orbisapi.com/proxy/content-moderation-api-aa4eb5 with JSON body {text}",
+    "inputExample": {
+      "text": "I will hurt you, you idiot."
+    },
+    "outputShape": "N/A - endpoint dead, returns {error:\\\"API_NOT_FOUND\\\", message}",
+    "quirks": [
+      "Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"}",
+      "Unpaid pre-flight shows 402 (looks payable) but the route does not exist - do NOT attempt to pay; you would lose money to a 404 charge-then-fail pattern",
+      "No payment was charged in this test (paid:false, status 404 returned before settlement)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint - it is broken. The Orbis proxy slug 'content-moderation-api-aa4eb5' no longer maps to any active API and returns HTTP 404 {error:'API_NOT_FOUND'} for POST requests with a {text} body. Although the unpaid probe advertises a 402 payment requirement, the route is dead. Skip it and find an alternative content-moderation service.",
+    "costObservedUsd": 0,
+    "droppedReason": "toxicity-safety-classifier#0: Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"} | toxicity-safety-classifier#1: Dead Orbis proxy slug: POST returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-82f76f'.\"} | toxicity-safety-classifier#2: Orbis proxy slug is dead: POST returns 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-content-moderation-scorer-api-d02dd5'.\"} | toxicity-safety-classifier#3: Orbis proxy charge-then-404 pattern: the 402 pre-flight probe reports payable but the slug is dead. | toxicity-safety-classifier#4: Orbis proxy charge-then-404 pattern: unpaid pre-flight returns 402 (looks payable) but after payment the slug returns 404 API_NOT_FOUND. | toxicity-safety-classifier#5: Orbis proxy dead slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'content-moderation-api-f3754a'.\"} directly — no 402 preflight, no payment taken. The route is gone; do not call."
+  },
+  "droppedReason": "toxicity-safety-classifier#0: Orbis proxy slug is DEAD: returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-aa4eb5'.\"} | toxicity-safety-classifier#1: Dead Orbis proxy slug: POST returns HTTP 404 with body {error:'API_NOT_FOUND', message:\"No active API found with slug 'content-moderation-api-82f76f'.\"} | toxicity-safety-classifier#2: Orbis proxy slug is dead: POST returns 404 with {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'ai-content-moderation-scorer-api-d02dd5'.\"} | toxicity-safety-classifier#3: Orbis proxy charge-then-404 pattern: the 402 pre-flight probe reports payable but the slug is dead. | toxicity-safety-classifier#4: Orbis proxy charge-then-404 pattern: unpaid pre-flight returns 402 (looks payable) but after payment the slug returns 404 API_NOT_FOUND. | toxicity-safety-classifier#5: Orbis proxy dead slug: returns HTTP 404 {\"error\":\"API_NOT_FOUND\",\"message\":\"No active API found with slug 'content-moderation-api-f3754a'.\"} directly — no 402 preflight, no payment taken. The route is gone; do not call.",
+  "_backends": [
+    {
+      "key": "toxicity-safety-classifier#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toxicity-safety-classifier#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toxicity-safety-classifier#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toxicity-safety-classifier#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "toxicity-safety-classifier#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "toxicity-safety-classifier#5",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

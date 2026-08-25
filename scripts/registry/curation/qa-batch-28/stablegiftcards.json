@@ -1,0 +1,55 @@
+{
+  "serviceId": "stablegiftcards",
+  "subcat": "payment-processing",
+  "batchId": "batch-28",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablegiftcards.dev/api/search",
+      "method": "POST"
+    },
+    {
+      "backend": "https://stablegiftcards.dev/api/product",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stablegiftcards.dev/api/search with JSON body {\"q\":\"<search term>\"}",
+    "inputExample": {
+      "q": "amazon"
+    },
+    "outputShape": "body.products[] (each: .id, .name, .country_code, .currency, .categories[], .in_stock, .range{min,max,step}, .packages[]{id,value,price}), body.total",
+    "quirks": [
+      "The /api/search step is FREE — returns 200 with NO x402 payment, despite the registry probe reporting 402. Do not expect to pay for search.",
+      "Field name MUST be 'q' (or 'search'). Sending {query:'...'} returns an empty result {products:[],total:0} with no error.",
+      "Search is loose/catalog-like: both {q:'amazon'} and {search:'amazon'} returned the same default 8-product catalog (DoorDash, Airbnb, Uber Eats, Steam, Uber, Walmart, Home Depot, eBay) rather than strictly Amazon matches. Treat results as a candidate catalog, then filter by product .name/.id client-side.",
+      "package.price is an INTEGER in micro-units (e.g. Walmart $5 => price 8311; Steam $5 => 9110), NOT dollars. A price_rate field is present per product to convert. The package .value is the human face value in USD.",
+      "This is only the catalog SEARCH endpoint. Actual purchase (the outward/paid x402 action that mints a redemption code) is a separate endpoint not exercised here."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Call POST https://stablegiftcards.dev/api/search with JSON body {\"q\":\"<term>\"} to browse the Bitrefill gift-card/top-up/eSIM catalog. This search step is FREE (no payment). Use the field name 'q' (not 'query', which returns empty). Read products from body.products[]; each has an id, name, and packages[] with a human face value (.value, in USD) and a .price integer in micro-units (use .range and .price_rate to interpret). Pick a product id + package, then call the separate purchase endpoint (the paid, outward x402 step) to actually buy — that step requires user approval and a real recipient.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stablegiftcards#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stablegiftcards#2",
+      "classification": "free-ok",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

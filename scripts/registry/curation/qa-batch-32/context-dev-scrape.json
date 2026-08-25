@@ -1,0 +1,48 @@
+{
+  "serviceId": "context-dev-scrape",
+  "subcat": "web-scraping",
+  "batchId": "batch-32",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/context-dev/web/crawl",
+      "method": "POST",
+      "amountUsd": 0.03
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/context-dev/web/crawl with JSON body {url, maxPages?, maxDepth?, useMainContentOnly?, includeLinks?, includeImages?, urlRegex?, followSubdomains?}",
+    "inputExample": {
+      "url": "https://example.com",
+      "maxPages": 1,
+      "maxDepth": 0,
+      "useMainContentOnly": true
+    },
+    "outputShape": "body.results[].markdown (clean page content as Markdown), body.results[].metadata.{url,title,crawlDepth,statusCode,success}, body.metadata.{numUrls,maxCrawlDepth,numSucceeded,numFailed,numSkipped}",
+    "quirks": [
+      "url must include http:// or https:// protocol",
+      "To keep cost/scope minimal pass maxPages:1 and maxDepth:0 to crawl only the starting page",
+      "maxPages hard cap is 500 — a large crawl returns many results in body.results[] and may cost more",
+      "This crawl endpoint returns Markdown (body.results[].markdown); the sibling /web/scrape/html GET endpoint returns raw rendered HTML instead"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with at minimum {\"url\":\"https://...\"} to https://x402.orth.sh/context-dev/web/crawl. Pay the x402 quote (USDC on Base, ~$0.03 for a single page). To crawl just one page, set maxPages:1 and maxDepth:0; increase maxDepth/maxPages to follow links. Read the extracted content from body.results[].markdown and per-page status from body.results[].metadata; overall crawl stats are in body.metadata. No auth beyond the wallet payment.",
+    "costObservedUsd": 0.03
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "context-dev-scrape#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.03
+    }
+  ]
+}

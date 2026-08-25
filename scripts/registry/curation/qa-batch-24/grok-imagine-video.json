@@ -1,0 +1,59 @@
+{
+  "serviceId": "grok-imagine-video",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/video/short-generation",
+      "method": "POST",
+      "amountUsd": 0.5
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/videos/generations",
+      "method": "POST",
+      "amountUsd": 0.420001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/videos/generations with JSON body {model:\"xai/grok-imagine-video\", prompt}; returns 202 queued job; then GET the returned poll_url (x402-signed) until status=completed",
+    "inputExample": {
+      "model": "xai/grok-imagine-video",
+      "prompt": "a red circle"
+    },
+    "outputShape": "After completed poll: body.data[0].url (mp4). Job id: body.id. Status: body.status (queued -> in_progress -> completed). Final payment: body.payment.tx_hash",
+    "quirks": [
+      "x402 async/poll flow: POST returns 202 with status=queued and a relative poll_url (path under https://blockrun.ai); you must GET the FULL poll_url which carries model/duration/sig query params.",
+      "The poll endpoint returns its own 402 challenge, so each poll must be x402-signed by the SAME wallet that did the POST (a fresh signature works; wallet-binding is enforced, not byte-equality).",
+      "Real price is $0.42 USDC for the default 8-second video, NOT the $0.150 registry surface (paymentAccepts amount 420001 = $0.42). Price scales with duration_seconds.",
+      "COST TRAP: the response note says 'No charge until status=completed', but an x402 client (qa-pay) re-signs and PAYS on every in-progress poll's 402 challenge. Observed 3 paid calls (POST + 2 polls) = ~$1.26 total. A naive poll loop will burn $0.42 per poll. Poll sparingly; generation takes ~60-180s (8s clip completed in ~130s).",
+      "Final completed poll returns status 200 with data[0].url and payment.status=settled + tx_hash; intermediate polls return 202.",
+      "inputSchema was null in registry; minimal working body is {model,prompt}. Video defaulted to 8 seconds duration."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/videos/generations with JSON {\"model\":\"xai/grok-imagine-video\",\"prompt\":\"<your prompt>\"} via an x402 client (~$0.42 USDC for default 8s clip). It returns a 202 queued job with id and a relative poll_url. Prefix poll_url with https://blockrun.ai (keep its sig/query params) and GET it with a fresh x402 signature from the same wallet. Poll sparingly (~30-60s) until body.status===\"completed\" (60-180s typical), then read the mp4 at body.data[0].url. Each poll is charged ~$0.42, so avoid tight loops.",
+    "costObservedUsd": 0.420001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "grok-imagine-video#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.5
+    },
+    {
+      "key": "grok-imagine-video#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 1.488817
+    }
+  ]
+}

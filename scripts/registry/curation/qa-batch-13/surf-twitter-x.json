@@ -1,0 +1,62 @@
+{
+  "serviceId": "surf-twitter-x",
+  "subcat": "social-media-data",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://twitter.surf.cascade.fyi/users/hwchase17",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://twitter.surf.cascade.fyi/users/745959759057133568",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://twitter.surf.cascade.fyi/tweets/2056396842364010807",
+      "method": "GET",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://twitter.surf.cascade.fyi/users/{username} (no body; username is a path segment, e.g. hwchase17). Also accepts numeric user IDs.",
+    "inputExample": {
+      "_path": "https://twitter.surf.cascade.fyi/users/hwchase17"
+    },
+    "outputShape": "body.data — the user profile object: body.data.id, body.data.username, body.data.name, body.data.description, body.data.profile_image_url, body.data.verified, body.data.created_at, body.data.public_metrics.{followers_count,following_count,tweet_count,like_count,media_count}, body.data.pinned_tweet_ids[]",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Look up a Twitter/X user profile by passing the username (or numeric ID) as the final path segment of a plain GET request: GET https://twitter.surf.cascade.fyi/users/hwchase17. No request body or API key is needed — pay the x402 quote (~$0.001 USDC, settles on Base or Solana). The profile is returned synchronously under body.data, including name, description, verified flag, profile image URL, and public_metrics (follower/following/tweet counts). The wider service also exposes tweet-by-id, user timelines, following lists, and replies via sibling routes.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "surf-twitter-x#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "surf-twitter-x#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "surf-twitter-x#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

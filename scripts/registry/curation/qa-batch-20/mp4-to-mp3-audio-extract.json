@@ -1,0 +1,47 @@
+{
+  "serviceId": "mp4-to-mp3-audio-extract",
+  "subcat": "video-editing-transcoding",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3",
+      "method": "POST",
+      "amountUsd": 0.1
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3 with JSON body {video_url, bitrate?}",
+    "inputExample": {
+      "video_url": "https://samplelib.com/mp4/sample-5s.mp4",
+      "bitrate": 96
+    },
+    "outputShape": "body.audio_url (signed CloudConvert MP3 URL, ~24h validity); also body.file_size_bytes, body.bitrate, body.content_type, body.source_url, body.job_id",
+    "quirks": [
+      "inputSchema was null in the registry batch file; the real schema is embedded in the x402 payment-required header under extensions.bazaar.info (body {video_url required, bitrate enum [96,128,192]})",
+      "Response includes a job_id field but the call is fully synchronous — audio_url is returned directly in the 200 body, do NOT poll",
+      "video_url must be a PUBLIC, directly-downloadable video URL; max 500MB / 60 minutes",
+      "audio_url is a signed CloudConvert S3 URL that expires (~24h) — download/re-host promptly",
+      "Accepts any common video format (mov, webm, mkv, avi, m4v, flv) not just mp4"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body {video_url, bitrate} to https://x402-deployer.x402-deployer.workers.dev/mp4-to-mp3 paying $0.10 USDC via x402 on Base. video_url must be a public direct-download video link (any common format, max 500MB/60min); bitrate is optional and must be one of 96, 128 (default), or 192 kbps. The 200 response returns the extracted MP3 at body.audio_url synchronously (ignore the job_id field, no polling needed). Download body.audio_url promptly since it is a signed CloudConvert URL that expires in ~24h.",
+    "costObservedUsd": 0.1
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "mp4-to-mp3-audio-extract#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.1
+    }
+  ]
+}

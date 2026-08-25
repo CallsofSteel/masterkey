@@ -1,0 +1,49 @@
+{
+  "serviceId": "seedance-2-0-fast",
+  "subcat": "video-generation",
+  "batchId": "batch-34",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.dev/api/generate/seedance-fast/t2v",
+      "method": "POST",
+      "amountUsd": 0.84
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.dev/api/generate/seedance-fast/t2v with JSON body {prompt} (x402 USDC on Base; optional duration, aspectRatio, outputResolution). Returns {jobId, status:\"pending\"}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX (free) until status=complete.",
+    "inputExample": {
+      "prompt": "a red circle"
+    },
+    "outputShape": "Generate call: body.jobId, body.status. Poll call (GET /api/jobs/{jobId}): body.status (pending|loading|complete), body.progress, and on completion body.result.videoUrl + body.result.thumbnailUrl.",
+    "quirks": [
+      "ASYNC: the paid POST returns {success, jobId, status:'pending', type} immediately — NOT the video. You MUST poll GET /api/jobs/{jobId} to get the result.",
+      "POLL AUTH IS SIWX, NOT PAYMENT: GET /api/jobs/{jobId} requires a SIGN-IN-WITH-X header (free, no USDC). Same wallet that paid. qa-pay --siwx handles it.",
+      "Body {prompt} alone works; service auto-applies defaults duration='5', aspectRatio='16:9', outputResolution='720p'. Optional fields: duration, aspectRatio, outputResolution (480p/720p), resolution, upscaleResolution:'4k' (much pricier), callBackUrl.",
+      "DYNAMIC PRICING: priced ~$0.08-$0.17/sec; a 5s 720p clip cost $0.84. Cap is $20 per spec so guard your ceiling.",
+      "RESULT URLs EXPIRE in ~20 minutes — download videoUrl/thumbnailUrl immediately after completion.",
+      "Video generation takes 1-3min; poll every ~15-20s. progress goes 10 -> 95 -> 100/complete.",
+      "Do NOT resubmit while status is pending/loading — duplicate submits create duplicate PAID jobs. Keep polling the original jobId.",
+      "URL NOTE: prior existingUsage referenced different backends (x402.ottoai.services, blockrun.ai); the canonical, verified endpoint is stablestudio.dev/api/generate/seedance-fast/t2v."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST https://stablestudio.dev/api/generate/seedance-fast/t2v with JSON {\"prompt\":\"...\"} and pay via x402 USDC on Base (dynamic, ~$0.08-0.17/sec; a 5s 720p clip = $0.84). The response is an async job {jobId, status:\"pending\"}, not the video. Poll GET https://stablestudio.dev/api/jobs/{jobId} using a SIGN-IN-WITH-X header (free, same wallet) every ~15-20s until status==\"complete\", then read the video at body.result.videoUrl (and body.result.thumbnailUrl). Download the asset immediately — the URLs expire in about 20 minutes. Never resubmit while a job is pending/loading; duplicate POSTs create duplicate paid jobs.",
+    "costObservedUsd": 0.84
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seedance-2-0-fast#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.84
+    }
+  ]
+}

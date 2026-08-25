@@ -1,0 +1,54 @@
+{
+  "serviceId": "domain-availability-check",
+  "subcat": "dns-domain-management",
+  "batchId": "batch-20",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://orbisapi.com/proxy/domain-availability-checker-api-8bccfb",
+      "method": "POST"
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/domain-availability/check",
+      "method": "GET",
+      "amountUsd": 0.002
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://netintel-production-440c.up.railway.app/domain-availability/check?domain=mybrand (domain passed as query param)",
+    "inputExample": {
+      "domain": "mybrand"
+    },
+    "outputShape": "body.results[].{domain,available,status,registrar,expires_at,days_until_expiry}, body.available_tlds[], body.taken_tlds[], body.score (number), body.grade (string), body.findings[]",
+    "quirks": [
+      "Input is a query parameter (?domain=), not a JSON body — it is a GET. Pass the bare name or name.tld (e.g. 'mybrand' or 'mybrand.com').",
+      "Service checks a fixed set of common TLDs (.com .net .org .io .co .dev .app .ai .xyz .me) regardless of TLD supplied; read body.available_tlds / body.taken_tlds for the summary.",
+      "qa-pay reported confirmed:false / txHash:null but status 200 with full payload — settlement is async on Base; the call succeeded."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://netintel-production-440c.up.railway.app/domain-availability/check with a ?domain= query param holding the brand name (e.g. ?domain=mybrand). Pays $0.002 USDC on Base via x402, returns 200 JSON synchronously. Read body.results[] for per-TLD availability (domain, available, status, registrar, expires_at), or use body.available_tlds[] / body.taken_tlds[] for quick summaries, and body.score / body.grade for an overall brandability rating.",
+    "costObservedUsd": 0.002
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "domain-availability-check#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    },
+    {
+      "key": "domain-availability-check#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

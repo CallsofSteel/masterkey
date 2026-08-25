@@ -1,0 +1,44 @@
+{
+  "serviceId": "klymax-language-detector",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://language-detector.api.klymax402.com/api/detect",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://language-detector.api.klymax402.com/api/detect with text query param or JSON body {text}",
+    "inputExample": {
+      "text": "Bonjour comment allez-vous aujourd'hui mon ami"
+    },
+    "outputShape": "none — route returns 404 Not Found (plain text) after payment",
+    "quirks": [
+      "Charge-then-404: x402 pre-flight returns 402 (looks payable) but the actual route /api/detect is dead — it accepts payment then responds 404 Not Found (text/plain).",
+      "Tested both ?text= query param and JSON {text} body on GET; both 404. Route slug appears dead.",
+      "Each attempt costs $0.002 USDC and is lost. Do NOT call this endpoint."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not call this endpoint — it is broken. The x402 pre-flight advertises a payable 402, but GET https://language-detector.api.klymax402.com/api/detect charges the $0.002 USDC payment and then returns a plain-text \"404 Not Found\". This was confirmed with both a ?text= query parameter and a JSON {text} body; both lost the payment. The route is dead.",
+    "costObservedUsd": 0.004,
+    "droppedReason": "klymax-language-detector#0: Charge-then-404: x402 pre-flight returns 402 (looks payable) but the actual route /api/detect is dead — it accepts payment then responds 404 Not Found (text/plain)."
+  },
+  "droppedReason": "klymax-language-detector#0: Charge-then-404: x402 pre-flight returns 402 (looks payable) but the actual route /api/detect is dead — it accepts payment then responds 404 Not Found (text/plain).",
+  "_backends": [
+    {
+      "key": "klymax-language-detector#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.002
+    }
+  ]
+}

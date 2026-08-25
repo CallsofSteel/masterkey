@@ -1,0 +1,3245 @@
+{
+  "subcategory": "image-generation",
+  "category": "media",
+  "unit": "per image",
+  "_note": "Curated by claude-main. QUALITY-FIXED: gateway-enumerated blockrun /images/generations (gpt-image-1/2, google/nano-banana, zai/cogview-4, grok-imagine-image @ $0.02-0.08) + xona flux-2-max / nano-banana-pro. One entry per model; gateways = backends (cheapest surfaced). resolved = agentcash exact prices. blockrun backends carry modelParam. | 2026-07-26: corrected live-verified price drift (re-quoted twice with the registry's own usage.inputExample so the quote reflects the real call, not a worst-case empty-body ceiling).",
+  "entries": [
+    {
+      "name": "Nano Banana Pro Generate",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "nano-banana-pro-generate",
+        "image-generate"
+      ],
+      "description": "Generate an image from a text prompt using Nano Banana Pro (Google Gemini 3 Pro Image). Same model offered via 3 gateways: StableStudio (async, cheapest, default), Xona (synchronous, returns image URL inline), and Orthogonal (native Google Gemini generateContent passthrough). Supports 1K/2K/4K output and multiple aspect ratios.",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "photorealistic",
+        "4k",
+        "grounding"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/nano-banana-pro/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.13,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "A6ffpDYbZKmtZcom3ueBD52TZF3cHzFJzitfanU4DMYv",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/image/nano-banana-pro",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.15,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "150000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://x402.orth.sh/nano-banana/v1beta/models/gemini-3-pro-image-preview:generateContent",
+          "method": "POST",
+          "provider": "Orthogonal",
+          "providerId": "orthogonal",
+          "amount": 0.15,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "150000",
+              "payTo": "0x8bF5C401A41ebe508E259f62612B0E22c3D43B75",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-18T21:07:15.669Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "ASYNC on default (StableStudio): POST JSON {prompt} -> {jobId,status:'pending'}; poll GET /api/jobs/{jobId} (SIWX, free) ~20-25s until status=='complete' -> result.imageUrl. Xona is SYNC (returns image_url inline). Orthogonal is SYNC native-Gemini (contents/parts in, base64 inlineData out).",
+        "inputExample": {
+          "prompt": "a red circle on white background"
+        },
+        "outputShape": "StableStudio POST: success(bool), jobId(string), status('pending'), type('nano-banana-pro-generate'). Poll GET: id, type, input{model,prompt,imageSize,aspectRatio}, status('complete'), progress(100), result.imageUrl(hosted PNG on *.public.blob.vercel-storage.com), error, createdAt, updatedAt. | Xona: image_url, image_description, metadata. | Orthogonal: Gemini candidates[].content.parts[].inlineData.data (base64).",
+        "quirks": [
+          "MULTI-GATEWAY but NOT drop-in interchangeable: each gateway has a DIFFERENT request/response shape. StableStudio & Xona use simple {prompt}; Orthogonal uses native Google Gemini {contents:[{parts:[{text}]}]}.",
+          "StableStudio (default) is ASYNC: the paid POST does NOT return the image, only {jobId,status:'pending'}. You MUST poll GET https://stablestudio.dev/api/jobs/{jobId} until status=='complete' (~24s observed). Image at result.imageUrl (hosted PNG, NOT base64).",
+          "The poll endpoint /api/jobs/{jobId} is SIWX-gated (free): returns 403/Unauthorized to a DIFFERENT wallet identity. You must poll with the SAME wallet that paid the POST. (MCP agentcash fetch failed with 403 because its identity differs from the qa-pay/Sponge wallet that created the job.)",
+          "StableStudio field names: aspectRatio (camelCase) + imageSize ('1K'/'2K'/'4K'). Xona uses aspect_ratio (snake_case) + referenceImage[]. Do NOT mix the two field conventions.",
+          "Xona is SYNCHRONOUS — returns body.image_url directly, no polling needed. Cheaper to integrate but $0.02 more per call.",
+          "Orthogonal returns base64 inline image data (Gemini inlineData), not a hosted URL; add generationConfig.responseModalities:['IMAGE'] to force image output and tools:[{googleSearch:{}}] for grounded/factual images.",
+          "Payment settles on Base (USDC). StableStudio price observed exactly $0.13."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Generate an image from a text prompt using Nano Banana Pro (Google Gemini 3 Pro Image). Same model offered via 3 gateways: StableStudio (async, cheapest, default), Xona (synchronous, returns image URL inline), and Orthogonal (native Google Gemini generateContent passthrough). Supports 1K/2K/4K output and multiple aspect ratios. ASYNC on default (StableStudio): POST JSON {prompt} -> {jobId,status:'pending'}; poll GET /api/jobs/{jobId} (SIWX, free) ~20-25s until status=='complete' -> result.imageUrl. Xona is SYNC (returns image_url inline). Orthogonal is SYNC native-Gemini (contents/parts in, base64 inlineData out). Output: StableStudio POST: success(bool), jobId(string), status('pending'), type('nano-banana-pro-generate'). Poll GET: id, type, input{model,prompt,imageSize,aspectRatio}, status('complete'), progress(100), result.imageUrl(hosted PNG on *.public.blob.vercel-storage.com), error, createdAt, updatedAt. | Xona: image_url, image_description, metadata. | Orthogonal: Gemini candidates[].content.parts[].inlineData.data (base64).",
+        "costObservedUsd": 0.13
+      },
+      "status": "active"
+    },
+    {
+      "name": "Nano Banana Pro Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "nano-banana-pro-edit",
+        "image-edit"
+      ],
+      "description": "Edit / transform one or more input images with a text instruction using Nano Banana Pro (Gemini 3 Pro Image). Distinct from generate: REQUIRES input image URLs. StableStudio exposes a dedicated /edit endpoint (verified). The same capability is available on Xona (via referenceImage[]) and Orthogonal (via additional image parts in contents) on their single generate endpoint.",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "photorealistic",
+        "4k",
+        "grounding"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/nano-banana-pro/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.13,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "A6ffpDYbZKmtZcom3ueBD52TZF3cHzFJzitfanU4DMYv",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "ASYNC: POST JSON {prompt, images:[url,...]} -> {jobId,status:'pending'}; poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) ~24s until status=='complete' -> result.imageUrl.",
+        "inputExample": {
+          "prompt": "make the circle blue",
+          "images": [
+            "https://wgunica1uhl5nijm.public.blob.vercel-storage.com/generated/424f6349-ea3f-4bce-8799-a18306c9eeca.png"
+          ]
+        },
+        "outputShape": "POST: success(bool), jobId(string), status('pending'), type('nano-banana-pro-edit'). Poll GET: id, type, input{model,images[],prompt,imageSize,aspectRatio}, status('complete'), progress(100), result.imageUrl(hosted PNG), error, createdAt, updatedAt.",
+        "quirks": [
+          "REQUIRED field is 'images' (array of 1-14 image URLs) PLUS 'prompt' — NOT 'image' singular and NOT 'referenceImage'. Missing 'images' => 400.",
+          "Image URLs must be publicly fetchable URIs (blob URLs from StableStudio's own /api/upload or any reachable https image work).",
+          "ASYNC like generate: paid POST returns only {jobId,status:'pending'}; poll GET /api/jobs/{jobId} (SIWX-gated, free, same-wallet) until status=='complete'; edited image at result.imageUrl. ~24s observed.",
+          "Field names camelCase (aspectRatio, imageSize). Same SIWX same-wallet polling constraint as generate.",
+          "Cross-gateway equivalents (same op, NOT verified here): Xona edit = POST {prompt, referenceImage:[url]} to https://api.xona-agent.com/image/nano-banana-pro (sync, returns image_url). Orthogonal edit = add image parts (inlineData/fileData) into contents on the generateContent endpoint. Up to 14 input images supported.",
+          "Payment settles on Base. Price observed exactly $0.13."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Edit / transform one or more input images with a text instruction using Nano Banana Pro (Gemini 3 Pro Image). Distinct from generate: REQUIRES input image URLs. StableStudio exposes a dedicated /edit endpoint (verified). The same capability is available on Xona (via referenceImage[]) and Orthogonal (via additional image parts in contents) on their single generate endpoint. ASYNC: POST JSON {prompt, images:[url,...]} -> {jobId,status:'pending'}; poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) ~24s until status=='complete' -> result.imageUrl. Output: POST: success(bool), jobId(string), status('pending'), type('nano-banana-pro-edit'). Poll GET: id, type, input{model,images[],prompt,imageSize,aspectRatio}, status('complete'), progress(100), result.imageUrl(hosted PNG), error, createdAt, updatedAt.",
+        "costObservedUsd": 0.13
+      },
+      "status": "active"
+    },
+    {
+      "name": "Nano Banana 2",
+      "provider": "Google",
+      "providerId": "google",
+      "aka": [
+        "gemini-3.1-flash-image-preview"
+      ],
+      "description": "Google's Gemini 3.1 Flash Image — pro-quality at Flash speed: text-to-image, editing, multi-image composition (up to 5 characters / 14 objects), subject consistency, precise text rendering.",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "fast",
+        "text-rendering"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        30
+      ],
+      "resolved": {
+        "30": {
+          "amount": 0.05,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402.orth.sh/nano-banana-2/v1beta/models/gemini-3.1-flash-image-preview:generateContent with JSON body {contents:[{parts:[{text}]}], generationConfig:{responseModalities:[\"IMAGE\"]}}",
+        "inputExample": {
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "a red circle"
+                }
+              ]
+            }
+          ],
+          "generationConfig": {
+            "responseModalities": [
+              "IMAGE"
+            ]
+          }
+        },
+        "outputShape": "body.candidates[0].content.parts[].inlineData.data (base64 image string), body.candidates[0].content.parts[].inlineData.mimeType (e.g. image/jpeg)",
+        "quirks": [
+          "Uses Google Gemini generateContent request/response format, not a simple {prompt} field.",
+          "Image comes back as base64 in candidates[0].content.parts[].inlineData.data; find the part that has inlineData (other parts may carry thoughtSignature/text).",
+          "Optional generationConfig.imageConfig.aspectRatio supports 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9.",
+          "For editing/composition, add an inlineData part to contents with mimeType + base64 source image alongside the text instruction.",
+          "Response is large (~1.8MB) because the JPEG is embedded inline as base64."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to the URL with JSON body {\"contents\":[{\"parts\":[{\"text\":\"<your prompt>\"}]}],\"generationConfig\":{\"responseModalities\":[\"IMAGE\"]}}; payment is x402 USDC on Base, ~$0.05 per call, no API key. The response is synchronous Gemini format: decode body.candidates[0].content.parts[].inlineData.data (base64) using the sibling inlineData.mimeType to get the generated image. Add generationConfig.imageConfig.aspectRatio to control shape, or include an inlineData source-image part in contents for editing/composition.",
+        "costObservedUsd": 0.05
+      },
+      "status": "active"
+    },
+    {
+      "name": "Nano Banana (Gemini 2.5 Flash) Generate",
+      "kind": "api",
+      "provider": "Orthogonal",
+      "providerId": "orthogonal",
+      "aka": [
+        "nano-banana-gemini-2-5-flash-generate",
+        "generate"
+      ],
+      "description": "Text-to-image generation with Google Nano Banana (Gemini 2.5 Flash Image). Same model offered via three pay-per-call gateways. Default backend is Orthogonal (x402.orth.sh): synchronous, returns inline base64 PNG, cheapest at $0.05. BlockRun returns a synchronous OpenAI-style payload. StableStudio is asynchronous (returns a jobId you must poll via SIWX).",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "fast"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://x402.orth.sh/nano-banana/v1beta/models/gemini-2.5-flash-image:generateContent",
+          "method": "POST",
+          "provider": "Orthogonal",
+          "providerId": "orthogonal",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "50000",
+              "payTo": "0x8bF5C401A41ebe508E259f62612B0E22c3D43B75",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-18T21:07:15.669Z"
+          }
+        },
+        {
+          "url": "https://blockrun.ai/api/v1/images/generations",
+          "method": "POST",
+          "provider": "BlockRun",
+          "providerId": "blockrun",
+          "amount": 0.052501,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 600,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://stablestudio.dev/api/generate/nano-banana/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.07,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "7yMQQgCm33nDD3fry5GnzW9k9VA1z53vecZkS8sCnvXv",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/image/nano-banana",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T03:49:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Detailed prompt description for the image to generate"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Image aspect ratio (default: 1:1)"
+              },
+              "referenceImage": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Array of up to 8 reference image URLs for style/composition guidance"
+              }
+            },
+            "required": [
+              "prompt"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "image_url": {
+                "type": "string",
+                "description": "Generated image URL (CDN)"
+              },
+              "image_description": {
+                "type": "string",
+                "description": "Prompt used for generation"
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Generation metadata (model, aspectRatio, cdn_key, replicate_url, etc.)"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "DEFAULT (Orthogonal): POST https://x402.orth.sh/nano-banana/v1beta/models/gemini-2.5-flash-image:generateContent with Gemini-native body {contents:[{parts:[{text:\"...\"}]}], generationConfig:{responseModalities:[\"IMAGE\"]}} (x402 pay) -> SYNCHRONOUS 200 with inline base64 PNG. No polling. Alternate gateways use different body shapes (see backends) and StableStudio additionally requires async polling.",
+        "inputExample": {
+          "contents": [
+            {
+              "parts": [
+                {
+                  "text": "a red circle on white background"
+                }
+              ]
+            }
+          ],
+          "generationConfig": {
+            "responseModalities": [
+              "IMAGE"
+            ]
+          }
+        },
+        "outputShape": "Orthogonal (default): candidates[0].content.parts[0].inlineData.data (base64 PNG), candidates[0].content.parts[0].inlineData.mimeType, candidates[0].finishReason, modelVersion, responseId, usageMetadata.totalTokenCount. StableStudio (async): result.imageUrl after polling. BlockRun: OpenAI images.generations data[] response.",
+        "quirks": [
+          "SPLIT/multi-gateway: three backends are the SAME generate op but have THREE INCOMPATIBLE request bodies. Pick the body matching the chosen backend.",
+          "Orthogonal (default) uses Gemini-native {contents:[{parts:[{text}]}]}; set generationConfig.responseModalities:[\"IMAGE\"] for image-only. aspectRatio goes under generationConfig.imageConfig.aspectRatio (enum 1:1,2:3,3:2,3:4,4:3,4:5,5:4,9:16,16:9,21:9).",
+          "Orthogonal returns the image INLINE as base64 (candidates[0].content.parts[0].inlineData.data), synchronous, NOT a URL and NOT async.",
+          "BlockRun field trap: model is REQUIRED and must be literal \"google/nano-banana\"; OpenAI-style body {model,prompt,size,n}, NOT a flat {prompt}.",
+          "StableStudio is the only ASYNC gateway: paid POST returns {jobId,status:'pending'} (no image); must poll GET /api/jobs/{jobId} via SIGN-IN-WITH-X signed by the SAME wallet that paid (different wallet = 403). Poll is free. result.imageUrl is a Vercel blob that expires ~20min - download immediately.",
+          "StableStudio body is FLAT {prompt,...}; the Gemini contents[] shape 400s there ('path:prompt expected string received undefined').",
+          "All three pricing modes are dynamic except Orthogonal which is a fixed $0.05."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation with Google Nano Banana (Gemini 2.5 Flash Image). Same model offered via three pay-per-call gateways. Default backend is Orthogonal (x402.orth.sh): synchronous, returns inline base64 PNG, cheapest at $0.05. BlockRun returns a synchronous OpenAI-style payload. StableStudio is asynchronous (returns a jobId you must poll via SIWX). DEFAULT (Orthogonal): POST https://x402.orth.sh/nano-banana/v1beta/models/gemini-2.5-flash-image:generateContent with Gemini-native body {contents:[{parts:[{text:\"...\"}]}], generationConfig:{responseModalities:[\"IMAGE\"]}} (x402 pay) -> SYNCHRONOUS 200 with inline base64 PNG. No polling. Alternate gateways use different body shapes (see backends) and StableStudio additionally requires async polling. Output: Orthogonal (default): candidates[0].content.parts[0].inlineData.data (base64 PNG), candidates[0].content.parts[0].inlineData.mimeType, candidates[0].finishReason, modelVersion, responseId, usageMetadata.totalTokenCount. StableStudio (async): result.imageUrl after polling. BlockRun: OpenAI images.generations data[] response.",
+        "costObservedUsd": 0.05
+      },
+      "status": "active"
+    },
+    {
+      "name": "Nano Banana (Gemini 2.5 Flash) Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "nano-banana-gemini-2-5-flash-edit",
+        "edit"
+      ],
+      "description": "Image editing / image-to-image with Nano Banana via StableStudio. Takes a text prompt plus 1-14 source image blob URLs and returns an edited image (async job). Not the same op as Generate (requires input images).",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "fast"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/nano-banana/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "7yMQQgCm33nDD3fry5GnzW9k9VA1z53vecZkS8sCnvXv",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablestudio.dev/api/generate/nano-banana/edit with JSON {prompt, images:[<blobUrl>], aspectRatio?, imageSize?, thinkingLevel?} (x402 pay) -> ASYNC 200 {success,jobId,status:\"pending\",type}; poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX (same wallet) until status:\"complete\", edited image at result.imageUrl.",
+        "inputExample": {
+          "prompt": "add a party hat to the subject",
+          "images": [
+            "https://<stablestudio-blob-url>/source.png"
+          ]
+        },
+        "outputShape": "Paid POST: {success:true, jobId, status:\"pending\", type}. After SIWX poll of /api/jobs/{jobId}: result.imageUrl (Vercel blob, expires ~20min).",
+        "quirks": [
+          "Distinct op from Generate: images is REQUIRED (array of 1-14 image blob URLs); both prompt and images are required.",
+          "PREREQUISITE: images must be StableStudio/Vercel blob URLs. Get one via paid POST /api/upload ($0.01, returns a client upload token) -> direct upload to Vercel Blob -> SIWX POST /api/upload/confirm with the final blob URL. Cannot verify with a minimal body because no valid image URL exists without this upload flow first.",
+          "ASYNC like generate: returns jobId, poll GET /api/jobs/{jobId} via SIGN-IN-WITH-X signed by the paying wallet (different wallet = 403). Poll is free. result.imageUrl expires ~20min.",
+          "Optional fields aspectRatio/imageSize/thinkingLevel same enums as generate; defaults 1:1, 1K, minimal. Dynamic price (observed registry value $0.04)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Image editing / image-to-image with Nano Banana via StableStudio. Takes a text prompt plus 1-14 source image blob URLs and returns an edited image (async job). Not the same op as Generate (requires input images). POST https://stablestudio.dev/api/generate/nano-banana/edit with JSON {prompt, images:[<blobUrl>], aspectRatio?, imageSize?, thinkingLevel?} (x402 pay) -> ASYNC 200 {success,jobId,status:\"pending\",type}; poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX (same wallet) until status:\"complete\", edited image at result.imageUrl. Output: Paid POST: {success:true, jobId, status:\"pending\", type}. After SIWX poll of /api/jobs/{jobId}: result.imageUrl (Vercel blob, expires ~20min).",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "GPT Image 2 Generate",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "gpt-image-2-generate",
+        "image.generate"
+      ],
+      "description": "Text-to-image generation with GPT Image 2 (OpenAI gpt-image). Given a text prompt, returns a generated PNG/JPEG/WebP image. Available via two gateways: StableStudio (default, async job + poll, cheapest) and BlockRun (synchronous, returns image URL inline).",
+      "tags": [
+        "text-to-image",
+        "image-editing"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/gpt-image-2/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "7hD61XFYTtGfGpfi7zoo2bwffUXDqKsq9cEpjRgHCwBo",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://blockrun.ai/api/v1/images/generations",
+          "method": "POST",
+          "provider": "BlockRun",
+          "providerId": "blockrun",
+          "amount": 0.063,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 600,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/image/gpt-image-2",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.12,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "120000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-29T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Detailed prompt describing the desired image"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Must be 1:1 (any other value is coerced)"
+              },
+              "referenceImage": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional reference image URLs (up to 16) for image-to-image editing"
+              }
+            },
+            "required": [
+              "prompt"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "image_url": {
+                "type": "string",
+                "description": "Generated image URL (CDN)"
+              },
+              "image_description": {
+                "type": "string",
+                "description": "Prompt used for generation"
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Generation metadata (model, quality, aspectRatio, cdn_key, replicate_url, etc.)"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "DEFAULT (StableStudio, ASYNC): POST https://stablestudio.dev/api/generate/gpt-image-2/generate with JSON {prompt (required), size?:1024x1024|1536x1024|1024x1536|auto, quality?:low|medium|high (default high), background?:opaque|auto, output_format?:png|jpeg|webp, output_compression?:0-100, moderation?:low|auto}. x402/mpp pay (DYNAMIC 0-10 USD; quality:low quoted $0.01). Returns {success:true, jobId, status:'pending', type:'gpt-image-2-generate'} — NO image in POST response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth as the SAME wallet that paid (free) until status==='complete'; result is a public PNG on *.public.blob.vercel-storage.com. ALT GATEWAY (BlockRun, SYNCHRONOUS): POST https://blockrun.ai/api/v1/images/generations with JSON {model:'openai/gpt-image-2' (required to select this model), prompt (required, maxLength 4000), size?:1024x1024|1792x1024|1024x1792, n?:1-4}. x402 pay (~$0.063). Returns the image URL directly in the response, no polling.",
+        "inputExample": {
+          "prompt": "a small red circle on a white background",
+          "quality": "low",
+          "size": "1024x1024"
+        },
+        "outputShape": "StableStudio POST: success(bool), jobId(string), status('pending'), type('gpt-image-2-generate'). StableStudio poll GET /api/jobs/{jobId}: status, plus completed result image URL on *.public.blob.vercel-storage.com. BlockRun POST: created(unix), data[].url (https://blockrun.ai/api/media/...png), data[].source_url, data[].backed_up(bool), price.amount, price.currency, payment.status('settled'), payment.tx_hash, payment.network.",
+        "quirks": [
+          "SPLIT/MULTI-GATEWAY: StableStudio (default) and BlockRun are the SAME text-to-image op via different gateways with DIFFERENT call shapes — pick one.",
+          "StableStudio is ASYNC: POST only pays+enqueues and returns {jobId,status:'pending'} with NO image. You MUST poll GET https://stablestudio.dev/api/jobs/{jobId} (host is stablestudio.DEV, path /api/jobs/ NOT /api/status/; this URL is not in the registry, derive from jobId).",
+          "StableStudio poll requires SIWX auth as the SAME wallet that PAID the job. A different wallet identity gets 403 {success:false,error:'Unauthorized'} (confirmed live). Polling is free once authenticated.",
+          "StableStudio pricing is DYNAMIC (0-10 USD by quality); priceDisplay may show $10 but quality:low quoted $0.01 — do NOT skip as over-cap.",
+          "BlockRun is SYNCHRONOUS and returns the image URL inline — simpler but pricier ($0.063 vs $0.01). BlockRun REQUIRES model:'openai/gpt-image-2' in the body to route to this model (default model differs). BlockRun is x402-only (no mpp).",
+          "BlockRun size enum differs from StableStudio: BlockRun uses 1792x1024/1024x1792 (not 1536x1024/1024x1536)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation with GPT Image 2 (OpenAI gpt-image). Given a text prompt, returns a generated PNG/JPEG/WebP image. Available via two gateways: StableStudio (default, async job + poll, cheapest) and BlockRun (synchronous, returns image URL inline). DEFAULT (StableStudio, ASYNC): POST https://stablestudio.dev/api/generate/gpt-image-2/generate with JSON {prompt (required), size?:1024x1024|1536x1024|1024x1536|auto, quality?:low|medium|high (default high), background?:opaque|auto, output_format?:png|jpeg|webp, output_compression?:0-100, moderation?:low|auto}. x402/mpp pay (DYNAMIC 0-10 USD; quality:low quoted $0.01). Returns {success:true, jobId, status:'pending', type:'gpt-image-2-generate'} — NO image in POST response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth as the SAME wallet that paid (free) until status==='complete'; result is a public PNG on *.public.blob.vercel-storage.com. ALT GATEWAY (BlockRun, SYNCHRONOUS): POST https://blockrun.ai/api/v1/images/generations with JSON {model:'openai/gpt-image-2' (required to select this model), prompt (required, maxLength 4000), size?:1024x1024|1792x1024|1024x1792, n?:1-4}. x402 pay (~$0.063). Returns the image URL directly in the response, no polling. Output: StableStudio POST: success(bool), jobId(string), status('pending'), type('gpt-image-2-generate'). StableStudio poll GET /api/jobs/{jobId}: status, plus completed result image URL on *.public.blob.vercel-storage.com. BlockRun POST: created(unix), data[].url (https://blockrun.ai/api/media/...png), data[].source_url, data[].backed_up(bool), price.amount, price.currency, payment.status('settled'), payment.tx_hash, payment.network.",
+        "costObservedUsd": 0.073
+      },
+      "status": "active"
+    },
+    {
+      "name": "GPT Image 2 Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "gpt-image-2-edit",
+        "image.edit"
+      ],
+      "description": "Image-to-image editing with GPT Image 2. Given a prompt plus one or more source image URLs, returns an edited image. Distinct operation from generate (requires input images). StableStudio only.",
+      "tags": [
+        "text-to-image",
+        "image-editing"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/gpt-image-2/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.01,
+          "accepts": [],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "ASYNC: POST https://stablestudio.dev/api/generate/gpt-image-2/edit with JSON {prompt (required), images (required, array of DIRECT image URLs, minItems 1), size?:1024x1024|1536x1024|1024x1536|auto, quality?:low|medium|high (default high), background?:opaque|auto, output_format?:png|jpeg|webp, output_compression?:0-100, moderation?:low|auto}. x402/mpp pay (DYNAMIC 0-10 USD; quality:low quoted $0.01). Returns {success:true, jobId, status:'pending', type:'gpt-image-2-edit'} — NO image in POST response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth as the SAME wallet that paid (free) until status==='complete'; result is a public image on *.public.blob.vercel-storage.com.",
+        "inputExample": {
+          "prompt": "add a small blue square in the center",
+          "quality": "low",
+          "size": "1024x1024",
+          "images": [
+            "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png"
+          ]
+        },
+        "outputShape": "POST: success(bool), jobId(string), status('pending'), type('gpt-image-2-edit'). Poll GET /api/jobs/{jobId}: status, plus completed result image URL on *.public.blob.vercel-storage.com.",
+        "quirks": [
+          "REGISTRY BUG: edit backend was listed on host stablestudio.IO — WRONG. Real origin is stablestudio.DEV (verified live this run).",
+          "EDIT REQUIRES images[]: body must include both prompt AND images (array of image URLs, minItems 1). Omitting images is a 400.",
+          "Image URL must be a DIRECT full image URL. A Wikipedia /thumb/.../280px-... resized-variant URL was rejected 400 {success:false,error:'Invalid image URL(s)'} (nothing charged); the direct original .../commons/4/47/file.png works.",
+          "ASYNC: POST only pays+enqueues returning {jobId,status:'pending'}, NO image. Poll GET https://stablestudio.dev/api/jobs/{jobId} (host stablestudio.DEV, path /api/jobs/).",
+          "Poll requires SIWX auth as the SAME wallet that PAID; a different wallet gets 403 Unauthorized (confirmed live). Polling is free once authenticated.",
+          "Pricing DYNAMIC (0-10 USD by quality); quality:low quoted $0.01 — not over-cap despite priceDisplay."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Image-to-image editing with GPT Image 2. Given a prompt plus one or more source image URLs, returns an edited image. Distinct operation from generate (requires input images). StableStudio only. ASYNC: POST https://stablestudio.dev/api/generate/gpt-image-2/edit with JSON {prompt (required), images (required, array of DIRECT image URLs, minItems 1), size?:1024x1024|1536x1024|1024x1536|auto, quality?:low|medium|high (default high), background?:opaque|auto, output_format?:png|jpeg|webp, output_compression?:0-100, moderation?:low|auto}. x402/mpp pay (DYNAMIC 0-10 USD; quality:low quoted $0.01). Returns {success:true, jobId, status:'pending', type:'gpt-image-2-edit'} — NO image in POST response. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth as the SAME wallet that paid (free) until status==='complete'; result is a public image on *.public.blob.vercel-storage.com. Output: POST: success(bool), jobId(string), status('pending'), type('gpt-image-2-edit'). Poll GET /api/jobs/{jobId}: status, plus completed result image URL on *.public.blob.vercel-storage.com.",
+        "costObservedUsd": 0.01
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "GPT Image 1.5 Generate",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "gpt-image-1-5-generate",
+        "image-generation"
+      ],
+      "description": "Text-to-image generation with OpenAI GPT Image 1.5 via StableStudio. Submit a prompt; returns an async pending job. Poll for the generated image URL.",
+      "tags": [
+        "text-to-image"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/gpt-image-1.5/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "ABga5zJwp5jq2joGYsK7cUGkvX1Hn3oXRvAB6KKtnd4m",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablestudio.dev/api/generate/gpt-image-1.5/generate with JSON body {prompt (required), size?:'1024x1024'|'1536x1024'|'1024x1536'|'auto', quality?:'low'|'medium'|'high' (default high), background?:'transparent'|'opaque'|'auto', output_format?:'png'|'jpeg'|'webp', output_compression?:0-100, moderation?:'low'|'auto'}. Returns {success, jobId, status:'pending', type:'gpt-image-1.5-generate'}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (SAME wallet that paid) until status=complete; image at body.result.imageUrl.",
+        "inputExample": {
+          "prompt": "a small red circle on a white background",
+          "size": "1024x1024",
+          "quality": "low"
+        },
+        "outputShape": "POST: success(bool), jobId(string), status('pending'), type('gpt-image-1.5-generate'). Poll GET /api/jobs/{jobId}: status, result.imageUrl (Vercel blob URL when complete).",
+        "quirks": [
+          "GENERATE endpoint: body requires ONLY prompt (no images). This is distinct from the /edit endpoint which requires images[].",
+          "Async two-step: POST returns {success, jobId, status:'pending'} and does NOT contain the image.",
+          "Poll GET https://stablestudio.dev/api/jobs/{jobId} (NOT /api/generate/.../status) with SIWX wallet auth (free, no payment).",
+          "Poll/job endpoint is IDENTITY-GATED to the wallet that PAID the POST: confirmed live — polling with a different SIWX identity returns 403 {success:false,error:'Unauthorized'}. Use the same wallet for POST and poll.",
+          "Final image at body.result.imageUrl (Vercel blob URL).",
+          "quality (low/medium/high) and size affect cost; default quality is 'high'. Low-quality 1024x1024 cost $0.01 USDC on Base. Registry surface price was $0.13 (the high-quality default).",
+          "Dynamic pricing (0-10 USD range in OpenAPI); actual charge depends on quality/size.",
+          "Supports x402 and mpp payment protocols."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation with OpenAI GPT Image 1.5 via StableStudio. Submit a prompt; returns an async pending job. Poll for the generated image URL. POST https://stablestudio.dev/api/generate/gpt-image-1.5/generate with JSON body {prompt (required), size?:'1024x1024'|'1536x1024'|'1024x1536'|'auto', quality?:'low'|'medium'|'high' (default high), background?:'transparent'|'opaque'|'auto', output_format?:'png'|'jpeg'|'webp', output_compression?:0-100, moderation?:'low'|'auto'}. Returns {success, jobId, status:'pending', type:'gpt-image-1.5-generate'}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (SAME wallet that paid) until status=complete; image at body.result.imageUrl. Output: POST: success(bool), jobId(string), status('pending'), type('gpt-image-1.5-generate'). Poll GET /api/jobs/{jobId}: status, result.imageUrl (Vercel blob URL when complete).",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "GPT Image 1.5 Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "gpt-image-1-5-edit",
+        "image-edit"
+      ],
+      "description": "Image editing with OpenAI GPT Image 1.5 via StableStudio. Provide a prompt plus one or more input image URLs to edit; returns an async pending job. Poll for the edited image URL.",
+      "tags": [
+        "text-to-image"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/gpt-image-1.5/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "7yMQQgCm33nDD3fry5GnzW9k9VA1z53vecZkS8sCnvXv",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablestudio.dev/api/generate/gpt-image-1.5/edit with JSON body {prompt (required), images (required, array of >=1 image URLs), size?, quality?:'low'|'medium'|'high', background?, output_format?, output_compression?, moderation?, input_fidelity?:'high'|'low' (default high)}. Returns {success, jobId, status:'pending', type:'gpt-image-1.5-edit'}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (SAME wallet that paid) until status=complete; image at body.result.imageUrl.",
+        "inputExample": {
+          "prompt": "add a small blue star in the top left corner",
+          "images": [
+            "https://placehold.co/512x512.png"
+          ],
+          "size": "1024x1024",
+          "quality": "low"
+        },
+        "outputShape": "POST: success(bool), jobId(string), status('pending'), type('gpt-image-1.5-edit'). Poll GET /api/jobs/{jobId}: status, result.imageUrl (Vercel blob URL when complete).",
+        "quirks": [
+          "EDIT endpoint: body requires BOTH prompt AND images (array, minItems 1, image URLs to edit). Without images it 400s. This is the field-name trap that distinguishes it from /generate.",
+          "Extra edit-only field: input_fidelity ('high'|'low', default 'high') controls how much of the input image detail is preserved.",
+          "Image URLs are validated pre-payment: must return HTTP 200 with an image content-type and NO redirect. Wikipedia upload URLs (UA-gated->400) and picsum.photos (302 redirect) were rejected with 'Invalid image URL(s)' (no charge). A direct PNG like https://placehold.co/512x512.png works.",
+          "Async two-step: POST returns {success, jobId, status:'pending'} and does NOT contain the image.",
+          "Poll GET https://stablestudio.dev/api/jobs/{jobId} (NOT /api/generate/.../status) with SIWX wallet auth (free).",
+          "Poll/job endpoint is IDENTITY-GATED to the wallet that PAID the POST: confirmed live — different SIWX identity returns 403 {success:false,error:'Unauthorized'}. Use the same wallet for POST and poll.",
+          "Final edited image at body.result.imageUrl (Vercel blob URL).",
+          "Low-quality 1024x1024 edit cost $0.01 USDC on Base; quality/size/input_fidelity affect cost. Registry surface price was $0.01.",
+          "Supports x402 and mpp payment protocols."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Image editing with OpenAI GPT Image 1.5 via StableStudio. Provide a prompt plus one or more input image URLs to edit; returns an async pending job. Poll for the edited image URL. POST https://stablestudio.dev/api/generate/gpt-image-1.5/edit with JSON body {prompt (required), images (required, array of >=1 image URLs), size?, quality?:'low'|'medium'|'high', background?, output_format?, output_compression?, moderation?, input_fidelity?:'high'|'low' (default high)}. Returns {success, jobId, status:'pending', type:'gpt-image-1.5-edit'}. Then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIWX auth (SAME wallet that paid) until status=complete; image at body.result.imageUrl. Output: POST: success(bool), jobId(string), status('pending'), type('gpt-image-1.5-edit'). Poll GET /api/jobs/{jobId}: status, result.imageUrl (Vercel blob URL when complete).",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "GPT Image 1",
+      "provider": "OpenAI",
+      "providerId": "openai",
+      "description": "OpenAI GPT Image 1 generation model.",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        28,
+        {
+          "url": "https://blockrun.ai/api/v1/images/generations",
+          "provider": "BlockRun",
+          "amount": 0.021,
+          "min": 0.02,
+          "max": 0.08,
+          "dynamic": true,
+          "modelParam": {
+            "name": "model",
+            "value": "openai/gpt-image-1"
+          },
+          "method": "POST",
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 600,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-09T21:43:51.327Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://blockrun.ai/api/v1/images/generations with JSON body {model:\"openai/gpt-image-1\", prompt}; then poll-GET the returned poll_url (each poll is its own x402 paid call)",
+        "inputExample": {
+          "model": "openai/gpt-image-1",
+          "prompt": "a red circle"
+        },
+        "outputShape": "POST: body.id + body.poll_url (status queued). Final result after polling: body.data[0].url (PNG image URL); body.status==\"completed\"; body.payment.tx_hash for settlement",
+        "quirks": [
+          "Async: POST returns 202 with status:queued and a relative poll_url (/api/v1/images/generations/<id>) — the image is NOT in the POST response.",
+          "Poll endpoint enforces its OWN x402 402 challenge, wallet-bound. Each GET poll must carry a fresh x-payment header signed by the SAME wallet that did the POST, and EACH POLL COSTS ANOTHER PAYMENT (~$0.021). Total observed cost = POST $0.021 + 1 poll $0.021 = $0.042.",
+          "A fresh signature works (server enforces wallet binding, not signature byte-equality), so standard x402 clients re-sign automatically on the 402.",
+          "Result image URL is at body.data[0].url; settlement tx_hash appears on the completed poll under body.payment.tx_hash.",
+          "Price billed $0.021 (registry surface said $0.020).",
+          "Use model value exactly 'openai/gpt-image-1'."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST https://blockrun.ai/api/v1/images/generations with JSON {\"model\":\"openai/gpt-image-1\",\"prompt\":\"<your prompt>\"} and pay the ~$0.021 x402 charge on Base USDC. The response is a 202 queued job with an id and a relative poll_url. Then GET the poll_url with the same x402 wallet — the poll endpoint returns its own 402 challenge, so each poll is a SEPARATE paid call (~$0.021); budget for at least one extra payment. Poll until status==\"completed\", then read the image at body.data[0].url. The whole job typically costs ~$0.042 (POST + one completing poll).",
+        "costObservedUsd": 0.042
+      },
+      "status": "active",
+      "resolved": {
+        "28": {
+          "method": "POST",
+          "status": "hidden",
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "queued"
+            ],
+            "jobIdPath": "id",
+            "pollUrlTemplate": null,
+            "poll": {
+              "cost": "per-poll",
+              "statusField": "status",
+              "completeValues": [
+                "completed"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "data.0.url"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "FLUX.2 Pro Generate",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "flux-2-pro-generate",
+        "generate"
+      ],
+      "description": "Text-to-image generation with FLUX.2 Pro (Black Forest Labs). Submit a prompt, get a high-quality image. Available via 3 gateways; StableStudio is the default (cheapest, async with poll). Xona is a sync alternative that returns the image URL directly.",
+      "tags": [
+        "text-to-image",
+        "high-quality"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/flux-2-pro/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.03,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "3SY6Y6x2RcMkSMdktmkt2DCFLbKkNw7KSik2RgXPMjuZ",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/base-main/image/flux-2-pro",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x515e7Bce44Baa5F6e42D16d4B5f27768E7f2F8cC",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "decimals": 6,
+                "eip712": {
+                  "name": "USD Coin",
+                  "version": "2"
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://x402-gateway-production.up.railway.app/api/image/quality",
+          "method": "POST",
+          "provider": "x402 Gateway",
+          "providerId": "x402-gateway",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:4326",
+              "amount": "50000000000000000",
+              "asset": "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+              "payTo": "0x7dd5Be069f2d2eAd75eC7C3423B116fF043c2629",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USDm",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "Gzehfseq1k9AcHFSoV7qHmDGQx92nLMw78XXdqVWQQWa",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "Hc3sdEAsCGQcpgfivywog9uwtk8gUBUZgsxdME1EJy88"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablestudio.dev/api/generate/flux-2-pro/generate with JSON {prompt} (optional: aspect_ratio one of 1:1|16:9|9:16|3:2|2:3|4:5|5:4|4:3|3:4 default 1:1; resolution 0.5 MP|1 MP|2 MP; output_format webp|jpg|png; output_quality 0-100; seed; safety_tolerance 1-5; prompt_upsampling bool). Returns async {success,jobId,status:'pending',type:'flux-2-pro-generate'} — NOT the image. Then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until status=='complete'; image at body.result.imageUrl. Xona backend is SYNC: POST {prompt,aspect_ratio?,referenceImage?:[]} returns {image_url,image_description,metadata} directly (no poll).",
+        "inputExample": {
+          "prompt": "a red circle on white background"
+        },
+        "outputShape": "StableStudio (async): {success:true, jobId, status:'pending', type:'flux-2-pro-generate'} then poll → result.imageUrl (Vercel Blob, webp public CDN). Xona (sync): {image_url, image_description, metadata}.",
+        "quirks": [
+          "StableStudio/x402-Gateway are ASYNC: the paid POST returns {jobId,status:'pending'}, NOT the image — must poll GET /api/jobs/{jobId} (SIWX-gated, FREE, no USDC charge).",
+          "Poll URL is ONLY https://stablestudio.dev/api/jobs/{jobId} via GET. /api/generate/status/{id} and /api/generate/flux-2-pro/{id} return 405 (wrong route).",
+          "Job poll is bound to the PAYING wallet identity — polling from a different wallet returns 403 {error:'Unauthorized'}. Poll with the same wallet that paid the generate.",
+          "Final StableStudio image is body.result.imageUrl (Vercel Blob, webp, public CDN), NOT body.image_url. Job completed in ~16s in prior test; poll with short backoff.",
+          "Xona backend is a SYNC drop-in returning {image_url,...} immediately (no poll) and supports referenceImage[] for image-to-image; field name is 'referenceImage' (array), not 'images'.",
+          "x402 Gateway (Railway) path is /api/image/quality (not /flux-2-pro); $0.05; returned empty 402 body so input schema inferred as {prompt}, not paid-verified.",
+          "StableStudio pricing is advertised as dynamic 0-10 USD but FLUX.2 Pro generate billed a flat $0.03 in this test."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation with FLUX.2 Pro (Black Forest Labs). Submit a prompt, get a high-quality image. Available via 3 gateways; StableStudio is the default (cheapest, async with poll). Xona is a sync alternative that returns the image URL directly. POST https://stablestudio.dev/api/generate/flux-2-pro/generate with JSON {prompt} (optional: aspect_ratio one of 1:1|16:9|9:16|3:2|2:3|4:5|5:4|4:3|3:4 default 1:1; resolution 0.5 MP|1 MP|2 MP; output_format webp|jpg|png; output_quality 0-100; seed; safety_tolerance 1-5; prompt_upsampling bool). Returns async {success,jobId,status:'pending',type:'flux-2-pro-generate'} — NOT the image. Then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until status=='complete'; image at body.result.imageUrl. Xona backend is SYNC: POST {prompt,aspect_ratio?,referenceImage?:[]} returns {image_url,image_description,metadata} directly (no poll). Output: StableStudio (async): {success:true, jobId, status:'pending', type:'flux-2-pro-generate'} then poll → result.imageUrl (Vercel Blob, webp public CDN). Xona (sync): {image_url, image_description, metadata}.",
+        "costObservedUsd": 0.03
+      },
+      "status": "active"
+    },
+    {
+      "name": "FLUX.2 Pro Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "flux-2-pro-edit",
+        "edit"
+      ],
+      "description": "Image editing / image-to-image with FLUX.2 Pro. Provide a prompt plus 1-8 reference image URLs; the model edits/recomposes them. Async with poll (same flow as generate).",
+      "tags": [
+        "text-to-image",
+        "high-quality"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/flux-2-pro/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "CDgxfXFLXg2PUKzMdETYvgRzaPhcdgfafjZr6CeWmiGA",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://stablestudio.dev/api/generate/flux-2-pro/edit with JSON {prompt, images:[<url>...]} (1-8 image URLs required; same optional params as generate: aspect_ratio, resolution, output_format, output_quality, seed, safety_tolerance, prompt_upsampling). Returns async {success,jobId,status:'pending',type:'flux-2-pro-edit'}. Poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until complete; result at body.result.imageUrl.",
+        "inputExample": {
+          "prompt": "change the background to solid blue",
+          "images": [
+            "https://picsum.photos/id/237/512/512.jpg"
+          ]
+        },
+        "outputShape": "{success:true, jobId, status:'pending', type:'flux-2-pro-edit'} then poll → result.imageUrl (Vercel Blob, webp public CDN).",
+        "quirks": [
+          "Reference images go in 'images' (array of URLs), min 1 / max 8 — REQUIRED. This is the only difference from generate. (Xona's equivalent field is 'referenceImage'.)",
+          "Rejects some image URLs with 400 {success:false,error:'Invalid image URL(s)'} (no charge) — e.g. a wikimedia SVG-thumbnail PNG failed; a direct .jpg (picsum) succeeded. Use clean, direct, publicly-fetchable image URLs.",
+          "ASYNC: paid POST returns {jobId,status:'pending'}, NOT the image — must poll GET /api/jobs/{jobId} (SIWX, FREE).",
+          "Job poll bound to paying wallet identity (403 Unauthorized from a different wallet) — poll with the wallet that paid.",
+          "Billed $0.04 in this test (advertised 0-10 USD dynamic)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Image editing / image-to-image with FLUX.2 Pro. Provide a prompt plus 1-8 reference image URLs; the model edits/recomposes them. Async with poll (same flow as generate). POST https://stablestudio.dev/api/generate/flux-2-pro/edit with JSON {prompt, images:[<url>...]} (1-8 image URLs required; same optional params as generate: aspect_ratio, resolution, output_format, output_quality, seed, safety_tolerance, prompt_upsampling). Returns async {success,jobId,status:'pending',type:'flux-2-pro-edit'}. Poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX, free) until complete; result at body.result.imageUrl. Output: {success:true, jobId, status:'pending', type:'flux-2-pro-edit'} then poll → result.imageUrl (Vercel Blob, webp public CDN).",
+        "costObservedUsd": 0.04
+      },
+      "status": "active"
+    },
+    {
+      "name": "FLUX.2 Max Generate",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "flux-2-max-generate",
+        "generate"
+      ],
+      "description": "Text-to-image generation with FLUX.2 Max (highest-fidelity FLUX tier, up to 4 MP). Same operation available via two gateways: StableStudio (async: returns a jobId you poll until complete; pays on Base/Solana/Tempo) and Xona (synchronous: returns the image URL directly in the paid response; Solana USDC only).",
+      "tags": [
+        "text-to-image",
+        "high-fidelity"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/flux-2-max/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "CDgxfXFLXg2PUKzMdETYvgRzaPhcdgfafjZr6CeWmiGA",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/image/flux-2-max",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.08,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "80000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "DEFAULT (StableStudio): POST https://stablestudio.dev/api/generate/flux-2-max/generate JSON {prompt, aspect_ratio, resolution, output_format, output_quality, safety_tolerance, prompt_upsampling} -> 200 {success, jobId, status:'pending', type}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (same wallet) until status='complete', read result.imageUrl. ALT (Xona): POST https://api.xona-agent.com/image/flux-2-max JSON {prompt, aspect_ratio?, referenceImage?:[urls]} -> 200 {image_url, image_description, metadata} synchronously (no polling).",
+        "inputExample": {
+          "prompt": "a single red circle centered on a plain white background",
+          "aspect_ratio": "1:1",
+          "resolution": "0.5 MP",
+          "output_format": "webp",
+          "output_quality": 80,
+          "safety_tolerance": 2,
+          "prompt_upsampling": false
+        },
+        "outputShape": "StableStudio paid POST: {success:true, jobId:string, status:'pending', type:'flux-2-max-generate'}; job poll: {status:'complete', result:{imageUrl}} (imageUrl is a Vercel Blob link, expires ~20min). Xona: {image_url, image_description, metadata:{model,aspectRatio,cdn_key,...}}.",
+        "quirks": [
+          "ASYNC on StableStudio: the paid POST returns {jobId,status:'pending'} NOT the image. Poll GET /api/jobs/{jobId} (every ~5s for FLUX) until status='complete', then read result.imageUrl.",
+          "WALLET-IDENTITY TRAP: job polling requires SIGN-IN-WITH-X and MUST use the SAME wallet that paid the generation. A different wallet identity gets 403 Unauthorized (confirmed: agentcash MCP fetch returned 403 {success:false,error:'Unauthorized'} while the qa-pay wallet that paid would get 200).",
+          "Do NOT resubmit while a job is pending/loading — duplicate POSTs create duplicate PAID jobs. Keep polling the original jobId.",
+          "GATEWAY FIELD-NAME DIVERGENCE: StableStudio uses aspect_ratio + resolution ('0.5 MP'|'1 MP'|'2 MP'|'4 MP') and is ASYNC; Xona uses aspect_ratio + referenceImage[] and is SYNCHRONOUS (image_url in the response).",
+          "StableStudio required fields: the probe schema marks prompt,aspect_ratio,resolution,output_format,output_quality,safety_tolerance,prompt_upsampling all as required with additionalProperties:false — but only prompt is truly needed (defaults exist); send the full object to be safe. Xona requires only prompt.",
+          "PRICING: StableStudio live quote was $0.07 (amount 70000) but the settled cost was $0.04 (dynamic, 0.04-0.17 range; rises with resolution up to 4 MP). Xona advertised $0.08.",
+          "CHAIN: StableStudio default accepts Base (eip155:8453) USDC, Solana, and Tempo (mpp) — compatible with the master Base wallet. Xona is Solana USDC ONLY (no Base) — pick StableStudio as default for a Base wallet.",
+          "Output URLs (StableStudio imageUrl / Xona image_url CDN) expire quickly (~20min for StableStudio Blob) — download immediately.",
+          "Default output: 1 MP, 1:1, webp on StableStudio."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation with FLUX.2 Max (highest-fidelity FLUX tier, up to 4 MP). Same operation available via two gateways: StableStudio (async: returns a jobId you poll until complete; pays on Base/Solana/Tempo) and Xona (synchronous: returns the image URL directly in the paid response; Solana USDC only). DEFAULT (StableStudio): POST https://stablestudio.dev/api/generate/flux-2-max/generate JSON {prompt, aspect_ratio, resolution, output_format, output_quality, safety_tolerance, prompt_upsampling} -> 200 {success, jobId, status:'pending', type}; then poll GET https://stablestudio.dev/api/jobs/{jobId} with SIGN-IN-WITH-X (same wallet) until status='complete', read result.imageUrl. ALT (Xona): POST https://api.xona-agent.com/image/flux-2-max JSON {prompt, aspect_ratio?, referenceImage?:[urls]} -> 200 {image_url, image_description, metadata} synchronously (no polling). Output: StableStudio paid POST: {success:true, jobId:string, status:'pending', type:'flux-2-max-generate'}; job poll: {status:'complete', result:{imageUrl}} (imageUrl is a Vercel Blob link, expires ~20min). Xona: {image_url, image_description, metadata:{model,aspectRatio,cdn_key,...}}.",
+        "costObservedUsd": 0.04
+      },
+      "status": "active"
+    },
+    {
+      "name": "FLUX.2 Max Edit",
+      "kind": "api",
+      "provider": "StableStudio",
+      "providerId": "stablestudio",
+      "aka": [
+        "flux-2-max-edit",
+        "edit"
+      ],
+      "description": "Image editing / image-conditioned generation with FLUX.2 Max: takes 1-10 reference images plus a prompt and produces an edited image. StableStudio gateway only (async jobId + poll). Distinct from generate — requires reference image blobUrls obtained via the upload flow.",
+      "tags": [
+        "text-to-image",
+        "high-fidelity"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stablestudio.dev/api/generate/flux-2-max/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "CDgxfXFLXg2PUKzMdETYvgRzaPhcdgfafjZr6CeWmiGA",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "1) Upload each reference image: POST https://stablestudio.dev/api/upload {filename,contentType} ($0.01) -> {clientToken,pathname}; PUT the bytes to Vercel Blob; POST /api/upload/confirm (SIWX) -> {upload:{blobUrl}}. 2) POST https://stablestudio.dev/api/generate/flux-2-max/edit JSON {prompt, aspect_ratio?, resolution?, images:[blobUrl,...]} -> {success,jobId,status:'pending',type}. 3) Poll GET /api/jobs/{jobId} with SIGN-IN-WITH-X (same wallet) until status='complete', read result.imageUrl.",
+        "inputExample": {
+          "prompt": "make the sky a vivid sunset orange",
+          "aspect_ratio": "1:1",
+          "resolution": "1 MP",
+          "images": [
+            "https://<blob>.public.blob.vercel-storage.com/uploads/<id>/image.png"
+          ]
+        },
+        "outputShape": "Paid POST: {success:true, jobId, status:'pending', type:'flux-2-max-edit'}; job poll: {status:'complete', result:{imageUrl}}.",
+        "quirks": [
+          "REQUIRES UPLOADED REFERENCE IMAGES: the images[] field must contain 1-10 blobUrls produced by StableStudio's 3-step upload flow (POST /api/upload $0.01 -> PUT to Vercel Blob -> POST /api/upload/confirm SIWX). Cannot be called with a minimal text-only body — needs a real uploaded image first, so left unverified to avoid a multi-step paid setup.",
+          "ASYNC + same wallet-identity poll trap as generate (403 with a different wallet on GET /api/jobs/{jobId}).",
+          "Field name is images (array of blobUrls), aspect_ratio + resolution like generate. Edit is StableStudio-only; the Xona /image/flux-2-max generate endpoint also accepts referenceImage[] for style guidance but is a different (sync) gateway.",
+          "Pricing 0.04-0.17 (guidance lists flux-2-max edit $0.04-$0.17), plus $0.01 per uploaded image.",
+          "Do NOT resubmit a pending job — duplicate paid jobs."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Image editing / image-conditioned generation with FLUX.2 Max: takes 1-10 reference images plus a prompt and produces an edited image. StableStudio gateway only (async jobId + poll). Distinct from generate — requires reference image blobUrls obtained via the upload flow. 1) Upload each reference image: POST https://stablestudio.dev/api/upload {filename,contentType} ($0.01) -> {clientToken,pathname}; PUT the bytes to Vercel Blob; POST /api/upload/confirm (SIWX) -> {upload:{blobUrl}}. 2) POST https://stablestudio.dev/api/generate/flux-2-max/edit JSON {prompt, aspect_ratio?, resolution?, images:[blobUrl,...]} -> {success,jobId,status:'pending',type}. 3) Poll GET /api/jobs/{jobId} with SIGN-IN-WITH-X (same wallet) until status='complete', read result.imageUrl. Output: Paid POST: {success:true, jobId, status:'pending', type:'flux-2-max-edit'}; job poll: {status:'complete', result:{imageUrl}}.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-input"
+    },
+    {
+      "name": "FLUX.2 Flex",
+      "provider": "Black Forest Labs",
+      "providerId": "black-forest-labs",
+      "description": "FLUX.2 Flex — configurable FLUX.2 image generation.",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        11
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.xona-agent.com/base-main/image/flux-2-flex with JSON body {prompt}",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.image_url (hosted JPG URL), body.image_description, body.metadata.model, body.metadata.aspect_ratio",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body with a single \"prompt\" field describing the image you want to api.xona-agent.com/base-main/image/flux-2-flex. Payment is x402 USDC on Base ($0.06/call, no API key). The response is synchronous JSON: read the generated image from body.image_url (a hosted JPG you can download or display). Default aspect ratio is 1:1.",
+        "costObservedUsd": 0.06
+      },
+      "status": "active",
+      "resolved": {
+        "11": {
+          "method": "POST",
+          "amount": 0.06
+        }
+      }
+    },
+    {
+      "name": "FLUX Schnell",
+      "provider": "Black Forest Labs",
+      "providerId": "black-forest-labs",
+      "description": "FLUX Schnell — fast (~2s) drafts and rapid prototyping.",
+      "tags": [
+        "text-to-image",
+        "fast",
+        "draft"
+      ],
+      "backends": [
+        1
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-gateway-production.up.railway.app/api/image/fast with JSON body {prompt}",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.images[0].url (1024x1024 JPG); also body.images[0].width, body.images[0].height, body.seed, body.model, body.inference_time_ms",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body {\"prompt\":\"<your image description>\"} to the endpoint with x402 payment ($0.015 USDC on Base). Response is synchronous JSON; read the generated image URL from body.images[0].url (a hosted fal.media JPG, 1024x1024). No auth, no polling, no template params.",
+        "costObservedUsd": 0.015
+      },
+      "status": "active",
+      "resolved": {
+        "1": {
+          "method": "POST",
+          "amount": 0.015
+        }
+      }
+    },
+    {
+      "name": "FLUX.2 Klein 4B",
+      "provider": "Black Forest Labs",
+      "providerId": "black-forest-labs",
+      "description": "FLUX.2 Klein 4B — compact FLUX.2 variant.",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        16
+      ],
+      "status": "hidden",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/2cbf19e9-c878-45ae-a901-3dcada443fd3/chat-completions-flux-2-klein with JSON body {model, messages, modalities}",
+        "inputExample": {
+          "model": "flux-2-klein",
+          "messages": [
+            {
+              "role": "user",
+              "content": "a red circle"
+            }
+          ],
+          "modalities": [
+            "image",
+            "text"
+          ]
+        },
+        "outputShape": "unknown (host unreachable, never returned a response)",
+        "quirks": [
+          "Host x402.slinkylayer.ai is currently UNREACHABLE — TCP/TLS connection times out (HTTP 000, curl exit 28) at both root and endpoint; DNS itself times out.",
+          "qa-pay returned 'provider request failed: fetch failed' on both attempts; classification 'wallet-error' here means the upstream host is down, NOT a wallet balance problem. No USDC was spent.",
+          "Schema is a chat-completions-style image gen: requires model + messages[] + modalities[] (all required). modalities should include 'image'.",
+          "Registry probe on 2026-06-01 saw 402/payable, so the endpoint may come back; re-test before trusting."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is a chat-completions-style image generator (SlinkyLayer proxy) expecting a JSON body with model, messages[], and modalities[] (e.g. [\"image\",\"text\"]). As of 2026-06-08 the host x402.slinkylayer.ai is unreachable: every request, including the x402 pay-flow, fails with a connection timeout (HTTP 000) and 'provider request failed: fetch failed', so it could not be paid or verified. No payment was made. If the host recovers, send the inputExample body; the generated image would normally appear in the chat-completion response content. Do not waste retries while the host is down.",
+        "costObservedUsd": 0
+      },
+      "resolved": {
+        "16": {
+          "method": "POST"
+        }
+      },
+      "hiddenReason": "dead"
+    },
+    {
+      "name": "HiDream E1",
+      "provider": "HiDream",
+      "providerId": "hidream",
+      "description": "HiDream E1 — image generation and editing.",
+      "tags": [
+        "text-to-image",
+        "image-editing"
+      ],
+      "backends": [
+        115
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "GET https://x402helper.xyz/api/proxy/hidream-e1-full-image-editing-2 (x402, Base USDC, advertised $0.013)",
+        "inputExample": {},
+        "outputShape": "body.success (false), body.refunded (true), body.message, body.refundTx — no usable result; payment auto-refunded",
+        "quirks": [
+          "Advertised price $0.013 (13000 units) does NOT match the backend's expected price.",
+          "On payment the proxy returns HTTP 200 with {success:false, refunded:true, message:'Price mismatch, you have been refunded'} and a refundTx — payment is refunded and NO image/result is produced.",
+          "Do NOT retry at the advertised price; the mismatch is a backend config issue and every attempt will refund.",
+          "x402helper.xyz proxy charge-then-refund pattern: 200 status is misleading; the body indicates failure."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Do not use this endpoint as-is. The registry-advertised x402 price ($0.013 / 13000 units on Base USDC) does not match what the x402helper.xyz proxy expects. A paid GET returns HTTP 200 but with body {success:false, refunded:true, message:'Price mismatch, you have been refunded'} plus a refundTx — you get no image and the USDC is refunded. The endpoint is effectively broken until the correct price is determined; do not retry at the surfaced price.",
+        "costObservedUsd": 0.013
+      },
+      "status": "hidden",
+      "resolved": {
+        "115": {
+          "method": "GET"
+        }
+      },
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Imagen 3",
+      "provider": "Google",
+      "providerId": "google",
+      "description": "Google Imagen 3 text-to-image.",
+      "tags": [
+        "text-to-image",
+        "photorealistic"
+      ],
+      "backends": [
+        71
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "GET https://x402helper.xyz/api/proxy/google-imagen-3-text-to-image-2",
+        "inputExample": {},
+        "outputShape": "body.success (false), body.refunded (true), body.message, body.refundTx — no image returned",
+        "quirks": [
+          "BROKEN: returns HTTP 200 but body is {success:false, refunded:true, message:'Price mismatch, you have been refunded'} — payment is taken then refunded on-chain, no image is ever generated.",
+          "The registry-advertised price ($0.013 / 13000 atomic) does not match the server's actual expected price, triggering an automatic refund. Endpoint is effectively unusable until the price is corrected.",
+          "Do NOT retry — the refund-on-mismatch is deterministic; retrying only risks the gas/timing of additional refunds."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is currently broken. Calling GET https://x402helper.xyz/api/proxy/google-imagen-3-text-to-image-2 with the registry x402 price ($0.013) returns HTTP 200 but the body is {success:false, refunded:true, message:'Price mismatch, you have been refunded'} — the proxy takes payment, then refunds it on-chain (refundTx) and never generates an image. The advertised price does not match the server's true price. Do not call this endpoint to generate images until the price metadata is fixed; use an alternate Imagen/text-to-image service instead.",
+        "costObservedUsd": 0
+      },
+      "status": "hidden",
+      "resolved": {
+        "71": {
+          "method": "GET"
+        }
+      },
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Google Imagen Nano",
+      "provider": "Google",
+      "providerId": "google",
+      "description": "Google Imagen Nano — lightweight, fast image generation.",
+      "tags": [
+        "text-to-image",
+        "fast"
+      ],
+      "backends": [
+        108
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-gateway-production.up.railway.app/api/image/nano-banana with JSON body {prompt}",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.images[0].url (PNG, 1024x1024); also body.images[0].width/height, body.seed, body.model, body.inference_time_ms",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body {\"prompt\":\"...\"} to the endpoint; pay $0.10 USDC via x402 (Base eip155:8453, also Tempo/Solana accepted). Response is plain sync JSON: read the generated image URL at body.images[0].url (1024x1024 PNG hosted on fal.media). No auth beyond payment, no polling.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active",
+      "resolved": {
+        "108": {
+          "method": "POST",
+          "amount": 0.1
+        }
+      }
+    },
+    {
+      "name": "Ideogram v3",
+      "provider": "Ideogram",
+      "providerId": "ideogram",
+      "description": "Ideogram v3 — strong typography and text-in-image rendering.",
+      "tags": [
+        "text-to-image",
+        "typography",
+        "text-in-image"
+      ],
+      "backends": [
+        70,
+        26
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://x402-gateway-production.up.railway.app/api/image/text with JSON body {prompt}",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.images[0].url (PNG image URL); also body.images[0].width, body.images[0].height, body.seed, body.model",
+        "quirks": [],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Pay $0.12 USDC via x402 (Base) and POST a JSON body {\"prompt\":\"...\"} to the endpoint. The call is synchronous: the 200 response returns immediately (~12s inference) with the generated image at body.images[0].url. Backed by fal-ai/ideogram/v3, output is a 1024x1024 PNG. Read the image URL from body.images[0].url.",
+        "costObservedUsd": 0.12
+      },
+      "status": "active",
+      "resolved": {
+        "26": {
+          "method": "POST",
+          "amount": 0.12
+        },
+        "70": {
+          "method": "GET",
+          "status": "hidden"
+        }
+      }
+    },
+    {
+      "name": "SeedDream 4.5",
+      "provider": "ByteDance",
+      "providerId": "bytedance",
+      "description": "ByteDance SeedDream 4.5 image generation.",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        15
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.xona-agent.com/image-model/seedream-4.5 with JSON body {prompt} (optional: aspect_ratio, referenceImage[])",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.image_url (CDN JPG URL); body.image_description (echoed prompt); body.metadata.{model, aspectRatio, cdn_key}",
+        "quirks": [
+          "Payment is Solana-only: paymentAccepts has a single entry on network solana with USDC asset EPjFWdd5...Dt1v. You MUST have USDC on Solana; a Base/EVM-only wallet will fail with an insufficient-funds error even if it holds plenty of EVM USDC.",
+          "x402 via payment-signature header; omit on first call to get the 402 challenge. The qa-pay/x402 client handles this automatically.",
+          "Synchronous: a single POST returns the finished image_url (~9s); no job id, no polling."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body with a required \"prompt\" string (optionally \"aspect_ratio\" like \"16:9\", default 1:1, and \"referenceImage\" array of image URLs) to https://api.xona-agent.com/image-model/seedream-4.5. It is an x402 paid endpoint costing $0.080 USDC on Solana — ensure your wallet holds USDC on Solana (EVM USDC will not be accepted). The call is synchronous and returns 200 with the generated image at body.image_url (a CDN JPG); read body.metadata for model/aspect details.",
+        "costObservedUsd": 0.08
+      },
+      "status": "active",
+      "resolved": {
+        "15": {
+          "method": "POST",
+          "amount": 0.08
+        }
+      }
+    },
+    {
+      "name": "Qwen Image",
+      "provider": "Alibaba",
+      "providerId": "alibaba",
+      "description": "Alibaba Qwen image generation model.",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        92
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.xona-agent.com/image-model/qwen-image with JSON body {prompt}",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body.image_url (hosted JPG on DigitalOcean Spaces CDN); also body.image_description, body.metadata.replicate_url, body.metadata.aspectRatio, body.metadata.model",
+        "quirks": [
+          "Payment accepted ONLY on Solana (USDC mint EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v) — there is no Base/EVM accept entry, so the paying wallet must hold Solana USDC.",
+          "Synchronous: a single paid POST returns the finished image URL immediately (no job/polling). Result is a CDN-hosted JPG at body.image_url; an alternate replicate.delivery .webp is at body.metadata.replicate_url.",
+          "Default aspect ratio is 1:1; the only required field observed is {prompt}."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Qwen Image is a synchronous x402-paid image generator from Xona, $0.05 per call, settled in USDC on Solana only (no EVM). Call POST https://api.xona-agent.com/image-model/qwen-image with a JSON body {\"prompt\":\"...\"}. The 200 response returns the finished image immediately at body.image_url (a CDN-hosted JPG); body.metadata.replicate_url has the original .webp. No polling or sign-in needed — just ensure the wallet holds Solana USDC.",
+        "costObservedUsd": 0.05
+      },
+      "status": "active",
+      "resolved": {
+        "92": {
+          "method": "POST",
+          "amount": 0.05
+        }
+      }
+    },
+    {
+      "name": "Grok Imagine Image Generation",
+      "kind": "api",
+      "provider": "BlockRun",
+      "providerId": "blockrun",
+      "aka": [
+        "grok-imagine-image-generation",
+        "image-generation"
+      ],
+      "description": "Text-to-image generation using xAI's Grok Imagine model, available via three gateways. BlockRun is the default: cheapest ($0.021) and fully synchronous (no polling). StableStudio and Xona offer the same model with different call conventions.",
+      "tags": [
+        "text-to-image"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://blockrun.ai/api/v1/images/generations",
+          "method": "POST",
+          "provider": "BlockRun",
+          "providerId": "blockrun",
+          "amount": 0.021,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 600,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://stablestudio.dev/api/generate/grok/generate",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.07,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "67GodJekr9sWw4ogkrto4z39BP3tAAwExcDHDDXtuEMa",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/image/grok-imagine",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://api.xona-agent.com/base-main/image/grok-imagine",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.04,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x515e7Bce44Baa5F6e42D16d4B5f27768E7f2F8cC",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2",
+                "decimals": 6,
+                "eip712": {
+                  "name": "USD Coin",
+                  "version": "2"
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://stablestudio.dev/api/generate/grok/edit",
+          "method": "POST",
+          "provider": "StableStudio",
+          "providerId": "stablestudio",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "10000000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x07F067959297767c887dbfA3C72379c66E82a045",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "10000000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "HqpEDUY3kV423fSAv7iaY3cQiz8qN8qEuGqLsG4s6h2c",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "67GodJekr9sWw4ogkrto4z39BP3tAAwExcDHDDXtuEMa",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "pending"
+            ],
+            "jobIdPath": "jobId",
+            "pollUrlTemplate": "{origin}/api/jobs/{id}",
+            "poll": {
+              "cost": "siwx",
+              "statusField": "status",
+              "completeValues": [
+                "complete"
+              ],
+              "failedValues": [
+                "failed",
+                "error"
+              ],
+              "resultPath": "result.imageUrl"
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "DEFAULT (BlockRun, synchronous): POST https://blockrun.ai/api/v1/images/generations with JSON {prompt, model:\"xai/grok-imagine-image\", size?, n?} -> 200 {data:[{url,...}]} directly (NO polling). x402 on Base.\n\nStableStudio (async two-step): POST https://stablestudio.dev/api/generate/grok/generate with JSON {prompt, aspect_ratio?} -> {success,jobId,status:\"pending\",type}; then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX-auth, free) until status:\"complete\" -> result.imageUrl. x402/mpp on Base.\n\nXona (synchronous): POST https://api.xona-agent.com/image/grok-imagine with JSON {prompt, referenceImage?} -> 200 {image_url, image_description, metadata}. x402, USDC on Solana (use /base-main/image/grok-imagine for the Base-network variant).",
+        "inputExample": {
+          "prompt": "a red circle",
+          "model": "xai/grok-imagine-image"
+        },
+        "outputShape": "BlockRun (default): data[0].url (BlockRun-hosted backup jpg), data[0].source_url (original imgen.x.ai URL), data[0].backed_up, created, price.amount. | StableStudio: jobId/status:pending then poll -> result.imageUrl. | Xona: image_url, image_description, metadata.",
+        "quirks": [
+          "MULTI-GATEWAY same model (xAI Grok Imagine) via 3 gateways with DIFFERENT call shapes — do NOT assume one body works on all.",
+          "DEFAULT = BlockRun: cheapest ($0.021) and SYNCHRONOUS — the 200 response carries data[0].url directly, no jobId/polling. REQUIRES model:\"xai/grok-imagine-image\" in body (that exact enum string); without model it defaults to gpt-image-1, a different model.",
+          "BlockRun also returns data[0].source_url = the raw imgen.x.ai URL which is temporary; prefer data[0].url (BlockRun-hosted, backed_up:true).",
+          "BlockRun size enum is only 1024x1024 | 1792x1024 | 1024x1792 (NOT aspect-ratio strings); n=1..4. Paid on Base x402.",
+          "StableStudio is ASYNC two-step: POST returns {jobId,status:pending} NOT the image; must SIWX-poll GET /api/jobs/{jobId} (free) until status:complete. SIWX signer MUST be the SAME wallet that paid the generate call or you get 403. result.imageUrl (Vercel Blob) expires ~20 min — download immediately. Do NOT resubmit a pending job (duplicate paid jobs). StableStudio uses aspect_ratio (default 16:9) not size; supports 1:1,16:9,9:16,4:3,3:4,3:2,2:3,2:1,1:2,19.5:9,9:19.5,20:9,9:20.",
+          "Xona is SYNCHRONOUS returning {image_url} but settles in USDC on SOLANA by default; the /base-main/ path prefix is the Base-network variant. Xona supports a single referenceImage URL for image-to-image (Grok accepts one image only).",
+          "Image-EDIT variants exist on the same model: StableStudio POST /api/generate/grok/edit (async, takes an input image, $0.02) and Xona's referenceImage field — use these to edit an existing image rather than generate from scratch."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Text-to-image generation using xAI's Grok Imagine model, available via three gateways. BlockRun is the default: cheapest ($0.021) and fully synchronous (no polling). StableStudio and Xona offer the same model with different call conventions. DEFAULT (BlockRun, synchronous): POST https://blockrun.ai/api/v1/images/generations with JSON {prompt, model:\"xai/grok-imagine-image\", size?, n?} -> 200 {data:[{url,...}]} directly (NO polling). x402 on Base.\n\nStableStudio (async two-step): POST https://stablestudio.dev/api/generate/grok/generate with JSON {prompt, aspect_ratio?} -> {success,jobId,status:\"pending\",type}; then poll GET https://stablestudio.dev/api/jobs/{jobId} (SIWX-auth, free) until status:\"complete\" -> result.imageUrl. x402/mpp on Base.\n\nXona (synchronous): POST https://api.xona-agent.com/image/grok-imagine with JSON {prompt, referenceImage?} -> 200 {image_url, image_description, metadata}. x402, USDC on Solana (use /base-main/image/grok-imagine for the Base-network variant). Output: BlockRun (default): data[0].url (BlockRun-hosted backup jpg), data[0].source_url (original imgen.x.ai URL), data[0].backed_up, created, price.amount. | StableStudio: jobId/status:pending then poll -> result.imageUrl. | Xona: image_url, image_description, metadata.",
+        "costObservedUsd": 0.021
+      },
+      "status": "active"
+    },
+    {
+      "name": "Z.ai CogView",
+      "provider": "Z.ai",
+      "providerId": "zai",
+      "aka": [
+        "cogview-4"
+      ],
+      "description": "Z.ai CogView-4 series — high-quality text-to-image from prompts (sizes up to 2048px).",
+      "tags": [
+        "text-to-image"
+      ],
+      "backends": [
+        3,
+        {
+          "url": "https://blockrun.ai/api/v1/images/generations",
+          "provider": "BlockRun",
+          "amount": 0.01575,
+          "min": 0.02,
+          "max": 0.08,
+          "dynamic": true,
+          "modelParam": {
+            "name": "model",
+            "value": "zai/cogview-4"
+          },
+          "method": "POST",
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xe9030014F5DAe217d0A152f02A043567b16c1aBf",
+              "maxTimeoutSeconds": 600,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-09T21:43:51.327Z"
+          }
+        }
+      ],
+      "resolved": {
+        "3": {
+          "amount": 0.01,
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://blockrun.ai/api/v1/images/generations with JSON body {model, prompt, n, size}",
+        "inputExample": {
+          "model": "zai/cogview-4",
+          "prompt": "a red circle",
+          "n": 1,
+          "size": "1024x1024"
+        },
+        "outputShape": "body.data[0].url (BlockRun-hosted PNG); also body.data[0].source_url (original z.ai PNG, watermarked). body.created = unix timestamp.",
+        "quirks": [
+          "Settlement can transiently fail: first paid attempt returned 402 with 'Payment settlement failed: ... unable to estimate gas' and paid:false (no charge). A retry with the identical body succeeded — treat this gas-estimation error as transient and retry once.",
+          "OpenAI-compatible images/generations shape: required fields are model='zai/cogview-4' and prompt. size (e.g. '1024x1024') supported up to 2048px.",
+          "Result is returned synchronously (no async job/polling). Use body.data[0].url for the BlockRun-hosted image; source_url is the original z.ai image and is watermarked.",
+          "x402 paid endpoint, no API key / no SIWX needed."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Send POST https://blockrun.ai/api/v1/images/generations with JSON {\"model\":\"zai/cogview-4\",\"prompt\":\"<your prompt>\",\"n\":1,\"size\":\"1024x1024\"} and pay the x402 quote (~$0.016) — no API key needed. The response is synchronous; read the generated image from body.data[0].url (BlockRun-hosted PNG). If the first paid call fails at settlement with an 'unable to estimate gas' error (paid:false, status 402), it is a transient base-chain issue — retry the same request once.",
+        "costObservedUsd": 0.01575
+      },
+      "status": "active"
+    },
+    {
+      "name": "fal.ai Image & Video (via Sponge)",
+      "kind": "api",
+      "provider": "fal.ai",
+      "providerId": "fal-ai",
+      "aka": [
+        "fal-sponge",
+        "fal-x402-paysponge"
+      ],
+      "description": "fal.ai image/video models proxied by Sponge at fal.x402.paysponge.com (fast-sdxl, flux/schnell, flux/dev, flux-pro/v1.1, flux-pro/v1.1-ultra, recraft-v3, stable-diffusion-v35-large, minimax/video-01, stable-video). NOT CALLABLE: every model charges the x402 fee then returns 403 'User is locked. Reason: Exhausted balance' — Sponge's upstream fal account is out of credit (charge-then-fail). Re-test later; if Sponge tops up, un-hide.",
+      "tags": [
+        "image-generation",
+        "video-generation",
+        "broken"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "image",
+          "video"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://fal.x402.paysponge.com/fal-ai/flux/schnell",
+          "method": "POST",
+          "provider": "Sponge",
+          "providerId": "sponge",
+          "amount": 0.01,
+          "accepts": [],
+          "probe": {
+            "status": 403,
+            "method": "POST",
+            "payable": true,
+            "free": false,
+            "checkedAt": "2026-06-18"
+          },
+          "inputSchema": null,
+          "outputSchema": null,
+          "status": "hidden"
+        }
+      ],
+      "docs": "https://fal.ai/models",
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-18",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST fal.x402.paysponge.com/fal-ai/<model>",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "n/a",
+        "quirks": [
+          "charge-then-403: Sponge's upstream fal.ai account balance is exhausted ('User is locked'). Paid 3/9 to confirm; the rest left un-paid."
+        ],
+        "guide": "Not callable — see droppedReason.",
+        "droppedReason": "charge-then-403 (Sponge fal upstream balance exhausted) — confirmed 2026-06-18",
+        "costObservedUsd": 0.01
+      },
+      "status": "hidden",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "Freepik Text-to-Image FLUX dev",
+      "kind": "api",
+      "provider": "Freepik",
+      "providerId": "freepik",
+      "aka": [
+        "freepik-flux-dev-sponge"
+      ],
+      "description": "Freepik text-to-image (FLUX dev) via Sponge's x402 gateway. Verified live (402) but our paid test hit a persistent 429 (Sponge's freepik proxy is rate-limited). Parked for re-test.",
+      "tags": [
+        "image-generation",
+        "freepik",
+        "flux"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://freepik.x402.paysponge.com/v1/ai/text-to-image/flux-dev",
+          "method": "POST",
+          "provider": "Sponge",
+          "providerId": "sponge",
+          "amount": 0.02,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "20000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "20000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "free": false,
+            "checkedAt": "2026-06-18"
+          },
+          "inputSchema": null,
+          "outputSchema": null,
+          "status": "needs-review"
+        }
+      ],
+      "docs": "https://docs.freepik.com",
+      "usage": {
+        "status": "untested",
+        "verifiedAt": "2026-06-18",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST freepik.x402.paysponge.com/v1/ai/text-to-image/flux-dev with { prompt }",
+        "inputExample": {
+          "prompt": "a red circle"
+        },
+        "outputShape": "body",
+        "quirks": [
+          "Served via Sponge's x402 gateway (*.x402.paysponge.com) — a single x402 payment proxies the upstream provider. No API key. Base or Solana USDC.",
+          "Paid test returned 429 (rate-limited) repeatedly — Sponge's freepik proxy throttle. Re-test later."
+        ],
+        "guide": "Likely { prompt } body; re-verify after throttle clears.",
+        "droppedReason": "429 throttle on paid test",
+        "costObservedUsd": 0.02
+      },
+      "status": "hidden",
+      "hiddenReason": "needs-review"
+    },
+    {
+      "name": "Stableflare Image Generation",
+      "kind": "model",
+      "provider": "Stableflare",
+      "providerId": "stableflare",
+      "aka": [
+        "stableflare-image-generation",
+        "replicate-create-image",
+        "flux-schnell",
+        "image-generate"
+      ],
+      "description": "Run any official Replicate image model (generation, editing, upscaling) via a single async x402 endpoint: pay the create POST, then poll the free status endpoint for the hosted output image.",
+      "tags": [
+        "text-to-image",
+        "image-editing",
+        "upscaling",
+        "replicate",
+        "flux",
+        "async"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://stableflare.dev/api/replicate/predictions/create-image",
+          "method": "POST",
+          "provider": "Stableflare",
+          "providerId": "stableflare",
+          "amount": 0.1,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "100000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0xb6A6ba7F58fE92E77bcE040CC0818c63ab9ac768",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30T02:22:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "model",
+              "input"
+            ],
+            "properties": {
+              "model": {
+                "type": "string",
+                "description": "Official Replicate model id as owner/name, e.g. 'black-forest-labs/flux-schnell'."
+              },
+              "input": {
+                "type": "object",
+                "description": "Model-specific input parameters (e.g. {prompt}). Validate against the model's latest_version.openapi_schema before submitting; failures are NOT refunded."
+              },
+              "webhook": {
+                "type": "string",
+                "format": "uri",
+                "description": "Optional webhook URL for completion."
+              },
+              "webhook_events_filter": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "start",
+                    "output",
+                    "logs",
+                    "completed"
+                  ]
+                }
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "required": [
+              "id",
+              "status",
+              "model"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "urls": {
+                "type": "object",
+                "properties": {
+                  "get": {
+                    "type": "string"
+                  },
+                  "cancel": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "async": {
+            "isAsync": true,
+            "submitStatusField": "status",
+            "submitPendingValues": [
+              "starting",
+              "processing"
+            ],
+            "jobIdPath": "id",
+            "pollUrlTemplate": "{origin}/api/replicate/predictions/get",
+            "poll": {
+              "cost": "siwx",
+              "method": "POST",
+              "body": {
+                "id": "{id}"
+              },
+              "statusField": "status",
+              "completeValues": [
+                "succeeded"
+              ],
+              "failedValues": [
+                "failed",
+                "canceled"
+              ],
+              "resultPath": "output.0"
+            },
+            "pollIntervalSec": 30
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-30",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "ASYNC. POST https://stableflare.dev/api/replicate/predictions/create-image with JSON {model:'owner/name', input:{...}} (x402, USDC on Base, $0.10) -> {id, status:'starting'}. Then poll POST https://stableflare.dev/api/replicate/predictions/get {id} (free, SIWX auth) every ~30s until status=='succeeded' -> output (array; image URL at output[0]).",
+        "inputExample": {
+          "model": "black-forest-labs/flux-schnell",
+          "input": {
+            "prompt": "a cat wearing a top hat"
+          }
+        },
+        "outputShape": "Create POST returns {id, status:'starting', model, urls:{get,cancel}}. Poll returns {id, status, model, output, error, metrics, urls}. For image models, output is an ARRAY of hosted image URLs (e.g. https://replicate.delivery/.../out-0.webp); read output[0].",
+        "quirks": [
+          "ASYNC: the paid POST does NOT return the image, only {id, status:'starting'}. You MUST poll POST /api/replicate/predictions/get with {id} until status=='succeeded'. flux-schnell completed in ~1.4s; video/audio-class models can take minutes.",
+          "The poll endpoint /api/replicate/predictions/get is FREE but SIWX-gated (returns 402 'Authentication Required' to an unsigned request). It is NOT restricted to the paying wallet — verified by polling with a different (agentcash) signed-in wallet than the one that paid. Any valid SIWX identity can read the prediction.",
+          "output shape is MODEL-DEPENDENT: image models return a string array of URLs (output[0]); other models may return an object or single string. resultPath 'output.0' matches image models.",
+          "Failures are NOT refunded: payment settles on the create POST. Call the free/SIWX discovery endpoints (/api/replicate/models/get) and validate input against the model's latest_version.openapi_schema before submitting, especially for costlier create-* siblings.",
+          "The 'model' field must be an OFFICIAL Replicate model id (owner/name); the caller supplies both the model and its input envelope. This single endpoint fronts many models — it is not a fixed model.",
+          "openapi advertises an MPP (Tempo) protocol alongside x402; only the x402 (Base USDC) accept is indexed here (MPP excluded per registry policy). Payment observed exactly $0.10 on Base."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Generate/edit/upscale an image via any official Replicate image model through one async x402 endpoint. Step 1 (paid, ~$0.10 USDC on Base): POST https://stableflare.dev/api/replicate/predictions/create-image with JSON {\"model\":\"owner/name\",\"input\":{...}} (e.g. {\"model\":\"black-forest-labs/flux-schnell\",\"input\":{\"prompt\":\"a cat wearing a top hat\"}}); it returns {id, status:'starting'} immediately. Step 2 (free, SIWX auth): poll POST https://stableflare.dev/api/replicate/predictions/get with {\"id\":\"<id from step 1>\"} every ~30s until status=='succeeded'; the hosted image URL(s) are in output (array — read output[0]). Optionally call the free/SIWX /api/replicate/models/search and /api/replicate/models/get first to pick a model and validate input against its openapi_schema — failed predictions are NOT refunded. Verified 2026-07-30: paid $0.10 (tx 0x024d681c...), got prediction id e64pn0b6n1rp40czp3a9hk6ehm, polled to status='succeeded' with output[0]=https://replicate.delivery/xezq/.../out-0.webp.",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    },
+    {
+      "name": "Xona Creative Director",
+      "kind": "model",
+      "provider": "Xona",
+      "providerId": "xona",
+      "aka": [
+        "xona-creative-director",
+        "creative-director",
+        "prompt-refinement",
+        "creative-direction",
+        "research-enhanced-prompt-refinement"
+      ],
+      "description": "Researches current visual trends on X (Twitter) and Google, then transforms a rough idea into an optimized image-generation brief with intent analysis, research snippets, and a refined prompt/direction.",
+      "tags": [
+        "prompt-refinement",
+        "creative-direction",
+        "trend-research",
+        "prompt-optimization",
+        "image-generation"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.xona-agent.com/image/creative-director",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.03,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "30000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-29T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "idea": {
+                "type": "string",
+                "description": "User's prompt or idea for image generation"
+              },
+              "reference_images": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Optional existing image URLs to use as style references"
+              }
+            },
+            "required": [
+              "idea"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "object",
+                "description": "Analysed user intent (goal, audience, platform[])"
+              },
+              "research": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Trend research results from X and Google (source, summary, source_url, img_reference, metadata)"
+              },
+              "direction": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Generation plan with refined prompt (type, output_metadata: {prompt, aspect_ratio, style[], referenceImage[]})"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-29",
+        "resultPull": "sync",
+        "auth": "x402",
+        "callShape": "POST https://api.xona-agent.com/image/creative-director with JSON body {\"idea\":\"<image idea>\", \"reference_images\":[\"<url>\", ...]?} (x402 paid on Solana, USDC). The full brief is returned inline in the 200 body — no polling.",
+        "inputExample": {
+          "idea": "a serene mountain lake at sunrise in watercolor style"
+        },
+        "outputShape": "{ intent: { goal, audience, platform[] }, research: [ { source, summary, source_url, img_reference, metadata: { title, domain } } ], direction: [ { type: 'generate_image', output_metadata: { prompt, aspect_ratio, style[], referenceImage[] } } ] }",
+        "quirks": [
+          "Single required input: idea (a free-text image concept); reference_images is an optional array of image URLs used as style references.",
+          "Returns a JSON image-generation BRIEF, not an image — feed direction[0].output_metadata.prompt (and referenceImage[]) into an actual image generator (e.g. a Xona/BlockRun image model) as the next step.",
+          "Synchronous — the full intent/research/direction JSON is returned inline in the paid 200 body; no job id, no poll endpoint.",
+          "Research is grounded via X (Twitter) and Google; research[].source_url values are vertexaisearch.cloud.google.com grounding-redirect links, and img_reference points to real hosted reference images.",
+          "Priced $0.03 fixed (402 challenge amount '30000' atomic USDC, 6 decimals) — matches the OpenAPI x-payment-info priceUsd.",
+          "Paid on Solana (network solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp), not Base; accepts carries a feePayer in extra."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Turn a rough image idea into a research-backed generation brief. POST https://api.xona-agent.com/image/creative-director with body {\"idea\":\"<concept>\"} (optionally {\"reference_images\":[\"<url>\"]}); pay $0.03 USDC on Solana via x402. Returns inline JSON: intent (goal, audience, target platforms), research (trend snippets from X + Google with source URLs and reference images), and direction (a refined prompt plus aspect_ratio, style tags, and reference image URLs). Use direction[0].output_metadata.prompt as the optimized prompt for a downstream image-generation model. Synchronous — no polling.",
+        "costObservedUsd": 0.03
+      },
+      "status": "active"
+    },
+    {
+      "name": "Xona AI Designer",
+      "kind": "model",
+      "provider": "Xona",
+      "providerId": "xona",
+      "aka": [
+        "xona-ai-designer",
+        "image-designer",
+        "designer"
+      ],
+      "description": "AI image generation with style blending: takes a prompt plus optional style keywords, intelligently refines/blends them, and returns a high-quality image (up to 8 reference images supported). Xona proprietary pipeline built on ByteDance Seedream 4; synchronous, returns the image URL inline.",
+      "tags": [
+        "text-to-image",
+        "style-blending",
+        "image-to-image",
+        "reference-image",
+        "seedream"
+      ],
+      "modality": {
+        "input": [
+          "text",
+          "image"
+        ],
+        "output": [
+          "image"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.xona-agent.com/image/designer",
+          "method": "POST",
+          "provider": "Xona",
+          "providerId": "xona",
+          "amount": 0.06,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "60000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9VaDVp1Wb78G4Wm6VuTiMrpESjrUymXefQTHcJGRSTEA",
+              "maxTimeoutSeconds": 1200,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-29T00:00:00.000Z"
+          },
+          "inputSchema": {
+            "type": "object",
+            "required": [
+              "prompt"
+            ],
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Detailed prompt description"
+              },
+              "style": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Style keywords to blend into the prompt"
+              },
+              "aspect_ratio": {
+                "type": "string",
+                "description": "Image aspect ratio (default: 1:1)"
+              },
+              "referenceImage": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Reference image URLs for style guidance (up to 8)"
+              }
+            }
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "image_url": {
+                "type": "string",
+                "description": "Generated image URL (CDN JPG)"
+              },
+              "image_description": {
+                "type": "string",
+                "description": "Refined prompt used for generation"
+              },
+              "metadata": {
+                "type": "object",
+                "description": "Generation metadata (model, aspectRatio, styles, cdn_key, replicate_url, prompt lengths)"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-07-29",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://api.xona-agent.com/image/designer with JSON body {prompt (required), style?:[keywords], aspect_ratio?:'1:1', referenceImage?:[urls, up to 8]} -> 200 {image_url, image_description, metadata} synchronously (no polling). x402 pay via payment-signature header (omit on first call to get the 402 challenge); the qa-pay/x402 client handles this automatically.",
+        "inputExample": {
+          "prompt": "a single red circle centered on a plain white background",
+          "style": [
+            "minimalist",
+            "flat vector"
+          ],
+          "aspect_ratio": "1:1"
+        },
+        "outputShape": "body.image_url (CDN-hosted JPG on provey-media.sgp1.cdn.digitaloceanspaces.com); body.image_description (the refined prompt); body.metadata.{model:'bytedance/seedream-4', aspectRatio, styles[], original_prompt_length, refined_prompt_length, cdn_key, replicate_url}.",
+        "quirks": [
+          "Payment is Solana-only: the 402 accepts a single entry on network solana with USDC mint EPjFWdd5...Dt1v. You MUST hold USDC on Solana; a Base/EVM-only wallet fails with insufficient funds even with plenty of EVM USDC.",
+          "Synchronous: one POST returns the finished image_url; no job id, no polling.",
+          "The 'style' array is a distinct capability of this endpoint vs a plain generate call — Xona blends the keywords into and refines the prompt (metadata reports original_prompt_length vs refined_prompt_length and echoes styles[]).",
+          "Underlying model is ByteDance Seedream 4 (metadata.model = 'bytedance/seedream-4'), distinct from the existing SeedDream 4.5 entry which uses a different endpoint and model version.",
+          "Supports up to 8 reference images via referenceImage[] for style guidance.",
+          "Fixed price $0.06 (openapi x-payment-info pricingMode:'fixed'); settled cost matched the quote exactly.",
+          "Output image_url is a CDN link (DigitalOcean Spaces) — download promptly in case of expiry."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST a JSON body to https://api.xona-agent.com/image/designer with a required \"prompt\" string and optional \"style\" (array of style keywords to blend in), \"aspect_ratio\" (e.g. \"16:9\", default \"1:1\"), and \"referenceImage\" (array of up to 8 image URLs for style guidance). It is an x402 paid endpoint costing $0.06 USDC on Solana — ensure your wallet holds USDC on Solana (EVM USDC will not be accepted). The call is synchronous and returns 200 with the generated image at body.image_url (a CDN JPG); body.image_description is the refined prompt and body.metadata carries model/aspectRatio/styles/cdn details. Backed by ByteDance Seedream 4 with a Xona prompt-refinement/style-blending layer.",
+        "costObservedUsd": 0.06
+      },
+      "status": "active"
+    }
+  ]
+}

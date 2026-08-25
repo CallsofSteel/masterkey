@@ -1,0 +1,54 @@
+{
+  "serviceId": "zhipu-glm-4-6",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/zai/api/paas/v4/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/zai/api/paas/v4/chat/completions with JSON body {model, messages[]}",
+    "inputExample": {
+      "model": "glm-4.6",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ],
+      "max_tokens": 16
+    },
+    "outputShape": "body.choices[0].message.content (final answer); body.choices[0].message.reasoning_content (chain-of-thought); body.usage.total_tokens",
+    "quirks": [
+      "OpenAI-compatible chat-completions API; required fields are model and messages.",
+      "model value 'glm-4.6' works.",
+      "messages is a standard JSON array of {role, content} objects (the schema mislabels it as type:object, but it is an array).",
+      "Response includes a separate reasoning_content (chain-of-thought) field alongside message.content; chain-of-thought is on by default for GLM-4.6.",
+      "max_tokens governs the reasoning+output budget; a small max_tokens (e.g. 16) yields finish_reason='length' and burns reasoning_tokens — set it generously (or omit) for complete answers.",
+      "Set stream:false (default) for a single synchronous JSON response."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST a JSON body with model:\"glm-4.6\" and a messages array of {role,content} objects to the URL; payment is handled via x402 (~$0.01/call on Base). Read the assistant's answer from body.choices[0].message.content; the model's chain-of-thought is in body.choices[0].message.reasoning_content. Omit or set a generous max_tokens, since reasoning tokens count against it and a low limit truncates the reply (finish_reason='length'). Keep stream:false for a single synchronous response.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "zhipu-glm-4-6#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    }
+  ]
+}

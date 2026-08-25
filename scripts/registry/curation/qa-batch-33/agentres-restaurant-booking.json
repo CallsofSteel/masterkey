@@ -1,0 +1,59 @@
+{
+  "serviceId": "agentres-restaurant-booking",
+  "subcat": "scheduling-booking",
+  "batchId": "batch-33",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://agentres.dev/api/book",
+      "method": "POST"
+    },
+    {
+      "backend": "https://www.agentres.dev/api/book",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://agentres.dev/api/book with JSON body {venue_id, config_id, party_size, day} — config_id must first be obtained from GET https://agentres.dev/api/availability",
+    "inputExample": {
+      "venue_id": "6194",
+      "config_id": "<slot config token from /api/availability>",
+      "party_size": 2,
+      "day": "2026-07-01"
+    },
+    "outputShape": "body.success (bool), body.kind (\"booked\"), body.resy_token, body.reservation_id",
+    "quirks": [
+      "DID NOT PAY — not testable in an automated QA run.",
+      "Required field config_id is an opaque dynamic 'slot config token' that must be fetched live from GET /api/availability?venue_id=&party_size=&day= for a real venue with an open slot on a FUTURE date; it cannot be fabricated. The schema example (venue_id 6194, day 2026-05-01) is a stale placeholder.",
+      "Two-step flow: (1) GET /api/availability to get slots[].config_id, then (2) POST /api/book. /api/availability is itself x402-gated (returns 402 with amount 0).",
+      "authMode=apiKey+paid. The decoded x402 resource description says it books 'for the authenticated user' — requires a Resy account auth/API key context, which is not provided. Booking destination is the authenticated user's Resy account, not a settable recipient.",
+      "OUTWARD/IRREVERSIBLE: creates a real Resy restaurant reservation. Requires human approval and a real authenticated Resy user before calling.",
+      "Payment network is Base USDC (eip155:8453, $0.010); the 402 also advertises a Tempo charge method in www-authenticate."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Booking is a two-step flow and creates a real Resy reservation, so confirm with the user first. First call GET https://agentres.dev/api/availability?venue_id=<resy_id>&party_size=<n>&day=<YYYY-MM-DD> (x402-gated) to get slots[].config_id for an open slot on a future date. Then POST https://agentres.dev/api/book with JSON {venue_id, config_id, party_size, day} using that config_id. The endpoint books for the authenticated Resy user, so a Resy account auth/API key context is required (authMode=apiKey+paid) — you cannot set an arbitrary recipient. On success read body.success, body.reservation_id, and body.resy_token.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "agentres-restaurant-booking#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "agentres-restaurant-booking#1",
+      "classification": "needs-input",
+      "phaseB": "FAIL",
+      "realCostUsd": null
+    }
+  ]
+}

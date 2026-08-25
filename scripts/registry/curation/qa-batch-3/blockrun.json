@@ -1,0 +1,52 @@
+{
+  "serviceId": "blockrun",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/messages",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/messages with JSON body {model, max_tokens, messages:[{role,content}]} (Anthropic Messages shape)",
+    "inputExample": {
+      "model": "anthropic/claude-haiku-4.5",
+      "max_tokens": 16,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content[0].text (assistant text); token usage at body.usage.input_tokens / body.usage.output_tokens; resolved model at body.model. Native Anthropic Messages response shape.",
+    "quirks": [
+      "This /api/v1/messages endpoint uses the ANTHROPIC Messages shape, not OpenAI chat-completions: required fields are model, max_tokens, and messages — max_tokens is REQUIRED. The result text is at body.content[0].text (array of content blocks), NOT body.choices[0].message.content.",
+      "'model' must be a router enum ID like anthropic/claude-haiku-4.5; the response body.model echoes the resolved upstream model (e.g. claude-haiku-4-5-20251001).",
+      "Pricing is token-based/dynamic; $0.001 is the floor. Use a cheap model + small max_tokens to control cost.",
+      "x402 USDC on Base, no API key/account. Must be POST (GET will not work)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://blockrun.ai/api/v1/messages with a JSON body in Anthropic Messages format: {\"model\":\"anthropic/claude-haiku-4.5\",\"max_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. max_tokens is required. Pay via x402 USDC on Base; no API key needed. Read the assistant reply at body.content[0].text and token usage at body.usage. Cost is dynamic/token-based (min ~$0.001), so keep prompts short and max_tokens small. Note this is the Anthropic-shaped sibling of BlockRun's OpenAI chat-completions endpoint — different request/response shape.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "blockrun#3",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

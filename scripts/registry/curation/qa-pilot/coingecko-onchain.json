@@ -1,0 +1,28 @@
+{
+  "serviceId": "coingecko-onchain",
+  "subcat": "crypto-blockchain-data",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://pro-api.coingecko.com/api/v3/x402/onchain/simple/networks/{network}/token_price/{address} — no query params required; network and token contract address are path segments",
+    "inputExample": {
+      "url": "https://pro-api.coingecko.com/api/v3/x402/onchain/simple/networks/base/token_price/0x00c9c681d803d27d9c2e1e8612de073db0c5c390",
+      "method": "GET"
+    },
+    "outputShape": "body.data.data.attributes.token_prices.<address> — USD price as a string, or null if CoinGecko has no onchain price data for that contract; body.data.data.type is always 'simple_token_price'",
+    "quirks": [
+      "token_prices.<address> may be null for contracts not tracked by CoinGecko onchain data — this is a valid 200 response, not an error; callers must handle null",
+      "Two backend URL patterns exist: one with :address path param on Monad network and one with address embedded in the URL on Base — both cost $0.01/call and accept x402 on Base or Solana",
+      "No query parameters are needed or supported; all input is via path segments (network slug + contract address)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET with the network slug and ERC-20 contract address as path segments; no body or query params are required. Pay $0.01 USDC on Base via x402. The response JSON is at body.data.data.attributes.token_prices.<address> and holds the USD price as a string, or null if the contract is not tracked. Always check for null before using the price — a null price is a valid 200 OK response, not an API error. Supported networks include 'base', 'monad', and 200+ others; substitute the network slug in the path. For the Monad backend, the URL ends in token_price/:address (replace :address with the actual contract); for Base, a pre-baked URL with a fixed contract is also available.",
+    "costObservedUsd": 0.01
+  },
+  "drop": false,
+  "droppedReason": null
+}

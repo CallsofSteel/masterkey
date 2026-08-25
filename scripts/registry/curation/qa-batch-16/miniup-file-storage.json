@@ -1,0 +1,45 @@
+{
+  "serviceId": "miniup-file-storage",
+  "subcat": "object-file-storage",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://www.miniup.io/api/x402/apps/:siteId/data-files/upload-url",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://www.miniup.io/api/x402/apps/:siteId/data-files/upload-url with JSON body {fileName, fileSize, fileType?}",
+    "inputExample": {
+      "fileName": "test.txt",
+      "fileSize": 1024,
+      "fileType": "text/plain"
+    },
+    "outputShape": "untested — outputSchema is generic {object}; expected to return a presigned upload URL (likely body.uploadUrl or similar) for the named file",
+    "quirks": [
+      "URL has an unresolved :siteId path segment that identifies a specific MiniUp app/site the caller must own — it cannot be filled from schema/instructions/managedResource, all null",
+      "Cannot be pay-tested without a valid siteId; an arbitrary siteId would 404 and waste USDC",
+      "Body requires fileName + fileSize (number); fileType optional"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint issues a presigned upload URL for a data file in a specific MiniUp app/site, identified by the :siteId path segment. You MUST supply a real siteId for an app you own/created on miniup.io — there is no default and it is not derivable from the registry. POST JSON {fileName, fileSize, fileType?} where fileSize is a number (bytes). The response is expected to contain a presigned upload URL you then PUT/POST the file bytes to. Without a known siteId this call cannot be made safely (it would 404).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "miniup-file-storage#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

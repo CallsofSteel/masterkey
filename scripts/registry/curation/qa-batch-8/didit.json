@@ -1,0 +1,75 @@
+{
+  "serviceId": "didit",
+  "subcat": "identity-verification-kyc",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/didit/v3/aml",
+      "method": "POST",
+      "amountUsd": 0.36
+    },
+    {
+      "backend": "https://x402.orth.sh/didit/v3/phone/send",
+      "method": "POST",
+      "amountUsd": 0.3
+    },
+    {
+      "backend": "https://x402.orth.sh/didit/v3/email/send",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/didit/v3/aml with JSON body {full_name} (single string field). Optional: entity_type (\"person\"/\"company\"). Pay $0.36 USDC on Base via x402.",
+    "inputExample": {
+      "full_name": "John Smith"
+    },
+    "outputShape": "body.aml.status (\"In Review\"/\"Clear\"/etc), body.aml.total_hits (int), body.aml.entity_type, body.aml.hits[] (each: .match bool, .score, .match_score, .risk_score, .caption, .datasets[], .pep_matches[], .properties{name,alias,birthDate,address,...}, .risk_view), body.request_id",
+    "quirks": [
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: /v3/email/send delivers an email verification code (user received it ~same time as the WhatsApp code) — both /phone/send (WhatsApp) and /email/send (email) verified delivering end-to-end.",
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: /v3/phone/send delivers the OTP via WhatsApp (user received 2 WhatsApp verification codes), NOT SMS — works end-to-end.",
+      "DELIVERY HUMAN-CONFIRMED 2026-06-09: the user (John, +15555550123) actually received the output — an inbound phone call from +15076072903 and two \"MasterKey QA test SMS\" texts — confirming end-to-end real-world delivery, not just a paid 200.",
+      "The required field is full_name (a single string), NOT first_name/last_name — sending first_name/last_name 400s with {\"full_name\":[\"This field is required.\"]}",
+      "This is the AML watchlist + adverse-media screening endpoint, DISTINCT from /v3/database-validation (database identity validation). Don't confuse the two — /v3/aml screens a name against global sanctions/PEP/adverse-media datasets.",
+      "Response can be very large (~476KB for a common name like 'John Smith' = 86 hits). Page or filter body.aml.hits[] by .match==true or .match_score/.risk_score rather than dumping the whole array.",
+      "A name with many hits returns status 'In Review' (not an error) — read body.aml.total_hits and inspect hits[] for actual matches; review_status per hit is 'Unreviewed' by default."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://x402.orth.sh/didit/v3/aml with a JSON body {\"full_name\": \"<person or company name>\"}. Pay $0.36 USDC on Base via x402 (no API key). The call returns HTTP 200 with body.aml.status, body.aml.total_hits, and body.aml.hits[] — an array of sanctions/PEP/adverse-media watchlist matches. Read body.aml.total_hits to gauge volume and iterate body.aml.hits[] checking .match, .match_score, and .risk_score per hit; the response can be hundreds of KB for common names so filter rather than process everything. Note: full_name is the ONLY required field — first_name/last_name will 400.",
+    "costObservedUsd": 0.36
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "didit#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.36
+    },
+    {
+      "key": "didit#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.3
+    },
+    {
+      "key": "didit#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.04
+    }
+  ],
+  "humanConfirmed": {
+    "date": "2026-06-09",
+    "channel": "whatsapp",
+    "signal": "2 Didit verification codes via WhatsApp to +15555550123"
+  }
+}

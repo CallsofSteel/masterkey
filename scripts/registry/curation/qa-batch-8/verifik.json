@@ -1,0 +1,84 @@
+{
+  "serviceId": "verifik",
+  "subcat": "identity-verification-kyc",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://ai.verifik.co/api/face-recognition/face-validation",
+      "method": "POST"
+    },
+    {
+      "backend": "https://ai.verifik.co/api/document-liveness",
+      "method": "POST"
+    },
+    {
+      "backend": "https://ai.verifik.co/api/face-recognition/liveness",
+      "method": "POST"
+    },
+    {
+      "backend": "https://ai.verifik.co/api/face-recognition/compare-live",
+      "method": "POST"
+    },
+    {
+      "backend": "https://ai.verifik.co/api/cl/validate/documents",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://ai.verifik.co/api/face-recognition/face-validation with JSON body {image} where image is a base64-encoded JPEG/PNG (data:image/jpeg;base64,... data-URI accepted)",
+    "inputExample": {
+      "image": "data:image/jpeg;base64,/9j/4AAQSkZJRg...<base64 of a JPEG containing a human face>"
+    },
+    "outputShape": "body.data (Verifik face-detection result: bounding boxes + face quality signals) and body.signature — per the 402 bazaar output schema (untested; payment never completed)",
+    "quirks": [
+      "402 accepts entries are MALFORMED for x402 USDC: the Base USDC entry (eip155:8453, asset 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) provides extra:{name:USDC,decimals:6} but OMITS the EIP-712 domain 'version' field. Sponge requires both name AND version to build the USDC transferWithAuthorization payload, so it aborts BEFORE sending any payment (error: 'EIP-712 domain parameters (name, version) are required'). No funds were spent across 2 attempts.",
+      "Endpoint defaults to Avalanche C-Chain (eip155:43114) for payment; also offers native AVAX/ETH and Base USDC. None of the accepts entries carry an EIP-712 'version', so all USDC paths are un-payable via Sponge as-is.",
+      "Alternative documented payment flow exists: pay on-chain manually then retry with header X-PAYMENT-TX=<txHash> (or Authorization: L402 <txHash>), or bypass with a Verifik user Bearer JWT — but neither is supported by the standard qa-pay/Sponge x402 flow.",
+      "Input schema is well-defined and simple: body {image} (base64). The endpoint itself is likely functional; only the payment-requirements 402 is broken for our stack."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call POST https://ai.verifik.co/api/face-recognition/face-validation with JSON {\"image\": \"<base64 JPEG of a human face>\"} (a data:image/jpeg;base64,... URI works). Expect the face-detection result under body.data plus body.signature. WARNING: as of this test the endpoint cannot be paid via the standard x402 USDC flow — its 402 'accepts' entries omit the EIP-712 domain 'version' field, so the Sponge payment provider fails to build the payload and never sends funds. To use it you would need an alternate path (manual on-chain pay + X-PAYMENT-TX header, or a Verifik user Bearer JWT), neither of which qa-pay supports.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "verifik#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "verifik#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "verifik#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "verifik#3",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "verifik#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

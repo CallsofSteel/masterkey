@@ -1,0 +1,126 @@
+{
+  "subcategory": "transcription-subtitles",
+  "category": "image-video-processing",
+  "unit": "per video",
+  "_note": "Curated by claude-main. Subtitle/caption GENERATION + extraction only. Whisper/STT models live in speech-to-text (not duplicated). Dropped: video summarize/script, YouTube transcript scrapers (web data), Scrape-Creators, memes, social caption optimizers, watermark/metadata (->video-editing-transcoding), x402 Helper.",
+  "entries": [
+    {
+      "name": "Subtitle / Caption Generator",
+      "provider": "Various",
+      "providerId": "various",
+      "description": "Generate subtitles/captions (e.g. SRT) from a video's audio.",
+      "tags": [
+        "subtitles",
+        "captions",
+        "srt",
+        "video-processing"
+      ],
+      "modality": {
+        "input": [
+          "video",
+          "audio"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        5,
+        3,
+        2,
+        4
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://gg402.vercel.app/video_caption_generator with JSON body {video_url}",
+        "inputExample": {
+          "video_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+        },
+        "outputShape": "body.captions[] (each {text, start_time, end_time}), body.accuracy_score, body.visual_descriptions[], body.processedAt",
+        "quirks": [
+          "inputSchema was null in registry; the correct field is video_url (a public URL to a video file).",
+          "Output is structured JSON captions with timecodes, not an SRT file; build SRT yourself from body.captions[] if needed.",
+          "Response also includes visual_descriptions[] and an accuracy_score."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "POST to https://gg402.vercel.app/video_caption_generator with a JSON body {\"video_url\": \"<public video URL>\"}, paying $0.010 USDC on Base (x402, no auth/sign-in). It returns 200 synchronously with a JSON object. Read body.captions[] for the timed caption segments (each has text, start_time, end_time in seconds); body.visual_descriptions[] gives scene descriptions and body.accuracy_score gives a confidence value. If you need an SRT file, assemble it from body.captions[] yourself.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active",
+      "resolved": {
+        "2": {
+          "method": "POST",
+          "amount": 0.01
+        },
+        "3": {
+          "method": "POST",
+          "status": "hidden"
+        },
+        "4": {
+          "method": "GET",
+          "status": "hidden"
+        },
+        "5": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      }
+    },
+    {
+      "name": "Subtitle Extract",
+      "provider": "Orbis",
+      "providerId": "orbis",
+      "description": "Extract embedded subtitle tracks from a video file.",
+      "tags": [
+        "subtitles",
+        "extract",
+        "video-processing"
+      ],
+      "modality": {
+        "input": [
+          "video"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        6
+      ],
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://orbisapi.com/proxy/video-subtitle-extract-api-6bd9a1 with JSON body {video_url}",
+        "inputExample": {
+          "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+        },
+        "outputShape": "body.error = \"API_NOT_FOUND\" (endpoint dead; no useful output)",
+        "quirks": [
+          "Orbis proxy dead-slug: POST returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'video-subtitle-extract-api-6bd9a1'\"}. The route does not exist.",
+          "402 pre-flight probe falsely reported payable=true on 2026-06-01; the slug is not actually live.",
+          "No payment settled in this test (paid:false, costUsd:0) because the 404 returned before settlement."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is broken. The Orbis proxy slug 'video-subtitle-extract-api-6bd9a1' returns 404 API_NOT_FOUND on POST, meaning the underlying route was removed. Do not call it — it will fail (and risks charge-then-404 loss on retries). The intended use was POSTing a video URL to extract embedded subtitle tracks (SRT/VTT), but the service is no longer hosted. Remove or mark inactive in the registry.",
+        "costObservedUsd": 0,
+        "droppedReason": "subtitle-extract#0: Orbis proxy dead-slug: POST returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'video-subtitle-extract-api-6bd9a1'\"}. The route does not exist."
+      },
+      "status": "hidden",
+      "_droppedReason": "subtitle-extract#0: Orbis proxy dead-slug: POST returns 404 {error:'API_NOT_FOUND', message:\"No active API found with slug 'video-subtitle-extract-api-6bd9a1'\"}. The route does not exist.",
+      "resolved": {
+        "6": {
+          "method": "POST",
+          "status": "hidden"
+        }
+      },
+      "hiddenReason": "dead"
+    }
+  ]
+}

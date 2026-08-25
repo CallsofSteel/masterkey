@@ -1,0 +1,65 @@
+{
+  "serviceId": "whois-rdap-lookup",
+  "subcat": "dns-domain-management",
+  "batchId": "batch-21",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://2s.io/api/domain/whois",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://netintel-production-440c.up.railway.app/whois-rdap/lookup",
+      "method": "GET",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://domain.hugen.tokyo/domain/whois",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://2s.io/api/domain/whois?domain=<domain> (required query param `domain`, 3-253 chars)",
+    "inputExample": {
+      "domain": "example.com"
+    },
+    "outputShape": "body.data.items[] array of records; each has .domain, .registrar.name, .registeredAt, .expiresAt, .updatedAt, .statuses[], .nameservers[], .dnssecSigned, .rdapUrl. body.data.total = count. ok flag at body.data.ok.",
+    "quirks": [
+      "Result is nested under body.data (not top-level); records are in body.data.items[]",
+      "Settlement metadata echoed at body.data.meta.settlement"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://2s.io/api/domain/whois with a single required query parameter `domain` (e.g. ?domain=example.com), pay $0.001 USDC via x402 on Base. Response is synchronous JSON. Read the registration records from body.data.items[] — each item gives registrar name, registeredAt/expiresAt dates, statuses[], and nameservers[]. body.data.total gives the record count.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "whois-rdap-lookup#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "whois-rdap-lookup#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "whois-rdap-lookup#2",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

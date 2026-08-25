@@ -1,0 +1,42 @@
+{
+  "serviceId": "anchor-browser",
+  "subcat": "headless-browsers",
+  "batchId": "batch-30",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.anchorbrowser.io/v1/sessions",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://api.anchorbrowser.io/v1/sessions with JSON body {} (session config)",
+    "inputExample": {},
+    "outputShape": "N/A — returned 401 error body {message}",
+    "quirks": [
+      "Endpoint returned HTTP 401 'Unauthorized, please log in.' with NO x402 402 payment challenge — it is NOT an x402-payable endpoint.",
+      "Requires Anchor Browser's own login/API-key auth, which violates the keyless x402 registry model.",
+      "Prior probe already showed status 401, payable:false, blocked:true — consistent.",
+      "Nothing was paid (paid:false, costUsd:0)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use via the x402 registry. POST https://api.anchorbrowser.io/v1/sessions returns HTTP 401 'Unauthorized, please log in.' and never issues an x402 402 payment challenge, so the keyless wallet cannot pay for it. It requires Anchor Browser's own API key / login, which the no-API-key policy excludes. This endpoint should be dropped or pruned from the registry.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "anchor-browser#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

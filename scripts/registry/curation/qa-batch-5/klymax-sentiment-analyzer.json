@@ -1,0 +1,43 @@
+{
+  "serviceId": "klymax-sentiment-analyzer",
+  "subcat": "nlp-text-analysis",
+  "batchId": "batch-5",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://sentiment-analyzer.api.klymax402.com/api/analyze",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "GET https://sentiment-analyzer.api.klymax402.com/api/analyze?text=<text>",
+    "inputExample": {
+      "text": "I love this product"
+    },
+    "outputShape": "unknown — endpoint returned 404, no usable output observed",
+    "quirks": [
+      "Charge-then-404: probe returns HTTP 402 (looks payable) but after paying $0.005 USDC the endpoint returns HTTP 404 plain-text '404 Not Found'. The route is dead.",
+      "Do NOT retry — payment is taken and lost on each attempt."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is currently broken. It advertises payment (HTTP 402) but after paying $0.005 USDC on Base it returns HTTP 404 '404 Not Found' with no result body. Do not call it — payment is charged but no sentiment result is returned. The intended call shape per schema is GET with a required `text` query parameter (e.g. ?text=I+love+this+product), but the route does not exist.",
+    "costObservedUsd": 0.005,
+    "droppedReason": "klymax-sentiment-analyzer#0: Charge-then-404: probe returns HTTP 402 (looks payable) but after paying $0.005 USDC the endpoint returns HTTP 404 plain-text '404 Not Found'. The route is dead."
+  },
+  "droppedReason": "klymax-sentiment-analyzer#0: Charge-then-404: probe returns HTTP 402 (looks payable) but after paying $0.005 USDC the endpoint returns HTTP 404 plain-text '404 Not Found'. The route is dead.",
+  "_backends": [
+    {
+      "key": "klymax-sentiment-analyzer#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

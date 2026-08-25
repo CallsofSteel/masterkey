@@ -1,0 +1,51 @@
+{
+  "serviceId": "uk-property-tax",
+  "subcat": "tax-compliance",
+  "batchId": "batch-19",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://property.payapi.market/stamp-duty",
+      "method": "POST",
+      "amountUsd": 0.001
+    },
+    {
+      "backend": "https://property.payapi.market/council-tax",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://property.payapi.market/stamp-duty with JSON body {price, is_first_time_buyer?, is_additional_property?, is_non_resident?}",
+    "inputExample": {
+      "price": 350000
+    },
+    "outputShape": "body.total_tax (number, GBP), body.effective_rate (%), body.buyer_type (string), body.breakdown[] (each {band, rate, tax}), body.price (echo)",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Calculate UK Stamp Duty Land Tax (SDLT). POST a JSON body with required field price (property purchase price in GBP, e.g. 350000). Optional booleans: is_first_time_buyer (discount up to £625k), is_additional_property (5% surcharge), is_non_resident (extra 2% surcharge) — all default false. Pay $0.001 USDC via x402 on Base. The 200 response is synchronous: read body.total_tax for the SDLT owed, body.effective_rate for the rate, and body.breakdown[] for the per-band table.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "uk-property-tax#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    },
+    {
+      "key": "uk-property-tax#1",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "serviceId": "kling",
+  "subcat": "video-generation",
+  "batchId": "batch-24",
+  "action": "drop",
+  "drop": true,
+  "statusOverride": null,
+  "registryFixes": [
+    {
+      "backend": "https://x402helper.xyz/api/proxy/kling-16-image-to-video-5s",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "broken",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://x402helper.xyz/api/proxy/kling-16-image-to-video-5s (registry-specified) — DEAD: returns 404 \"Cannot POST\". Only GET returns a 402 payable quote, but GET cannot carry an image body for an image-to-video model.",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Red_Circle%28small%29.svg/240px-Red_Circle%28small%29.svg.png",
+      "prompt": "a red circle gently pulsing"
+    },
+    "outputShape": "unknown — endpoint never produced a successful result",
+    "quirks": [
+      "Registry method=POST is dead: POST returns HTTP 404 'Cannot POST /api/proxy/kling-16-image-to-video-5s' (HTML error page, no payment taken).",
+      "Only GET responds with a 402 payment-required quote (13000 = $0.013 USDC on Base eip155:8453 or Solana).",
+      "Method/payload mismatch: this is an image-to-video model that needs an image input, but the only payable method (GET) has no body channel — calling GET would charge $0.013 with no way to deliver an input image.",
+      "Underlying resource proxies to obolos.tech (charge-then-fail risk pattern); did NOT pay GET to avoid losing money.",
+      "No money was spent during QA (paid:false, costUsd:0)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Do not use this endpoint as listed. The registry call (POST .../kling-16-image-to-video-5s) returns a hard 404 'Cannot POST' with no payment, and the only payable method (GET) returns a 402 quote but offers no body channel to supply the source image that an image-to-video model requires. No working call shape was found. Treat as broken pending a corrected route/method (likely the real backend lives behind obolos.tech and needs a different proxy path or a POST-capable variant).",
+    "costObservedUsd": 0,
+    "droppedReason": "kling#0: Registry method=POST is dead: POST returns HTTP 404 'Cannot POST /api/proxy/kling-16-image-to-video-5s' (HTML error page, no payment taken)."
+  },
+  "droppedReason": "kling#0: Registry method=POST is dead: POST returns HTTP 404 'Cannot POST /api/proxy/kling-16-image-to-video-5s' (HTML error page, no payment taken).",
+  "_backends": [
+    {
+      "key": "kling#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

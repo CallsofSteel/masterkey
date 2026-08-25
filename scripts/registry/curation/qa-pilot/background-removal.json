@@ -1,0 +1,28 @@
+{
+  "serviceId": "background-removal",
+  "subcat": "background-removal",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.dellbot.win/background-remove with JSON body {image_url}",
+    "inputExample": {
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Camponotus_flavomarginatus_ant.jpg"
+    },
+    "outputShape": "Raw PNG binary body (content-type: image/png, ~2MB); paid_fetch wraps it as a 'base64:...' string in the data field — decode and save as .png",
+    "quirks": [
+      "The cheapest listed backend (Orbis $0.001) has an unresolved ':endpoint' path template and returned 404 after charging $0.005 — 5× the listed price; do not use",
+      "The x402Helper backend ($0.013) returns HTTP 200 with {success:false, refunded:true, message:'Price mismatch, you have been refunded'} — misconfigured, avoid",
+      "The working backend (x402.dellbot $0.06) returns the PNG directly as a raw binary body, not wrapped in JSON; paid_fetch presents it as a 'base64:...' prefixed string",
+      "Processed images can be large (~2MB for a full-resolution photo) — plan for that in downstream handling"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://x402.dellbot.win/background-remove with a JSON body containing 'image_url' pointing to a publicly accessible image URL. Pay $0.06 USDC on Base via x402. The response body is a raw PNG image (content-type: image/png) — when using paid_fetch, the data field will be a 'base64:...' string; strip the prefix and base64-decode to get the PNG bytes. Save to a .png file. The two cheaper registry backends (Orbis at $0.001 and x402Helper at $0.013) are both broken as of 2026-06-08 and should not be used.",
+    "costObservedUsd": 0.06
+  },
+  "drop": false,
+  "droppedReason": null
+}

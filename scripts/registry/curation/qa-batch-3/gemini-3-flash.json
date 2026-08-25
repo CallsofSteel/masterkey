@@ -1,0 +1,49 @@
+{
+  "serviceId": "gemini-3-flash",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.002593
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/chat/completions with JSON body {model, messages[]} (OpenAI chat-completions compatible)",
+    "inputExample": {
+      "model": "google/gemini-3.5-flash",
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.choices[0].message.content (assistant text); token usage at body.usage.total_tokens",
+    "quirks": [
+      "model id must be 'google/gemini-3.5-flash' (despite the product being branded 'Gemini 3 Flash')",
+      "price varies with token usage; this minimal hello call cost ~$0.0026"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Standard OpenAI-compatible chat completions endpoint paid per-call via x402 on Base. POST a JSON body with model set to \"google/gemini-3.5-flash\" and a messages array of {role, content} objects. Read the assistant reply at body.choices[0].message.content. Synchronous, no auth beyond x402 payment, no polling. Cost scales with token usage.",
+    "costObservedUsd": 0.002593
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "gemini-3-flash#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.025925
+    }
+  ]
+}

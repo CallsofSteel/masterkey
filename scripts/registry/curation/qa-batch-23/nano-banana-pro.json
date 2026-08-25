@@ -1,0 +1,78 @@
+{
+  "serviceId": "nano-banana-pro",
+  "subcat": "image-generation",
+  "batchId": "batch-23",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/nano-banana/v1beta/models/gemini-3-pro-image-preview:generateContent",
+      "method": "POST",
+      "amountUsd": 0.15
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/nano-banana-2-pro-image-generation-14ef10",
+      "method": "POST"
+    },
+    {
+      "backend": "https://api.xona-agent.com/image/nano-banana-pro",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402.orth.sh/nano-banana/v1beta/models/gemini-3-pro-image-preview:generateContent with JSON body {contents:[{parts:[{text}]}], generationConfig:{responseModalities:[\"IMAGE\"]}}",
+    "inputExample": {
+      "contents": [
+        {
+          "parts": [
+            {
+              "text": "a red circle"
+            }
+          ]
+        }
+      ],
+      "generationConfig": {
+        "responseModalities": [
+          "IMAGE"
+        ]
+      }
+    },
+    "outputShape": "body.candidates[0].content.parts[].inlineData.data (base64 image), with body.candidates[0].content.parts[].inlineData.mimeType (e.g. image/jpeg)",
+    "quirks": [
+      "Image is returned base64-encoded in candidates[0].content.parts[].inlineData.data (not a URL); mimeType is in the sibling inlineData.mimeType field (observed image/jpeg).",
+      "Response can be large (~4.7MB JSON for a single 1024 image) because the base64 image plus a long thoughtSignature string are inlined.",
+      "Each part may also include a thoughtSignature field; the actual image part is the one with inlineData.",
+      "Standard Google Gemini generateContent request shape: contents is an array of {parts:[{text}]}; contents is the only required field."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to the URL with a JSON body whose contents is [{\"parts\":[{\"text\":\"<your prompt>\"}]}] and set generationConfig.responseModalities to [\"IMAGE\"]. Payment is x402 USDC on Base, ~$0.15/call, plain synchronous (200 returns the result directly). Read the generated image from candidates[0].content.parts[].inlineData.data — it is base64; decode it using the sibling inlineData.mimeType. Optional: generationConfig.imageConfig.aspectRatio / outputSize (up to 4096x4096), and tools:[{\"googleSearch\":{}}] for grounded images.",
+    "costObservedUsd": 0.15
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "nano-banana-pro#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.15
+    },
+    {
+      "key": "nano-banana-pro#1",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "nano-banana-pro#2",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

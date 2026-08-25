@@ -1,0 +1,32 @@
+{
+  "serviceId": "stableanalytics",
+  "subcat": "web-analytics",
+  "action": "add-usage",
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "siwx",
+    "auth": "siwx",
+    "callShape": "GET https://stableanalytics.dev/api/site/overview?site_id={site_id}&period={period}&limit={limit} with Sign-In-With-X: base64(JSON payload) header",
+    "inputExample": {
+      "site_id": "example.com",
+      "period": "7d",
+      "limit": 100
+    },
+    "outputShape": "body.site_id, body.period, body.totals.{visits, unique_ips_estimate}, body.series[].{date, visits}. Other endpoints: /sources → {referrers, utm_sources, utm_campaigns}; /pages → {rows[].{pathname, visits}}; /visits → {rows[].{timestamp, pathname, referrer, utm_source, browser, os, device, country, ip_prefix}}; /tech → {browsers, os, devices, countries}",
+    "quirks": [
+      "Nonce in the 402 SIWX challenge is single-use — must re-probe for a fresh 402 challenge before every new authenticated request",
+      "The uri field in the Sign-In-With-X JSON payload must exactly match the full request URL including query string (e.g. https://stableanalytics.dev/api/site/overview?site_id=example.com)",
+      "Use issuedAt from the SIWE tool output, not from the 402 challenge — the signer sets this timestamp",
+      "chainId in the JSON payload must be the eip155 string form (e.g. 'eip155:8453'), not the numeric integer",
+      "Untracked domains return {success:false, error:'Site not found'} with HTTP 404 (NOT 200 as previously documented) — not an auth failure",
+      "accepts[] in the 402 challenge body is empty — this is identity-only (SIWX), no payment required"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "StableAnalytics is a SIWX-only (free, identity-gated) web analytics API with five endpoints. Before each call, probe the target URL with a plain GET to receive a fresh 402 challenge body; extract extensions['sign-in-with-x'].info for domain, uri, version, chainId, type, nonce, issuedAt, expirationTime, and statement. Generate a SIWE signature via mcp__sponge__generate_siwe using those exact values (chain_id: 8453). Construct the JSON payload: {domain, address, statement, uri, version, chainId (as 'eip155:8453'), type ('eip191'), nonce, issuedAt (from SIWE tool), expirationTime, signature}. Base64-encode JSON.stringify(payload) and pass it as the Sign-In-With-X request header. Required query param: site_id (the domain to query). Optional: period (24h|7d|30d, default 7d) and limit (1-500, default 100). Cost is always $0 — SIWX is identity-only.",
+    "costObservedUsd": 0
+  },
+  "drop": false,
+  "droppedReason": null
+}

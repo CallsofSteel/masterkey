@@ -1,0 +1,54 @@
+{
+  "serviceId": "flux-2-klein-4b",
+  "subcat": "image-generation",
+  "batchId": "batch-22",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://x402.slinkylayer.ai/api/v1/proxy/2cbf19e9-c878-45ae-a901-3dcada443fd3/chat-completions-flux-2-klein",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "none",
+    "auth": "none",
+    "callShape": "POST https://x402.slinkylayer.ai/api/v1/proxy/2cbf19e9-c878-45ae-a901-3dcada443fd3/chat-completions-flux-2-klein with JSON body {model, messages, modalities}",
+    "inputExample": {
+      "model": "flux-2-klein",
+      "messages": [
+        {
+          "role": "user",
+          "content": "a red circle"
+        }
+      ],
+      "modalities": [
+        "image",
+        "text"
+      ]
+    },
+    "outputShape": "unknown (host unreachable, never returned a response)",
+    "quirks": [
+      "Host x402.slinkylayer.ai is currently UNREACHABLE — TCP/TLS connection times out (HTTP 000, curl exit 28) at both root and endpoint; DNS itself times out.",
+      "qa-pay returned 'provider request failed: fetch failed' on both attempts; classification 'wallet-error' here means the upstream host is down, NOT a wallet balance problem. No USDC was spent.",
+      "Schema is a chat-completions-style image gen: requires model + messages[] + modalities[] (all required). modalities should include 'image'.",
+      "Registry probe on 2026-06-01 saw 402/payable, so the endpoint may come back; re-test before trusting."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "This endpoint is a chat-completions-style image generator (SlinkyLayer proxy) expecting a JSON body with model, messages[], and modalities[] (e.g. [\"image\",\"text\"]). As of 2026-06-08 the host x402.slinkylayer.ai is unreachable: every request, including the x402 pay-flow, fails with a connection timeout (HTTP 000) and 'provider request failed: fetch failed', so it could not be paid or verified. No payment was made. If the host recovers, send the inputExample body; the generated image would normally appear in the chat-completion response content. Do not waste retries while the host is down.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "flux-2-klein-4b#0",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

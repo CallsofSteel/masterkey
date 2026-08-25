@@ -1,0 +1,49 @@
+{
+  "serviceId": "walrus",
+  "subcat": "decentralized-ipfs",
+  "batchId": "batch-16",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://store.nosub.club/v1/files/public",
+      "method": "POST",
+      "amountUsd": 0.04
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://store.nosub.club/v1/files/public?duration=30&contentType=text/plain with JSON body {contentText} (or {contentBase64})",
+    "inputExample": {
+      "contentText": "hello",
+      "contentType": "text/plain",
+      "duration": 30
+    },
+    "outputShape": "body.blobId, body.storageObjectId, body.aggregatorUrl (public download URL), body.expiresAt",
+    "quirks": [
+      "duration is a REQUIRED query parameter (1-365 days); the service rounds it up to Walrus 14-day epochs",
+      "Body must include exactly one of contentText (UTF-8) or contentBase64 (base64 file bytes); additionalProperties=false so no other fields allowed beyond contentText/contentBase64/contentType/duration",
+      "If duration is also included in the JSON body it MUST match the query value",
+      "contentType (e.g. text/plain) sets the Content-Type the aggregatorUrl serves the blob with; pass it as query param and/or body",
+      "Returns HTTP 201 (not 200) on success",
+      "Retrieve the stored file at body.aggregatorUrl (Walrus mainnet aggregator)"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Upload a blob to Walrus decentralized storage by POSTing to https://store.nosub.club/v1/files/public with duration (days, required) as a query param. Put the content in the JSON body as contentText (for UTF-8 text) or contentBase64 (for arbitrary file bytes), and set contentType for the MIME type. On success you get HTTP 201 with body.blobId, body.storageObjectId, and body.aggregatorUrl. Fetch the stored file later from body.aggregatorUrl. Cost is a flat ~$0.04 USDC on Base regardless of size.",
+    "costObservedUsd": 0.04
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "walrus#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

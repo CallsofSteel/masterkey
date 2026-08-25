@@ -1,0 +1,43 @@
+{
+  "serviceId": "laso-finance",
+  "subcat": "payment-processing",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://laso.finance/auth",
+      "method": "GET"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "siwx",
+    "callShape": "GET https://laso.finance/auth (no body). Pays $0.001 USDC on Base via x402, OR satisfies the sign-in-with-x (SIWX) extension via wallet identity — in testing SIWX was accepted and the call returned 200 at $0 cost.",
+    "inputExample": {},
+    "outputShape": "body.auth.id_token (1h Firebase JWT bearer), body.auth.refresh_token, body.auth.expires_in (\"3600\"), body.callable_base_url, body.user_id",
+    "quirks": [
+      "REGISTRY URL CORRECTION: the discovery/surface CALL line says GET https://api.laso.finance/x402/rates but that host is NXDOMAIN/dead (HTTP 000). The real, live endpoint is GET https://laso.finance/auth.",
+      "This is the AUTH/login step only, not a rates endpoint. It returns a 1h Firebase ID token; you then use auth.id_token as a bearer against callable_base_url (https://us-central1-kyc-ts.cloudfunctions.net) for the actual card operations (order card, balance, withdraw, merchant search).",
+      "Endpoint advertises BOTH x402 (Base/Solana USDC, $0.001) and the sign-in-with-x (SIWX) extension. In QA the SIWX path was honored and returned 200 with the token at $0 — no on-chain payment was charged.",
+      "id_token expires in 3600s (1h); use auth.refresh_token to renew.",
+      "Service is US-only; downstream card operations involve real money (orders cost the card value, $5-$1000) and are irreversible."
+    ],
+    "needs": [],
+    "needsApproval": true,
+    "guide": "Call GET https://laso.finance/auth with no body. The registry's api.laso.finance/x402/rates URL is wrong (dead host) — use laso.finance/auth. The call is gated by x402 ($0.001 USDC on Base) but also accepts the sign-in-with-x (SIWX) extension; in testing SIWX was accepted and it returned 200 for free. Read body.auth.id_token (a 1-hour Firebase JWT) and body.callable_base_url, then send id_token as a bearer token to callable_base_url to perform the real card operations (order/balance/withdraw). This auth step is cheap and safe, but the downstream card-order operations move real money and are irreversible, so require approval before ordering a card.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "laso-finance#0",
+      "classification": "free-ok",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}

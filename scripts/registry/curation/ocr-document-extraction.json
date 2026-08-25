@@ -1,0 +1,492 @@
+{
+  "subcategory": "ocr-document-extraction",
+  "category": "document-content",
+  "unit": "per call",
+  "_note": "Curated by claude-main; re-verified (conservative bar) \u2014 added DocPull (PDF->Markdown product) as a distinct entry; added orbis ocr-advanced (handwriting/table/layout) to OCR and orbis document-processing + x402node pdf/extract to Document Extraction. Routed away: orth scrapegraphai/tavily/serper/linkedin extract (#47-53) -> web-scraping/social; gg402 invoice extractor -> nlp. Dropped: x402 Helper, agentwonderland, niche securelend financial-only. | 2026-07-26: marked confirmed-404 services hidden (status:'hidden' + hiddenReason:'dead'). They REMAIN in curation as a record that we indexed and tested them \u2014 never deleted.",
+  "entries": [
+    {
+      "name": "OCR (Image to Text)",
+      "kind": "api",
+      "provider": "x402node",
+      "providerId": "x402node",
+      "aka": [
+        "ocr-image-to-text"
+      ],
+      "description": "Extract text from an image via OCR. Supply a publicly reachable image URL; returns the extracted text plus a confidence score. x402node runs Tesseract; strale runs Claude vision (better on handwriting/photos). Same operation via two gateways.",
+      "tags": [
+        "ocr",
+        "image-to-text",
+        "pdf",
+        "extraction",
+        "handwriting"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.x402node.dev/image/ocr",
+          "method": "GET",
+          "provider": "x402node",
+          "providerId": "x402node",
+          "amount": 0.01,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "10000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://api.strale.io/x402/image-to-text",
+          "method": "GET",
+          "provider": "Strale",
+          "providerId": "strale",
+          "amount": 0.054001,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "54001",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x66D7C2F952362BFB24FD7F02a9beC9c754ea83bC",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "GET",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        },
+        {
+          "url": "https://api.24klabs.ai/api/ocr-image",
+          "method": "POST",
+          "provider": "24kLabs",
+          "providerId": "24klabs",
+          "amount": 10000,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "amount": "10000",
+              "payTo": "0xe73D86f185bE79a33b0318d881B71f2a24371114",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ],
+          "probe": {
+            "status": 200,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-07-30"
+          },
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "Publicly reachable image URL to run OCR on"
+              }
+            },
+            "required": [
+              "url"
+            ]
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "service": {
+                "type": "string"
+              },
+              "result": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "Echo of the input image URL"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "The transcribed text extracted from the image"
+                  }
+                }
+              },
+              "latency_ms": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "GET https://api.x402node.dev/image/ocr?url=<IMAGE_URL>&lang=eng (x402 v1 paid, ~$0.01 USDC on Base). Input is via query params, NOT a JSON body. For the strale gateway: GET https://api.strale.io/x402/image-to-text?image_url=<IMAGE_URL> (or ?base64=<B64>), ~$0.054 USDC on Base.",
+        "inputExample": {
+          "url": "https://tesseract.projectnaptha.com/img/eng_bw.png",
+          "lang": "eng"
+        },
+        "outputShape": "x402node: body.text (string), body.confidence (number 0-100), body.lang, body.lines_count, body.words_count, body.processing_ms, body.file_size_bytes. strale: body.text, body.text_type, body.confidence (string), body.language_detected.",
+        "quirks": [
+          "BOTH backends are GET-with-query-params. Registry recorded strale as POST but its own 402 outputSchema declares GET queryParams (base64|image_url) \u2014 POST/JSON-body is wrong for both.",
+          "x402node: method is GET; POST returns 404 'Cannot POST /image/ocr'. Image supplied via ?url= query param (publicly reachable image URL).",
+          "x402node uses x402 v1 (no top-level accepts array) \u2014 agentcash fetch CANNOT pay it ('parse_payment_required'/'x402 v1 not supported'). Pay via qa-pay or a raw x402 v1 client.",
+          "x402node lines_count and words_count came back 0 even though text was extracted \u2014 rely on body.text and body.confidence, NOT the count fields.",
+          "x402node optional ?lang= (default eng); supports eng, chi, jpn, kor, deu, fra, spa, ita.",
+          "strale takes EITHER ?image_url= or ?base64= (base64-encoded image); confidence is returned as a string and it adds language_detected/text_type fields.",
+          "Despite the registry name 'Image & PDF to Text', only image OCR is verified \u2014 PDF support is unverified on both gateways.",
+          "Orbis backend (orbisapi.com proxy) DROPPED: known charge-then-404 payment trap, do-not-register."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Extract text from an image via OCR. Supply a publicly reachable image URL; returns the extracted text plus a confidence score. x402node runs Tesseract; strale runs Claude vision (better on handwriting/photos). Same operation via two gateways. GET https://api.x402node.dev/image/ocr?url=<IMAGE_URL>&lang=eng (x402 v1 paid, ~$0.01 USDC on Base). Input is via query params, NOT a JSON body. For the strale gateway: GET https://api.strale.io/x402/image-to-text?image_url=<IMAGE_URL> (or ?base64=<B64>), ~$0.054 USDC on Base. Output: x402node: body.text (string), body.confidence (number 0-100), body.lang, body.lines_count, body.words_count, body.processing_ms, body.file_size_bytes. strale: body.text, body.text_type, body.confidence (string), body.language_detected.",
+        "costObservedUsd": 0.01
+      },
+      "status": "active"
+    },
+    {
+      "name": "Document Extraction",
+      "provider": "Various",
+      "providerId": "various",
+      "description": "Extract structured data / intelligence from documents (OCR + parsing to fields/Markdown).",
+      "tags": [
+        "document-extraction",
+        "ocr",
+        "structured-data"
+      ],
+      "modality": {
+        "input": [
+          "image"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        21,
+        26,
+        37,
+        39
+      ],
+      "resolved": {
+        "21": {
+          "method": "POST",
+          "status": "hidden"
+        },
+        "26": {
+          "method": "POST"
+        },
+        "37": {
+          "amount": 0.005,
+          "method": "POST",
+          "status": "hidden"
+        },
+        "39": {
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "broken",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "none",
+        "auth": "none",
+        "callShape": "POST https://api.x402node.dev/pdf/extract with JSON body {url}",
+        "inputExample": {
+          "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        },
+        "outputShape": "n/a - route returns HTTP 404 'Cannot POST /pdf/extract' HTML error page",
+        "quirks": [
+          "Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>.",
+          "This is a missing-route 404 (not a 400/422 field error), so no alternate body or field name will fix it - the path itself is gone.",
+          "No payment was made (paid:false, costUsd:0) - the 404 returned before any x402 settlement.",
+          "Pre-flight registry probe reported 402/payable on GET, but that is misleading: the POST route does not exist. Do not pay.",
+          "Do NOT retry with alternate bodies/paths - the route is dead."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "This endpoint is dead. POST to https://api.x402node.dev/pdf/extract returns HTTP 404 with an Express 'Cannot POST /pdf/extract' HTML page on any body - the route does not exist on the server. No payment is taken (the 404 precedes x402 settlement), but the service is non-functional. It should be dropped/pruned from the registry until x402node republishes a working PDF extraction route.",
+        "costObservedUsd": 0,
+        "droppedReason": "document-extraction#3: Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>."
+      },
+      "status": "hidden",
+      "_droppedReason": "document-extraction#3: Route /pdf/extract does NOT exist on api.x402node.dev: POST returns HTTP 404 with an Express HTML error page <pre>Cannot POST /pdf/extract</pre>.",
+      "hiddenReason": "broken"
+    },
+    {
+      "name": "DocPull",
+      "kind": "api",
+      "provider": "DocPull",
+      "providerId": "docpull",
+      "aka": [
+        "docpull.ai"
+      ],
+      "description": "Extract a PDF into clean Markdown for downstream LLM/agent use, billed per call via x402 on Base.",
+      "tags": [
+        "pdf",
+        "extraction",
+        "markdown",
+        "documents"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "text"
+        ]
+      },
+      "backends": [
+        44
+      ],
+      "resolved": {
+        "44": {
+          "amount": 0.001,
+          "method": "POST"
+        }
+      },
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-08",
+        "resultPull": "sync",
+        "auth": "none",
+        "callShape": "POST https://docpull.ai/extract with JSON body {url}",
+        "inputExample": {
+          "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        },
+        "outputShape": "body.markdown (extracted text as Markdown string); also body.success (bool), body.pageCount (int), body.charCount (int)",
+        "quirks": [
+          "Registry surface says METHOD=GET, but GET https://docpull.ai/extract returns ONLY an API help/info page (not an extraction) and STILL charges $0.001 \u2014 do NOT use GET. The real extraction is POST https://docpull.ai/extract with JSON body {\"url\":\"<public_pdf_url>\"}.",
+          "Pricing is $0.001 USDC PER PAGE, not per call. A 12-page PDF costs ~$0.012. Budget accordingly for large PDFs.",
+          "Free pre-flight: GET https://docpull.ai/probe?url=<pdf_url> returns page count + cost estimate with no payment \u2014 call it first to size the cost.",
+          "url must be a publicly accessible PDF (no auth/login walls)."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Call POST https://docpull.ai/extract with JSON body {\"url\":\"<public PDF url>\"} and pay via x402 (USDC on Base). Do NOT use GET \u2014 GET only returns a help page yet still bills $0.001. Read the result from body.markdown (clean Markdown of the PDF), with body.pageCount and body.charCount as metadata. Pricing is $0.001 per page; optionally hit the free GET /probe?url=<pdf_url> first to get the page count and cost estimate before paying.",
+        "costObservedUsd": 0.001
+      },
+      "status": "hidden",
+      "hiddenReason": "dead",
+      "_deadNote": "dead upstream (404) 2026-07-26 \u2014 docpull.ai/extract returns 404. Serially re-verified. Kept as a tried-and-failed record, not deleted."
+    },
+    {
+      "name": "Reducto Parse",
+      "kind": "api",
+      "provider": "Reducto",
+      "providerId": "reducto",
+      "aka": [
+        "reducto-parse",
+        "parse"
+      ],
+      "description": "OCR and parse a PDF/image/spreadsheet document into structured text chunks. Returns full extracted content with per-block bounding boxes, confidence scores, and chunked text suitable for RAG/embeddings.",
+      "tags": [
+        "document-parsing",
+        "ocr",
+        "extraction",
+        "structured-data",
+        "pdf"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse",
+          "method": "POST",
+          "provider": "Reducto",
+          "providerId": "reducto",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse with JSON body {document_url}",
+        "inputExample": {
+          "document_url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+        },
+        "outputShape": "response_type='parse'; job_id; duration; pdf_url; studio_link; usage.num_pages; usage.credits; usage.credit_breakdown.page; result.type='full'; result.chunks[].content; result.chunks[].embed; result.chunks[].blocks[].type; result.chunks[].blocks[].bbox.{left,top,width,height,page}; result.chunks[].blocks[].content; result.chunks[].blocks[].confidence; result.chunks[].blocks[].granular_confidence.parse_confidence; result.ocr; parse_mode",
+        "quirks": [
+          "Body field is `document_url` (a public URL to the PDF/image/spreadsheet). The gateway maps it to Reducto's native `input` field, so use document_url here NOT input.",
+          "Despite returning a job_id, the parse result is delivered INLINE and synchronously in the same 200 response (body.result.chunks[]). Do NOT poll the job_id; there is no separate status/result endpoint.",
+          "response_type is 'parse'. To extract structured fields against a schema use the sibling /extract route instead.",
+          "Billed per page: body.usage.credits = pages processed (1 credit = 1 page). x402 fee is a flat $0.05 regardless of page count.",
+          "Gateway/check_endpoint_schema publishes an EMPTY inputSchema ({}); the real field set is Reducto's, surfaced only via 422 errors or these verified calls.",
+          "studio_link points to a Reducto Studio job viewer (browser UI), not a result API."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "OCR and parse a PDF/image/spreadsheet document into structured text chunks. Returns full extracted content with per-block bounding boxes, confidence scores, and chunked text suitable for RAG/embeddings. POST https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/parse with JSON body {document_url} Output: response_type='parse'; job_id; duration; pdf_url; studio_link; usage.num_pages; usage.credits; usage.credit_breakdown.page; result.type='full'; result.chunks[].content; result.chunks[].embed; result.chunks[].blocks[].type; result.chunks[].blocks[].bbox.{left,top,width,height,page}; result.chunks[].blocks[].content; result.chunks[].blocks[].confidence; result.chunks[].blocks[].granular_confidence.parse_confidence; result.ocr; parse_mode",
+        "costObservedUsd": 0.05
+      },
+      "status": "active"
+    },
+    {
+      "name": "Reducto Extract",
+      "kind": "api",
+      "provider": "Reducto",
+      "providerId": "reducto",
+      "aka": [
+        "reducto-extract",
+        "extract"
+      ],
+      "description": "Extract structured fields from a document against a caller-supplied JSON schema. Returns an array of objects matching the schema, populated from the document's content.",
+      "tags": [
+        "document-parsing",
+        "ocr",
+        "extraction",
+        "structured-data",
+        "pdf"
+      ],
+      "modality": {
+        "input": [
+          "text"
+        ],
+        "output": [
+          "json"
+        ]
+      },
+      "backends": [
+        {
+          "url": "https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/extract",
+          "method": "POST",
+          "provider": "Reducto",
+          "providerId": "reducto",
+          "amount": 0.05,
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "50000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x6302D9e6DBB22fEC3c350551568Bb39B4b35Ad57",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "50000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9246XrsAEKH6hAyEQe5PvdpUL1p5Ktj9c7ySnwQn6ois",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ],
+          "probe": {
+            "status": 402,
+            "method": "POST",
+            "payable": true,
+            "checkedAt": "2026-06-10T00:00:00.000Z"
+          }
+        }
+      ],
+      "usage": {
+        "status": "verified",
+        "verifiedAt": "2026-06-10",
+        "resultPull": "poll",
+        "auth": "none",
+        "callShape": "POST https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/extract with JSON body {document_url, schema}",
+        "inputExample": {
+          "document_url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "outputShape": "response_type='extract'; job_id; usage.num_pages; usage.num_fields; usage.credits; usage.extract_mode='extract'; studio_link; result[] (array of objects whose keys match the provided schema, e.g. result[].title); citations",
+        "quirks": [
+          "REQUIRED fields are `document_url` and `schema` (a JSON Schema object describing the fields to extract). `schema` is a TOP-LEVEL field.",
+          "FIELD-NAME TRAP: do NOT wrap the schema in `instructions` (Reducto's public docs show instructions.schema, but this paysponge gateway uses ExtractConfigNew and rejects `instructions` as extra_forbidden). Send `schema` at the top level.",
+          "Like /parse, the result is returned INLINE/synchronously (result[] in the same 200 response). Do NOT poll the job_id.",
+          "result is an ARRAY of objects (result[]) \u2014 one object per extracted record \u2014 keyed by the schema's properties.",
+          "Billing differs from parse: usage.credits counts pages + fields (observed credits:3 for 1 page / 1 field). The x402 fee was still a flat $0.05.",
+          "Gateway publishes an empty inputSchema; the true shape was recovered from a 422 (ExtractConfigNew requires `schema`) then confirmed with a 200."
+        ],
+        "needs": [],
+        "needsApproval": false,
+        "guide": "Extract structured fields from a document against a caller-supplied JSON schema. Returns an array of objects matching the schema, populated from the document's content. POST https://api.paysponge.com/x402/purchase/svc_d672d90ggvqqygj60/extract with JSON body {document_url, schema} Output: response_type='extract'; job_id; usage.num_pages; usage.num_fields; usage.credits; usage.extract_mode='extract'; studio_link; result[] (array of objects whose keys match the provided schema, e.g. result[].title); citations",
+        "costObservedUsd": 0.1
+      },
+      "status": "active"
+    }
+  ]
+}

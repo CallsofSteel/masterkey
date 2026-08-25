@@ -1,0 +1,48 @@
+{
+  "serviceId": "seo-content-optimizer",
+  "subcat": "seo-keywords",
+  "batchId": "batch-13",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://gg402.vercel.app/seo_content_optimizer",
+      "method": "POST",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://gg402.vercel.app/seo_content_optimizer with JSON body {content: string, target_keywords: string[]}",
+    "inputExample": {
+      "content": "Best running shoes for beginners. Running shoes help new runners avoid injury and run comfortably. Choosing the right running shoes matters for any beginner runner.",
+      "target_keywords": [
+        "running shoes",
+        "beginners"
+      ]
+    },
+    "outputShape": "body.optimized_content (string), body.seo_suggestions.{meta_title, meta_description, readability_score}, body.keyword_analysis[].{keyword, density, placement_tips}, body.processedAt",
+    "quirks": [
+      "inputSchema is null in the registry; the required body fields are content (string) and target_keywords (ARRAY of strings).",
+      "target_keywords MUST be an array — passing a singular string field like {keyword:\"...\"} returns 400 'Validation failed: target_keywords expected array, received undefined'.",
+      "Pays $0.01 USDC on Base (eip155:8453). Plain synchronous JSON response, no job/poll."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Send a POST to https://gg402.vercel.app/seo_content_optimizer with JSON {content: \"<your text>\", target_keywords: [\"kw1\",\"kw2\"]}. target_keywords must be an array of strings or you get a 400. Pay $0.01 USDC on Base per call. Read the result synchronously from the JSON response: body.optimized_content for the rewritten copy, body.seo_suggestions for meta_title/meta_description/readability_score, and body.keyword_analysis[] for per-keyword density and placement tips.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "seo-content-optimizer#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.01
+    }
+  ]
+}

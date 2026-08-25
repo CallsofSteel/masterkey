@@ -1,0 +1,56 @@
+{
+  "serviceId": "llama-4-maverick",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-4",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402-gateway-production.up.railway.app/api/llm/llama-4-maverick",
+      "method": "POST",
+      "amountUsd": 0.003
+    },
+    {
+      "backend": "https://blockrun.ai/api/v1/chat/completions",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://x402-gateway-production.up.railway.app/api/llm/llama-4-maverick with JSON body {messages:[{role,content}]}",
+    "inputExample": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "hello"
+        }
+      ]
+    },
+    "outputShape": "body.content (the assistant's reply string); body.model, body.usage.{prompt_tokens,completion_tokens,total_tokens,cost}",
+    "quirks": [],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Standard pay-per-call LLM chat endpoint. POST a JSON body with an OpenAI-style messages array (e.g. {\"messages\":[{\"role\":\"user\",\"content\":\"hello\"}]}) to the URL; payment is handled via x402 (USDC on Base). Read the assistant's reply from body.content. Token/cost accounting is in body.usage. Plain synchronous response, no auth or polling needed.",
+    "costObservedUsd": 0.003
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "llama-4-maverick#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.003
+    },
+    {
+      "key": "llama-4-maverick#1",
+      "classification": "free-ok",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

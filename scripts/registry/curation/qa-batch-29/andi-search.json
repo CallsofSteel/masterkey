@@ -1,0 +1,46 @@
+{
+  "serviceId": "andi-search",
+  "subcat": "web-search-apis",
+  "batchId": "batch-29",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://x402.orth.sh/andi/v1/search",
+      "method": "GET",
+      "amountUsd": 0.01
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://x402.orth.sh/andi/v1/search?q=<query>&limit=<n> (x402 payment, no API key)",
+    "inputExample": {
+      "q": "react hooks tutorial",
+      "limit": "3"
+    },
+    "outputShape": "body.results[] (web results, each {title,link,desc,snippet,source}); body.social[]; body.videos[]; body.images[] ({image,thumbnail,link,width,height}); body.answer (string, often empty); body.metrics.{intent,total_results_found}",
+    "quirks": [
+      "q is the required query param (NOT 'query'); pass it in the URL query string since this is GET",
+      "Results split across separate arrays: body.results (web), body.social, body.videos, body.images — not a single flat list",
+      "body.answer is frequently empty even though service is described as conversational/answer-style; rely on body.results[]",
+      "Optional params: limit (1-100), depth (fast|deep), intent (e.g. NewsSearchIntent, ImageSearchIntent), dateRange (24h|7d|30d|1y), country, language, safe, extracts, includeDomains/excludeDomains — all as query params"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://x402.orth.sh/andi/v1/search with at least the required q query param (the search query), e.g. ?q=react%20hooks%20tutorial&limit=10. Payment is handled via x402 (USDC on Base, ~$0.01/call, no API key). Read web results from body.results[] (each has title, link, desc, snippet, source); related media is in body.social[], body.videos[], and body.images[]. body.answer is often empty so do not depend on it — synthesize from results. Tune with optional query params like depth=deep, intent=NewsSearchIntent, or dateRange=7d.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "andi-search#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

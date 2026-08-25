@@ -1,0 +1,51 @@
+{
+  "serviceId": "claude-sonnet-4-6",
+  "subcat": "llm-chat-apis",
+  "batchId": "batch-3",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://blockrun.ai/api/v1/messages",
+      "method": "POST",
+      "amountUsd": 0.001
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://blockrun.ai/api/v1/messages with JSON body {model, max_tokens, messages:[{role,content}]} (Anthropic Messages format), paid via x402",
+    "inputExample": {
+      "model": "anthropic/claude-sonnet-4.6",
+      "max_tokens": 16,
+      "messages": [
+        {
+          "role": "user",
+          "content": "hi"
+        }
+      ]
+    },
+    "outputShape": "body.content[0].text (assistant reply); body.stop_reason; body.usage.{input_tokens,output_tokens}",
+    "quirks": [
+      "model must be \"anthropic/claude-sonnet-4.6\" (slash, not dot)",
+      "max_tokens is required by the Anthropic Messages API or the call will fail",
+      "price varies by token usage; the minimal hi/16-token call cost $0.001"
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "POST to https://blockrun.ai/api/v1/messages with an Anthropic Messages-format JSON body: {\"model\":\"anthropic/claude-sonnet-4.6\",\"max_tokens\":N,\"messages\":[{\"role\":\"user\",\"content\":\"...\"}]}. Payment is handled via x402 (USDC on Base, no API key). The response is a standard Anthropic message object; read the model's reply at body.content[0].text and token usage at body.usage. Cost varies with token count.",
+    "costObservedUsd": 0.001
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "claude-sonnet-4-6#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.001
+    }
+  ]
+}

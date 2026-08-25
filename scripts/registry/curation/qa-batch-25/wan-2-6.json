@@ -1,0 +1,48 @@
+{
+  "serviceId": "wan-2-6",
+  "subcat": "video-generation",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stablestudio.io/api/generate/wan-2.6/i2v",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "poll",
+    "auth": "none",
+    "callShape": "POST https://stablestudio.io/api/generate/wan-2.6/i2v with JSON body {image, prompt, resolution?, duration?, negativePrompt?, seed?, enablePromptExpansion?, multiShots?, audioUrl?}",
+    "inputExample": {
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/480px-Cat03.jpg",
+      "prompt": "a red circle gently pulsing",
+      "duration": "5",
+      "resolution": "720p"
+    },
+    "outputShape": "body.jobId (job id), body.status (\"pending\"), body.success (true), body.type — async job; poll a status endpoint to retrieve the finished video (output schema only describes the initial queued response, not the poll/result shape)",
+    "quirks": [
+      "OVER CAP: registry price is $10.00 (paymentAccepts amount 10000000 = $10 USDC on Base eip155:8453 or Solana), which exceeds the $6 QA cap; nothing was paid and the endpoint was not verified.",
+      "Task summary listed CALL url api.xona-agent.com/video/wan-generation but the authoritative spec url is https://stablestudio.io/api/generate/wan-2.6/i2v — use the stablestudio.io url.",
+      "image-to-video model: requires a publicly reachable source image URL (image) plus a motion prompt (required). Without a real image URL the call will fail.",
+      "Async/queued: a paid call returns {success:true, jobId, status:'pending', type}; the actual video must be retrieved by polling a job-status endpoint (poll path not documented in the spec).",
+      "Pays USDC on Base (default) or Solana; $10 flat per generation."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Wan 2.6 is an image-to-video generator priced at $10.00 per call, which is OVER the $6 QA cap, so it was not paid or verified. To use it, POST JSON to https://stablestudio.io/api/generate/wan-2.6/i2v with a publicly reachable source image URL (image) and a motion prompt (prompt); optional resolution (720p/1080p), duration (5/10/15 seconds), negativePrompt, seed, and audioUrl. The response is an async job ({success, jobId, status:'pending', type}); poll the corresponding job-status endpoint to fetch the finished video once status completes. Pay USDC on Base (eip155:8453) or Solana.",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "wan-2-6#0",
+      "classification": "over-cap",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

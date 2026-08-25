@@ -1,0 +1,53 @@
+{
+  "serviceId": "stableemail",
+  "subcat": "email",
+  "batchId": "batch-8",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://stableemail.dev/api/subdomain/send",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://stableemail.dev/api/subdomain/send with JSON body {from:\"you@<yoursubdomain>.stableemail.dev\", to:[\"dest@example.com\"], subject, text|html} — x402 paid ($0.005). Paying wallet MUST be the owner or an authorized signer of the subdomain.",
+    "inputExample": {
+      "from": "qa@masterkey.stableemail.dev",
+      "to": [
+        "john.doe@gmail.com"
+      ],
+      "subject": "MasterKey QA test - StableEmail",
+      "text": "Hello John, this is a MasterKey registry QA test message sent via StableEmail over x402."
+    },
+    "outputShape": "body.success (bool), body.messageId, body.from on success; on failure body.success=false, body.error (e.g. \"Subdomain not found\")",
+    "quirks": [
+      "RECIPIENT NON-DELIVERY CONFIRMED 2026-06-09: the user (john.doe@gmail.com) received NO email from this service during QA — corroborates broken/untested (do not mark verified on a paid 200 alone; this one did not actually deliver).",
+      "PREREQUISITE: you must OWN a subdomain on stableemail.dev. Buy it first via POST /api/subdomain/buy ($5, body {subdomain:'yourname'}); DNS verification takes ~5min.",
+      "The 'from' address MUST be on a subdomain you control (you@<yoursubdomain>.stableemail.dev). Using an unowned subdomain returns HTTP 404 {success:false, error:'Subdomain not found'} AND STILL CHARGES the $0.005 (charge-then-404).",
+      "The paying wallet must be the subdomain owner or an authorized signer (add signers free via POST /api/subdomain/signers).",
+      "Required fields: from, to (array, 1-50), subject. Must include 'text' or 'html' (or both).",
+      "No-prerequisite alternative: POST /api/send ($0.02) sends from relay@stableemail.dev with no owned subdomain needed (different endpoint, body has no 'from')."
+    ],
+    "needs": [
+      "An owned subdomain on stableemail.dev (purchased via POST /api/subdomain/buy, $5) with the QA wallet as owner or authorized signer"
+    ],
+    "needsApproval": true,
+    "guide": "This endpoint sends a real email from a custom subdomain you own on stableemail.dev. Before using it you must purchase a subdomain via POST /api/subdomain/buy ($5) using the same wallet (or be an authorized signer); without an owned subdomain the call returns 404 'Subdomain not found' but still charges $0.005. Then POST a JSON body with from (you@yoursubdomain.stableemail.dev), to (array of recipients), subject, and text or html; x402 pays $0.005. On success read body.messageId and body.from. If you only need to send a one-off email without owning a subdomain, use POST /api/send ($0.02) instead, which sends from relay@stableemail.dev.",
+    "costObservedUsd": 0.005
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stableemail#0",
+      "classification": "needs-input",
+      "phaseB": "PASS",
+      "realCostUsd": 0.005
+    }
+  ]
+}

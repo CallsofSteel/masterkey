@@ -1,0 +1,43 @@
+{
+  "serviceId": "audio-x-tts",
+  "subcat": "voice-tts",
+  "batchId": "batch-25",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "needs-review",
+  "registryFixes": [
+    {
+      "backend": "https://api.xona-agent.com/base-main/audio/x-text-to-speech",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "untested",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "POST https://api.xona-agent.com/base-main/audio/x-text-to-speech with JSON body {text} (x402, USDC on Base eip155:8453). NOTE: task header listed a different URL (https://x402.orth.sh/audiox/v1/audio/speech) — unresolved.",
+    "inputExample": {
+      "text": "hello how are you?"
+    },
+    "outputShape": "unknown (untested) — likely audio bytes (audio/mpeg or audio/wav) in the response body for a TTS endpoint",
+    "quirks": [
+      "URL CONFLICT: registry spec (qa-batch-current.json) url = https://api.xona-agent.com/base-main/audio/x-text-to-speech but QA task header CALL = https://x402.orth.sh/audiox/v1/audio/speech. Resolve which is canonical before paying.",
+      "inputSchema is null in the registry — body shape {text} is inferred from the service name (text-to-speech), not confirmed.",
+      "Payment to the spec url was blocked by the money-safety classifier specifically because it differed from the user-specified target URL."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Could not safely test: the two sources disagree on the call URL (spec says api.xona-agent.com/base-main/audio/x-text-to-speech; task header says x402.orth.sh/audiox/v1/audio/speech) and the money-safety classifier blocked paying the inferred/spec destination. Once a human confirms the canonical URL, POST a short JSON body like {\"text\":\"hello how are you?\"}, pay $0.01 USDC via x402 on Base, and expect audio bytes back. inputSchema is null so the {text} field name is unconfirmed; if it 422s, try {\"input\": \"...\"} (OpenAI-style speech shape).",
+    "costObservedUsd": 0
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "audio-x-tts#0",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    }
+  ]
+}

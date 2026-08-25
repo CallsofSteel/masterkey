@@ -1,0 +1,2593 @@
+[
+  {
+    "id": "serper-web-search",
+    "kind": "api",
+    "name": "Serper Web Search",
+    "aka": [
+      "serper-web-search",
+      "search"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google web search via Serper. Returns organic results, knowledge graph, people-also-ask, related searches, and sitelinks. Use for general web queries, fact-finding, and research.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/search",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/search with JSON body {q (required), gl?, hl?, lr?, cr?, num?, page?, autocorrect?, tbs?, location?, safe?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "openai",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,engine}; organic[].{title,link,snippet,position,date?,sitelinks[].{title,link}}; knowledgeGraph.{title,type,description,descriptionSource,descriptionLink,imageUrl,attributes{}}; peopleAlsoAsk[].{question,snippet,title,link}; relatedSearches[].{query}; credits",
+      "quirks": [
+        "Body field is `q` (required). tbs time filter: qdr:h/d/w/m/y (past hour/day/week/month/year).",
+        "num default 10, max 100. gl=country code (us), hl=language code (en).",
+        "Orthogonal has NO OpenAPI spec; schema discoverable only via the x402 402-challenge body.",
+        "Registry previously listed this backend price as null; actual price is $0.002.",
+        "credits field in response reports Serper credits consumed (1 for search)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google web search via Serper. Returns organic results, knowledge graph, people-also-ask, related searches, and sitelinks. Use for general web queries, fact-finding, and research. POST https://x402.orth.sh/serper/search with JSON body {q (required), gl?, hl?, lr?, cr?, num?, page?, autocorrect?, tbs?, location?, safe?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,engine}; organic[].{title,link,snippet,position,date?,sitelinks[].{title,link}}; knowledgeGraph.{title,type,description,descriptionSource,descriptionLink,imageUrl,attributes{}}; peopleAlsoAsk[].{question,snippet,title,link}; relatedSearches[].{query}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-web-search",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-news",
+    "kind": "api",
+    "name": "Serper News",
+    "aka": [
+      "serper-news",
+      "news"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google News search via Serper. Returns recent news articles with title, link, snippet, date, source, and imageUrl.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/news",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      },
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/serper/news",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "FKVNtVifUWmdJkZLWhSxJ14JGbAYJhGrakxWgVVMDePV",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST {origin}/serper/news (orth.sh) or /api/serper/news (stableenrich) with JSON body {q (required), num?, gl?, hl?, location?}. Both gateways identical I/O; Orthogonal is 20x cheaper. x402 payment on Base.",
+      "inputExample": {
+        "q": "openai news",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,page?,engine}; news[].{title,link,snippet?,date,source,imageUrl,position?}; credits",
+      "quirks": [
+        "Same operation on two gateways: Orthogonal $0.002 (default) vs StableEnrich $0.04. Prefer Orthogonal.",
+        "Body field is `q` (required). num/gl/hl/location optional.",
+        "Orthogonal news imageUrls are clean http gstatic thumbnails (no base64 bloat).",
+        "Orthogonal schema only via x402 402-challenge probe; StableEnrich has OpenAPI spec."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google News search via Serper. Returns recent news articles with title, link, snippet, date, source, and imageUrl. POST {origin}/serper/news (orth.sh) or /api/serper/news (stableenrich) with JSON body {q (required), num?, gl?, hl?, location?}. Both gateways identical I/O; Orthogonal is 20x cheaper. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,page?,engine}; news[].{title,link,snippet?,date,source,imageUrl,position?}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-news",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-images",
+    "kind": "api",
+    "name": "Serper Images",
+    "aka": [
+      "serper-images",
+      "images"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Images search via Serper. Returns image results with imageUrl, dimensions, thumbnailUrl, source, domain, and link.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/images",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      },
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/serper/images",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "uAeLhastR1nPEcneNvXAdsSdQ1rD8HPLSHEkkfUHLL7",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST {origin}/serper/images (orth.sh) or /api/serper/images (stableenrich) with JSON body {q (required), num?, gl?, hl?, location?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "running shoes",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,engine}; images[].{title,imageUrl,imageWidth,imageHeight,thumbnailUrl,thumbnailWidth,thumbnailHeight,source,domain,link,googleUrl,position}; credits",
+      "quirks": [
+        "Same operation on two gateways: Orthogonal $0.002 (default) vs StableEnrich $0.04.",
+        "Body field is `q`. Orthogonal images imageUrls are clean http URLs (no base64 bloat) — unlike Serper shopping/lens.",
+        "Orthogonal schema only via x402 402-challenge probe; StableEnrich has OpenAPI spec."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Images search via Serper. Returns image results with imageUrl, dimensions, thumbnailUrl, source, domain, and link. POST {origin}/serper/images (orth.sh) or /api/serper/images (stableenrich) with JSON body {q (required), num?, gl?, hl?, location?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,engine}; images[].{title,imageUrl,imageWidth,imageHeight,thumbnailUrl,thumbnailWidth,thumbnailHeight,source,domain,link,googleUrl,position}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-images",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-shopping",
+    "kind": "api",
+    "name": "Serper Shopping",
+    "aka": [
+      "serper-shopping",
+      "shopping"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Shopping search via Serper. Returns product listings with title, source, link, price, rating, ratingCount, and productId.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0040",
+      "amount": 0.004,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/shopping",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.004,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "4000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      },
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/serper/shopping",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "uAeLhastR1nPEcneNvXAdsSdQ1rD8HPLSHEkkfUHLL7",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST {origin}/serper/shopping (orth.sh) or /api/serper/shopping (stableenrich) with JSON body {q (required), gl?, hl?, num?, page?, location?, autocorrect?, safe?, tbs?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "red sneakers",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,page,engine}; shopping[].{title,source,link,price,imageUrl,rating,ratingCount,productId,position}; credits",
+      "quirks": [
+        "Same operation on two gateways: Orthogonal $0.004 (default) vs StableEnrich $0.04.",
+        "Body field is `q`. Results in shopping[] (not organic[]).",
+        "WARNING: each shopping item's imageUrl is a large inline base64 data:image/webp URI — response bloats to ~300KB+ even for a few results (both gateways). Strip/ignore imageUrl if you only need product data.",
+        "Orthogonal shopping reported credits:3 (costs 3 Serper credits, hence the $0.004 price vs $0.002 for search)."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Shopping search via Serper. Returns product listings with title, source, link, price, rating, ratingCount, and productId. POST {origin}/serper/shopping (orth.sh) or /api/serper/shopping (stableenrich) with JSON body {q (required), gl?, hl?, num?, page?, location?, autocorrect?, safe?, tbs?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,page,engine}; shopping[].{title,source,link,price,imageUrl,rating,ratingCount,productId,position}; credits",
+      "costObservedUsd": 0.004
+    },
+    "source": {
+      "serviceKey": "serper-shopping",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-maps",
+    "kind": "api",
+    "name": "Serper Maps",
+    "aka": [
+      "serper-maps",
+      "maps"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Maps search via Serper. Returns map listings with title, address, lat/long, rating, ratingCount, phoneNumber, website, opening hours, types, and cid/placeId. More detailed than Places.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0060",
+      "amount": 0.006,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/maps",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.006,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0060",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "6000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/maps with JSON body {q (required), gl?, hl?, num?, page?, autocorrect?, location?, ll?}. ll = '@lat,lng,zoomz' for precise geo targeting. x402 payment on Base.",
+      "inputExample": {
+        "q": "coffee shop",
+        "num": 5,
+        "gl": "us",
+        "hl": "en",
+        "location": "New York, NY"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,uule,type,num,page,location,engine}; ll; places[].{position,title,address,latitude,longitude,rating,ratingCount,priceLevel,type,types[],website,phoneNumber?,openingHours{},description?,bookingLinks?,thumbnailUrl,cid,fid,placeId}; credits",
+      "quirks": [
+        "Orthogonal-only (no StableEnrich mirror for maps). $0.006, credits:3.",
+        "Body field is `q`. Use ll ('@40.7128,-74.0060,15z') for precise geo; richer than Places.",
+        "Returns full opening hours, phone, website, lat/lng, and cid/placeId per result.",
+        "Orthogonal schema only via x402 402-challenge probe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Maps search via Serper. Returns map listings with title, address, lat/long, rating, ratingCount, phoneNumber, website, opening hours, types, and cid/placeId. More detailed than Places. POST https://x402.orth.sh/serper/maps with JSON body {q (required), gl?, hl?, num?, page?, autocorrect?, location?, ll?}. ll = '@lat,lng,zoomz' for precise geo targeting. x402 payment on Base. Output: searchParameters.{q,gl,hl,uule,type,num,page,location,engine}; ll; places[].{position,title,address,latitude,longitude,rating,ratingCount,priceLevel,type,types[],website,phoneNumber?,openingHours{},description?,bookingLinks?,thumbnailUrl,cid,fid,placeId}; credits",
+      "costObservedUsd": 0.006
+    },
+    "source": {
+      "serviceKey": "serper-maps",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-places",
+    "kind": "api",
+    "name": "Serper Places",
+    "aka": [
+      "serper-places",
+      "places"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Places search via Serper. Returns local businesses with title, address, lat/long, rating, ratingCount, priceLevel, category, and cid. Lighter than Maps; cid feeds the Reviews endpoint.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/places",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/places with JSON body {q (required), gl?, hl?, lr?, num?, page?, autocorrect?, location?, ll?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "coffee shop",
+        "num": 5,
+        "gl": "us",
+        "hl": "en",
+        "location": "New York, NY"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,uule,type,num,page,location,engine}; places[].{position,title,address,latitude,longitude,rating,ratingCount,priceLevel,category,cid}; credits",
+      "quirks": [
+        "Orthogonal-only. $0.002, credits:1.",
+        "Body field is `q`. Lighter than Maps (no hours/phone/website); returns cid for the Reviews endpoint.",
+        "Orthogonal schema only via x402 402-challenge probe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Places search via Serper. Returns local businesses with title, address, lat/long, rating, ratingCount, priceLevel, category, and cid. Lighter than Maps; cid feeds the Reviews endpoint. POST https://x402.orth.sh/serper/places with JSON body {q (required), gl?, hl?, lr?, num?, page?, autocorrect?, location?, ll?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,uule,type,num,page,location,engine}; places[].{position,title,address,latitude,longitude,rating,ratingCount,priceLevel,category,cid}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-places",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-videos",
+    "kind": "api",
+    "name": "Serper Videos",
+    "aka": [
+      "serper-videos",
+      "videos"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Videos search via Serper. Returns video results with title, link, snippet, imageUrl, videoUrl, duration, source, channel, and date (YouTube, TikTok, Vimeo, etc).",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/videos",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/videos with JSON body {q (required), gl?, hl?, lr?, cr?, num?, page?, autocorrect?, tbs?, location?, safe?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "cute cats",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,page,engine}; videos[].{title,link,snippet,imageUrl,videoUrl?,duration,source,channel,date,position}; credits",
+      "quirks": [
+        "Orthogonal-only. $0.002, credits:1.",
+        "Body field is `q`. imageUrls are clean http gstatic thumbnails. videoUrl present only on some results.",
+        "Orthogonal schema only via x402 402-challenge probe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Videos search via Serper. Returns video results with title, link, snippet, imageUrl, videoUrl, duration, source, channel, and date (YouTube, TikTok, Vimeo, etc). POST https://x402.orth.sh/serper/videos with JSON body {q (required), gl?, hl?, lr?, cr?, num?, page?, autocorrect?, tbs?, location?, safe?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,page,engine}; videos[].{title,link,snippet,imageUrl,videoUrl?,duration,source,channel,date,position}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-videos",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-autocomplete",
+    "kind": "api",
+    "name": "Serper Autocomplete",
+    "aka": [
+      "serper-autocomplete",
+      "autocomplete"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Autocomplete via Serper. Returns search query suggestions for a given prefix. Use for keyword research, SEO, and understanding search intent.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/autocomplete",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/autocomplete with JSON body {q (required, the prefix), gl?, hl?, location?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "weath",
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,engine}; suggestions[].{value}; credits",
+      "quirks": [
+        "Orthogonal-only. $0.002, credits:1.",
+        "Body field is `q` (the query prefix). Output is suggestions[].value (string suggestions).",
+        "No num/page params for this op. Orthogonal schema only via x402 402-challenge probe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Autocomplete via Serper. Returns search query suggestions for a given prefix. Use for keyword research, SEO, and understanding search intent. POST https://x402.orth.sh/serper/autocomplete with JSON body {q (required, the prefix), gl?, hl?, location?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,engine}; suggestions[].{value}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-autocomplete",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-patents",
+    "kind": "api",
+    "name": "Serper Patents",
+    "aka": [
+      "serper-patents",
+      "patents"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Patents search via Serper. Returns patents with title, snippet, link, inventor, assignee, filing/grant/publication dates, publicationNumber, pdfUrl, and figures. Use for IP research and prior-art searches.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0020",
+      "amount": 0.002,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/patents",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.002,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0020",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "2000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://x402.orth.sh/serper/patents with JSON body {q (required), gl?, hl?, num?, page?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "battery technology",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,engine}; organic[].{title,snippet,link,priorityDate,filingDate,grantDate,publicationDate,inventor,assignee,publicationNumber,language,pdfUrl?,thumbnailUrl?,figures[].{imageUrl,thumbnailUrl}}; credits",
+      "quirks": [
+        "Orthogonal-only. $0.002, credits:1.",
+        "FIELD-NAME TRAP: patent results are returned under organic[] (NOT patents[]).",
+        "Body field is `q`. No location/autocorrect/tbs params for patents.",
+        "Orthogonal schema only via x402 402-challenge probe."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Patents search via Serper. Returns patents with title, snippet, link, inventor, assignee, filing/grant/publication dates, publicationNumber, pdfUrl, and figures. Use for IP research and prior-art searches. POST https://x402.orth.sh/serper/patents with JSON body {q (required), gl?, hl?, num?, page?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,engine}; organic[].{title,snippet,link,priorityDate,filingDate,grantDate,publicationDate,inventor,assignee,publicationNumber,language,pdfUrl?,thumbnailUrl?,figures[].{imageUrl,thumbnailUrl}}; credits",
+      "costObservedUsd": 0.002
+    },
+    "source": {
+      "serviceKey": "serper-patents",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-lens",
+    "kind": "api",
+    "name": "Serper Lens",
+    "aka": [
+      "serper-lens",
+      "lens"
+    ],
+    "provider": "Orthogonal",
+    "providerId": "orthogonal",
+    "description": "Google Lens reverse image search via Serper. Pass a public image URL; returns visually-similar/identification results (titles, links, source, price/priceRange where applicable).",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0060",
+      "amount": 0.006,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "Orthogonal",
+        "providerId": "orthogonal",
+        "url": "https://x402.orth.sh/serper/lens",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.006,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0060",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "base",
+              "amount": "6000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x1563CdE0042d17F53b23d91Fd9B73ACE9Da26a09",
+              "maxTimeoutSeconds": 60,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Orthogonal"
+      },
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/serper/lens",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.2,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.200",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "200000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "200000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "5vULL8S4YreVBQohDgMeoT1y73zp33jrRP4dgSQEFMqJ",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST {origin}/serper/lens (orth.sh) or /api/serper/lens (stableenrich) with JSON body {url (required) — public image URL, gl?, hl?, num?, page?}. x402 payment on Base.",
+      "inputExample": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png"
+      },
+      "outputShape": "searchParameters.{type,num,page,url,gl?,hl?,engine}; organic[].{position,title,link,source,imageUrl,thumbnailUrl,price?,priceRange?,snippet?}; credits",
+      "quirks": [
+        "INPUT TRAP: this is the ONLY Serper op that takes `url` (not `q`). url must be a publicly accessible image URL.",
+        "Same op on two gateways: Orthogonal $0.006 (default) vs StableEnrich $0.20 (33x cheaper on Orthogonal).",
+        "Results returned under organic[]. Verified shape returned organic:[] (empty) for a generic test PNG — endpoint is healthy (200), Lens just had no matches for that image; use a real-world photo for matches.",
+        "Orthogonal lens reported credits:3. StableEnrich lens inlines base64 imageUrls; Orthogonal returns http imageUrls.",
+        "Orthogonal schema only via x402 402-challenge probe; StableEnrich has OpenAPI spec."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Lens reverse image search via Serper. Pass a public image URL; returns visually-similar/identification results (titles, links, source, price/priceRange where applicable). POST {origin}/serper/lens (orth.sh) or /api/serper/lens (stableenrich) with JSON body {url (required) — public image URL, gl?, hl?, num?, page?}. x402 payment on Base. Output: searchParameters.{type,num,page,url,gl?,hl?,engine}; organic[].{position,title,link,source,imageUrl,thumbnailUrl,price?,priceRange?,snippet?}; credits",
+      "costObservedUsd": 0.006
+    },
+    "source": {
+      "serviceKey": "serper-lens",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "serper-people-image-search",
+    "kind": "api",
+    "name": "Serper People Image Search",
+    "aka": [
+      "serper-people-image-search",
+      "people-image-search"
+    ],
+    "provider": "stableenrich",
+    "providerId": "stableenrich",
+    "description": "Google Images search tuned for people/headshots via Serper (StableEnrich). Same output as Serper Images but optimized for resolving a person's headshot. For ambiguous people, resolve the profile slug/company/title first.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "google-search",
+      "seo",
+      "news",
+      "images",
+      "maps",
+      "shopping"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.040",
+      "amount": 0.04,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "stableenrich",
+        "providerId": "stableenrich",
+        "url": "https://stableenrich.dev/api/serper/people-image-search",
+        "method": "POST",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.04,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.040",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "40000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x325bdF6F7efAB24a2210c48c1b64cAb2eAe1d430",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "40000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "8EgACpZ16XWEt7YjJPsh1ZheVRZUGmmwQ8nJdmA1o5w4",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "AepWpq3GQwL8CeKMtZyKtKPa7W91Coygh3ropAJapVdU",
+                "decimals": 6,
+                "recentBlockhash": "uAeLhastR1nPEcneNvXAdsSdQ1rD8HPLSHEkkfUHLL7",
+                "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "features": {
+                  "xSettlementAccountSupported": true
+                }
+              }
+            }
+          ]
+        },
+        "inputSchema": null,
+        "outputSchema": null,
+        "probe": {
+          "status": 402,
+          "method": "POST",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "Merit"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-06-10",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "POST https://stableenrich.dev/api/serper/people-image-search with JSON body {q (required) — exact-name + company/context query, num?, gl?, hl?, location?}. x402 payment on Base.",
+      "inputExample": {
+        "q": "Sam Altman OpenAI headshot",
+        "num": 5,
+        "gl": "us",
+        "hl": "en"
+      },
+      "outputShape": "searchParameters.{q,gl,hl,type,num,engine} (type=images); images[].{title,imageUrl,imageWidth,imageHeight,thumbnailUrl,thumbnailWidth,thumbnailHeight,source,domain,link,googleUrl,position}; credits",
+      "quirks": [
+        "StableEnrich-only (no Orthogonal mirror). $0.04. Identical output schema to Serper Images (type=images) — it's an images search with people-tuned prompting.",
+        "Body field is `q`. Best with exact-name + company context, e.g. '\"Jane Doe\" \"Acme\" LinkedIn headshot'.",
+        "imageUrls are clean http URLs (no base64 bloat for this op).",
+        "LinkedIn photos may be non-public; if a search fails, retry with public non-LinkedIn disambiguators."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Google Images search tuned for people/headshots via Serper (StableEnrich). Same output as Serper Images but optimized for resolving a person's headshot. For ambiguous people, resolve the profile slug/company/title first. POST https://stableenrich.dev/api/serper/people-image-search with JSON body {q (required) — exact-name + company/context query, num?, gl?, hl?, location?}. x402 payment on Base. Output: searchParameters.{q,gl,hl,type,num,engine} (type=images); images[].{title,imageUrl,imageWidth,imageHeight,thumbnailUrl,thumbnailWidth,thumbnailHeight,source,domain,link,googleUrl,position}; credits",
+      "costObservedUsd": 0.04
+    },
+    "source": {
+      "serviceKey": "serper-people-image-search",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "openwebninja-books-search",
+    "kind": "api",
+    "name": "OpenWebNinja Books Search",
+    "aka": [
+      "openwebninja-books-search",
+      "realtime-serp-data books search",
+      "google books search",
+      "book search api",
+      "serp books"
+    ],
+    "provider": "OpenWebNinja",
+    "providerId": "openwebninja",
+    "description": "Search for books, newspapers and magazines across the web via the Google Books SERP — returns matching titles with authors, publication year, cover image, preview/full-view links, more-editions links and rank, with pagination and filters for document type, view type, publication-year range, country and language.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "books",
+      "serp",
+      "search",
+      "google-books",
+      "web-data",
+      "publications"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0030",
+      "amount": 0.003,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "OpenWebNinja",
+        "providerId": "openwebninja",
+        "url": "https://x402.openwebninja.com/realtime-serp-data/books/search",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.003,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "3000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:42161",
+              "amount": "3000",
+              "asset": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search query / keyword, e.g. 'atomic habits' or 'james clear'."
+            },
+            "page": {
+              "type": "number",
+              "default": 1,
+              "description": "Results page to return (pagination / scrolling); ~10 results per page."
+            },
+            "document_type": {
+              "type": "string",
+              "enum": [
+                "any",
+                "books",
+                "newspapers",
+                "magazines"
+              ],
+              "default": "any",
+              "description": "Find items of a specific type."
+            },
+            "view_type": {
+              "type": "string",
+              "enum": [
+                "any",
+                "preview_and_full_view",
+                "full_view"
+              ],
+              "default": "any",
+              "description": "Filter by the view available for the item (preview / full)."
+            },
+            "publication_year_from": {
+              "type": "number",
+              "description": "Find books published after a specific year (e.g. 1980)."
+            },
+            "publication_year_to": {
+              "type": "number",
+              "description": "Find books published before a specific year (e.g. 2013)."
+            },
+            "country": {
+              "type": "string",
+              "default": "us",
+              "description": "2-letter country code (ISO 3166) for localization."
+            },
+            "language": {
+              "type": "string",
+              "default": "en",
+              "description": "2-letter language code (ISO 639-1) for the results."
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "request_id": {
+              "type": "string"
+            },
+            "parameters": {
+              "type": "object"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "id (Google Books volume id), title, subtitle (authors + publication year), image_url (cover, may be a data: URI placeholder or null), view_url (Google Books page), view_label (Preview/Full view; omitted when no preview), publication_year, book_authors[{name,url}], book_more_editions_url, position (1-based within page), rank (1-based across pages)."
+              }
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://x402.openwebninja.com/realtime-serp-data/books/search?query=<keyword>&page=1&country=us&language=en — pay per call via x402 (USDC on Base, Polygon or Arbitrum). Results are returned inline in the 200 JSON under data[]; no polling. Increment page for the next set (~10 results/page).",
+      "inputExample": {
+        "query": "atomic habits",
+        "page": 1,
+        "country": "us",
+        "language": "en"
+      },
+      "outputShape": "{ status:'OK', request_id, parameters:{query,country,language,view_type,document_type}, data:[ { id, title, subtitle, image_url, view_url, view_label, publication_year, book_authors:[{name,url}], book_more_editions_url, position, rank } ] }. Verified with query='atomic habits' -> HTTP 200, 10 book results (e.g. 'Atomic Habits: The life-changing million-copy #1 bestseller' by James Clear, 2018, with Google Books view_url and more-editions link).",
+      "quirks": [
+        "query is the only required param; page paginates (~10 results per page).",
+        "Flat price $0.003 per call (amount 3000, USDC 6dp), quoted identically in the 402 across Base (eip155:8453), Polygon (eip155:137) and Arbitrum (eip155:42161); the exact amount is always in the endpoint's own 402 challenge.",
+        "image_url is frequently a 1x1 data:image/gif base64 placeholder (or null) rather than a real cover URL — the real cover loads client-side on Google Books; treat image_url as best-effort.",
+        "document_type also covers newspapers and magazines, not just books; view_type filters for preview/full-view availability.",
+        "This is the Google Books SERP vertical. The provider also exposes an identical alias at /realtime-books-data/search on the same host; either path returns the same data and the same $0.003 price."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Search books/newspapers/magazines across the web via the Google Books SERP. GET https://x402.openwebninja.com/realtime-serp-data/books/search with query params: ?query=<keyword, required, e.g. 'atomic habits'>, &page=<1-based, default 1, ~10 results/page>, &document_type=<any|books|newspapers|magazines>, &view_type=<any|preview_and_full_view|full_view>, &publication_year_from=<year>, &publication_year_to=<year>, &country=<2-letter, default us>, &language=<2-letter, default en>. Pay per call via x402 (flat $0.003 USDC on Base, Polygon or Arbitrum; no API key). Read results from data[] — title, authors (book_authors[].name), year (publication_year), Google Books page (view_url), preview availability (view_label), more editions (book_more_editions_url), cover (image_url, often a placeholder). Paginate by incrementing page. Result is synchronous in the 200; no polling. Verified 2026-07-30 with query='atomic habits' -> HTTP 200, $0.003 charged, 10 results returned.",
+      "costObservedUsd": 0.003
+    },
+    "source": {
+      "serviceKey": "openwebninja-books-search",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "openwebninja-shorts-search",
+    "kind": "api",
+    "name": "OpenWebNinja Shorts Search",
+    "aka": [
+      "openwebninja-shorts-search",
+      "realtime-serp-data shorts search",
+      "short video search",
+      "shorts serp",
+      "web shorts search"
+    ],
+    "provider": "OpenWebNinja",
+    "providerId": "openwebninja",
+    "description": "Real-time short-video search across the web — returns matching shorts from Pinterest, TikTok, YouTube Shorts, Instagram Reels, Facebook, Lemon8 and more, each with title, thumbnail, video URL, channel, source platform, duration and rank, with pagination and time/date/quality filters.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "short-video",
+      "video-search",
+      "web-data",
+      "shorts",
+      "search"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0030",
+      "amount": 0.003,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "OpenWebNinja",
+        "providerId": "openwebninja",
+        "url": "https://x402.openwebninja.com/realtime-serp-data/shorts/search",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.003,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "3000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:42161",
+              "amount": "3000",
+              "asset": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search query / keyword for short videos, e.g. 'cooking recipes'."
+            },
+            "page": {
+              "type": "number",
+              "default": 1,
+              "description": "Results page to return (pagination / scrolling)."
+            },
+            "time": {
+              "type": "string",
+              "default": "any",
+              "enum": [
+                "any",
+                "day",
+                "week",
+                "month",
+                "year"
+              ],
+              "description": "Find shorts posted in a specific relative time range."
+            },
+            "posted_date_from": {
+              "type": "string",
+              "description": "Find shorts posted after a specific date (e.g. 1/19/2025)."
+            },
+            "posted_date_to": {
+              "type": "string",
+              "description": "Find shorts posted before a specific date (e.g. 3/19/2025)."
+            },
+            "high_quality": {
+              "type": "boolean",
+              "description": "Return only shorts of high quality."
+            },
+            "closed_captioned": {
+              "type": "boolean",
+              "description": "Return only shorts with closed captions."
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "The status of the API response (e.g. 'OK')."
+            },
+            "request_id": {
+              "type": "string",
+              "description": "A unique identifier for the API request."
+            },
+            "parameters": {
+              "type": "object",
+              "description": "Echo of the request parameters."
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "id, title, image_url (thumbnail), video_url, channel_name, source (platform, e.g. YouTube/TikTok/Pinterest/Instagram/Facebook/Lemon8), duration (e.g. '0:26'), aspect_ratio, position, rank."
+              }
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-30",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://x402.openwebninja.com/realtime-serp-data/shorts/search?query=<keyword>&page=1 — pay per call via x402 (USDC on Base, Polygon or Arbitrum). Results are returned inline in the 200 JSON under data[] (array of short-video results); no polling. Increment page for the next set.",
+      "inputExample": {
+        "query": "cooking recipes",
+        "page": 1
+      },
+      "outputShape": "{ status:'OK', request_id, parameters:{query,page,time,...}, data:[ { id, title, image_url, video_url, channel_name, source, duration, aspect_ratio, position, rank } ] }. Verified with query='cooking recipes' -> HTTP 200, 12 short videos returned (e.g. 'Just few ingredients, Delicious dinner is ready in 5 mins ...' on YouTube by 'South Cookery', 0:29; plus TikTok/Pinterest/Instagram/Facebook/Lemon8 results).",
+      "quirks": [
+        "query is the only required param; page drives pagination (~12 results/page in the verified call).",
+        "Results aggregate short-form video from across the web (Pinterest, TikTok, YouTube Shorts, Instagram Reels, Facebook, Lemon8, etc.) — the platform is in each result's 'source' field.",
+        "The live 200 includes a 'duration' field (e.g. '0:26') on each result that is not declared in the provider's openapi ShortsVideo schema.",
+        "Optional filters: time=any|day|week|month|year, posted_date_from / posted_date_to (M/D/YYYY), high_quality, closed_captioned.",
+        "Flat price $0.003 per call (amount 3000, USDC 6dp), quoted identically in the 402 across Base/Polygon/Arbitrum; the exact amount is always in the endpoint's own 402 challenge."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Search real-time short videos across the web. GET https://x402.openwebninja.com/realtime-serp-data/shorts/search with query params: ?query=<keyword, required, e.g. 'cooking recipes'>, &page=<page number, default 1>, and optional filters &time=<any|day|week|month|year>, &posted_date_from=<M/D/YYYY>, &posted_date_to=<M/D/YYYY>, &high_quality=true, &closed_captioned=true. Pay per call via x402 (flat $0.003 USDC on Base, Polygon or Arbitrum; no API key). Read results from data[] — each item has title, thumbnail (image_url), video_url, channel (channel_name), source platform, duration, and rank/position. Paginate by incrementing page. Result is synchronous in the 200; no polling. Verified 2026-07-30 with query='cooking recipes' -> HTTP 200, $0.003 charged, 12 short videos returned.",
+      "costObservedUsd": 0.003
+    },
+    "source": {
+      "serviceKey": "openwebninja-shorts-search",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "x402node-chinese-shopping-serp",
+    "kind": "api",
+    "name": "X402node Chinese Shopping SERP",
+    "aka": [
+      "x402node-cn-shopping",
+      "cn-shopping-serp",
+      "chinese-google-shopping"
+    ],
+    "provider": "x402node",
+    "providerId": "x402node",
+    "description": "Chinese-language Google Shopping SERP: query Google Shopping with Chinese keywords and get structured product listings (title, price, seller, rating, link), localized to zh-CN with regional targeting (default hk; also tw/sg). For cross-border ecommerce price research and product discovery in Chinese-speaking markets.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "serp",
+      "shopping",
+      "ecommerce",
+      "china",
+      "price-comparison",
+      "x402"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.015",
+      "amount": 0.015,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "x402node",
+        "providerId": "x402node",
+        "url": "https://api.x402node.dev/serp/cn-shopping",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.015,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.015",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "15000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x4466d4A84b7c49a6A094ec6eef4a0712D6dd125e",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+              "amount": "15000",
+              "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "payTo": "9urRvUx69HqAopg1JGV9P9wR7JdKoztzdkuNyJ8Eo1up",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "feePayer": "2wKupLR9q6wXYppw8Gr2NvWxKBUqm4PPJKkQfoxHDBg4"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "required": [
+            "keyword",
+            "country"
+          ],
+          "properties": {
+            "keyword": {
+              "type": "string",
+              "description": "Chinese product keyword (required)"
+            },
+            "country": {
+              "type": "string",
+              "description": "2-letter region code, default hk (hk/tw/sg; cn has no Google Shopping data)"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "hl": {
+              "type": "string"
+            },
+            "count": {
+              "type": "integer"
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "link": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "note": {
+              "type": "string"
+            }
+          }
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active",
+        "team": "x402node"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-07-31",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://api.x402node.dev/serp/cn-shopping?keyword=<term>&country=<hk|tw|sg> — query-string params, no JSON body. Both keyword and country are required per the x402 bazaar schema (country defaults to hk server-side if omitted). x402 paid (~$0.015 USDC on Base or Solana).",
+      "inputExample": {
+        "keyword": "laptop",
+        "country": "HK"
+      },
+      "outputShape": "body.{query, type ('shopping'), country, hl ('zh-CN'), count, results[].{title, link (Google Shopping product URL), price (localized, e.g. 'HK$5,699.00'), source, rating}, note}",
+      "quirks": [
+        "keyword is intended for Chinese product terms (中文商品关键词) but English terms also work — Google Shopping HK returns zh-CN localized listings either way (verified with keyword=laptop, country=HK).",
+        "country only accepts Chinese-speaking regions: hk (default), tw, sg. Mainland cn has NO Google Shopping coverage — passing cn falls back to hk.",
+        "Results are localized to hl=zh-CN: titles/prices come back in the target market (e.g. prices like 'HK$5,699.00').",
+        "The `source` (seller) and `rating` fields were returned EMPTY strings for every result in the verified run — do not rely on them; use title, link, and price.",
+        "This is the dedicated Chinese shopping SERP; for generic/global Google Shopping use /serp/shopping ($0.02), and for combined Chinese web/news/shopping use /serp/cn (type=shopping).",
+        "Accepts payment on Base OR Solana USDC — either network works, same $0.015."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Chinese-language Google Shopping SERP. Call GET https://api.x402node.dev/serp/cn-shopping with query params keyword (the product term, required) and country (hk default, or tw/sg — NOT cn, which has no Google Shopping data). Pay ~$0.015 USDC via x402 on Base or Solana (no API key). The response is synchronous JSON: read body.results[], each with title, link (Google Shopping product URL), and price (localized, e.g. 'HK$5,699.00'). Note that source (seller) and rating fields often come back empty. Use for cross-border ecommerce price research and product discovery in Chinese-speaking markets.",
+      "costObservedUsd": 0.015
+    },
+    "source": {
+      "serviceKey": "x402node-chinese-shopping-serp",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  },
+  {
+    "id": "openwebninja-web-search",
+    "kind": "api",
+    "name": "OpenWebNinja Web Search",
+    "aka": [
+      "openwebninja-web-search",
+      "realtime-web-search search full",
+      "google web search serp",
+      "full serp web search",
+      "web search api"
+    ],
+    "provider": "OpenWebNinja",
+    "providerId": "openwebninja",
+    "description": "Real-time full-depth Google web search (SERP) — returns organic results (title, URL, snippet, source, domain, date, rank) plus ads, AI overviews, knowledge graph, places, top stories, inline videos, answer box and discussions, with Google Advanced Search operators, city-level geo targeting and pagination.",
+    "category": "search",
+    "subcategory": "serp-seo-apis",
+    "tags": [
+      "web-search",
+      "serp",
+      "google",
+      "search",
+      "web-data",
+      "organic-results"
+    ],
+    "modality": {
+      "input": [
+        "text"
+      ],
+      "output": [
+        "json"
+      ]
+    },
+    "pricing": {
+      "headline": "$0.0030",
+      "amount": 0.003,
+      "currency": "USD",
+      "unit": "per search"
+    },
+    "operations": [],
+    "backends": [
+      {
+        "provider": "OpenWebNinja",
+        "providerId": "openwebninja",
+        "url": "https://x402.openwebninja.com/realtime-web-search/search-full",
+        "method": "GET",
+        "hosting": "custom",
+        "authMode": "x402",
+        "price": {
+          "amount": 0.003,
+          "currency": "USD",
+          "unit": "per search",
+          "display": "$0.0030",
+          "min": null,
+          "max": null,
+          "source": "agentcash",
+          "dynamic": false
+        },
+        "payment": {
+          "protocols": [
+            "x402"
+          ],
+          "accepts": [
+            {
+              "scheme": "exact",
+              "network": "eip155:8453",
+              "amount": "3000",
+              "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:137",
+              "amount": "3000",
+              "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            },
+            {
+              "scheme": "exact",
+              "network": "eip155:42161",
+              "amount": "3000",
+              "asset": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "payTo": "0x3e7c9cA818f713F19e126E3B7B37B47dC1411570",
+              "maxTimeoutSeconds": 300,
+              "extra": {
+                "name": "USD Coin",
+                "version": "2"
+              }
+            }
+          ]
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string",
+              "description": "Search query. Supports all Google Advanced Search operators (site:, inurl:, intitle:, etc.)."
+            },
+            "gl": {
+              "type": "string",
+              "default": "us",
+              "description": "Country/region for the query — 2-letter ISO 3166-1 alpha-2 code."
+            },
+            "hl": {
+              "type": "string",
+              "default": "en",
+              "description": "Search language — 2-letter ISO 639-1 alpha-2 code."
+            },
+            "tbs": {
+              "type": "string",
+              "description": "Advanced Google search params not available otherwise (e.g. qdr:d for last day, qdr:w for last week)."
+            },
+            "location": {
+              "type": "string",
+              "description": "Where the search originates from; recommended at city level (e.g. 'London, England, United Kingdom'). See https://api.openwebninja.com/google-search-locations.json."
+            },
+            "lr": {
+              "type": "string",
+              "description": "Restrict results to specific language(s): lang_{code} with | delimiter (e.g. lang_fr|lang_de)."
+            },
+            "nfpr": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1"
+              ],
+              "default": "0",
+              "description": "nfpr=1 excludes auto-corrected-query results for a misspelled query; 0 includes them (default)."
+            },
+            "nhr": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1"
+              ],
+              "default": "0",
+              "description": "nhr=1 excludes 'People also ask' related questions; 0 includes them (default)."
+            },
+            "num": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "default": 10,
+              "description": "Maximum number of organic results per request (1-10)."
+            },
+            "start": {
+              "type": "integer",
+              "default": 0,
+              "description": "Number of results to skip for pagination (default 0)."
+            },
+            "fetch_ai_overviews": {
+              "type": "boolean",
+              "default": false,
+              "description": "Return AI Overviews when available (false by default). When enabled and available, consumes an extra request credit."
+            },
+            "return_organic_result_video_thumbnail": {
+              "type": "boolean",
+              "default": false,
+              "description": "Return a base64-encoded video_thumbnail for organic video results (false by default)."
+            }
+          },
+          "required": [
+            "q"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "API response status (e.g. 'OK')."
+            },
+            "request_id": {
+              "type": "string",
+              "description": "Unique ID to trace the request."
+            },
+            "parameters": {
+              "type": "object",
+              "description": "Echo of the request parameters used (q, gl, hl, num, start, nfpr, nhr, fetch_ai_overviews, return_organic_result_video_thumbnail, deduplicate, and any location/lr/tbs when passed)."
+            },
+            "data": {
+              "type": "object",
+              "required": [
+                "organic_results",
+                "has_ai_overviews"
+              ],
+              "properties": {
+                "total_organic_results": {
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "Approximate total number of organic results Google reports for the query."
+                },
+                "organic_results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "description": "title, url, snippet, source, displayed_link, domain, date, snippet_highlighted_words[], position (1-based within page), rank (1-based across pages); video results add video_preview_url/video_duration; shopping results may add price; video_thumbnail (base64) only when return_organic_result_video_thumbnail=true."
+                  }
+                },
+                "ads": {
+                  "type": "array",
+                  "description": "Sponsored / ad results when Google surfaces them."
+                },
+                "has_ai_overviews": {
+                  "type": "boolean",
+                  "description": "Whether AI Overviews are available for the query (content returned only when fetch_ai_overviews is enabled)."
+                }
+              },
+              "description": "Also includes AI overviews, knowledge graph, places, top stories, inline videos, answer box and discussions blocks when Google surfaces them for the query."
+            }
+          },
+          "required": [
+            "status",
+            "request_id",
+            "parameters",
+            "data"
+          ]
+        },
+        "probe": {
+          "status": 402,
+          "method": "GET",
+          "payable": true,
+          "free": false,
+          "blocked": false,
+          "checkedAt": "2026-06-02T01:50:31.353Z"
+        },
+        "status": "active"
+      }
+    ],
+    "docs": null,
+    "usage": {
+      "status": "verified",
+      "verifiedAt": "2026-08-07",
+      "resultPull": "sync",
+      "auth": "none",
+      "callShape": "GET https://x402.openwebninja.com/realtime-web-search/search-full?q=<query>&gl=us&hl=en&num=10 — pay per call via x402 (USDC on Base, Polygon or Arbitrum; no API key). Results returned inline in the 200 JSON under data.organic_results[]; no polling. Paginate via start (skip N) and cap organic results with num (1-10).",
+      "inputExample": {
+        "q": "coffee",
+        "gl": "us",
+        "hl": "en",
+        "num": 10
+      },
+      "outputShape": "{ status:'OK', request_id, parameters:{q,gl,hl,num,start,nfpr,nhr,fetch_ai_overviews,...}, data:{ total_organic_results, organic_results:[ {title,url,snippet,source,displayed_link,domain,date,snippet_highlighted_words[],position,rank} ], ads[], has_ai_overviews, plus ai_overviews/knowledge_graph/places/top_stories/videos/answer_box/discussions when present } }. Verified with q='coffee' -> HTTP 200, total_organic_results 176, 9 organic results (Wikipedia rank 1, Britannica, plus a YouTube video result with video_duration and shopping result with price), has_ai_overviews=true.",
+      "quirks": [
+        "q is the only required param; gl (country) and hl (language) default to us/en.",
+        "num caps organic results at 1-10 per request; use start to paginate (skip N results).",
+        "openapi notes each request consumes 2 request credits (heavy 'full-depth' serp path), and fetch_ai_overviews=true adds another credit when overviews are available — but the x402 price is a flat $0.003 (amount 3000, USDC 6dp) regardless, quoted identically across Base (eip155:8453), Polygon (eip155:137) and Arbitrum (eip155:42161).",
+        "has_ai_overviews only signals availability; set fetch_ai_overviews=true to actually receive AI Overview content.",
+        "Supports Google Advanced Search operators inside q (site:, inurl:, intitle:) plus tbs (e.g. qdr:d/qdr:w for recency) and city-level geo via location.",
+        "The exact amount is always in the endpoint's own 402 challenge."
+      ],
+      "needs": [],
+      "needsApproval": false,
+      "guide": "Full-depth real-time Google web search (SERP). GET https://x402.openwebninja.com/realtime-web-search/search-full with query params: ?q=<query, required — supports Google operators site:/inurl:/intitle:>, &gl=<2-letter country, default us>, &hl=<2-letter language, default en>, &num=<1-10 organic results, default 10>, &start=<pagination offset, default 0>, and optional &tbs=<qdr:d|qdr:w|...>, &location=<city, e.g. 'London, England, United Kingdom'>, &lr=<lang_fr|lang_de>, &nfpr=<0|1>, &nhr=<0|1>, &fetch_ai_overviews=<true to include AI Overviews>, &return_organic_result_video_thumbnail=<true for base64 video thumbnails>. Pay per call via x402 (flat $0.003 USDC on Base, Polygon or Arbitrum; no API key). Read results from data.organic_results[] — each has title, url, snippet, source, domain, date, position and rank; the response also carries ads, knowledge_graph, places, top_stories, videos, answer_box, discussions and (when fetch_ai_overviews) AI overviews. Result is synchronous in the 200; no polling. Verified 2026-08-07 with q='coffee' -> HTTP 200, $0.003 charged, 9 organic results (total_organic_results 176).",
+      "costObservedUsd": 0.003
+    },
+    "source": {
+      "serviceKey": "openwebninja-web-search",
+      "discoveredVia": [
+        "serp api",
+        "google search results",
+        "serpapi",
+        "dataforseo"
+      ],
+      "lastSyncedAt": "2026-06-02T01:50:31.353Z",
+      "hosting": "custom"
+    },
+    "status": "active"
+  }
+]

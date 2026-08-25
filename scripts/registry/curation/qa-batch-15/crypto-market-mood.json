@@ -1,0 +1,55 @@
+{
+  "serviceId": "crypto-market-mood",
+  "subcat": "trends-sentiment",
+  "batchId": "batch-15",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://httpay.xyz/api/market-mood",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://httpay.xyz/api/twitter-sentiment",
+      "method": "GET",
+      "amountUsd": 0.02
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://httpay.xyz/api/twitter-sentiment?query=<term> (x402 paid, ~$0.02 USDC on Base)",
+    "inputExample": {
+      "query": "bitcoin"
+    },
+    "outputShape": "body.sentiment (e.g. \"Neutral 🟡\"), body.sentimentScore, body.breakdown.{positive,negative,neutral}, body.sampleSize, body.mentions[]",
+    "quirks": [
+      "MANDATORY ?query= query parameter — must be in the URL query string, not a JSON body. Without it the endpoint returns HTTP 200 with {error:'Missing ?query= parameter'} AND STILL CHARGES ~$0.02. Always include ?query= or you waste money.",
+      "Sentiment is web-search-approximated, NOT a real Twitter/X API integration (body.note states this). sampleSize can be 0 / breakdown all zeros even for popular terms like 'bitcoin' — data quality is shallow.",
+      "qa-pay reported confirmed:false / txHash:null but status 200 and paid:true; settlement appears to go through (got real data on second call)."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call GET https://httpay.xyz/api/twitter-sentiment with a required ?query=<term> query-string parameter (e.g. query=bitcoin). It is x402-paid (~$0.02 USDC on Base), pay-per-call, no API key. Read the result from body.sentiment / body.sentimentScore and the body.breakdown counts; body.mentions[] holds sample posts. Do NOT call it without the ?query= param — it returns a 200 error object but still charges you.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "crypto-market-mood#0",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "crypto-market-mood#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    }
+  ]
+}

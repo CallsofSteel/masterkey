@@ -1,0 +1,89 @@
+{
+  "serviceId": "ocr-image-pdf-to-text",
+  "subcat": "ocr-document-extraction",
+  "batchId": "batch-18",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://api.x402node.dev/image/ocr",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://api.strale.io/x402/image-to-text",
+      "method": "POST",
+      "amountUsd": 0.054001
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/pdf-ocr-api-d4645c",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/image-ocr-api-491c11/:endpoint",
+      "method": "POST"
+    },
+    {
+      "backend": "https://orbisapi.com/proxy/ocr-advanced-api-d4d35f",
+      "method": "POST"
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://api.x402node.dev/image/ocr?url=<IMAGE_URL>&lang=eng (x402 paid, ~$0.01 USDC on Base). NOTE: method is GET with query params, NOT POST — POST returns 404.",
+    "inputExample": {
+      "url": "https://tesseract.projectnaptha.com/img/eng_bw.png",
+      "lang": "eng"
+    },
+    "outputShape": "body.text (extracted OCR text), body.confidence (0-100), body.lang, body.processing_ms, body.file_size_bytes, body.lines_count, body.words_count",
+    "quirks": [
+      "Registry CALL says POST but the real endpoint is GET — POST returns 404 'Cannot POST /image/ocr'.",
+      "Registry priceDisplay is 'Free' but it actually charges $0.01 USDC (maxAmountRequired 10000 atomic) on Base.",
+      "Image is supplied via the ?url= query param (a publicly reachable image URL), NOT a request body.",
+      "Optional ?lang= query param (default eng); supports eng, chi, jpn, kor, deu, fra, spa, ita.",
+      "lines_count and words_count came back 0 even though text was extracted — rely on body.text and body.confidence, not the count fields.",
+      "Despite the registry name 'Image & PDF to Text', the 402 description only mentions Tesseract OCR on image URLs; PDF support is unverified."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Call this endpoint as a GET request (NOT POST, despite the registry listing POST). Put the public image URL in the ?url= query param, e.g. GET https://api.x402node.dev/image/ocr?url=https://example.com/scan.png and optionally &lang=eng. It is x402-paid (~$0.01 USDC on Base), no API key/SIWX needed — just pay via your wallet. Read the extracted text from body.text and the OCR quality from body.confidence (0-100). Ignore lines_count/words_count which can be 0 even on success.",
+    "costObservedUsd": 0.01
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "ocr-image-pdf-to-text#0",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "ocr-image-pdf-to-text#1",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "ocr-image-pdf-to-text#2",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ocr-image-pdf-to-text#3",
+      "classification": "needs-input",
+      "phaseB": "SKIP",
+      "realCostUsd": null
+    },
+    {
+      "key": "ocr-image-pdf-to-text#4",
+      "classification": "broken",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.005
+    }
+  ]
+}

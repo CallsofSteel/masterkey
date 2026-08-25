@@ -1,0 +1,110 @@
+{
+  "serviceId": "stabletravel-flight-data",
+  "subcat": "flight-aviation",
+  "batchId": "batch-12",
+  "action": "add-usage",
+  "drop": false,
+  "statusOverride": "active",
+  "registryFixes": [
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/UAL237-1779611729-fa-1059p/position",
+      "method": "GET",
+      "amountUsd": 0.02
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/flights/UAL237-1779611729-fa-1059p/track",
+      "method": "GET",
+      "amountUsd": 0.024
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/NRT",
+      "method": "GET",
+      "amountUsd": 0.03
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KMIA/flights/departures",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flightaware/airports/KMIA/flights/arrivals",
+      "method": "GET",
+      "amountUsd": 0.01
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/search",
+      "method": "GET",
+      "amountUsd": 0.054
+    },
+    {
+      "backend": "https://stabletravel.dev/api/flights/status",
+      "method": "GET",
+      "amountUsd": 0.0054
+    }
+  ],
+  "usage": {
+    "status": "verified",
+    "verifiedAt": "2026-06-08",
+    "resultPull": "sync",
+    "auth": "none",
+    "callShape": "GET https://stabletravel.dev/api/flightaware/flights/{fa_flight_id}/position (path param is a FlightAware fa_flight_id, e.g. UAL237-1779611729-fa-1059p)",
+    "inputExample": {
+      "fa_flight_id": "UAL237-1779611729-fa-1059p"
+    },
+    "outputShape": "On success: body with live position fields (lat/lon/altitude/groundspeed/heading) for the given flight. On failure: body.success=false, body.error (FlightAware error string). The tested example returned body.error with reason NO_DATA because the example fa_flight_id was stale.",
+    "quirks": [
+      "The path segment is a FlightAware fa_flight_id (a time-encoded identifier like UAL237-1779611729-fa-1059p), NOT a plain flight number like UAL237. You must first obtain a CURRENT fa_flight_id from the search endpoint (GET /api/flightaware/flights/search?query=-idents UAL237) before calling this — IDs encode a timestamp and expire as the flight ages out of FlightAware's data window.",
+      "The hardcoded registry example fa_flight_id (UAL237-1779611729-fa-1059p) is now stale: it returns HTTP 400 with body.error reason NO_DATA. This is upstream FlightAware 'no data', not a broken route — the endpoint paid and responded correctly.",
+      "Errors are returned as body.success=false + body.error (still HTTP 400) rather than a thrown gateway error; you still get charged $0.02 even on a NO_DATA result, so always source a live fa_flight_id first."
+    ],
+    "needs": [],
+    "needsApproval": false,
+    "guide": "Pay-per-call x402 ($0.02 on Base USDC, no API key). This returns the live position/track point for a single flight identified by a FlightAware fa_flight_id in the URL path. Do NOT use a plain flight number — first call the sibling search endpoint (GET https://stabletravel.dev/api/flightaware/flights/search?query=-idents UAL237) to get a current fa_flight_id from body.flights[].fa_flight_id, then call GET /api/flightaware/flights/{fa_flight_id}/position. Read position data from the response body on success; on failure check body.success and body.error. Note you are charged even when FlightAware returns NO_DATA for a stale/expired identifier.",
+    "costObservedUsd": 0.02
+  },
+  "droppedReason": null,
+  "_backends": [
+    {
+      "key": "stabletravel-flight-data#2",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.02
+    },
+    {
+      "key": "stabletravel-flight-data#3",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": 0.024
+    },
+    {
+      "key": "stabletravel-flight-data#4",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.03
+    },
+    {
+      "key": "stabletravel-flight-data#5",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#6",
+      "classification": "verified",
+      "phaseB": "SKIP",
+      "realCostUsd": 0.01
+    },
+    {
+      "key": "stabletravel-flight-data#7",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    },
+    {
+      "key": "stabletravel-flight-data#8",
+      "classification": "verified-with-quirks",
+      "phaseB": "PASS",
+      "realCostUsd": null
+    }
+  ]
+}
