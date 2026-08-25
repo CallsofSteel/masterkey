@@ -1,10 +1,10 @@
 # MasterKey
 
-**A pay-per-use catalog of [x402](https://x402.org) AI & data services — usable by people and by AI agents, with zero crypto knowledge on either side.** Browse a curated catalog of AI media, LLMs, voice, search, data, comms, commerce, and infra services, then *use* any of them per call. MasterKey handles the payment, auth, and spend control; that plumbing is invisible to the user.
+Browse a curated catalog of AI media, LLMs, voice, search, data, comms, commerce, and infra services, then use any of them per call. MasterKey handles the payment, auth, and spend control; that plumbing is invisible to the user.
 
 Deployed at **[masterkey.sh](https://masterkey.sh)**.
 
-> _A personal project. Not affiliated with, endorsed by, or associated with Coinbase._
+> _A personal project. Not affiliated with or endorsed by Coinbase._
 
 ## Why fork this?
 
