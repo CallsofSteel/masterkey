@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Pin the workspace root to this repo. Turbopack infers the root by walking up for lockfiles,
+  // so a stray/empty package-lock.json in a parent dir (e.g. the user's home dir on a fresh clone)
+  // silently hijacks it, misdirecting module resolution and file tracing.
+  turbopack: { root: __dirname },
   // `sharp` is a native-binary image lib (used by perception.ts to normalize/downscale generated images,
   // incl. decoding webp/avif). Keep it external so it loads from node_modules with the right platform
   // binary at runtime instead of being bundled (the standard way to use sharp in a route handler).

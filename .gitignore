@@ -98,3 +98,26 @@ data/registry/_*.json
 data/registry/orbis-sprint-endpoints.json
 data/registry/qa-checklist.json
 data/registry/qa-ledger.json
+
+# --- added by Claude Deck ---
+.env
+.env.*
+!.env.example
+.envrc
+secrets.json
+credentials.json
+service-account*.json
+*.pem
+*.p12
+id_rsa
+node_modules/
+dist/
+build/
+.next/
+out/
+venv/
+.venv/
+__pycache__/
+.DS_Store
+*.log
+.vercel
